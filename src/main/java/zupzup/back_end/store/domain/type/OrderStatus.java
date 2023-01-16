@@ -1,4 +1,4 @@
-package zupzup.back_end.domain.type;
+package zupzup.back_end.store.domain.type;
 
 public enum OrderStatus {
 

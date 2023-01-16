@@ -1,4 +1,4 @@
-package zupzup.back_end.controller;
+package zupzup.back_end.store.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import zupzup.back_end.dto.StoreDto;
-import zupzup.back_end.service.StoreService;
+import zupzup.back_end.store.dto.StoreDto;
+import zupzup.back_end.store.service.StoreService;
 
 @RestController
 @Log

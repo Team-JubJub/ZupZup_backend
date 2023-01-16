@@ -1,4 +1,4 @@
-package zupzup.back_end.controller;
+package zupzup.back_end.store.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import zupzup.back_end.dto.ItemDto;
-import zupzup.back_end.service.ItemService;
+import zupzup.back_end.store.dto.ItemDto;
+import zupzup.back_end.store.service.ItemService;
 
 @RestController
 @Log

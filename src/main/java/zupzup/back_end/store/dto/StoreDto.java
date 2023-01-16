@@ -1,10 +1,10 @@
-package zupzup.back_end.dto;
+package zupzup.back_end.store.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
-import zupzup.back_end.domain.Item;
-import zupzup.back_end.domain.Store;
+import zupzup.back_end.store.domain.Item;
+import zupzup.back_end.store.domain.Store;
 
 import java.util.ArrayList;
 import java.util.List;

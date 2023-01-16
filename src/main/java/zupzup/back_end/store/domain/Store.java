@@ -1,11 +1,11 @@
-package zupzup.back_end.domain;
+package zupzup.back_end.store.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Setter;
 import zupzup.back_end.converter.StringListConverter;
-import zupzup.back_end.dto.StoreDto;
+import zupzup.back_end.store.dto.StoreDto;
 
 import java.util.ArrayList;
 import java.util.List;

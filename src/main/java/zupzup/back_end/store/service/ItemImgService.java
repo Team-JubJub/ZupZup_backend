@@ -1,13 +1,12 @@
-package zupzup.back_end.service;
+package zupzup.back_end.store.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import zupzup.back_end.domain.ItemImg;
-import zupzup.back_end.repository.ItemImgRepository;
+import zupzup.back_end.store.domain.ItemImg;
+import zupzup.back_end.store.repository.ItemImgRepository;
 
 @Service
 @RequiredArgsConstructor

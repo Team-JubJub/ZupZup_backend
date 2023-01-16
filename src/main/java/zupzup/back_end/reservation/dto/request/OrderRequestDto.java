@@ -1,4 +1,4 @@
-package zupzup.back_end.dto.request;
+package zupzup.back_end.reservation.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

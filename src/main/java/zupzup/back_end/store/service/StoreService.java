@@ -1,15 +1,15 @@
-package zupzup.back_end.service;
+package zupzup.back_end.store.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import zupzup.back_end.domain.Item;
-import zupzup.back_end.domain.Store;
-import zupzup.back_end.dto.StoreDto;
-import zupzup.back_end.repository.ItemRepository;
-import zupzup.back_end.repository.StoreRepository;
+import zupzup.back_end.store.domain.Item;
+import zupzup.back_end.store.domain.Store;
+import zupzup.back_end.store.dto.StoreDto;
+import zupzup.back_end.store.repository.ItemRepository;
+import zupzup.back_end.store.repository.StoreRepository;
 
 import java.util.List;
 

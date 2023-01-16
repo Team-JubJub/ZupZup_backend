@@ -1,12 +1,12 @@
-package zupzup.back_end.service;
+package zupzup.back_end.reservation.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import zupzup.back_end.dto.OrderDto;
-import zupzup.back_end.dto.request.OrderRequestDto;
-import zupzup.back_end.repository.OrderRepository;
+import zupzup.back_end.reservation.dto.OrderDto;
+import zupzup.back_end.reservation.dto.request.OrderRequestDto;
+import zupzup.back_end.reservation.repository.OrderRepository;
 
 import java.util.List;
 

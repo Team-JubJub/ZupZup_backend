@@ -1,9 +1,9 @@
-package zupzup.back_end.dto;
+package zupzup.back_end.store.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
-import zupzup.back_end.domain.ItemImg;
+import zupzup.back_end.store.domain.ItemImg;
 
 @Getter
 @Setter

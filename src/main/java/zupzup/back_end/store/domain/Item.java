@@ -1,8 +1,8 @@
-package zupzup.back_end.domain;
+package zupzup.back_end.store.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import zupzup.back_end.dto.ItemDto;
+import zupzup.back_end.store.dto.ItemDto;
 
 @Entity
 @Data
