@@ -12,6 +12,4 @@ public class OrderRequestDto {
     private int itemPrice;
 
     private int itemCount;
-
-    private String test; //set upstream test
 }
