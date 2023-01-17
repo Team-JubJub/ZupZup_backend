@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class OrderRequestDto {  //set upstream test
+public class OrderRequestDto {
     //[상품 이름, 가격, 갯수]
 
     private String itemName;
@@ -12,4 +12,6 @@ public class OrderRequestDto {  //set upstream test
     private int itemPrice;
 
     private int itemCount;
+
+    private String test; //set upstream test
 }
