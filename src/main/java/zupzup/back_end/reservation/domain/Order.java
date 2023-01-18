@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import zupzup.back_end.store.domain.Store;
-import zupzup.back_end.store.domain.type.OrderStatus;
+import zupzup.back_end.reservation.domain.type.OrderStatus;
 
 import java.util.List;
 
