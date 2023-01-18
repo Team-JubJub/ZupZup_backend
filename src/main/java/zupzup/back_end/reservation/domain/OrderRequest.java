@@ -1,4 +1,4 @@
-package zupzup.back_end.store.domain;
+package zupzup.back_end.reservation.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;

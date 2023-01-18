@@ -1,9 +1,10 @@
-package zupzup.back_end.store.domain;
+package zupzup.back_end.reservation.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
+import zupzup.back_end.store.domain.Store;
 import zupzup.back_end.store.domain.type.OrderStatus;
 
 import java.util.List;
