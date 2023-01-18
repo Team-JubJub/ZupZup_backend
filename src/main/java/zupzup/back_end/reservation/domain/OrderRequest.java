@@ -3,7 +3,6 @@ package zupzup.back_end.reservation.domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 @Entity
 @NoArgsConstructor
