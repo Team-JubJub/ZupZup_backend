@@ -3,8 +3,8 @@ package zupzup.back_end.reservation.dto;
 import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
-import zupzup.back_end.store.domain.Order;
-import zupzup.back_end.store.domain.type.OrderStatus;
+import zupzup.back_end.reservation.domain.Order;
+import zupzup.back_end.reservation.domain.type.OrderStatus;
 import zupzup.back_end.reservation.dto.request.OrderRequestDto;
 
 import java.util.List;
