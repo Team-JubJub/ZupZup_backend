@@ -28,8 +28,12 @@ public class OrderController {
         return allOrderListDto;
     }
 
-    @GetMapping("/{reservId}")  // 각 order에 대한 단건 GET
-    public void getOrder(@PathVariable Long reservId) throws Exception {
-        // return Order상세정보(items with number, price etc...)
+    @GetMapping("/{orderId}")  // 각 order에 대한 단건 GET
+    public OrderDto getOrder(@PathVariable Long orderId) throws Exception {
+        Order order = orderServiceImpl.getOrderById(orderId);
+        OrderDto orderDto = new OrderDto();
+        orderDto.of(order);
+
+        return orderDto;
     }
 }

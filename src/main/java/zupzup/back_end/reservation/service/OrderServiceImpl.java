@@ -30,14 +30,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderRequest> getOrderById(Long reservId) {
-        Optional<Order> order = orderRepository.findById(reservId);
+    public Order getOrderById(Long orderId) {
+        Optional<Order> order = orderRepository.findById(orderId);
         if(order.isPresent()) {
             Order orderEntity = order.get();
+            return orderEntity;
         } else {
             return null;    // 예외처리 나중에 해놓을 것.
         }
-
-        return
     }
 }
