@@ -1,8 +1,6 @@
 package zupzup.back_end.reservation.service;
 
 import zupzup.back_end.reservation.domain.Order;
-import zupzup.back_end.reservation.domain.OrderRequest;
-import zupzup.back_end.reservation.dto.OrderDto;
 
 import java.util.List;
 
