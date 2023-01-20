@@ -31,6 +31,7 @@ public class Order {
     private String orderTitle; // ex) 크로플 3개 외 3
     private String orderTime; // 주문 시간 -> ERD에 추가
     private String visitTime; // 방문예정 시간
-    private List<OrderSpecific> orderList;
+    @Embedded
+    private OrderSpecific orderList;  // 주문 품목(이름, 가격, 개수, (img))
 
 }
