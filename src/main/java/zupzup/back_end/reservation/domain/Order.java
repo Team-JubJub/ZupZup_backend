@@ -1,20 +1,14 @@
 package zupzup.back_end.reservation.domain;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
+import lombok.Data;
 import zupzup.back_end.reservation.domain.type.OrderSpecific;
-import zupzup.back_end.reservation.dto.OrderDto;
 import zupzup.back_end.store.domain.Store;
 import zupzup.back_end.reservation.domain.type.OrderStatus;
 
-import java.util.List;
-
 @Entity
-@Getter
-@Table(name = "order")
-@NoArgsConstructor
+@Data
+@Table(name = "orderList")  // table name이 order -> SQL 예약어와 동일, table 명 수정.
 public class Order {
 
     @Id

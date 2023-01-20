@@ -5,7 +5,6 @@ import lombok.extern.java.Log;
 import org.springframework.web.bind.annotation.*;
 import zupzup.back_end.reservation.domain.Order;
 import zupzup.back_end.reservation.dto.OrderDto;
-import zupzup.back_end.reservation.service.OrderService;
 import zupzup.back_end.reservation.service.OrderServiceImpl;
 
 import java.util.List;
