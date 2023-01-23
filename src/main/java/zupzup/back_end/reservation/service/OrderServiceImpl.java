@@ -20,6 +20,7 @@ public class OrderServiceImpl implements OrderService {
         this.orderRepository = orderRepository;
     }
 
+    // <-------------------- GET part -------------------->
     @Override
     public List<Order> getAllOrder() {  // service layer에서는 entity 그대로 return, controller에서 dto로 변환
         List<Order> allOrderList = orderRepository.findAll();
