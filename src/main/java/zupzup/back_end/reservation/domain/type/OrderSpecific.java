@@ -3,6 +3,7 @@ package zupzup.back_end.reservation.domain.type;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 
+
 @Getter
 @Embeddable
 public class OrderSpecific {
@@ -10,5 +11,5 @@ public class OrderSpecific {
     private String itemName;    // 상품 이름
     private int itemPrice;  // 가격
     private int itemCount;  // 갯수
-    //private String imgURL;  // 이미지
+
 }

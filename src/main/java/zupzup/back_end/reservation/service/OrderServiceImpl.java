@@ -1,19 +1,24 @@
 package zupzup.back_end.reservation.service;
 
 import lombok.extern.java.Log;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zupzup.back_end.reservation.domain.Order;
+import zupzup.back_end.reservation.dto.OrderDto;
 import zupzup.back_end.reservation.repository.OrderRepository;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Log
 @Transactional
 public class OrderServiceImpl implements OrderService {
 
+    @Autowired
+    ModelMapper modelMapper;
     private final OrderRepository orderRepository;
 
     public OrderServiceImpl(OrderRepository orderRepository) {
@@ -22,19 +27,20 @@ public class OrderServiceImpl implements OrderService {
 
     // <-------------------- GET part -------------------->
     @Override
-    public List<Order> getAllOrder() {  // service layer에서는 entity 그대로 return, controller에서 dto로 변환
-        List<Order> allOrderList = orderRepository.findAll();
-        return allOrderList;
+    public List<OrderDto.GetOrderDto> getAllOrder() {
+        List<Order> allOrderListEntity = orderRepository.findAll();
+        List<OrderDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
+                .map(m -> modelMapper.map(m, OrderDto.GetOrderDto.class))
+                .collect(Collectors.toList());
+
+        return allOrderListDto;
     }
 
     @Override
-    public Order getOrderById(Long orderId) {
-        Optional<Order> order = orderRepository.findById(orderId);
-        if(order.isPresent()) {
-            Order orderEntity = order.get();
-            return orderEntity;
-        } else {
-            return null;    // 예외처리 나중에 해놓을 것.
-        }
+    public OrderDto.GetOrderSpecificDto getOrderById(Long orderId) {
+        Order orderEntity = orderRepository.findById(orderId).get();
+        OrderDto.GetOrderSpecificDto getOrderSpecificDto = modelMapper.map(orderEntity, OrderDto.GetOrderSpecificDto.class);
+
+        return getOrderSpecificDto;
     }
 }
