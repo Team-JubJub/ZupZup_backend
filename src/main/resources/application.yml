@@ -4,3 +4,19 @@ spring:
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      secret-key: fLoq7d6aPyrCizGkXC9ErsDTgxMTq/V01yAQcocU
+      access-key: AKIAXNUQH7X3SECHL6PY
+    s3:
+      bucket: zupzupbucket
