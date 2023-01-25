@@ -8,6 +8,8 @@ import zupzup.back_end.reservation.domain.type.OrderStatus;
 import java.util.List;
 
 public class OrderDto { // DTO 내에  request, response 등을 inner class로 만들어주자.
+
+
     // <-------------------- GET part -------------------->
     @Getter
     @Setter
@@ -23,7 +25,7 @@ public class OrderDto { // DTO 내에  request, response 등을 inner class로 �
 
     @Getter
     @Setter
-    public static class GetOrderSpecificDto{ // 단건 GET에 mapping할 DTO
+    public static class GetOrderSpecificDto { // 단건 GET에 mapping할 DTO
         private Long id;    // Order ID
 
         private OrderStatus orderStatus; // 상태여부
@@ -33,5 +35,11 @@ public class OrderDto { // DTO 내에  request, response 등을 inner class로 �
         private String orderTime;   // 주문 시간
         private String visitTime; // 방문예정 시간
         private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수
+    }
+
+
+    // <-------------------- PATCH part -------------------->
+    public static class PatchOrderDto {
+
     }
 }

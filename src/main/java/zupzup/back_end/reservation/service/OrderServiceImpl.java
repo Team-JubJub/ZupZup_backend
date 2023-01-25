@@ -43,4 +43,19 @@ public class OrderServiceImpl implements OrderService {
 
         return getOrderSpecificDto;
     }
+
+
+    // <-------------------- PATCH part -------------------->
+    @Override
+    public OrderDto.GetOrderSpecificDto patchOrderById(OrderDto.PatchOrderDto patchOrderDto, Long orderId) {
+        Order orderEntity = orderRepository.findById(orderId).get();
+        /*
+            PatchOrderDto로 받아온 사장님이 입력한 예약 확정 내역(아이템 개수 등)과 orderEntity 비교해서
+            Entity의 내용 수정, 수정된 내용 dto로 반환
+         */
+
+        OrderDto.GetOrderSpecificDto patchedOrderSpecificDto = modelMapper.map(orderEntity, OrderDto.GetOrderSpecificDto.class);
+
+        return patchedOrderSpecificDto;
+    }
 }
