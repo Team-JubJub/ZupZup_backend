@@ -2,8 +2,6 @@ package zupzup.back_end.reservation.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.modelmapper.ModelMapper;
-import zupzup.back_end.reservation.domain.Order;
 import zupzup.back_end.reservation.domain.type.OrderSpecific;
 import zupzup.back_end.reservation.domain.type.OrderStatus;
 
@@ -21,14 +19,6 @@ public class OrderDto { // DTO 내에  request, response 등을 inner class로 �
         private String orderTitle; // ex) 크로플 3개 외 3
         private String orderTime; // 주문 시간
         private String visitTime; // 방문예정 시간
-
-        private static ModelMapper modelMapper = new ModelMapper();
-        public Order createOrder() {
-            return modelMapper.map(this, Order.class);
-        }
-        public static OrderDto.GetOrderDto of(Order order) {
-            return modelMapper.map(order, OrderDto.GetOrderDto.class);
-        }
     }
 
     @Getter
@@ -43,13 +33,5 @@ public class OrderDto { // DTO 내에  request, response 등을 inner class로 �
         private String orderTime;   // 주문 시간
         private String visitTime; // 방문예정 시간
         private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수
-
-        private static ModelMapper modelMapper = new ModelMapper();
-        public Order createOrder() {
-            return modelMapper.map(this, Order.class);
-        }
-        public static OrderDto.GetOrderSpecificDto of(Order order) {
-            return modelMapper.map(order, OrderDto.GetOrderSpecificDto.class);
-        }
     }
 }

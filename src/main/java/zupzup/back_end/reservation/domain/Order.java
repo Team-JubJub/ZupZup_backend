@@ -10,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Table(name = "orderList")  // table name이 order -> SQL 예약어와 동일, table 명 수정.
+@Table(name = "orders")  // table name이 order -> SQL 예약어와 동일, table 명 수정.
 public class Order {
 
     @Id
@@ -30,6 +30,6 @@ public class Order {
 
     @ElementCollection
     @CollectionTable(name="orderSpecific")
-    private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img)
+    private List<OrderSpecific> orderSpecificList;  // 주문 품목(이름, 가격, 개수, (img)
 
 }

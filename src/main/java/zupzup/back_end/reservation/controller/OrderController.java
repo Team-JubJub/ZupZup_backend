@@ -15,6 +15,7 @@ import java.util.List;
 public class OrderController {
     private final OrderServiceImpl orderServiceImpl;
 
+    // <-------------------- GET part -------------------->
     @GetMapping("")  // order에 대한 GET(주문 항목 모두)
     public List<OrderDto.GetOrderDto> getAllOrderList() throws Exception {
         List<OrderDto.GetOrderDto> allOrderListDto = orderServiceImpl.getAllOrder();
