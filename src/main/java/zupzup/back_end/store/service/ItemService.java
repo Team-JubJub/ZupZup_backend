@@ -3,29 +3,36 @@ package zupzup.back_end.store.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import zupzup.back_end.store.domain.Item;
-import zupzup.back_end.store.domain.ItemImg;
+import zupzup.back_end.store.domain.Store;
 import zupzup.back_end.store.dto.ItemDto;
 import zupzup.back_end.store.dto.StoreDto;
+import zupzup.back_end.store.dto.request.ItemRequestDto;
 import zupzup.back_end.store.repository.ItemRepository;
 import zupzup.back_end.store.repository.StoreRepository;
 
 import java.util.List;
 
 @Service
-@Log
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class ItemService {
 
     private final ItemRepository itemRepository;
-    private final ItemImgService itemImgService;
     private final StoreRepository storeRepository;
+    private final S3Uploader s3Uploader;
 
-    public void saveItem(ItemDto itemDto, MultipartFile itemImgFile) throws Exception {
+    /*public List<> itemList() {
+
+    }*/
+
+    public Long saveItem(ItemRequestDto requestDto, MultipartFile itemImgFile) throws Exception {
         /**
          * 상품 등록
          * param: itemDto & multipartFile
@@ -33,14 +40,26 @@ public class ItemService {
          */
 
         //상품 등록
-        Item item = itemDto.createItem();
+        ItemDto itemDto = new ItemDto();
+        itemDto.setItemName(requestDto.getItemName());
+        itemDto.setItemPrice(requestDto.getItemPrice());
+        itemDto.setSalePrice(requestDto.getSalePrice());
+        itemDto.setItemCount(requestDto.getItemCount());
+        Store store = storeRepository.findById(requestDto.getStoreId())
+                .orElseThrow(EntityNotFoundException::new);
+        itemDto.setStore(store);
+
+        if(!itemImgFile.isEmpty()) {
+            String imageURL = s3Uploader.upload(itemImgFile, store.getStoreName());
+            itemDto.setImageURL(imageURL);
+        }
+
+        Item item = new Item();
+        item.updateItem(itemDto);
+
         itemRepository.save(item);
 
-        //이미지 등록
-        ItemImg itemImg = new ItemImg();
-        itemImg.setItem(item);
-
-        itemImgService.saveItemImg(itemImg, itemImgFile);
+        return item.getItemId();
     }
 
     public void deleteItem(Long itemId) {
@@ -69,21 +88,9 @@ public class ItemService {
                 .orElseThrow(EntityNotFoundException::new));
 
         List<Item> itemList = storeDto.getStoreItems();
-
-        for(int i=0; i<itemList.size(); i++) {
-            itemList.get(i).setCount(0);
-        }
     }
 
     public void updateItem(ItemDto itemDto, MultipartFile itemImg) throws Exception {
 
-        //상품 수정
-        Item item = itemRepository.findById(itemDto.getId())
-                .orElseThrow(EntityNotFoundException::new);
-        item.updateItem(itemDto);
-        Long itemImgId = itemDto.getItemImgDto().getId();
-
-        //이미지 등록
-        itemImgService.updateItemImg(itemImgId, itemImg);
     }
 }

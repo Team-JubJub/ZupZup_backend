@@ -7,6 +7,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import zupzup.back_end.store.dto.ItemDto;
+import zupzup.back_end.store.dto.request.ItemRequestDto;
 import zupzup.back_end.store.service.ItemService;
 
 @RestController
@@ -22,24 +23,21 @@ public class ItemController {
      */
     @PostMapping("/{storeId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveItem(@PathVariable Long storeId,
-                         ItemDto itemDto,
-                         @RequestParam("itemImg") MultipartFile itemImg) throws Exception {
+    public void saveItem(@RequestPart(value = "item") ItemRequestDto requestDto,
+                         @RequestPart("image") MultipartFile itemImg) throws Exception {
 
-
-        itemService.saveItem(itemDto, itemImg);
+        itemService.saveItem(requestDto, itemImg);
     }
 
     @PutMapping("/{storeId}")
-    public void updateItem(@PathVariable Long storeId,
-                           ItemDto itemDto, @Nullable MultipartFile itemImg) throws Exception {
+    public void updateItem(@RequestPart(value = "item") ItemDto itemDto,
+                           @Nullable @RequestPart(value = "image") MultipartFile itemImg) throws Exception {
 
         itemService.updateItem(itemDto, itemImg);
     }
 
     @DeleteMapping("/{storeId}/{itemId}")
-    public void deleteItem(@PathVariable Long storeId,
-                           @PathVariable Long itemId) {
+    public void deleteItem(@PathVariable Long itemId) {
 
         itemService.deleteItem(itemId);
     }
