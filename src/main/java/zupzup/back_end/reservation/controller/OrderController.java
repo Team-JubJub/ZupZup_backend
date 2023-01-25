@@ -11,14 +11,14 @@ import java.util.List;
 @RestController
 @Log
 @RequiredArgsConstructor
-@RequestMapping("/order")
+@RequestMapping("/{storeId}/order")
 public class OrderController {
     private final OrderServiceImpl orderServiceImpl;
 
     // <-------------------- GET part -------------------->
     @GetMapping("")  // order에 대한 GET(주문 항목 모두)
-    public List<OrderDto.GetOrderDto> getAllOrderList() throws Exception {
-        List<OrderDto.GetOrderDto> allOrderListDto = orderServiceImpl.getAllOrder();
+    public List<OrderDto.GetOrderDto> getAllOrderList(@PathVariable Long storeId) throws Exception {
+        List<OrderDto.GetOrderDto> allOrderListDto = orderServiceImpl.getAllOrder(storeId);
 
         return allOrderListDto; // order들의 dto list 반환
     }

@@ -27,8 +27,8 @@ public class OrderServiceImpl implements OrderService {
 
     // <-------------------- GET part -------------------->
     @Override
-    public List<OrderDto.GetOrderDto> getAllOrder() {
-        List<Order> allOrderListEntity = orderRepository.findAll();
+    public List<OrderDto.GetOrderDto> getAllOrder(Long storeId) {
+        List<Order> allOrderListEntity = orderRepository.findByStore_StoreId(storeId);
         List<OrderDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
                 .map(m -> modelMapper.map(m, OrderDto.GetOrderDto.class))
                 .collect(Collectors.toList());
