@@ -10,13 +10,12 @@ import zupzup.back_end.store.domain.Store;
 @Setter
 public class ItemDto {
 
-    private Long id;
     private String itemName;
+    private String imageURL;
     private int itemPrice;
-    private int discountedPrice;
-    private int count;
+    private int salePrice;
+    private int itemCount;
     private Store store;
-    private ItemImgDto itemImgDto;
 
     private static ModelMapper modelMapper = new ModelMapper();
 

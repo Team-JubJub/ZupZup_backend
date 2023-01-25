@@ -23,6 +23,8 @@ public class StoreService {
     private final ItemService itemService;
     private final ItemRepository itemRepository;
 
+    // 가게 저장
+
     // 상품 리스트
     public List<Item> itemList(StoreDto storeDto) {
 

@@ -3,7 +3,7 @@ package zupzup.back_end.store.domain;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Setter;
+import lombok.Getter;
 import zupzup.back_end.converter.StringListConverter;
 import zupzup.back_end.store.dto.StoreDto;
 
@@ -17,19 +17,31 @@ public class Store {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "storeId")
     private Long storeId;
 
-    @Setter
-    @Column(nullable = false) private String storeName; //가게이름
-    @Setter @Column(nullable = false, length = 1000) private String storeAddress; //가게 주소
-    @Setter @Column(nullable = false) private String openTime;
-    @Setter @Column(nullable = false) private String endTime;
-    @Setter @Column(nullable = false) private Integer saleTimeStart;
-    @Setter @Column(nullable = false) private Integer saleTimeEnd;
-    @Setter @Column(nullable = false) private Double longitude;
-    @Setter @Column(nullable = false) private Double latitude;
+    private String loginId;
+    private String loginPwd;
+
+    @Column(nullable = false)
+    @Getter
+    private String storeName; //가게이름
+    @Column(nullable = false, length = 1000)
+    private String storeAddress; //가게 주소
+    @Column(nullable = false)
+    private String openTime;
+    @Column(nullable = false)
+    private String endTime;
+    @Column(nullable = false)
+    private String saleTimeStart;
+    @Column(nullable = false)
+    private String saleTimeEnd;
+    @Column(nullable = false)
+    private Double longitude;
+    @Column(nullable = false)
+    private Double latitude;
     @Convert(converter = StringListConverter.class)
-    @Setter @Column private List<String> eventList;
+    @Column private List<String> eventList;
 
     @OneToMany(
             mappedBy = "store",

@@ -19,8 +19,8 @@ public class StoreDto {
     private String storeAddress; //가게 주소
     private String openTime;
     private String endTime;
-    private Integer saleTimeStart;
-    private Integer saleTimeEnd;
+    private String saleTimeStart;
+    private String saleTimeEnd;
     private Double longitude;
     private Double latitude;
     private List<String> eventList;
