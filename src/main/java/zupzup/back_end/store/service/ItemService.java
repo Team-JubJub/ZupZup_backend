@@ -26,8 +26,11 @@ public class ItemService {
 
     private final ItemRepository itemRepository;
     private final StoreRepository storeRepository;
-    @Autowired
-    private S3Uploader s3Uploader;
+    private final S3Uploader s3Uploader;
+
+    /*public List<> itemList() {
+
+    }*/
 
     public Long saveItem(ItemRequestDto requestDto, MultipartFile itemImgFile) throws Exception {
         /**
@@ -51,7 +54,8 @@ public class ItemService {
             itemDto.setImageURL(imageURL);
         }
 
-        Item item = itemDto.createItem();
+        Item item = new Item();
+        item.updateItem(itemDto);
 
         itemRepository.save(item);
 

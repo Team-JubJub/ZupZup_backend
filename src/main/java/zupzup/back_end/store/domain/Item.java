@@ -1,16 +1,17 @@
 package zupzup.back_end.store.domain;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import zupzup.back_end.store.dto.ItemDto;
 
 @Entity
-@Data
+@NoArgsConstructor
 @Table(name = "item")
 public class Item {
 
         @Id
-        @Column(name = "itemId")
+        @Column(name = "itemId") @Getter
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long itemId;
         @Column(nullable = false, length = 20)
@@ -23,9 +24,7 @@ public class Item {
         @ManyToOne(optional = false) @JoinColumn(name = "storeId")
         private Store store; // 스토어 정보 ID
 
-        public Item() {}
-
-        // 상품 데이터를 업데이트 하는 로직
+    // 상품 데이터를 업데이트 하는 로직
         public void updateItem(ItemDto itemDto) {
 
             this.itemName = itemDto.getItemName();

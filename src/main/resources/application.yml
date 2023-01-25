@@ -9,6 +9,11 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
 cloud:
   aws:
     region:
@@ -16,7 +21,7 @@ cloud:
     stack:
       auto: false
     credentials:
-      secret-key: fLoq7d6aPyrCizGkXC9ErsDTgxMTq/V01yAQcocU
-      access-key: AKIAXNUQH7X3SECHL6PY
+      secret-key:
+      access-key:
     s3:
       bucket: zupzupbucket
