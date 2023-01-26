@@ -16,14 +16,4 @@ public class ItemDto {
     private int salePrice;
     private int itemCount;
     private Store store;
-
-    private static ModelMapper modelMapper = new ModelMapper();
-
-    public Item createItem() {
-        return modelMapper.map(this, Item.class);
-    }
-
-    public ItemDto of(Item item) {
-        return modelMapper.map(item, ItemDto.class);
-    }
 }
