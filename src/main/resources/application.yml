@@ -21,7 +21,7 @@ cloud:
     stack:
       auto: false
     credentials:
-      secret-key: qkdzKsrUli2EVVv+shtXzuqsRhn+oq3AmZ9x/2WF
-      access-key: AKIAXNUQH7X3T4JMMLM5
+      secret-key:
+      access-key:
     s3:
       bucket: zupzupbucket
