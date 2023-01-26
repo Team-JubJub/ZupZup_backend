@@ -32,6 +32,7 @@ public class ItemService {
 
     }*/
 
+    @Transactional
     public Long saveItem(ItemRequestDto requestDto, MultipartFile itemImgFile) throws Exception {
         /**
          * 상품 등록
@@ -49,10 +50,10 @@ public class ItemService {
                 .orElseThrow(EntityNotFoundException::new);
         itemDto.setStore(store);
 
-        if(!itemImgFile.isEmpty()) {
-            String imageURL = s3Uploader.upload(itemImgFile, store.getStoreName());
-            itemDto.setImageURL(imageURL);
-        }
+        System.out.println("testing...----------------------------------");
+
+        String imageURL = s3Uploader.uploadFile(itemImgFile, store.getStoreName());
+        itemDto.setImageURL(imageURL);
 
         Item item = new Item();
         item.updateItem(itemDto);
