@@ -24,8 +24,9 @@ public class ItemController {
     @PostMapping("/{storeId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void saveItem(@RequestPart(value = "item") ItemRequestDto requestDto,
-                         @RequestPart("image") MultipartFile itemImg) throws Exception {
+                         @RequestPart(value = "image") MultipartFile itemImg) throws Exception {
 
+        System.out.println("here is controller!---------------------");
         itemService.saveItem(requestDto, itemImg);
     }
 
