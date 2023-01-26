@@ -26,14 +26,4 @@ public class StoreDto {
     private List<String> eventList;
 
     private List<Item> storeItems = new ArrayList<>();
-
-    private static ModelMapper modelMapper = new ModelMapper();
-
-    public Store creatStore() {
-        return modelMapper.map(this, Store.class);
-    }
-
-    public static StoreDto of(Store store) {
-        return modelMapper.map(store, StoreDto.class);
-    }
 }

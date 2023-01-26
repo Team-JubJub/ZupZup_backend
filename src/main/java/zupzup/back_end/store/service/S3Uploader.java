@@ -23,48 +23,58 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class S3Uploader {
 
-    private final AmazonS3Client amazonS3;
+    private final AmazonS3Client amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String S3Bucket;
 
-    public String uploadFile(MultipartFile file, String dir) {
+    //MultipartFile을 전달받아 File로 전환한 후 S3에 업로드
+    public String upload(MultipartFile multipartFile, String dirName) throws IOException {
 
-        String fileName = createFileName(file.getOriginalFilename());
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(file.getSize());
-        objectMetadata.setContentType(file.getContentType());
+        File uploadFile = convert(multipartFile)
+                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
+        return upload(uploadFile, dirName);
+    }
 
-        try(InputStream inputStream = file.getInputStream()) {
-            amazonS3.putObject(new PutObjectRequest(S3Bucket, fileName, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-        } catch (IOException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+    private String upload(File uploadFile, String dirName) {
+        String fileName = dirName + "/" + uploadFile.getName();
+        String uploadImageUrl = putS3(uploadFile, fileName);
+
+        removeNewFile(uploadFile); // 로컬에 생서된 File 삭제
+
+        return uploadImageUrl;
+    }
+
+    private String putS3(File uploadFile, String fileName) {
+
+        amazonS3Client.putObject(
+                new PutObjectRequest(S3Bucket, fileName, uploadFile)
+                        .withCannedAcl(CannedAccessControlList.PublicRead)
+        );
+        return amazonS3Client.getUrl(S3Bucket, fileName).toString();
+    }
+
+    private void removeNewFile(File targetFile) {
+
+        if(targetFile.delete()) {
+            log.info("파일이 삭제되었습니다");
+        } else {
+            log.info("파일이 삭제되지 못했습니다.");
         }
-
-        return fileName;
     }
 
-    public void deleteFile(String fileName) {
-        amazonS3.deleteObject(new DeleteObjectRequest(S3Bucket, fileName));
-    }
+    private Optional<File> convert(MultipartFile file) throws IOException {
 
-    public String getFile(String fileName) {
-        return amazonS3.getUrl(S3Bucket, fileName).toString();
-    }
-
-    private String createFileName(String fileName) {
-        return UUID.randomUUID().toString().concat(getFileExtension(fileName));
-    }
-
-    private String getFileExtension(String fileName) {
-
-        try {
-            return fileName.substring(fileName.lastIndexOf("."));
-        } catch (StringIndexOutOfBoundsException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "잘못된 형식의 파일(" + fileName + ") 입니다.");
+        File convertFile = new File(file.getOriginalFilename());
+        if(convertFile.createNewFile()) {
+            try(FileOutputStream fos = new FileOutputStream(convertFile)) {
+                fos.write(file.getBytes());
+            }
+            return Optional.of(convertFile);
         }
+        return Optional.empty();
     }
 }
