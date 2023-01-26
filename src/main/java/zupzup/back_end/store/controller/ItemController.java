@@ -26,7 +26,6 @@ public class ItemController {
     public void saveItem(@RequestPart(value = "item") ItemRequestDto requestDto,
                          @RequestPart(value = "image") MultipartFile itemImg) throws Exception {
 
-        System.out.println("here is controller!---------------------");
         itemService.saveItem(requestDto, itemImg);
     }
 
