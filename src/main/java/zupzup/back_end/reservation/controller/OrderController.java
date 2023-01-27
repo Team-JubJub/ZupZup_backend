@@ -17,22 +17,22 @@ public class OrderController {
 
     // <-------------------- GET part -------------------->
     @GetMapping("")  // order에 대한 GET(주문 항목 모두)
-    public List<OrderDto.GetOrderDto> getAllOrderList(@PathVariable Long storeId) throws Exception {
+    public List<OrderDto.GetOrderDto> getAllOrderList(@PathVariable Long storeId) {
         List<OrderDto.GetOrderDto> allOrderListDto = orderServiceImpl.getAllOrder(storeId);
 
         return allOrderListDto; // order들의 dto list 반환
     }
 
     @GetMapping("/{orderId}")  // 각 order에 대한 단건 GET
-    public OrderDto.GetOrderSpecificDto getOrder(@PathVariable Long orderId) throws Exception {
-        OrderDto.GetOrderSpecificDto getOrderSpecificDto = orderServiceImpl.getOrderById(orderId);
+    public OrderDto.GetOrderSpecificDto getOrder(@PathVariable Long storeId, @PathVariable Long orderId) {
+        OrderDto.GetOrderSpecificDto getOrderSpecificDto = orderServiceImpl.getOrderById(storeId, orderId);
 
         return getOrderSpecificDto; // 한 개 order의 dto 반환
     }
 
     // <-------------------- PATCH part -------------------->
     @PatchMapping("/{orderId}")  // 각 order에 대한 단건 GET
-    public OrderDto.GetOrderSpecificDto patchOrder(@PathVariable Long orderId, @RequestBody OrderDto.PatchOrderDto patchOrderDto) throws Exception {
+    public OrderDto.GetOrderSpecificDto patchOrder(@PathVariable Long orderId, @RequestBody OrderDto.PatchOrderDto patchOrderDto) {
         OrderDto.GetOrderSpecificDto patchedOrderSpecificDto = orderServiceImpl.patchOrderById(patchOrderDto, orderId);
 
         return patchedOrderSpecificDto; // patch 된 order의 dto 반환

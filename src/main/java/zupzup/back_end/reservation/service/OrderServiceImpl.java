@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Service
 @Log
 @Transactional
-public class OrderServiceImpl implements OrderService {
+public class OrderServiceImpl {
 
     @Autowired
     ModelMapper modelMapper;
@@ -26,7 +26,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     // <-------------------- GET part -------------------->
-    @Override
     public List<OrderDto.GetOrderDto> getAllOrder(Long storeId) {
         List<Order> allOrderListEntity = orderRepository.findByStore_StoreId(storeId);
         List<OrderDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
@@ -36,8 +35,7 @@ public class OrderServiceImpl implements OrderService {
         return allOrderListDto;
     }
 
-    @Override
-    public OrderDto.GetOrderSpecificDto getOrderById(Long orderId) {
+    public OrderDto.GetOrderSpecificDto getOrderById(Long storeId, Long orderId) {
         Order orderEntity = orderRepository.findById(orderId).get();
         OrderDto.GetOrderSpecificDto getOrderSpecificDto = modelMapper.map(orderEntity, OrderDto.GetOrderSpecificDto.class);
 
@@ -46,7 +44,6 @@ public class OrderServiceImpl implements OrderService {
 
 
     // <-------------------- PATCH part -------------------->
-    @Override
     public OrderDto.GetOrderSpecificDto patchOrderById(OrderDto.PatchOrderDto patchOrderDto, Long orderId) {
         Order orderEntity = orderRepository.findById(orderId).get();
         /*
