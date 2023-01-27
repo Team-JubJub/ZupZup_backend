@@ -19,6 +19,11 @@ public class AWSConfig {
     private String region = "ap-northeast-2";
 
     @Bean
+    public BasicAWSCredentials basicAWSCredentials() {
+        return new BasicAWSCredentials(accessKey, secretKey);
+    }
+
+    @Bean
     public AmazonS3Client amazonS3Client() {
 
         BasicAWSCredentials basicAWSCredentials = new BasicAWSCredentials(accessKey, secretKey);

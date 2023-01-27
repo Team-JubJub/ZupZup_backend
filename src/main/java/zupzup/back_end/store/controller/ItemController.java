@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import zupzup.back_end.store.dto.ItemDto;
 import zupzup.back_end.store.dto.request.ItemRequestDto;
+import zupzup.back_end.store.dto.request.UpdateRequestDto;
 import zupzup.back_end.store.service.ItemService;
 
 @RestController
@@ -23,17 +24,22 @@ public class ItemController {
      */
     @PostMapping("/{storeId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveItem(@RequestPart(value = "item") ItemRequestDto requestDto,
-                         @RequestPart("image") MultipartFile itemImg) throws Exception {
+    public Long saveItem(@RequestPart(value = "item") ItemRequestDto requestDto,
+                         @RequestPart(value = "image", required = false) MultipartFile itemImg) throws Exception {
 
-        itemService.saveItem(requestDto, itemImg);
+        Long itemId = itemService.saveItem(requestDto, itemImg);
+        return itemId;
     }
 
-    @PutMapping("/{storeId}")
-    public void updateItem(@RequestPart(value = "item") ItemDto itemDto,
-                           @Nullable @RequestPart(value = "image") MultipartFile itemImg) throws Exception {
+    @PutMapping("/{storeId}/{itemId}")
+    public String updateItem(@RequestPart(value = "item") UpdateRequestDto updateDto,
+                           @RequestPart(value = "image", required = false) MultipartFile itemImg) throws Exception {
 
-        itemService.updateItem(itemDto, itemImg);
+        int i = itemService.updateItem(updateDto, itemImg);
+        if(i == 0)
+            return "업데이트 성공";
+        else
+            return "업데이트 실패";
     }
 
     @DeleteMapping("/{storeId}/{itemId}")

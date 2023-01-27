@@ -3,6 +3,8 @@ package zupzup.back_end.store.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import zupzup.back_end.store.domain.Item;
@@ -22,6 +24,8 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final ItemService itemService;
     private final ItemRepository itemRepository;
+    @Autowired
+    ModelMapper modelMapper;
 
     // 가게 저장
 
@@ -39,7 +43,7 @@ public class StoreService {
                 .orElseThrow(EntityNotFoundException::new);
 
         StoreDto storeDto = new StoreDto();
-        storeDto.of(store);
+        modelMapper.map(store, storeDto);
 
         return storeDto;
     }
