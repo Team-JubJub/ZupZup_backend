@@ -44,7 +44,7 @@ public class OrderServiceImpl {
 
 
     // <-------------------- PATCH part -------------------->
-    public OrderDto.GetOrderSpecificDto patchOrderById(OrderDto.PatchOrderDto patchOrderDto, Long orderId) {
+    public OrderDto.GetOrderSpecificDto patchOrderById(Long storeId, Long orderId, OrderDto.PatchOrderDto patchOrderDto) {
         Order orderEntity = orderRepository.findById(orderId).get();
         /*
             PatchOrderDto로 받아온 사장님이 입력한 예약 확정 내역(아이템 개수 등)과 orderEntity 비교해서
