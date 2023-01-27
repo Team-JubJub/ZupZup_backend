@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.web.bind.annotation.*;
 import zupzup.back_end.reservation.dto.OrderDto;
-import zupzup.back_end.reservation.service.OrderService;
+import zupzup.back_end.reservation.service.OrderServiceImpl;
 
 import java.util.List;
 
@@ -13,27 +13,27 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/{storeId}/order")
 public class OrderController {
-    private final OrderService orderService;
+    private final OrderServiceImpl orderServiceImpl;
 
     // <-------------------- GET part -------------------->
     @GetMapping("")  // order에 대한 GET(주문 항목 모두)
     public List<OrderDto.GetOrderDto> getAllOrderList(@PathVariable Long storeId) {
-        List<OrderDto.GetOrderDto> allOrderListDto = orderService.getAllOrder(storeId);
+        List<OrderDto.GetOrderDto> allOrderListDto = orderServiceImpl.getAllOrder(storeId);
 
         return allOrderListDto; // order들의 dto list 반환
     }
 
     @GetMapping("/{orderId}")  // 각 order에 대한 단건 GET
     public OrderDto.GetOrderSpecificDto getOrder(@PathVariable Long storeId, @PathVariable Long orderId) {
-        OrderDto.GetOrderSpecificDto getOrderSpecificDto = orderService.getOrderById(storeId, orderId);
+        OrderDto.GetOrderSpecificDto getOrderSpecificDto = orderServiceImpl.getOrderById(storeId, orderId);
 
         return getOrderSpecificDto; // 한 개 order의 dto 반환
     }
 
     // <-------------------- PATCH part -------------------->
     @PatchMapping("/{orderId}")  // 각 order에 대한 단건 GET
-    public OrderDto.GetOrderSpecificDto patchOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody OrderDto.PatchOrderDto patchOrderDto) {
-        OrderDto.GetOrderSpecificDto patchedOrderSpecificDto = orderService.patchOrderById(storeId, orderId, patchOrderDto);
+    public OrderDto.GetOrderSpecificDto patchOrder(@PathVariable Long orderId, @RequestBody OrderDto.PatchOrderDto patchOrderDto) {
+        OrderDto.GetOrderSpecificDto patchedOrderSpecificDto = orderServiceImpl.patchOrderById(patchOrderDto, orderId);
 
         return patchedOrderSpecificDto; // patch 된 order의 dto 반환
     }
