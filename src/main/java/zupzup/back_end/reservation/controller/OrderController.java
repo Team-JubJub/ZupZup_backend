@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.web.bind.annotation.*;
 import zupzup.back_end.reservation.dto.OrderDto;
-import zupzup.back_end.reservation.service.OrderServiceImpl;
+import zupzup.back_end.reservation.service.OrderService;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/{storeId}/order")
 public class OrderController {
-    private final OrderServiceImpl orderServiceImpl;
+    private final OrderService orderServiceImpl;
 
     // <-------------------- GET part -------------------->
     @GetMapping("")  // order에 대한 GET(주문 항목 모두)
