@@ -11,6 +11,8 @@ import zupzup.back_end.store.dto.request.ItemRequestDto;
 import zupzup.back_end.store.dto.request.UpdateRequestDto;
 import zupzup.back_end.store.service.ItemService;
 
+import java.io.IOException;
+
 @RestController
 @Log
 @RequiredArgsConstructor
@@ -49,8 +51,14 @@ public class ItemController {
     }
 
     @PutMapping("/{storeId}/clear")
-    public void clearCount(@PathVariable Long storeId) {
+    public String clearCount(@PathVariable Long storeId) {
 
-        itemService.clearCount(storeId);
+        try {
+            itemService.clearCount(storeId);
+            return "상품 개수를 초기화하였습니다.";
+        } catch (Exception e) {
+            return "상품 개수 초기화에 실패하였습니다.";
+        }
+
     }
 }
