@@ -1,9 +1,11 @@
 package zupzup.back_end.store.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.Fetch;
 import zupzup.back_end.converter.StringListConverter;
 import zupzup.back_end.store.dto.StoreDto;
 
@@ -13,6 +15,7 @@ import java.util.List;
 @Entity
 @Builder @Table(name = "store")
 @AllArgsConstructor
+@Getter
 public class Store {
 
     @Id
@@ -24,7 +27,6 @@ public class Store {
     private String loginPwd;
 
     @Column(nullable = false)
-    @Getter
     private String storeName; //가게이름
     @Column(nullable = false, length = 1000)
     private String storeAddress; //가게 주소
@@ -46,8 +48,10 @@ public class Store {
     @OneToMany(
             mappedBy = "store",
             cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true
+            orphanRemoval = true,
+            fetch = FetchType.EAGER
     )
+    @JsonIgnore
     private List<Item> storeItems = new ArrayList<>();
 
     protected Store() {}
