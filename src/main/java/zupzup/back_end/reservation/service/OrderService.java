@@ -5,6 +5,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import zupzup.back_end.reservation.domain.type.OrderSpecific;
+import zupzup.back_end.reservation.domain.type.OrderStatus;
 import zupzup.back_end.reservation.exception.OrderNotFoundException;
 import zupzup.back_end.reservation.domain.Order;
 import zupzup.back_end.reservation.dto.OrderDto;
@@ -48,18 +50,28 @@ public class OrderService {
     public OrderDto.GetOrderSpecificDto patchOrderById(Long storeId, Long orderId, OrderDto.PatchOrderDto patchOrderDto) {
         Order orderEntity = orderRepository.findById(orderId).get();
         isOrderInStore(storeId, orderEntity);
+
         /*
             PatchOrderDto로 받아온 사장님이 입력한 예약 확정 내역(아이템 개수 등)과 orderEntity 비교해서
             Entity의 내용 수정, 수정된 내용 dto로 반환
          */
-
+        OrderDto.GetOrderSpecificDto orderEntityDto = modelMapper.map(orderEntity, OrderDto.GetOrderSpecificDto.class);
+        List<OrderSpecific> requestedOrderSpecific = patchOrderDto.getOrderList();
+        for(int i=0; i < requestedOrderSpecific.size(); i++) {  // 사장님이 컨펌한 것과 원래 주문 요청에서의 개수가 하나라도 다르면
+            if(orderEntityDto.getOrderList().get(i).getItemCount() != requestedOrderSpecific.get(i).getItemCount()) {
+                orderEntityDto.setOrderList(requestedOrderSpecific);    // orderList 변경 및
+                orderEntityDto.setOrderStatus(OrderStatus.PARTIAL); // 주문상태 부분확정으로
+                break;
+            }
+        }
 
         OrderDto.GetOrderSpecificDto patchedOrderSpecificDto = modelMapper.map(orderEntity, OrderDto.GetOrderSpecificDto.class);
 
         return patchedOrderSpecificDto;
     }
-    // <-------------------- Common methods part -------------------->
 
+
+    // <-------------------- Common methods part -------------------->
     private void isOrderInStore(Long storeId, Order orderEntity) {  // 해당 주문이 가게에 존재하는 주문이 아닐 경우 보여주면 안되므로 예외처리
         if(orderEntity.getStore().getStoreId() != storeId){ // 지금의 로직은 'order의 store id'가 path의 store id와 다른 경우.
             throw new OrderNotFoundException();             // 내가 원했던 로직은 '해당 store에' 그 order가 없을 경우 에러 핸들링이므로 로직 수정 해야함.

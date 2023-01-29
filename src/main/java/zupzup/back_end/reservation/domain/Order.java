@@ -30,6 +30,6 @@ public class Order {
 
     @ElementCollection
     @CollectionTable(name="orderSpecific")
-    private List<OrderSpecific> orderSpecificList;  // 주문 품목(이름, 가격, 개수, (img)
+    private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img)
 
 }

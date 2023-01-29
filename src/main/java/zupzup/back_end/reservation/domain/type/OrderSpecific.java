@@ -2,9 +2,11 @@ package zupzup.back_end.reservation.domain.type;
 
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
+import lombok.Setter;
 
 
 @Getter
+@Setter
 @Embeddable
 public class OrderSpecific {
     //[상품 이름, 가격, 갯수, (이미지)]
