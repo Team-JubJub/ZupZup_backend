@@ -9,7 +9,7 @@ import zupzup.back_end.reservation.domain.type.OrderSpecific;
 import zupzup.back_end.reservation.domain.type.OrderStatus;
 import zupzup.back_end.reservation.exception.OrderNotFoundException;
 import zupzup.back_end.reservation.domain.Order;
-import zupzup.back_end.reservation.dto.OrderDto;
+import zupzup.back_end.reservation.dto.OrderRequestDto;
 import zupzup.back_end.reservation.repository.OrderRepository;
 
 import java.util.List;
@@ -29,25 +29,25 @@ public class OrderService {
     }
 
     // <-------------------- GET part -------------------->
-    public List<OrderDto.GetOrderDto> getAllOrder(Long storeId) {
+    public List<OrderRequestDto.GetOrderDto> getAllOrder(Long storeId) {
         List<Order> allOrderListEntity = orderRepository.findByStore_StoreId(storeId);
-        List<OrderDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
-                .map(m -> modelMapper.map(m, OrderDto.GetOrderDto.class))
+        List<OrderRequestDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
+                .map(m -> modelMapper.map(m, OrderRequestDto.GetOrderDto.class))
                 .collect(Collectors.toList());
 
         return allOrderListDto;
     }
 
-    public OrderDto.GetOrderSpecificDto getOrderById(Long storeId, Long orderId) {
+    public OrderRequestDto.GetOrderSpecificDto getOrderById(Long storeId, Long orderId) {
         Order orderEntity = orderRepository.findById(orderId).get();
         isOrderInStore(storeId, orderEntity);
-        OrderDto.GetOrderSpecificDto getOrderSpecificDto = modelMapper.map(orderEntity, OrderDto.GetOrderSpecificDto.class);
+        OrderRequestDto.GetOrderSpecificDto getOrderSpecificDto = modelMapper.map(orderEntity, OrderRequestDto.GetOrderSpecificDto.class);
 
         return getOrderSpecificDto;
     }
 
     // <-------------------- PATCH part -------------------->
-    public OrderDto.GetOrderSpecificDto patchOrderById(Long storeId, Long orderId, OrderDto.PatchOrderDto patchOrderDto) {
+    public OrderRequestDto.GetOrderSpecificDto patchOrderById(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
         Order orderEntity = orderRepository.findById(orderId).get();
         isOrderInStore(storeId, orderEntity);
 
@@ -55,17 +55,17 @@ public class OrderService {
             PatchOrderDto로 받아온 사장님이 입력한 예약 확정 내역(아이템 개수 등)과 orderEntity 비교해서
             Entity의 내용 수정, 수정된 내용 dto로 반환
          */
-        OrderDto.GetOrderSpecificDto orderEntityDto = modelMapper.map(orderEntity, OrderDto.GetOrderSpecificDto.class);
+        OrderRequestDto.GetOrderSpecificDto orderEntityDto = modelMapper.map(orderEntity, OrderRequestDto.GetOrderSpecificDto.class);
         List<OrderSpecific> requestedOrderSpecific = patchOrderDto.getOrderList();
         for(int i=0; i < requestedOrderSpecific.size(); i++) {  // 사장님이 컨펌한 것과 원래 주문 요청에서의 개수가 하나라도 다르면
             if(orderEntityDto.getOrderList().get(i).getItemCount() != requestedOrderSpecific.get(i).getItemCount()) {
                 orderEntityDto.setOrderList(requestedOrderSpecific);    // orderList 변경 및
                 orderEntityDto.setOrderStatus(OrderStatus.PARTIAL); // 주문상태 부분확정으로
-                break;
-            }
-        }
 
-        OrderDto.GetOrderSpecificDto patchedOrderSpecificDto = modelMapper.map(orderEntity, OrderDto.GetOrderSpecificDto.class);
+            }
+        }   // flag, 리턴 값 정의 해결하기
+
+        OrderRequestDto.GetOrderSpecificDto patchedOrderSpecificDto = modelMapper.map(orderEntity, OrderRequestDto.GetOrderSpecificDto.class);
 
         return patchedOrderSpecificDto;
     }

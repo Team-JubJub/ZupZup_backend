@@ -1,4 +1,4 @@
 package zupzup.back_end.reservation.dto;
 
-public class OrderDto {
+public class OrderResponseDto {
 }

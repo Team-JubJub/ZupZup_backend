@@ -8,19 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import zupzup.back_end.reservation.domain.Order;
-import zupzup.back_end.reservation.dto.OrderDto;
 import zupzup.back_end.store.domain.Item;
 import zupzup.back_end.store.domain.Store;
 import zupzup.back_end.store.dto.ItemDto;
-import zupzup.back_end.store.dto.StoreDto;
 import zupzup.back_end.store.dto.request.ItemRequestDto;
 import zupzup.back_end.store.dto.request.UpdateRequestDto;
 import zupzup.back_end.store.repository.ItemRepository;
 import zupzup.back_end.store.repository.StoreRepository;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
