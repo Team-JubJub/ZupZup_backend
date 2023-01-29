@@ -49,6 +49,7 @@ public class ItemService {
         itemDto.setItemPrice(requestDto.getItemPrice());
         itemDto.setSalePrice(requestDto.getSalePrice());
         itemDto.setItemCount(requestDto.getItemCount());
+        System.out.println(itemDto.getItemCount());
         Store store = storeRepository.findById(requestDto.getStoreId())
                 .orElseThrow(EntityNotFoundException::new);
         itemDto.setStore(store);
@@ -60,23 +61,23 @@ public class ItemService {
         item.saveItem(itemDto);
 
         itemRepository.save(item);
+        System.out.println(item.getItemCount());
 
         return item.getItemId();
     }
 
+    @Transactional
     public void deleteItem(Long itemId) {
         /**
          * 상품 삭제
-         * param : itemId & storeId
+         * param : itemId
          * return : void
          */
 
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(EntityNotFoundException::new);
 
-        if(item == null) {
-            throw new EntityNotFoundException();
-        } else itemRepository.deleteById(itemId);
+        itemRepository.deleteById(itemId);
     }
 
     @Transactional
@@ -110,11 +111,12 @@ public class ItemService {
             if(itemImg != null) {
                 String imageURL = s3Uploader.upload(itemImg, store.getStoreName());
                 updateDto.setImageURL(imageURL);
+            } else {
+                updateDto.setImageURL("");
             }
 
             //modelMapper.map(updateDto, itemEntity);
             itemEntity.updateItem(updateDto);
-            System.out.println(itemEntity.getItemCount());
 
             return 0;
         } catch (IOException e) {
