@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import zupzup.back_end.reservation.domain.Order;
+import zupzup.back_end.reservation.dto.OrderDto;
 import zupzup.back_end.store.domain.Item;
 import zupzup.back_end.store.domain.Store;
 import zupzup.back_end.store.dto.ItemDto;
@@ -18,6 +20,7 @@ import zupzup.back_end.store.repository.ItemRepository;
 import zupzup.back_end.store.repository.StoreRepository;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -31,10 +34,6 @@ public class ItemService {
     private final S3Uploader s3Uploader;
     @Autowired
     ModelMapper modelMapper;
-
-    /*public List<> itemList() {
-
-    }*/
 
     @Transactional
     public Long saveItem(ItemRequestDto requestDto, MultipartFile itemImgFile) throws Exception {
@@ -80,6 +79,7 @@ public class ItemService {
         } else itemRepository.deleteById(itemId);
     }
 
+    @Transactional
     public void clearCount(Long storeId) {
         /**
          * 상품 개수 초기화
@@ -87,6 +87,17 @@ public class ItemService {
          * return : void
          */
 
+        Store store = storeRepository.findById(storeId).get();
+        List<Item> itemList = itemRepository.findAllByStore(store);
+
+        for(Item item : itemList) {
+
+            ItemDto itemDto = new ItemDto();
+            itemDto.toItemDto(item);
+            itemDto.setItemCount(0);
+
+            item.saveItem(itemDto);
+        }
     }
 
     @Transactional

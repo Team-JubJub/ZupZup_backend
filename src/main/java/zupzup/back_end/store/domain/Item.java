@@ -9,10 +9,11 @@ import zupzup.back_end.store.dto.request.UpdateRequestDto;
 @Entity
 @NoArgsConstructor
 @Table(name = "item")
+@Getter
 public class Item {
 
         @Id
-        @Column(name = "itemId") @Getter
+        @Column(name = "itemId")
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long itemId;
         @Column(nullable = false, length = 20)
@@ -21,7 +22,6 @@ public class Item {
         @Column(nullable = false)
         private int itemPrice; // 상품 가격
         private int salePrice; // 할인된 가격
-        @Getter
         private int itemCount; // 제품 개수
         @ManyToOne(optional = false) @JoinColumn(name = "storeId")
         private Store store; // 스토어 정보 ID

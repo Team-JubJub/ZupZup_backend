@@ -16,4 +16,14 @@ public class ItemDto {
     private int salePrice;
     private int itemCount;
     private Store store;
+
+    public void toItemDto(Item item) {
+
+        this.itemName = item.getItemName();
+        this.imageURL = item.getImageURL();
+        this.itemPrice = item.getItemPrice();
+        this.salePrice = item.getSalePrice();
+        this.itemCount = item.getItemCount();
+        this.store = item.getStore();
+    }
 }
