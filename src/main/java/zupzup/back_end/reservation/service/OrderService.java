@@ -5,7 +5,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import zupzup.back_end.reservation.Exception.OrderNotFoundException;
+import zupzup.back_end.reservation.exception.OrderNotFoundException;
 import zupzup.back_end.reservation.domain.Order;
 import zupzup.back_end.reservation.dto.OrderDto;
 import zupzup.back_end.reservation.repository.OrderRepository;

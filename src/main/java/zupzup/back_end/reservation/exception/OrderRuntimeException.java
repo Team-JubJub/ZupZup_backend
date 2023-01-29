@@ -1,4 +1,4 @@
-package zupzup.back_end.reservation.Exception;
+package zupzup.back_end.reservation.exception;
 
 import org.springframework.http.HttpStatus;
 
