@@ -59,7 +59,7 @@ public class OrderService {
     }
     // <-------------------- Common methods part -------------------->
 
-    private void isOrderInStore(Long storeId, Order orderEntity) {
+    private void isOrderInStore(Long storeId, Order orderEntity) {  // 해당 주문이 가게에 존재하는 주문이 아닐 경우 보여주면 안되므로 예외처리
         if(orderEntity.getStore().getStoreId() != storeId){
             throw new OrderNotFoundException();
         }
