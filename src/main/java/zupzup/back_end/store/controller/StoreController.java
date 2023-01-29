@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import zupzup.back_end.store.domain.Store;
 import zupzup.back_end.store.dto.StoreDto;
+import zupzup.back_end.store.dto.response.StoreResponseDto;
 import zupzup.back_end.store.service.StoreService;
 
 @RestController
@@ -22,7 +24,7 @@ public class StoreController {
      */
 
     @GetMapping("/{storeId}")
-    public StoreDto managementMain(@PathVariable Long storeId) {
+    public StoreResponseDto managementMain(@PathVariable Long storeId) {
         // 가게 관련 내용 (가게 이름 및 운영 시간, 이벤트 내용, 오늘 할인 시간)
         // 제품 관련 내용 ([제품 이미지, 제품 이름, 가격])
         // Store 관련 DTO 전체 넘김
