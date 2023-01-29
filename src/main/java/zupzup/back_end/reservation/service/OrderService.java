@@ -5,8 +5,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 import zupzup.back_end.reservation.domain.type.OrderSpecific;
 import zupzup.back_end.reservation.domain.type.OrderStatus;
+import zupzup.back_end.reservation.dto.OrderDto;
+import zupzup.back_end.reservation.dto.OrderResponseDto;
 import zupzup.back_end.reservation.exception.OrderNotFoundException;
 import zupzup.back_end.reservation.domain.Order;
 import zupzup.back_end.reservation.dto.OrderRequestDto;
@@ -29,45 +32,52 @@ public class OrderService {
     }
 
     // <-------------------- GET part -------------------->
-    public List<OrderRequestDto.GetOrderDto> getAllOrder(Long storeId) {
+    public List<OrderResponseDto.GetOrderDto> getAllOrder(Long storeId) {
         List<Order> allOrderListEntity = orderRepository.findByStore_StoreId(storeId);
-        List<OrderRequestDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
-                .map(m -> modelMapper.map(m, OrderRequestDto.GetOrderDto.class))
+        List<OrderResponseDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
+                .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDto.class))
                 .collect(Collectors.toList());
 
         return allOrderListDto;
     }
 
-    public OrderRequestDto.GetOrderSpecificDto getOrderById(Long storeId, Long orderId) {
+    public OrderResponseDto.GetOrderSpecificDto getOrderById(Long storeId, Long orderId) {
         Order orderEntity = orderRepository.findById(orderId).get();
         isOrderInStore(storeId, orderEntity);
-        OrderRequestDto.GetOrderSpecificDto getOrderSpecificDto = modelMapper.map(orderEntity, OrderRequestDto.GetOrderSpecificDto.class);
+        OrderResponseDto.GetOrderSpecificDto getOrderSpecificDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderSpecificDto.class);
 
         return getOrderSpecificDto;
     }
 
     // <-------------------- PATCH part -------------------->
-    public OrderRequestDto.GetOrderSpecificDto patchOrderById(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
+    public String patchOrderById(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
         Order orderEntity = orderRepository.findById(orderId).get();
         isOrderInStore(storeId, orderEntity);
 
-        /*
-            PatchOrderDto로 받아온 사장님이 입력한 예약 확정 내역(아이템 개수 등)과 orderEntity 비교해서
-            Entity의 내용 수정, 수정된 내용 dto로 반환
-         */
-        OrderRequestDto.GetOrderSpecificDto orderEntityDto = modelMapper.map(orderEntity, OrderRequestDto.GetOrderSpecificDto.class);
         List<OrderSpecific> requestedOrderSpecific = patchOrderDto.getOrderList();
+        int totalItemCount = 0; // 주문 취소 여부를 확인 위한 변수. 0일 경우(모든 상품 재고가 없을 경우) 부분확정이 아닌 주문 취소.
+
         for(int i=0; i < requestedOrderSpecific.size(); i++) {  // 사장님이 컨펌한 것과 원래 주문 요청에서의 개수가 하나라도 다르면
-            if(orderEntityDto.getOrderList().get(i).getItemCount() != requestedOrderSpecific.get(i).getItemCount()) {
-                orderEntityDto.setOrderList(requestedOrderSpecific);    // orderList 변경 및
-                orderEntityDto.setOrderStatus(OrderStatus.PARTIAL); // 주문상태 부분확정으로
-
+            int requestedItemCount = requestedOrderSpecific.get(i).getItemCount();
+            totalItemCount = totalItemCount + requestedItemCount;
+            if(orderEntity.getOrderList().get(i).getItemCount() != requestedItemCount) { // 지금은 같은 상품끼리 같은 인덱스일 거라 간주하고 하는데, item id나 이름으로 조회 하는 방법으로 바꿀 것.
+                orderEntity.getOrderList().get(i).setItemCount(requestedItemCount);
+                orderEntity.setOrderStatus(OrderStatus.PARTIAL); // 주문상태 부분확정으로
             }
-        }   // flag, 리턴 값 정의 해결하기
 
-        OrderRequestDto.GetOrderSpecificDto patchedOrderSpecificDto = modelMapper.map(orderEntity, OrderRequestDto.GetOrderSpecificDto.class);
+            if(i == requestedOrderSpecific.size()-1 && totalItemCount == 0){    // 주문 취소
+                orderEntity.setOrderStatus(OrderStatus.CANCEL);
+            }
+        }
+        orderRepository.save(orderEntity);    // Item repository의 개수 변경도 구현할 것.
+        if(orderEntity.getOrderStatus() == OrderStatus.CANCEL){
+            return "주문이 취소되었습니다.";
+        }
+        else if(orderEntity.getOrderStatus() == OrderStatus.PARTIAL){
+            return "주문이 부분확정되었습니다.";
+        }
 
-        return patchedOrderSpecificDto;
+        return "주문이 확정되었습니다.";
     }
 
 
