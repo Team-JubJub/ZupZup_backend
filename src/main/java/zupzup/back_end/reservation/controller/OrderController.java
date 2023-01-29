@@ -31,7 +31,7 @@ public class OrderController {
     }
 
     // <-------------------- PATCH part -------------------->
-    @PatchMapping("/{orderId}")  // 각 order에 대한 단건 GET
+    @PatchMapping("/{orderId}")  // 각 order에 대해 사장님이 주문 확정시 사용할 request
     public OrderDto.GetOrderSpecificDto patchOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody OrderDto.PatchOrderDto patchOrderDto) {
         OrderDto.GetOrderSpecificDto patchedOrderSpecificDto = orderServiceImpl.patchOrderById(storeId, orderId, patchOrderDto);
 

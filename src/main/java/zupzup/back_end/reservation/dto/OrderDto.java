@@ -9,7 +9,6 @@ import java.util.List;
 
 public class OrderDto { // DTO 내에  request, response 등을 inner class로 만들어주자.
 
-
     // <-------------------- GET part -------------------->
     @Getter
     @Setter
@@ -39,7 +38,11 @@ public class OrderDto { // DTO 내에  request, response 등을 inner class로 �
 
 
     // <-------------------- PATCH part -------------------->
+    @Getter
+    @Setter
     public static class PatchOrderDto {
+        private Long id;    // Order ID
 
+        private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수
     }
 }

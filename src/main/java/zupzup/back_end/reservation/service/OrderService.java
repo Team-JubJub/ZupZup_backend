@@ -53,6 +53,7 @@ public class OrderService {
             Entity의 내용 수정, 수정된 내용 dto로 반환
          */
 
+
         OrderDto.GetOrderSpecificDto patchedOrderSpecificDto = modelMapper.map(orderEntity, OrderDto.GetOrderSpecificDto.class);
 
         return patchedOrderSpecificDto;
@@ -60,8 +61,8 @@ public class OrderService {
     // <-------------------- Common methods part -------------------->
 
     private void isOrderInStore(Long storeId, Order orderEntity) {  // 해당 주문이 가게에 존재하는 주문이 아닐 경우 보여주면 안되므로 예외처리
-        if(orderEntity.getStore().getStoreId() != storeId){
-            throw new OrderNotFoundException();
+        if(orderEntity.getStore().getStoreId() != storeId){ // 지금의 로직은 'order의 store id'가 path의 store id와 다른 경우.
+            throw new OrderNotFoundException();             // 내가 원했던 로직은 '해당 store에' 그 order가 없을 경우 에러 핸들링이므로 로직 수정 해야함.
         }
     }
 }
