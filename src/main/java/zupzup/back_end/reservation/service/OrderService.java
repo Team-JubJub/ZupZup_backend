@@ -8,12 +8,14 @@ import org.springframework.transaction.annotation.Transactional;
 import zupzup.back_end.reservation.domain.type.OrderSpecific;
 import zupzup.back_end.reservation.domain.type.OrderStatus;
 import zupzup.back_end.reservation.dto.OrderResponseDto;
-import zupzup.back_end.reservation.exception.OrderNotFoundException;
+import zupzup.back_end.reservation.exception.NoSuchException;
+import zupzup.back_end.reservation.exception.OrderNotInStoreException;
 import zupzup.back_end.reservation.domain.Order;
 import zupzup.back_end.reservation.dto.OrderRequestDto;
 import zupzup.back_end.reservation.repository.OrderRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,7 +33,7 @@ public class OrderService {
 
     // <-------------------- GET part -------------------->
     public List<OrderResponseDto.GetOrderDto> getAllOrder(Long storeId) {
-        List<Order> allOrderListEntity = orderRepository.findByStore_StoreId(storeId);
+        List<Order> allOrderListEntity = isStorePresent(storeId);
         List<OrderResponseDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
                 .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDto.class))
                 .collect(Collectors.toList());
@@ -40,7 +42,7 @@ public class OrderService {
     }
 
     public OrderResponseDto.GetOrderSpecificDto getOrderById(Long storeId, Long orderId) {
-        Order orderEntity = orderRepository.findById(orderId).get();
+        Order orderEntity = isOrderPresent(orderId);
         isOrderInStore(storeId, orderEntity);
         OrderResponseDto.GetOrderSpecificDto getOrderSpecificDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderSpecificDto.class);
 
@@ -49,7 +51,7 @@ public class OrderService {
 
     // <-------------------- PATCH part -------------------->
     public String patchOrderById(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
-        Order orderEntity = orderRepository.findById(orderId).get();
+        Order orderEntity = isOrderPresent(orderId);
         isOrderInStore(storeId, orderEntity);
 
         List<OrderSpecific> requestedOrderSpecific = patchOrderDto.getOrderList();
@@ -80,9 +82,26 @@ public class OrderService {
 
 
     // <-------------------- Common methods part -------------------->
+    private List<Order> isStorePresent(Long storeId) {
+        try {
+            List<Order> allOrderListEntity = orderRepository.findByStore_StoreId(storeId);
+            return allOrderListEntity;
+        }   catch (NoSuchElementException e) {
+            throw new NoSuchException("등록되지 않은 가게입니다.");
+        }
+    }
+    private Order isOrderPresent(Long orderId) {
+        try {
+            Order orderEntity = orderRepository.findById(orderId).get();
+            return orderEntity;
+        }   catch (NoSuchElementException e) {
+            throw new NoSuchException("해당 주문을 찾을 수 없습니다.");
+        }
+    }
+
     private void isOrderInStore(Long storeId, Order orderEntity) {  // 해당 주문이 가게에 존재하는 주문이 아닐 경우 보여주면 안되므로 예외처리
         if(orderEntity.getStore().getStoreId() != storeId){ // 지금의 로직은 'order의 store id'가 path의 store id와 다른 경우.
-            throw new OrderNotFoundException();             // 내가 원했던 로직은 '해당 store에' 그 order가 없을 경우 에러 핸들링이므로 로직 수정 해야함.
+            throw new OrderNotInStoreException();             // 내가 원했던 로직은 '해당 store에' 그 order가 없을 경우 에러 핸들링이므로 로직 수정 해야함.
         }
     }
 }
