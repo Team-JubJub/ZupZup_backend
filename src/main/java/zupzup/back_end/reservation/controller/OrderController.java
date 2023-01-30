@@ -21,7 +21,7 @@ public class OrderController {
 
     // <-------------------- GET part -------------------->
     @GetMapping("")  // order에 대한 GET(주문 항목 모두)
-    public ResponseEntity getAllOrderList(@PathVariable Long storeId) {
+    public ResponseEntity getAllOrderList(@PathVariable Long storeId) { // ResponseEntity의 type이 뭐가될지 몰라서 우선 Type 지정 없이 둠.
         List<OrderResponseDto.GetOrderDto> allOrderListDto = orderService.getAllOrder(storeId);
         if(allOrderListDto.size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT); // NO_CONTENT 시 body가 빈 상태로 감.
