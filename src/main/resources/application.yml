@@ -1,9 +1,15 @@
 spring:
   datasource:
     url: jdbc:h2:tcp://localhost/~/zupzup
+#    url: jdbc:h2:mem:~/test
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
   servlet:
     multipart:
@@ -13,6 +19,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+
+  output:
+    ansi:
+      enabled: ALWAYS
 
 cloud:
   aws:

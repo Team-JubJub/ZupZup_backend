@@ -7,10 +7,24 @@ import zupzup.back_end.reservation.domain.type.OrderStatus;
 
 import java.util.List;
 
-public class OrderDto {
+public class OrderResponseDto {
+
+    // <-------------------- GET part -------------------->
     @Getter
     @Setter
-    public static class PatchOrderDto {
+    public static class GetOrderDto { // GET에 mapping할 DTO
+        private Long id;    // order ID
+
+        private OrderStatus orderStatus; // 상태여부
+        private String username; // 닉네임
+        private String orderTitle; // ex) 크로플 3개 외 3
+        private String orderTime; // 주문 시간
+        private String visitTime; // 방문예정 시간
+    }
+
+    @Getter
+    @Setter
+    public static class GetOrderSpecificDto { // 단건 GET에 mapping할 DTO
         private Long id;    // Order ID
 
         private OrderStatus orderStatus; // 상태여부
@@ -20,5 +34,13 @@ public class OrderDto {
         private String orderTime;   // 주문 시간
         private String visitTime; // 방문예정 시간
         private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수
+    }
+
+
+    // <-------------------- PATCH part -------------------->
+    @Getter
+    @Setter
+    public static class PatchOrderDto {
+        
     }
 }

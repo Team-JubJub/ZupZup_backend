@@ -2,6 +2,7 @@ package zupzup.back_end.reservation.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import zupzup.back_end.reservation.domain.type.OrderSpecific;
 import zupzup.back_end.store.domain.Store;
 import zupzup.back_end.reservation.domain.type.OrderStatus;
@@ -10,6 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @Table(name = "orders")  // table name이 order -> SQL 예약어와 동일, table 명 수정.
 public class Order {
 
@@ -30,6 +32,6 @@ public class Order {
 
     @ElementCollection
     @CollectionTable(name="orderSpecific")
-    private List<OrderSpecific> orderSpecificList;  // 주문 품목(이름, 가격, 개수, (img)
+    private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img)
 
 }
