@@ -15,6 +15,7 @@ import zupzup.back_end.reservation.domain.Order;
 import zupzup.back_end.reservation.dto.OrderRequestDto;
 import zupzup.back_end.reservation.repository.OrderRepository;
 import zupzup.back_end.store.domain.Store;
+import zupzup.back_end.store.repository.ItemRepository;
 import zupzup.back_end.store.repository.StoreRepository;
 
 import java.util.List;
@@ -29,7 +30,8 @@ public class OrderService {
 
     @Autowired
     ModelMapper modelMapper;
-    private final StoreRepository storeRepository;  // Used for check presence of store
+    private final StoreRepository storeRepository;  // Used for check presence of store(At GET(all) request)
+    private final ItemRepository itemRepository;    // User for patch count of items(At PATCH request)
     private final OrderRepository orderRepository;
 
     // <-------------------- GET part -------------------->
@@ -60,6 +62,7 @@ public class OrderService {
         int totalItemCount = 0; // 주문 취소 여부를 확인 위한 변수. 0일 경우(모든 상품 재고가 없을 경우) 부분확정이 아닌 주문 취소.
 
         for(int i=0; i < requestedOrderSpecific.size(); i++) {  // 사장님이 컨펌한 것과 원래 주문 요청에서의 개수가 하나라도 다르면
+            int requestedItemId = requestedOrderSpecific.get(i).getItemId();    // DB Item 개수 변경 위한 Id -> 개발 필요
             int requestedItemCount = requestedOrderSpecific.get(i).getItemCount();
             totalItemCount = totalItemCount + requestedItemCount;
             if(orderEntity.getOrderList().get(i).getItemCount() != requestedItemCount) { // 지금은 같은 상품끼리 같은 인덱스일 거라 간주하고 하는데, item id나 이름으로 조회 하는 방법으로 바꿀 것.
