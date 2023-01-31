@@ -17,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/{storeId}/order")
 public class OrderController {
+
     private final OrderService orderService;
 
     // <-------------------- GET part -------------------->
@@ -45,4 +46,5 @@ public class OrderController {
 
         return new ResponseEntity(response, HttpStatus.OK); // patch 된 order의 dto 반환
     }
+
 }

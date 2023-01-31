@@ -1,5 +1,6 @@
 package zupzup.back_end.reservation.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,27 +14,28 @@ import zupzup.back_end.reservation.exception.OrderNotInStoreException;
 import zupzup.back_end.reservation.domain.Order;
 import zupzup.back_end.reservation.dto.OrderRequestDto;
 import zupzup.back_end.reservation.repository.OrderRepository;
+import zupzup.back_end.store.domain.Store;
+import zupzup.back_end.store.repository.StoreRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 @Log
 @Transactional
 public class OrderService {
 
     @Autowired
     ModelMapper modelMapper;
+    private final StoreRepository storeRepository;  // Used for check presence of store
     private final OrderRepository orderRepository;
-
-    public OrderService(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
 
     // <-------------------- GET part -------------------->
     public List<OrderResponseDto.GetOrderDto> getAllOrder(Long storeId) {
-        List<Order> allOrderListEntity = isStorePresent(storeId);
+        isStorePresent(storeId);    // Check presence of store
+        List<Order> allOrderListEntity = orderRepository.findByStore_StoreId(storeId);
         List<OrderResponseDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
                 .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDto.class))
                 .collect(Collectors.toList());
@@ -82,10 +84,10 @@ public class OrderService {
 
 
     // <-------------------- Common methods part -------------------->
-    private List<Order> isStorePresent(Long storeId) {
+    private void isStorePresent(Long storeId) {
         try {
-            List<Order> allOrderListEntity = orderRepository.findByStore_StoreId(storeId);
-            return allOrderListEntity;
+            Store storeEntity = storeRepository.findById(storeId).get();    // 이 부분 entity 안받아와도 할 수 있는 방법 있는지 찾아볼 것.
+            System.out.println("Store Found with ID: " + storeId + ", name: " + storeEntity.getStoreName());    // 확인용
         }   catch (NoSuchElementException e) {
             throw new NoSuchException("등록되지 않은 가게입니다.");
         }
@@ -99,9 +101,10 @@ public class OrderService {
         }
     }
 
-    private void isOrderInStore(Long storeId, Order orderEntity) {  // 해당 주문이 가게에 존재하는 주문이 아닐 경우 보여주면 안되므로 예외처리
-        if(orderEntity.getStore().getStoreId() != storeId){ // 지금의 로직은 'order의 store id'가 path의 store id와 다른 경우.
-            throw new OrderNotInStoreException();             // 내가 원했던 로직은 '해당 store에' 그 order가 없을 경우 에러 핸들링이므로 로직 수정 해야함.
+    private void isOrderInStore(Long storeId, Order orderEntity) {
+        if(orderEntity.getStore().getStoreId() != storeId){
+            throw new OrderNotInStoreException();
         }
     }
+
 }
