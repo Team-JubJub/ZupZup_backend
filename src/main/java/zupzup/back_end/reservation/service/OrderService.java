@@ -31,7 +31,7 @@ public class OrderService {
     @Autowired
     ModelMapper modelMapper;
     private final StoreRepository storeRepository;  // Used for check presence of store(At GET(all) request)
-    private final ItemRepository itemRepository;    // User for patch count of items(At PATCH request)
+    private final ItemRepository itemRepository;    // Used for patch count of items(At PATCH request)
     private final OrderRepository orderRepository;
 
     // <-------------------- GET part -------------------->
@@ -61,11 +61,11 @@ public class OrderService {
         List<OrderSpecific> requestedOrderSpecific = patchOrderDto.getOrderList();
         int totalItemCount = 0; // 주문 취소 여부를 확인 위한 변수. 0일 경우(모든 상품 재고가 없을 경우) 부분확정이 아닌 주문 취소.
 
-        for(int i=0; i < requestedOrderSpecific.size(); i++) {  // 사장님이 컨펌한 것과 원래 주문 요청에서의 개수가 하나라도 다르면
+        for(int i=0; i < requestedOrderSpecific.size(); i++) { // 지금은 같은 상품끼리 같은 인덱스일 거라 간주하고 하는데, item id나 이름으로 조회 하는 방법으로 바꿀 것.
             int requestedItemId = requestedOrderSpecific.get(i).getItemId();    // DB Item 개수 변경 위한 Id -> 개발 필요
             int requestedItemCount = requestedOrderSpecific.get(i).getItemCount();
             totalItemCount = totalItemCount + requestedItemCount;
-            if(orderEntity.getOrderList().get(i).getItemCount() != requestedItemCount) { // 지금은 같은 상품끼리 같은 인덱스일 거라 간주하고 하는데, item id나 이름으로 조회 하는 방법으로 바꿀 것.
+            if(orderEntity.getOrderList().get(i).getItemCount() != requestedItemCount) {  // 사장님이 컨펌한 것과 원래 주문 요청에서의 개수가 하나라도 다르면
                 orderEntity.getOrderList().get(i).setItemCount(requestedItemCount);
                 orderEntity.setOrderStatus(OrderStatus.PARTIAL); // 주문상태 부분확정으로
             }
@@ -74,14 +74,14 @@ public class OrderService {
                 orderEntity.setOrderStatus(OrderStatus.CANCEL);
             }
         }
-        orderRepository.save(orderEntity);    // Item repository의 개수 변경도 구현할 것.
-        if(orderEntity.getOrderStatus() == OrderStatus.CANCEL){
+        orderRepository.save(orderEntity);
+
+        if(orderEntity.getOrderStatus() == OrderStatus.CANCEL){ // 후에 주문 취소 사유 등 기능이 생기면 DB에 컬럼 추가 및 메서드 생성 후 여기서 수행.
             return "주문이 취소되었습니다.";
         }
         else if(orderEntity.getOrderStatus() == OrderStatus.PARTIAL){
             return "주문이 부분확정되었습니다.";
         }
-
         return "주문이 확정되었습니다.";
     }
 
