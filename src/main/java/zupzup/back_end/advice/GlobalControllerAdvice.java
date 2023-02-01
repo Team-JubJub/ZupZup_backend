@@ -14,11 +14,12 @@ public class GlobalControllerAdvice {
     @ExceptionHandler(value = NoSuchException.class)
     public String reservationNoSuch(NoSuchException e) {
         return e.getMessage();
-    }
+    }   // 후에 수정(이름 등) 필요할 듯
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(value = OrderNotInStoreException.class)
     public String reservationOrderNotInStore(OrderNotInStoreException e) {
         return e.getMessage();
     }
+
 }
