@@ -46,4 +46,8 @@ public class Item {
             this.store = itemDto.getStore();
         }
 
+    // 상품 개수 변경(사장님이 예약 확정 시)
+        public void updateItemCount(int changedItemCount) {
+            this.itemCount = changedItemCount;
+        }
 }
