@@ -13,7 +13,7 @@ import zupzup.back_end.reservation.exception.NoSuchException;
 import zupzup.back_end.reservation.exception.OrderNotInStoreException;
 import zupzup.back_end.reservation.domain.Order;
 import zupzup.back_end.reservation.dto.OrderRequestDto;
-import zupzup.back_end.reservation.exception.RequestedCountExceedStock;
+import zupzup.back_end.reservation.exception.RequestedCountExceedStockException;
 import zupzup.back_end.reservation.repository.OrderRepository;
 import zupzup.back_end.store.domain.Item;
 import zupzup.back_end.store.domain.Store;
@@ -119,7 +119,7 @@ public class OrderService {
     private void isRequestedCountNotExceedStock(Long ownerRequestedItemId, int ownerRequestedItemCount) {
         Item itemEntity = itemRepository.findById(ownerRequestedItemId).get();
         if(ownerRequestedItemCount > itemEntity.getItemCount()) {
-            throw new RequestedCountExceedStock(itemEntity.getItemId(), itemEntity.getItemName());
+            throw new RequestedCountExceedStockException(itemEntity.getItemId(), itemEntity.getItemName());
         }
     }
 
