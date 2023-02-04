@@ -66,6 +66,8 @@ public class OrderService {
             Long ownerRequestedItemId = ownerRequestedOrderSpecific.get(i).getItemId();    // DB Item 개수 변경 위한 Id -> 개발 필요
             int ownerRequestedItemCount = ownerRequestedOrderSpecific.get(i).getItemCount();
             totalItemCount = totalItemCount + ownerRequestedItemCount;
+
+
             if(orderEntity.getOrderList().get(i).getItemCount() != ownerRequestedItemCount) {  // 사장님이 컨펌한 것과 원래 주문 요청에서의 개수가 하나라도 다르면
                 orderEntity.getOrderList().get(i).setItemCount(ownerRequestedItemCount);
                 orderEntity.setOrderStatus(OrderStatus.PARTIAL); // 주문상태 부분확정으로
@@ -74,10 +76,9 @@ public class OrderService {
             Item itemEntity = itemRepository.findById(ownerRequestedItemId).get();   // 상품 재고에서 요청받은 개수 차감
             itemEntity.updateItemCount(itemEntity.getItemCount() - ownerRequestedItemCount);
             itemRepository.save(itemEntity);
-
-            if(i == ownerRequestedOrderSpecific.size()-1 && totalItemCount == 0){    // 주문 취소
-                orderEntity.setOrderStatus(OrderStatus.CANCEL);
-            }
+        }
+        if(totalItemCount == 0){    // 주문 취소
+            orderEntity.setOrderStatus(OrderStatus.CANCEL);
         }
         orderRepository.save(orderEntity);
 
