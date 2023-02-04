@@ -13,6 +13,7 @@ import zupzup.back_end.reservation.exception.NoSuchException;
 import zupzup.back_end.reservation.exception.OrderNotInStoreException;
 import zupzup.back_end.reservation.domain.Order;
 import zupzup.back_end.reservation.dto.OrderRequestDto;
+import zupzup.back_end.reservation.exception.RequestedCountExceedStock;
 import zupzup.back_end.reservation.repository.OrderRepository;
 import zupzup.back_end.store.domain.Item;
 import zupzup.back_end.store.domain.Store;
@@ -65,14 +66,13 @@ public class OrderService {
         for(int i=0; i < ownerRequestedOrderSpecific.size(); i++) { // 지금은 같은 상품끼리 같은 인덱스일 거라 간주하고 하는데, item id나 이름으로 조회 하는 방법으로 바꿀 것.
             Long ownerRequestedItemId = ownerRequestedOrderSpecific.get(i).getItemId();    // DB Item 개수 변경 위한 Id -> 개발 필요
             int ownerRequestedItemCount = ownerRequestedOrderSpecific.get(i).getItemCount();
+            isRequestedCountNotExceedStock(ownerRequestedItemId, ownerRequestedItemCount);  // 상품 재고보다 많은 수의 주문이 확정됐을 시 예외처리
             totalItemCount = totalItemCount + ownerRequestedItemCount;
-
 
             if(orderEntity.getOrderList().get(i).getItemCount() != ownerRequestedItemCount) {  // 사장님이 컨펌한 것과 원래 주문 요청에서의 개수가 하나라도 다르면
                 orderEntity.getOrderList().get(i).setItemCount(ownerRequestedItemCount);
                 orderEntity.setOrderStatus(OrderStatus.PARTIAL); // 주문상태 부분확정으로
             }
-
             Item itemEntity = itemRepository.findById(ownerRequestedItemId).get();   // 상품 재고에서 요청받은 개수 차감
             itemEntity.updateItemCount(itemEntity.getItemCount() - ownerRequestedItemCount);
             itemRepository.save(itemEntity);
@@ -113,6 +113,13 @@ public class OrderService {
     private void isOrderInStore(Long storeId, Order orderEntity) {
         if(orderEntity.getStore().getStoreId() != storeId){
             throw new OrderNotInStoreException();
+        }
+    }
+
+    private void isRequestedCountNotExceedStock(Long ownerRequestedItemId, int ownerRequestedItemCount) {
+        Item itemEntity = itemRepository.findById(ownerRequestedItemId).get();
+        if(ownerRequestedItemCount > itemEntity.getItemCount()) {
+            throw new RequestedCountExceedStock(itemEntity.getItemId(), itemEntity.getItemName());
         }
     }
 
