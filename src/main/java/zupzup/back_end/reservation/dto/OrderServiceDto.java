@@ -7,7 +7,17 @@ import zupzup.back_end.reservation.domain.type.OrderStatus;
 
 import java.util.List;
 
-public class OrderDto {
+public class OrderServiceDto {
+    @Getter
+    @Setter
+    public static class PostOrderDto {
+
+    }
+    @Getter
+    @Setter
+    public static class GetOrderDto {
+
+    }
     @Getter
     @Setter
     public static class PatchOrderDto {
@@ -20,5 +30,10 @@ public class OrderDto {
         private String orderTime;   // 주문 시간
         private String visitTime; // 방문예정 시간
         private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수
+    }
+    @Getter
+    @Setter
+    public static class DeleteOrderDto {
+
     }
 }
