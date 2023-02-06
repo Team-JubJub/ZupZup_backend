@@ -17,6 +17,7 @@ import zupzup.back_end.reservation.exception.RequestedCountExceedStockException;
 import zupzup.back_end.reservation.repository.OrderRepository;
 import zupzup.back_end.store.domain.Item;
 import zupzup.back_end.store.domain.Store;
+import zupzup.back_end.store.dto.ItemDto;
 import zupzup.back_end.store.repository.ItemRepository;
 import zupzup.back_end.store.repository.StoreRepository;
 
@@ -73,8 +74,10 @@ public class OrderService {
                 orderEntity.getOrderList().get(i).setItemCount(ownerRequestedItemCount);
                 orderEntity.setOrderStatus(OrderStatus.PARTIAL); // 주문상태 부분확정으로
             }
-            Item itemEntity = itemRepository.findById(ownerRequestedItemId).get();   // 상품 재고에서 요청받은 개수 차감
-            itemEntity.updateItemCount(itemEntity.getItemCount() - ownerRequestedItemCount);
+            ItemDto itemDto = new ItemDto();    // Entity의 개수 변경을 위한 dto
+            Item itemEntity = itemRepository.findById(ownerRequestedItemId).get();
+            itemDto.setItemCount(itemEntity.getItemCount() - ownerRequestedItemCount);     // 상품 재고에서 요청받은 개수 차감
+            itemEntity.updateItemCount(itemDto);
             itemRepository.save(itemEntity);
         }
         if(totalItemCount == 0){    // 주문 취소
