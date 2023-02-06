@@ -63,6 +63,7 @@ public class OrderService {
         isOrderInStore(storeId, orderEntity);
 
         List<OrderSpecific> ownerRequestedOrderSpecific = patchOrderDto.getOrderList();  // 사장님이 request한 주문
+        List<OrderSpecific> customerRequestedOrderSpecific = orderEntity.getOrderList();
         OrderServiceDto orderServiceDto = modelMapper.map(orderEntity, OrderServiceDto.class);
         orderServiceDto.setOrderList(ownerRequestedOrderSpecific);
         int totalOwnerRequestedItemCount = 0; // 주문 취소 여부를 확인 위한 변수. 0일 경우(모든 상품 재고가 없을 경우) 부분확정이 아닌 주문 취소.
@@ -71,20 +72,20 @@ public class OrderService {
             Long ownerRequestedItemId = ownerRequestedOrderSpecific.get(i).getItemId();    // DB Item 개수 변경 위한 Id -> 개발 필요
             int ownerRequestedItemCount = ownerRequestedOrderSpecific.get(i).getItemCount();
             isRequestedCountNotExceedStock(ownerRequestedItemId, ownerRequestedItemCount);  // 상품 재고보다 많은 수의 주문이 확정됐을 시 예외처리
-            totalOwnerRequestedItemCount = totalOwnerRequestedItemCount + ownerRequestedItemCount;
 
-            if(orderEntity.getOrderList().get(i).getItemCount() != ownerRequestedItemCount) {  // 사장님이 컨펌한 것과 원래 주문 요청에서의 개수가 하나라도 다르면
+            if(customerRequestedOrderSpecific.get(i).getItemCount() != ownerRequestedItemCount) {  // 사장님이 컨펌한 것과 원래 주문 요청에서의 개수가 하나라도 다르면
                 orderServiceDto.getOrderList().get(i).setItemCount(ownerRequestedItemCount);
                 orderServiceDto.setOrderStatus(OrderStatus.PARTIAL); // 주문상태 부분확정으로
             }
-            ItemDto itemDto = new ItemDto();    // Entity의 개수 변경을 위한 dto
-            Item itemEntity = itemRepository.findById(ownerRequestedItemId).get();
-            itemDto.setItemCount(itemEntity.getItemCount() - ownerRequestedItemCount);     // 상품 재고에서 요청받은 개수 차감
-            itemEntity.updateItemCount(itemDto);
-            itemRepository.save(itemEntity);
+            updateItemStock(ownerRequestedItemId, ownerRequestedItemCount);
+            totalOwnerRequestedItemCount = totalOwnerRequestedItemCount + ownerRequestedItemCount;
         }
+
         if(totalOwnerRequestedItemCount == 0) {    // 주문 취소
             orderServiceDto.setOrderStatus(OrderStatus.CANCEL);
+        }
+        else if(orderServiceDto.getOrderStatus() != OrderStatus.PARTIAL) {  // 주문 취소의 경우가 아니고, 부분 확정으로 바뀌지 않은 경우
+            orderServiceDto.setOrderStatus(OrderStatus.COMPLETE);   // 주문 확정으로
         }
         orderEntity.updateWhenPatch(orderServiceDto);
         orderRepository.save(orderEntity);
@@ -100,6 +101,7 @@ public class OrderService {
 
 
     // <-------------------- Common methods part -------------------->
+    // <--- Methods for error handling --->
     private void isStorePresent(Long storeId) {
         try {
             Store storeEntity = storeRepository.findById(storeId).get();    // 이 부분 entity 안받아와도 할 수 있는 방법 있는지 찾아볼 것.
@@ -128,6 +130,15 @@ public class OrderService {
         if(ownerRequestedItemCount > itemEntity.getItemCount()) {
             throw new RequestedCountExceedStockException(itemEntity.getItemId(), itemEntity.getItemName());
         }
+    }
+
+    // <--- Methods for readability --->
+    private void updateItemStock(Long ownerRequestedItemId, int ownerRequestedItemCount) {
+        ItemDto itemDto = new ItemDto();    // Entity의 개수 변경을 위한 dto
+        Item itemEntity = itemRepository.findById(ownerRequestedItemId).get();
+        itemDto.setItemCount(itemEntity.getItemCount() - ownerRequestedItemCount);     // 상품 재고에서 요청받은 개수 차감
+        itemEntity.updateItemCount(itemDto);
+        itemRepository.save(itemEntity);
     }
 
 }
