@@ -12,7 +12,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "orders")  // table name이 order -> SQL 예약어와 동일, table 명 수정.
 public class Order {
 
