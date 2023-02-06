@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import zupzup.back_end.reservation.domain.type.OrderSpecific;
+import zupzup.back_end.reservation.dto.OrderServiceDto;
 import zupzup.back_end.store.domain.Store;
 import zupzup.back_end.reservation.domain.type.OrderStatus;
 
@@ -33,5 +34,10 @@ public class Order {
     @ElementCollection
     @CollectionTable(name="orderSpecific")
     private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img)
+
+    public void updateWhenPatch(OrderServiceDto orderServiceDto) {
+        this.orderStatus = orderServiceDto.getOrderStatus();
+        this.orderList = orderServiceDto.getOrderList();
+    }
 
 }
