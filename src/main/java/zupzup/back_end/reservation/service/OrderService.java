@@ -49,7 +49,7 @@ public class OrderService {
         return allOrderListDto;
     }
 
-    public OrderResponseDto.GetOrderSpecificDto getOrderById(Long storeId, Long orderId) {
+    public OrderResponseDto.GetOrderSpecificDto getOrderSpecificById(Long storeId, Long orderId) {
         Order orderEntity = isOrderPresent(orderId);
         isOrderInStore(storeId, orderEntity);
         OrderResponseDto.GetOrderSpecificDto getOrderSpecificDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderSpecificDto.class);
