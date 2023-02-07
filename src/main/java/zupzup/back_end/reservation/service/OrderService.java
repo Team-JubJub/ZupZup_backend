@@ -63,9 +63,9 @@ public class OrderService {
         isOrderInStore(storeId, orderEntity);
 
         List<OrderSpecific> ownerRequestedOrderSpecific = patchOrderDto.getOrderList();  // 사장님이 request한 주문
-        List<OrderSpecific> customerRequestedOrderSpecific = orderEntity.getOrderList();
+        List<OrderSpecific> customerRequestedOrderSpecific = orderEntity.getOrderList();    // 여기서부터
         OrderServiceDto orderServiceDto = modelMapper.map(orderEntity, OrderServiceDto.class);
-        orderServiceDto.setOrderList(ownerRequestedOrderSpecific);
+        orderServiceDto.setOrderList(ownerRequestedOrderSpecific);  // 여기까지 괜한 로직이 들어간 것 같은데 해결할 방법 생각해보기.
         int totalOwnerRequestedItemCount = 0; // 주문 취소 여부를 확인 위한 변수. 0일 경우(모든 상품 재고가 없을 경우) 부분확정이 아닌 주문 취소.
 
         for(int i=0; i < ownerRequestedOrderSpecific.size(); i++) { // 지금은 같은 상품끼리 같은 인덱스일 거라 간주하고 하는데, item id나 이름으로 조회 하는 방법으로 바꿀 것.
