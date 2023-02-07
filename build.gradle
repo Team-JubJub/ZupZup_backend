@@ -34,6 +34,11 @@ dependencies {
 	testImplementation 'junit:junit:4.13.2'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// swagger
+	// https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0'
 }
 
 tasks.named('test') {
