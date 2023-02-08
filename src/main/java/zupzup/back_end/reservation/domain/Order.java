@@ -2,7 +2,6 @@ package zupzup.back_end.reservation.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import zupzup.back_end.reservation.domain.type.OrderSpecific;
 import zupzup.back_end.reservation.dto.OrderServiceDto;
 import zupzup.back_end.store.domain.Store;

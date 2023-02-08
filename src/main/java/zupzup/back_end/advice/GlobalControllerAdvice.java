@@ -17,7 +17,7 @@ public class GlobalControllerAdvice {
         return e.getMessage();
     }   // 후에 수정(이름 등) 필요할 듯
 
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)   // 주문이 해당 가게의 주문이 아닌 경우
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)   // 주문이 해당 가게의 주문이 아닌 경우 -> BAD_REQUEST가 맞는지 고민해볼 것
     @ExceptionHandler(value = OrderNotInStoreException.class)
     public String reservationOrderNotInStore(OrderNotInStoreException e) {
         return e.getMessage();
