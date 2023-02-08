@@ -3,6 +3,7 @@ package zupzup.back_end.store.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,41 +25,37 @@ public class ItemController {
     /**
      * 아이템 컨트롤러
      */
-    @PostMapping("/{storeId}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Long saveItem(@RequestPart(value = "item") ItemRequestDto requestDto,
-                         @RequestPart(value = "image", required = false) MultipartFile itemImg) throws Exception {
+    @PostMapping("/{storeId}") // 사장님 메인 화면에서 상품 저장
+    public ResponseEntity saveItem(@RequestPart(value = "item") ItemRequestDto requestDto,
+                                   @RequestPart(value = "image", required = false) MultipartFile itemImg) throws Exception {
 
         Long itemId = itemService.saveItem(requestDto, itemImg);
-        return itemId;
+        return new ResponseEntity(itemId, HttpStatus.CREATED); // 상품의 id 반환
     }
 
     @PutMapping("/{storeId}/{itemId}")
-    public String updateItem(@RequestPart(value = "item") UpdateRequestDto updateDto,
-                           @RequestPart(value = "image", required = false) MultipartFile itemImg) throws Exception {
+    public ResponseEntity updateItem(@PathVariable Long itemId,
+                                     @RequestPart(value = "item") UpdateRequestDto updateDto,
+                                     @RequestPart(value = "image", required = false) MultipartFile itemImg) throws Exception {
 
-        int i = itemService.updateItem(updateDto, itemImg);
-        if(i == 0)
-            return "업데이트 성공";
-        else
-            return "업데이트 실패";
+
+        String response = itemService.updateItem(itemId, updateDto, itemImg);
+
+        return new ResponseEntity(response, HttpStatus.OK); //완료 여부 반환
     }
 
     @DeleteMapping("/{storeId}/{itemId}")
-    public void deleteItem(@PathVariable Long itemId) {
+    public ResponseEntity deleteItem(@PathVariable Long itemId, @PathVariable String storeId) {
 
-        itemService.deleteItem(itemId);
+        String response = itemService.deleteItem(itemId);
+        return new ResponseEntity(response, HttpStatus.OK); //삭제 여부 반환
     }
 
     @PutMapping("/{storeId}/clear")
-    public String clearCount(@PathVariable Long storeId) {
+    public ResponseEntity clearCount(@PathVariable Long storeId) {
 
-        try {
-            itemService.clearCount(storeId);
-            return "상품 개수를 초기화하였습니다.";
-        } catch (Exception e) {
-            return "상품 개수 초기화에 실패하였습니다.";
-        }
 
+        String response = itemService.clearCount(storeId);
+        return new ResponseEntity(response, HttpStatus.OK); //초기화 여부 반환
     }
 }
