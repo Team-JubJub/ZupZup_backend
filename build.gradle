@@ -46,3 +46,16 @@ subprojects {	// 모든 하위 모듈에 적용되는 setting
 		useJUnitPlatform()
 	}
 }
+project(':common-module') {
+
+}
+project(':seller') {
+	dependencies {
+		implementation project(':common-module')
+	}
+}
+project(':client') {
+	dependencies {
+		implementation project(':common-module')
+	}
+}
