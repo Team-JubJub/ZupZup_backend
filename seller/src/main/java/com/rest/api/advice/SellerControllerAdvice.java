@@ -9,7 +9,7 @@ import com.rest.api.reservation.exception.OrderNotInStoreException;
 import com.rest.api.reservation.exception.RequestedCountExceedStockException;
 
 @RestControllerAdvice
-public class GlobalControllerAdvice {
+public class SellerControllerAdvice {
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)   // 가게, 주문이 존재하지 않는 경우
     @ExceptionHandler(value = NoSuchException.class)
