@@ -6,15 +6,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 @SpringBootApplication
-public class SellerApplication {
+public class ClientApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SellerApplication.class, args);
-	}
+    public static void main(String[] args) { SpringApplication.run(ClientApplication.class, args); }
 
-	@Bean
-	public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
-		return new HiddenHttpMethodFilter();
-	}
+    @Bean
+    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
+        return new HiddenHttpMethodFilter();
+    }
 
 }
