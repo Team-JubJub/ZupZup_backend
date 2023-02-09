@@ -18,6 +18,7 @@ import zupzup.back_end.store.repository.StoreRepository;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
@@ -31,7 +32,6 @@ public class ItemService {
     @Autowired
     ModelMapper modelMapper;
 
-    @Transactional
     public Long saveItem(ItemRequestDto requestDto, MultipartFile itemImgFile) throws Exception {
         /**
          * 상품 등록
@@ -39,54 +39,57 @@ public class ItemService {
          * return : void
          */
 
-        //상품 등록
+        //1. requestDto -> itemDto로 전환
         ItemDto itemDto = new ItemDto();
         itemDto.setItemName(requestDto.getItemName());
         itemDto.setItemPrice(requestDto.getItemPrice());
         itemDto.setSalePrice(requestDto.getSalePrice());
         itemDto.setItemCount(requestDto.getItemCount());
-        System.out.println(itemDto.getItemCount());
-        Store store = storeRepository.findById(requestDto.getStoreId())
-                .orElseThrow(EntityNotFoundException::new);
+
+        Store store = isStorePresent(requestDto.getStoreId());
         itemDto.setStore(store);
 
         String imageURL = s3Uploader.upload(itemImgFile, store.getStoreName());
         itemDto.setImageURL(imageURL);
 
+        // 2. DTO -> Entity
         Item item = new Item();
         item.saveItem(itemDto);
 
+        //3. 상품 저장
         itemRepository.save(item);
-        System.out.println(item.getItemCount());
 
         return item.getItemId();
     }
 
-    @Transactional
-    public void deleteItem(Long itemId) {
+    public String deleteItem(Long itemId) {
         /**
          * 상품 삭제
          * param : itemId
-         * return : void
+         * return : String
          */
 
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(EntityNotFoundException::new);
+        Item item = isItemPresent(itemId);
 
         itemRepository.deleteById(itemId);
+
+        return "상품 삭제가 완료되었습니다.";
     }
 
-    @Transactional
-    public void clearCount(Long storeId) {
+    public String clearCount(Long storeId) {
         /**
          * 상품 개수 초기화
          * param : storeId
-         * return : void
+         * return : String
          */
 
-        Store store = storeRepository.findById(storeId).get();
+        // 1. 가게가 존재하는지
+        Store store = isStorePresent(storeId);
+
+        // 2. 가게에 존재하는 상품 다 가져오기
         List<Item> itemList = itemRepository.findAllByStore(store);
 
+        // 3. 상품 개수 초기화 (DTO - 상품 0개로 변경 -> Entity 에 저장)
         for(Item item : itemList) {
 
             ItemDto itemDto = new ItemDto();
@@ -95,29 +98,47 @@ public class ItemService {
 
             item.saveItem(itemDto);
         }
+
+        return "상품 초기화에 성공했습니다.";
     }
 
-    @Transactional
-    public int updateItem(UpdateRequestDto updateDto, MultipartFile itemImg) throws Exception {
+    public String updateItem(Long itemId, UpdateRequestDto updateDto, MultipartFile itemImg) throws IOException {
+        // 1. 상품과 가게가 존재하는지
+        Item itemEntity = isItemPresent(itemId);
+        Store store = isStorePresent(updateDto.getStoreId());
 
-        try {
-            Item itemEntity = itemRepository.findById(updateDto.getItemId()).get();
-            Store store = storeRepository.findById(updateDto.getStoreId()).get();
-
-            if(itemImg != null) {
-                String imageURL = s3Uploader.upload(itemImg, store.getStoreName());
-                updateDto.setImageURL(imageURL);
-            } else {
-                updateDto.setImageURL("");
-            }
-
-            //modelMapper.map(updateDto, itemEntity);
-            itemEntity.updateItem(updateDto);
-
-            return 0;
-        } catch (IOException e) {
-            return 1;
+        // 2. 바뀐 이미지 체크해서 저장 (이미지가 없으면 빈 이미지로 저장)
+        if(itemImg != null) {
+            String imageURL = s3Uploader.upload(itemImg, store.getStoreName());
+            updateDto.setImageURL(imageURL);
+        } else {
+            updateDto.setImageURL("");
         }
 
+        // 3. 엔티티 업데이트
+        itemEntity.updateItem(updateDto);
+        return "상품 업데이트에 성공했습니다.";
+    }
+
+    // <-------------------- Common methods part -------------------->
+    // <--- Methods for error handling --->
+    private Item isItemPresent(Long itemId) {
+
+        try {
+            Item itemEntity = itemRepository.findById(itemId).get();
+            return itemEntity;
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("해당 상품을 찾을 수 없습니다.");
+        }
+    }
+
+    private Store isStorePresent(Long storeId) {
+
+        try {
+            Store store = storeRepository.findById(storeId).get();
+            return store;
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("해당 가게를 찾을 수 없습니다.");
+        }
     }
 }
