@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 @SpringBootApplication
-public class ClientApplication {
+public class CustomerApplication {
 
-    public static void main(String[] args) { SpringApplication.run(ClientApplication.class, args); }
+    public static void main(String[] args) { SpringApplication.run(CustomerApplication.class, args); }
 
     @Bean
     public HiddenHttpMethodFilter hiddenHttpMethodFilter() {

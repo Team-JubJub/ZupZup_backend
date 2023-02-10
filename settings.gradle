@@ -5,7 +5,11 @@ pluginManagement {
 
 }
 rootProject.name = 'back_end'
-include 'common-module'
-include 'seller'
-include 'client'
+include 'core-module'
+include 'domain-module'
+include 'application-module'
+include 'application-module:seller'
+findProject(':application-module:seller')?.name = 'seller'
+include 'application-module:customer'
+findProject(':application-module:customer')?.name = 'customer'
 
