@@ -1,6 +1,6 @@
 package dto.order.request;
 
-import com.rest.api.order.domain.type.OrderSpecific;
+import domain.order.type.OrderSpecific;
 import lombok.Getter;
 import lombok.Setter;
 

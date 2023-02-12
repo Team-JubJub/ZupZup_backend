@@ -1,7 +1,7 @@
 package dto.order.response;
 
-import com.rest.api.order.domain.type.OrderSpecific;
-import com.rest.api.order.domain.type.OrderStatus;
+import domain.order.type.OrderSpecific;
+import domain.order.type.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,4 +1,4 @@
-package com.rest.api.order.exception;
+package exception.seller.order;
 
 import org.springframework.http.HttpStatus;
 

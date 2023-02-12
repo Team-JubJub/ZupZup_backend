@@ -1,9 +1,9 @@
 package com.rest.api.store.repository;
 
-import com.rest.api.store.domain.Item;
+import domain.item.Item;
+import domain.store.Store;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import com.rest.api.store.domain.Store;
 
 import java.util.List;
 

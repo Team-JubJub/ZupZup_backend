@@ -1,11 +1,11 @@
 package com.rest.api.store.service;
 
-import com.rest.api.store.domain.Item;
-import com.rest.api.store.domain.Store;
-import dto.response.ItemResponseDto;
-import dto.response.StoreResponseDto;
 import com.rest.api.store.repository.ItemRepository;
 import com.rest.api.store.repository.StoreRepository;
+import domain.item.Item;
+import domain.store.Store;
+import dto.item.response.ItemResponseDto;
+import dto.store.response.StoreResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;

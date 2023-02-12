@@ -1,24 +1,24 @@
 package com.rest.api.order.service;
 
-import com.rest.api.order.domain.type.OrderSpecific;
-import com.rest.api.order.domain.type.OrderStatus;
-import com.rest.api.order.exception.RequestedCountExceedStockException;
 import com.rest.api.order.repository.OrderRepository;
-import com.rest.api.store.domain.Item;
-import com.rest.api.store.dto.ItemDto;
+import domain.item.Item;
+import domain.order.Order;
+import domain.order.type.OrderSpecific;
+import domain.order.type.OrderStatus;
+import domain.store.Store;
+import dto.item.ItemDto;
+import dto.order.OrderServiceDto;
+import dto.order.request.OrderRequestDto;
+import dto.order.response.OrderResponseDto;
+import exception.seller.order.NoSuchException;
+import exception.seller.order.OrderNotInStoreException;
+import exception.seller.order.RequestedCountExceedStockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.rest.api.order.dto.response.OrderResponseDto;
-import com.rest.api.order.dto.OrderServiceDto;
-import com.rest.api.order.exception.NoSuchException;
-import com.rest.api.order.exception.OrderNotInStoreException;
-import com.rest.api.order.domain.Order;
-import com.rest.api.order.dto.request.OrderRequestDto;
-import com.rest.api.store.domain.Store;
 import com.rest.api.store.repository.ItemRepository;
 import com.rest.api.store.repository.StoreRepository;
 

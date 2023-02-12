@@ -1,6 +1,8 @@
 package domain.store;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+
 import converter.StringListConverter;
 import domain.item.Item;
 import dto.store.StoreDto;

@@ -1,11 +1,12 @@
 package com.rest.api.store.service;
 
-import com.rest.api.store.domain.Item;
-import com.rest.api.store.dto.ItemDto;
-import dto.request.ItemRequestDto;
-import dto.request.UpdateRequestDto;
 import com.rest.api.store.repository.ItemRepository;
 import com.rest.api.store.repository.StoreRepository;
+import domain.item.Item;
+import domain.store.Store;
+import dto.item.ItemDto;
+import dto.item.request.ItemRequestDto;
+import dto.item.request.UpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import com.rest.api.store.domain.Store;
 
 import java.io.IOException;
 import java.util.List;

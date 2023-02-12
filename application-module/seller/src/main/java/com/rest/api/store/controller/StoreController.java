@@ -1,6 +1,6 @@
 package com.rest.api.store.controller;
 
-import dto.response.StoreResponseDto;
+import dto.store.response.StoreResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.web.bind.annotation.GetMapping;
