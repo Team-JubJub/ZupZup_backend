@@ -4,6 +4,10 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.0'
 }
 
+group = 'zupzup'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
@@ -46,16 +50,32 @@ subprojects {	// 모든 하위 모듈에 적용되는 setting
 		useJUnitPlatform()
 	}
 }
-project(':common-module') {
-
-}
-project(':seller') {
+project(':core-module') {	// 공통 코드 모듈
 	dependencies {
-		implementation project(':common-module')
+	}
+	bootJar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
+		enabled = false
+	}
+
+	jar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
+		enabled = true
 	}
 }
-project(':client') {
+project(':domain-module') {	// domain 모듈
 	dependencies {
-		implementation project(':common-module')
+		implementation(project(":core-module"))
+	}
+	bootJar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
+		enabled = false
+	}
+
+	jar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
+		enabled = true
+	}
+}
+project(':application-module') {	// 어플리케이션(사장님, 고객님) 모듈
+	dependencies {
+		implementation(project(":core-module"))
+		implementation(project(":domain-module"))
 	}
 }
