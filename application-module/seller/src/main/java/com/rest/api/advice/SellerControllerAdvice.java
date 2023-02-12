@@ -1,4 +1,4 @@
-package advice.seller;
+package com.rest.api.advice;
 
 import exception.seller.order.NoSuchException;
 import exception.seller.order.OrderNotInStoreException;

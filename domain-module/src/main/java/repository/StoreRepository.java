@@ -1,4 +1,5 @@
-package com.rest.api.store.repository;
+package repository;
+
 
 import domain.store.Store;
 import org.springframework.data.jpa.repository.JpaRepository;

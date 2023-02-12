@@ -1,7 +1,7 @@
 package com.rest.api.store.service;
 
-import com.rest.api.store.repository.ItemRepository;
-import com.rest.api.store.repository.StoreRepository;
+import repository.ItemRepository;
+import repository.StoreRepository;
 import domain.item.Item;
 import domain.store.Store;
 import dto.item.ItemDto;

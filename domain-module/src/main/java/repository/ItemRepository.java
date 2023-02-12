@@ -1,4 +1,4 @@
-package com.rest.api.store.repository;
+package repository;
 
 import domain.item.Item;
 import domain.store.Store;

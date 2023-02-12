@@ -1,4 +1,4 @@
-package config;
+package com.rest.api.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

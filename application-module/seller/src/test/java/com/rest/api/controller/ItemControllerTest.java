@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-import com.rest.api.store.repository.ItemRepository;
-import com.rest.api.store.repository.StoreRepository;
+import repository.ItemRepository;
+import repository.StoreRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest

@@ -1,6 +1,10 @@
 package com.rest.api.order.service;
 
-import com.rest.api.order.repository.OrderRepository;
+
+import org.modelmapper.ModelMapper;
+import repository.ItemRepository;
+import repository.StoreRepository;
+import repository.OrderRepository;
 import domain.item.Item;
 import domain.order.Order;
 import domain.order.type.OrderSpecific;
@@ -15,12 +19,10 @@ import exception.seller.order.OrderNotInStoreException;
 import exception.seller.order.RequestedCountExceedStockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.modelmapper.ModelMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.rest.api.store.repository.ItemRepository;
-import com.rest.api.store.repository.StoreRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
