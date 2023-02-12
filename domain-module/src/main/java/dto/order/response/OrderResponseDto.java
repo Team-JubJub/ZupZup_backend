@@ -1,4 +1,4 @@
-package com.rest.api.order.dto.response;
+package dto.order.response;
 
 import com.rest.api.order.domain.type.OrderSpecific;
 import com.rest.api.order.domain.type.OrderStatus;

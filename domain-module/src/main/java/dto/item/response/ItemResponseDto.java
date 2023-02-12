@@ -1,29 +1,27 @@
-package com.rest.api.store.dto;
+package dto.item.response;
 
-import com.rest.api.store.domain.Item;
+import domain.item.Item;
 import lombok.Getter;
 import lombok.Setter;
-import com.rest.api.store.domain.Store;
 
-@Getter
-@Setter
-public class ItemDto {
+@Getter @Setter
+public class ItemResponseDto {
 
     private String itemName;
     private String imageURL;
     private int itemPrice;
     private int salePrice;
     private int itemCount;
-    private Store store;
+    private Long storeId;
 
-    public ItemDto toItemDto(Item item) {
+    public ItemResponseDto toItemResponseDto(Item item) {
 
         this.itemName = item.getItemName();
         this.imageURL = item.getImageURL();
         this.itemPrice = item.getItemPrice();
         this.salePrice = item.getSalePrice();
         this.itemCount = item.getItemCount();
-        this.store = item.getStore();
+        this.storeId = item.getStore().getStoreId();
 
         return this;
     }

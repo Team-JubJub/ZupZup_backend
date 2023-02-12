@@ -1,11 +1,12 @@
-package com.rest.api.order.domain;
+package domain.order;
 
-import com.rest.api.order.domain.type.OrderSpecific;
-import com.rest.api.order.domain.type.OrderStatus;
+import domain.order.type.OrderSpecific;
+import domain.order.type.OrderStatus;
+import domain.store.Store;
+import dto.order.OrderServiceDto;
 import jakarta.persistence.*;
 import lombok.Getter;
-import com.rest.api.order.dto.OrderServiceDto;
-import com.rest.api.store.domain.Store;
+
 
 import java.util.List;
 

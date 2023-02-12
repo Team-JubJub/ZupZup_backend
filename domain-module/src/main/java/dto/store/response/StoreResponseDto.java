@@ -1,5 +1,6 @@
-package com.rest.api.store.dto.response;
+package dto.store.response;
 
+import dto.item.response.ItemResponseDto;
 import lombok.Getter;
 import lombok.Setter;
 

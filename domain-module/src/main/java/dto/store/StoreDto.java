@@ -1,6 +1,6 @@
-package com.rest.api.store.dto;
+package dto.store;
 
-import com.rest.api.store.domain.Item;
+import domain.item.Item;
 import lombok.Getter;
 import lombok.Setter;
 

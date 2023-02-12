@@ -1,4 +1,4 @@
-package com.rest.api.order.domain.type;
+package domain.order.type;
 
 public enum OrderStatus {
 

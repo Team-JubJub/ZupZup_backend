@@ -1,10 +1,11 @@
-package com.rest.api.store.domain;
+package domain.item;
 
+import domain.store.Store;
+import dto.item.ItemDto;
+import dto.item.request.UpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import com.rest.api.store.dto.ItemDto;
-import com.rest.api.store.dto.request.UpdateRequestDto;
 
 @Entity
 @NoArgsConstructor

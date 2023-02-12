@@ -1,8 +1,9 @@
-package com.rest.api.store.domain;
+package domain.store;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rest.api.converter.StringListConverter;
-import com.rest.api.store.dto.StoreDto;
+import converter.StringListConverter;
+import domain.item.Item;
+import dto.store.StoreDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -2,8 +2,8 @@ package com.rest.api.store.service;
 
 import com.rest.api.store.domain.Item;
 import com.rest.api.store.domain.Store;
-import com.rest.api.store.dto.response.ItemResponseDto;
-import com.rest.api.store.dto.response.StoreResponseDto;
+import dto.response.ItemResponseDto;
+import dto.response.StoreResponseDto;
 import com.rest.api.store.repository.ItemRepository;
 import com.rest.api.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
