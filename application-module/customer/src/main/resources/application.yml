@@ -17,15 +17,3 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
-
-cloud:
-  aws:
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
-    credentials:
-      secret-key:
-      access-key:
-    s3:
-      bucket: zupzupbucket

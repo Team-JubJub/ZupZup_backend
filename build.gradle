@@ -46,3 +46,18 @@ subprojects {	// 모든 하위 모듈에 적용되는 setting
 		useJUnitPlatform()
 	}
 }
+project(':core-module') {	// 공통 코드 모듈
+	dependencies {
+	}
+}
+project(':domain-module') {	// domain 모듈
+	dependencies {
+		implementation(project(":core-module"))
+	}
+}
+project(':application-module') {	// 어플리케이션(사장님, 고객님) 모듈
+	dependencies {
+		implementation(project(":core-module"))
+		implementation(project(":domain-module"))
+	}
+}
