@@ -9,7 +9,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class OrderServiceDto {
+public class OrderDto {
     private Long id;    // Order ID
 
     private OrderStatus orderStatus; // 상태여부

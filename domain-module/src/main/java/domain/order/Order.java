@@ -3,7 +3,7 @@ package domain.order;
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
 import domain.store.Store;
-import dto.order.OrderServiceDto;
+import dto.order.OrderDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 
@@ -34,9 +34,9 @@ public class Order {
     @CollectionTable(name="orderSpecific")
     private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img)
 
-    public void updateWhenPatch(OrderServiceDto orderServiceDto) {
-        this.orderStatus = orderServiceDto.getOrderStatus();
-        this.orderList = orderServiceDto.getOrderList();
+    public void updateWhenPatch(OrderDto orderDto) {
+        this.orderStatus = orderDto.getOrderStatus();
+        this.orderList = orderDto.getOrderList();
     }
 
 }

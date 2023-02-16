@@ -1,6 +1,6 @@
-package dto.store.response;
+package dto.store.seller.response;
 
-import dto.item.response.ItemResponseDto;
+import dto.item.seller.response.ItemResponseDto;
 import lombok.Getter;
 import lombok.Setter;
 

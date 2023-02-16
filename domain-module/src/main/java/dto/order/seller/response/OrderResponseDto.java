@@ -1,4 +1,4 @@
-package dto.order.response;
+package dto.order.seller.response;
 
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
