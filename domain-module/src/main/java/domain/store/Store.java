@@ -31,6 +31,8 @@ public class Store {
 
     @Column(nullable = false)
     private String storeName; //가게이름
+    @Column(nullable = false)
+    private String category;
     @Column(nullable = false, length = 1000)
     private String storeAddress; //가게 주소
     @Column(nullable = false)
@@ -41,6 +43,8 @@ public class Store {
     private String saleTimeStart;
     @Column(nullable = false)
     private String saleTimeEnd;
+    @Column(nullable = false)
+    private String salePercent;
     @Column(nullable = false)
     private Double longitude;
     @Column(nullable = false)
