@@ -8,7 +8,7 @@ public class StoreResponseDto {
     // <-------------------- GET part -------------------->
     @Getter
     @Setter
-    public class GetStoreDto {
+    public static class GetStoreDto {
         private Long storeId;
 
         private String storeName;
