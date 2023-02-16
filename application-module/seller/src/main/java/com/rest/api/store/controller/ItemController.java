@@ -1,7 +1,7 @@
 package com.rest.api.store.controller;
 
-import dto.item.request.ItemRequestDto;
-import dto.item.request.UpdateRequestDto;
+import dto.item.seller.request.ItemRequestDto;
+import dto.item.seller.request.UpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;

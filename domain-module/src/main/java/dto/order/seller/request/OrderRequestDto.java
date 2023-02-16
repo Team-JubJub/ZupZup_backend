@@ -1,4 +1,4 @@
-package dto.order.request;
+package dto.order.seller.request;
 
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;

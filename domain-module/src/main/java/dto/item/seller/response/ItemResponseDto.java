@@ -1,4 +1,4 @@
-package dto.item.response;
+package dto.item.seller.response;
 
 import domain.item.Item;
 import lombok.Getter;

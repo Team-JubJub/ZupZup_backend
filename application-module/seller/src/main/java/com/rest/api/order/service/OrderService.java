@@ -1,7 +1,6 @@
 package com.rest.api.order.service;
 
 
-import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import repository.ItemRepository;
 import repository.StoreRepository;
@@ -13,8 +12,8 @@ import domain.order.type.OrderStatus;
 import domain.store.Store;
 import dto.item.ItemDto;
 import dto.order.OrderServiceDto;
-import dto.order.request.OrderRequestDto;
-import dto.order.response.OrderResponseDto;
+import dto.order.seller.request.OrderRequestDto;
+import dto.order.seller.response.OrderResponseDto;
 import exception.seller.order.NoSuchException;
 import exception.seller.order.OrderNotInStoreException;
 import exception.seller.order.RequestedCountExceedStockException;

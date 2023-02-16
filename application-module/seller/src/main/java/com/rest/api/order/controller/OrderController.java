@@ -1,7 +1,7 @@
 package com.rest.api.order.controller;
 
-import dto.order.request.OrderRequestDto;
-import dto.order.response.OrderResponseDto;
+import dto.order.seller.request.OrderRequestDto;
+import dto.order.seller.response.OrderResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;

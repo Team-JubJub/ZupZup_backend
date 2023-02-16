@@ -2,7 +2,7 @@ package domain.item;
 
 import domain.store.Store;
 import dto.item.ItemDto;
-import dto.item.request.UpdateRequestDto;
+import dto.item.seller.request.UpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
