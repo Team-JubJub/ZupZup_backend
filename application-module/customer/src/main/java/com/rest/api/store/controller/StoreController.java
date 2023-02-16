@@ -27,7 +27,7 @@ public class StoreController {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(allStoreListDto, HttpStatus.OK);
     }
 
 
