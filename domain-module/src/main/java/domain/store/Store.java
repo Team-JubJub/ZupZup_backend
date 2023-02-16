@@ -43,7 +43,7 @@ public class Store {
     private String saleTimeStart;
     @Column(nullable = false)
     private String saleTimeEnd;
-    @Column(nullable = false)
+    @Column // nullable true
     private String salePercent;
     @Column(nullable = false)
     private Double longitude;
