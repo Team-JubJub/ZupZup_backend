@@ -41,7 +41,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     // <-------------------- GET part -------------------->
-    public List<OrderResponseDto.GetOrderDto> getAllOrder(Long storeId) {
+    public List<OrderResponseDto.GetOrderDto> orderList(Long storeId) {
         isStorePresent(storeId);    // Check presence of store
         List<Order> allOrderListEntity = orderRepository.findByStore_StoreId(storeId);
         List<OrderResponseDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
@@ -51,7 +51,7 @@ public class OrderService {
         return allOrderListDto;
     }
 
-    public OrderResponseDto.GetOrderSpecificDto getOrderSpecificById(Long storeId, Long orderId) {
+    public OrderResponseDto.GetOrderSpecificDto orderDetails(Long storeId, Long orderId) {
         Order orderEntity = isOrderPresent(orderId);
         isOrderInStore(storeId, orderEntity);
         OrderResponseDto.GetOrderSpecificDto getOrderSpecificDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderSpecificDto.class);
@@ -60,7 +60,7 @@ public class OrderService {
     }
 
     // <-------------------- PATCH part -------------------->
-    public String patchOrderById(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
+    public String updateOrder(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
         Order orderEntity = isOrderPresent(orderId);
         isOrderInStore(storeId, orderEntity);
 

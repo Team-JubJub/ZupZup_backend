@@ -24,7 +24,7 @@ public class StoreService {
     private final StoreRepository storeRepository;
 
     // <-------------------- GET part -------------------->
-    public List<StoreResponseDto.GetStoreDto> getAllStore() {   // 현재는 예외처리할 것 없어 보임
+    public List<StoreResponseDto.GetStoreDto> storeList() {   // 현재는 예외처리할 것 없어 보임
         List<Store> allStoreListEntity = storeRepository.findAll(); // 나중에는 위치기반 등으로 거르게 될 듯?
         List<StoreResponseDto.GetStoreDto> allStoreListDto = allStoreListEntity.stream()
                 .map(m -> modelMapper.map(m, StoreResponseDto.GetStoreDto.class))
