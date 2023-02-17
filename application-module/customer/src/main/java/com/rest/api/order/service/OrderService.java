@@ -24,7 +24,6 @@ public class OrderService {
     public String addOrder(OrderRequestDto.PostOrderDto postOrderDto) {
         LocalTime nowTime = LocalTime.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH시 mm분 ss초");
-        // 포맷 적용하기
         String formattedNowTime = nowTime.format(formatter);
 
         OrderDto orderDto = new OrderDto();
