@@ -9,6 +9,9 @@ import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 import repository.OrderRepository;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+
 @Service
 @RequiredArgsConstructor
 @Log
@@ -19,16 +22,21 @@ public class OrderService {
 
     // <-------------------- POST part -------------------->
     public String addOrder(OrderRequestDto.PostOrderDto postOrderDto) {
+        LocalTime nowTime = LocalTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH시 mm분 ss초");
+        // 포맷 적용하기
+        String formattedNowTime = nowTime.format(formatter);
+
         OrderDto orderDto = new OrderDto();
         orderDto.setUsername(postOrderDto.getUsername());
         orderDto.setPhoneNumber(postOrderDto.getPhoneNumber());
+        orderDto.setOrderTime(formattedNowTime);
         orderDto.setVisitTime(postOrderDto.getVisitTime());
         orderDto.setOrderList(postOrderDto.getOrderList());
 
-        Order orderEntity = Order.builder(
-
-
-        )
+        Order orderEntity = new Order();
+        orderEntity.addOrder(orderDto);
+        orderRepository.save(orderEntity);
 
         return "주문이 완료되었습니다.";
     }
