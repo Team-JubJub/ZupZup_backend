@@ -51,12 +51,12 @@ public class OrderService {
         return allOrderListDto;
     }
 
-    public OrderResponseDto.GetOrderSpecificDto orderDetails(Long storeId, Long orderId) {
+    public OrderResponseDto.GetOrderDetailsDto orderDetails(Long storeId, Long orderId) {
         Order orderEntity = isOrderPresent(orderId);
         isOrderInStore(storeId, orderEntity);
-        OrderResponseDto.GetOrderSpecificDto getOrderSpecificDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderSpecificDto.class);
+        OrderResponseDto.GetOrderDetailsDto getOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
 
-        return getOrderSpecificDto;
+        return getOrderDetailsDto;
     }
 
     // <-------------------- PATCH part -------------------->

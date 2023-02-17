@@ -34,9 +34,9 @@ public class OrderController {
 
     @GetMapping("/{orderId}")  // 각 order에 대한 단건 GET
     public ResponseEntity orderDetails(@PathVariable Long storeId, @PathVariable Long orderId) {
-        OrderResponseDto.GetOrderSpecificDto getOrderSpecificDto = orderService.orderDetails(storeId, orderId);
+        OrderResponseDto.GetOrderDetailsDto getOrderDetailsDto = orderService.orderDetails(storeId, orderId);
 
-        return new ResponseEntity(getOrderSpecificDto, HttpStatus.OK); // 한 개 order의 dto 반환
+        return new ResponseEntity(getOrderDetailsDto, HttpStatus.OK); // 한 개 order의 dto 반환
     }
 
     // <-------------------- PATCH part -------------------->

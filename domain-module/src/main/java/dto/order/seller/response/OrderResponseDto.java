@@ -24,7 +24,7 @@ public class OrderResponseDto {
 
     @Getter
     @Setter
-    public static class GetOrderSpecificDto { // 단건 GET에 mapping할 DTO
+    public static class GetOrderDetailsDto { // 단건 GET에 mapping할 DTO
         private Long id;    // Order ID
 
         private OrderStatus orderStatus; // 상태여부
