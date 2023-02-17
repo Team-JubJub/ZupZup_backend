@@ -1,6 +1,8 @@
 package com.rest.api.order.controller;
 
 import com.rest.api.order.service.OrderService;
+import dto.order.customer.request.OrderRequestDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
@@ -20,9 +22,9 @@ public class OrderController {
 
     // <-------------------- POST part -------------------->
     @PostMapping("")
-    public ResponseEntity makeOrder() {
+    public ResponseEntity addOrder(@RequestBody @Valid OrderRequestDto.PostOrderDto postOrderDto) {
+        String addOrderResult = orderService.addOrder(postOrderDto);
 
-
-        return new ResponseEntity("주문이 완료되었습니다.", HttpStatus.CREATED);
+        return new ResponseEntity(addOrderResult, HttpStatus.CREATED);
     }
 }
