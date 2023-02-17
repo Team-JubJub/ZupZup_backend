@@ -20,6 +20,7 @@ public class StoreController {
 
     private final StoreService storeService;
 
+    // <-------------------- GET part -------------------->
     @GetMapping("") // 가게들 list
     public ResponseEntity getAllStoreList() {
         List<StoreResponseDto.GetStoreDto> allStoreListDto = storeService.getAllStore();

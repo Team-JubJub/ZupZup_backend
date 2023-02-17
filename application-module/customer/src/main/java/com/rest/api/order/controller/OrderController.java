@@ -18,6 +18,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    // <-------------------- POST part -------------------->
     @PostMapping("")
     public ResponseEntity makeOrder() {
 
