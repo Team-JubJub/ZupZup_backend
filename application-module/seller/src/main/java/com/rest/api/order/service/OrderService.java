@@ -135,7 +135,7 @@ public class OrderService {
     private boolean isOrderCancel(Order orderEntity, OrderStatus ownerRequestedOrderStatus, OrderDto orderDto) {
         if(ownerRequestedOrderStatus == OrderStatus.SENDBACK || ownerRequestedOrderStatus == OrderStatus.CANCEL) { //신규든 아니든 취소인 경우
             orderDto.setOrderStatus(OrderStatus.CANCEL);
-            orderEntity.updateWhenPatch(orderDto);
+            orderEntity.updateOrder(orderDto);
             orderRepository.save(orderEntity);
             return true;
         }
@@ -151,7 +151,7 @@ public class OrderService {
     }
 
     private String patchSaveAndReturn(Order orderEntity, OrderDto orderDto) {
-        orderEntity.updateWhenPatch(orderDto);
+        orderEntity.updateOrder(orderDto);
         orderRepository.save(orderEntity);
         if(orderEntity.getOrderStatus() == OrderStatus.CONFIRM) return "주문이 확정되었습니다.";
         else if(orderEntity.getOrderStatus() == OrderStatus.PARTIAL) return "주문이 부분확정되었습니다.";

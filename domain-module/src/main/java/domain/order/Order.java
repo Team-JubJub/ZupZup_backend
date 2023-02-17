@@ -34,7 +34,17 @@ public class Order {
     @CollectionTable(name="orderSpecific")
     private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img)
 
-    public void updateWhenPatch(OrderDto orderDto) {
+    public void addOrder(OrderDto orderDto) {
+        this.orderStatus = OrderStatus.NEW;
+        this.username = orderDto.getUsername();
+        this.phoneNumber = orderDto.getPhoneNumber();
+        this.orderTitle = orderDto.getOrderTitle();
+        this.orderTime = orderDto.getOrderTime();
+        this.visitTime = orderDto.getVisitTime();
+        this.orderList = orderDto.getOrderList();
+    }
+
+    public void updateOrder(OrderDto orderDto) {
         this.orderStatus = orderDto.getOrderStatus();
         this.orderList = orderDto.getOrderList();
     }
