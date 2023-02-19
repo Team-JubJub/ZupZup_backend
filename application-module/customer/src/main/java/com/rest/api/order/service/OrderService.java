@@ -30,8 +30,8 @@ public class OrderService {
 
     @Autowired
     ModelMapper modelMapper;
-    private OrderRepository orderRepository;
-    private StoreRepository storeRepository;
+    private final OrderRepository orderRepository;
+    private final StoreRepository storeRepository;
 
     // <-------------------- POST part -------------------->
     public String addOrder(Long storeId, OrderRequestDto.PostOrderDto postOrderDto) {
@@ -47,10 +47,10 @@ public class OrderService {
 
     // <-------------------- GET part -------------------->
     public List<OrderResponseDto.GetOrderDto> orderList() {
-        List<Order> allOrderListEntity = orderRepository.findAll();
+        List<Order> allOrderListEntity = orderRepository.findAll(); // 가게 이름 어떻게 할지?
         List<OrderResponseDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()
-                .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDto.class))
-                .collect(Collectors.toList());
+            .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDto.class))
+            .collect(Collectors.toList());
 
         return allOrderListDto;
     }
