@@ -20,7 +20,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false) @JoinColumn(name = "storeId")
     private Store store;    // store (relation with store table)
 
     private OrderStatus orderStatus; // 상태여부 -> ERD에 추가
@@ -36,6 +36,7 @@ public class Order {
 
     public void addOrder(OrderDto orderDto) {
         this.orderStatus = OrderStatus.NEW;
+        this.store = orderDto.getStore();
         this.username = orderDto.getUsername();
         this.phoneNumber = orderDto.getPhoneNumber();
         this.orderTitle = orderDto.getOrderTitle();

@@ -7,7 +7,6 @@ import domain.store.Store;
 import dto.order.OrderDto;
 import dto.order.customer.request.OrderRequestDto;
 import dto.order.customer.response.OrderResponseDto;
-import dto.store.customer.response.StoreResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
