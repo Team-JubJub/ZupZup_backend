@@ -10,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderDto {
+    private Long storeId;
     private Long id;    // Order ID
 
     private OrderStatus orderStatus; // 상태여부

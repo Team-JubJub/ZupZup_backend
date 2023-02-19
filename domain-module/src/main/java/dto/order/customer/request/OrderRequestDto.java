@@ -1,7 +1,6 @@
 package dto.order.customer.request;
 
 import domain.order.type.OrderSpecific;
-import domain.order.type.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +12,7 @@ public class OrderRequestDto {
     @Getter
     @Setter
     public static class PostOrderDto {
+        private Long storeId;
         private String username; // 닉네임
         private String phoneNumber; // 전화번호 -> 필요 없으면 삭제할 것
         private String visitTime;
