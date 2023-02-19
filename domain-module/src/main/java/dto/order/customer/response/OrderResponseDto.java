@@ -9,7 +9,6 @@ public class OrderResponseDto {
     @Getter
     @Setter
     public static class GetOrderDto {
-        private String storeName;
         private String orderStatus;
         private String username; // 닉네임
         private String orderTitle;

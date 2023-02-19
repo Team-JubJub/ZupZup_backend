@@ -33,6 +33,4 @@ public class StoreService {
         return allStoreListDto;
     }
 
-
-
 }

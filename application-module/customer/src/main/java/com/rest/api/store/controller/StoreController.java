@@ -27,7 +27,6 @@ public class StoreController {
         if(allStoreListDto.size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
-
         return new ResponseEntity(allStoreListDto, HttpStatus.OK);
     }
 

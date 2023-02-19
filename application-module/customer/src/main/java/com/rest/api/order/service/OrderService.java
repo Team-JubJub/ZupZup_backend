@@ -3,17 +3,24 @@ package com.rest.api.order.service;
 import domain.order.Order;
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
+import domain.store.Store;
 import dto.order.OrderDto;
 import dto.order.customer.request.OrderRequestDto;
+import dto.order.customer.response.OrderResponseDto;
+import dto.store.customer.response.StoreResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.OrderRepository;
 import repository.StoreRepository;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +28,8 @@ import java.time.format.DateTimeFormatter;
 @Transactional
 public class OrderService {
 
+    @Autowired
+    ModelMapper modelMapper;
     private OrderRepository orderRepository;
     private StoreRepository storeRepository;
 
@@ -37,7 +46,14 @@ public class OrderService {
     }
 
     // <-------------------- GET part -------------------->
+    public List<OrderResponseDto.GetOrderDto> orderList() {
+        List<Order> allOrderListEntity = orderRepository.findAll();
+        List<OrderResponseDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()
+                .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDto.class))
+                .collect(Collectors.toList());
 
+        return allOrderListDto;
+    }
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
@@ -51,13 +67,14 @@ public class OrderService {
     }
 
     private OrderDto postOrderDTOtoOrderDTO(Long storeId, OrderRequestDto.PostOrderDto postOrderDto, String formattedNowTime) {
+        Store store = storeRepository.findById(storeId).get();
         OrderSpecific firstAtOrderSpecific = postOrderDto.getOrderList().get(0);
         String firstAtOrderList = firstAtOrderSpecific.getItemName();
         int firstAtOrderListCount = firstAtOrderSpecific.getItemCount();
         int orderListCount = postOrderDto.getOrderList().size() - 1;
 
         OrderDto orderDto = new OrderDto();
-        orderDto.setStoreId(storeId);
+        orderDto.setStore(store);
         orderDto.setOrderStatus(OrderStatus.NEW);
         orderDto.setUsername(postOrderDto.getUsername());
         orderDto.setPhoneNumber(postOrderDto.getPhoneNumber());

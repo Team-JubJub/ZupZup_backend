@@ -2,6 +2,7 @@ package dto.order;
 
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
+import domain.store.Store;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderDto {
-    private Long storeId;
+    private Store store;
     private Long id;    // Order ID
 
     private OrderStatus orderStatus; // 상태여부
