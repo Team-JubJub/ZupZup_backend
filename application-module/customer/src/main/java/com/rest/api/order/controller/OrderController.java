@@ -7,23 +7,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Log
 @RequiredArgsConstructor
-@RequestMapping("/customer/order")
+@RequestMapping("/customer")
 public class OrderController {
 
     private final OrderService orderService;
 
     // <-------------------- POST part -------------------->
-    @PostMapping("")
-    public ResponseEntity addOrder(@RequestBody @Valid OrderRequestDto.PostOrderDto postOrderDto) {
-        String addOrderResult = orderService.addOrder(postOrderDto);
+    @PostMapping("/store/{storeId}")
+    public ResponseEntity addOrder(@PathVariable Long storeId, @RequestBody @Valid OrderRequestDto.PostOrderDto postOrderDto) {
+        String addOrderResult = orderService.addOrder(storeId, postOrderDto);
 
         return new ResponseEntity(addOrderResult, HttpStatus.CREATED);
     }

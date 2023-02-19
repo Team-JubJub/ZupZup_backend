@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 import repository.OrderRepository;
+import repository.StoreRepository;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -21,19 +22,12 @@ import java.time.format.DateTimeFormatter;
 public class OrderService {
 
     private OrderRepository orderRepository;
+    private StoreRepository storeRepository;
 
     // <-------------------- POST part -------------------->
-    public String addOrder(OrderRequestDto.PostOrderDto postOrderDto) {
-        Long storeId = postOrderDto.getStoreId();
-        LocalTime nowTime = LocalTime.now();    // 주문한 시간
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");   // 09:43 am, 04:57 pm
-        String formattedNowTime = nowTime.format(formatter);
-
-        OrderSpecific firstAtOrderSpecific = postOrderDto.getOrderList().get(0);    // 주문 제목에 쓰일 주문의 첫 번째 목록
-        String firstAtOrderList = firstAtOrderSpecific.getItemName();
-        int firstAtOrderListCount = firstAtOrderSpecific.getItemCount();
-        int orderListCount = postOrderDto.getOrderList().size() - 1;
-        OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderDto, formattedNowTime, firstAtOrderList, firstAtOrderListCount, orderListCount);
+    public String addOrder(Long storeId, OrderRequestDto.PostOrderDto postOrderDto) {
+        String formattedOrderTime = orderTimeSetter();
+        OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderDto, formattedOrderTime);
 
         Order orderEntity = new Order();
         orderEntity.addOrder(orderDto);
@@ -48,7 +42,20 @@ public class OrderService {
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
     // <--- Methods for readability --->
-    private OrderDto postOrderDTOtoOrderDTO(Long storeId, OrderRequestDto.PostOrderDto postOrderDto, String formattedNowTime, String firstAtOrderList, int firstAtOrderListCount, int orderListCount) {
+    private String orderTimeSetter() {
+        LocalTime nowTime = LocalTime.now();    // 주문한 시간
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");   // 09:43 am, 04:57 pm
+        String formattedOrderTime = nowTime.format(formatter);
+
+        return formattedOrderTime;
+    }
+
+    private OrderDto postOrderDTOtoOrderDTO(Long storeId, OrderRequestDto.PostOrderDto postOrderDto, String formattedNowTime) {
+        OrderSpecific firstAtOrderSpecific = postOrderDto.getOrderList().get(0);
+        String firstAtOrderList = firstAtOrderSpecific.getItemName();
+        int firstAtOrderListCount = firstAtOrderSpecific.getItemCount();
+        int orderListCount = postOrderDto.getOrderList().size() - 1;
+
         OrderDto orderDto = new OrderDto();
         orderDto.setStoreId(storeId);
         orderDto.setOrderStatus(OrderStatus.NEW);
