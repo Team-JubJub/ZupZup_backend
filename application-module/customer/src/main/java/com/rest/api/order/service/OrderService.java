@@ -55,6 +55,13 @@ public class OrderService {
         return allOrderListDto;
     }
 
+    public OrderResponseDto.GetOrderDetailsDto orderDetails(Long orderId) {
+        Order orderDetailsEntity = orderRepository.findById(orderId).get();
+        OrderResponseDto.GetOrderDetailsDto getOrderDetailsDto = modelMapper.map(orderDetailsEntity, OrderResponseDto.GetOrderDetailsDto.class);
+
+        return getOrderDetailsDto;
+    }
+
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
     // <--- Methods for readability --->
