@@ -25,7 +25,7 @@ public class Order {
 
     private OrderStatus sellerOrderStatus; // 상태여부 -> ERD에 추가
     private OrderStatus customerOrderStatus;
-    private String username; // 예약자명
+    private String userName; // 예약자명
     private String phoneNumber; // 예약자 전화번호
     private String orderTitle; // ex) 크로플 3개 외 3
     private String orderTime; // 주문 시간 -> ERD에 추가
@@ -39,7 +39,7 @@ public class Order {
         this.sellerOrderStatus = OrderStatus.NEW;
         this.customerOrderStatus = OrderStatus.WAITING;
         this.store = orderDto.getStore();
-        this.username = orderDto.getUsername();
+        this.userName = orderDto.getUserName();
         this.phoneNumber = orderDto.getPhoneNumber();
         this.orderTitle = orderDto.getOrderTitle();
         this.orderTime = orderDto.getOrderTime();
