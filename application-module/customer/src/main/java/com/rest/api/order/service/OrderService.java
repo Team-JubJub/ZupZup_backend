@@ -75,8 +75,7 @@ public class OrderService {
 
         OrderDto orderDto = new OrderDto();
         orderDto.setStore(store);
-        orderDto.setSellerOrderStatus(OrderStatus.NEW);
-        orderDto.setCustomerOrderStatus(OrderStatus.WAITING);
+        orderDto.setOrderStatus(OrderStatus.NEW);
         orderDto.setUserName(postOrderDto.getUserName());
         orderDto.setPhoneNumber(postOrderDto.getPhoneNumber());
         orderDto.setOrderTitle(firstAtOrderList + " " + firstAtOrderListCount + "개 외 " + orderListCount + "건");    // 크로플 3개 외 4건

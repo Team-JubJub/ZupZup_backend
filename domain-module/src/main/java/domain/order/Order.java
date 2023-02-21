@@ -22,9 +22,8 @@ public class Order {
 
     @ManyToOne(optional = false) @JoinColumn(name = "storeId")
     private Store store;    // store (relation with store table)
-
-    private OrderStatus sellerOrderStatus; // 상태여부 -> ERD에 추가
-    private OrderStatus customerOrderStatus;
+    
+    private OrderStatus orderStatus;    // 주문 상태
     private String userName; // 예약자명
     private String phoneNumber; // 예약자 전화번호
     private String orderTitle; // ex) 크로플 3개 외 3
@@ -36,8 +35,7 @@ public class Order {
     private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img)
 
     public void addOrder(OrderDto orderDto) {
-        this.sellerOrderStatus = OrderStatus.NEW;
-        this.customerOrderStatus = OrderStatus.WAITING;
+        this.orderStatus = OrderStatus.NEW;
         this.store = orderDto.getStore();
         this.userName = orderDto.getUserName();
         this.phoneNumber = orderDto.getPhoneNumber();
@@ -48,8 +46,7 @@ public class Order {
     }
 
     public void updateOrder(OrderDto orderDto) {
-        this.sellerOrderStatus = orderDto.getSellerOrderStatus();
-        this.customerOrderStatus = orderDto.getSellerOrderStatus();
+        this.orderStatus = orderDto.getOrderStatus();
         this.orderList = orderDto.getOrderList();
     }
 

@@ -10,7 +10,7 @@ public class OrderResponseDto {
     @Setter
     public static class GetOrderDto {
         private String storeName;   // entity에는 store 객체 저장, modelMapper가 알아서 name 빼내줌.
-        private String customerOrderStatus;
+        private String orderStatus;
         private String userName; // 닉네임
         private String orderTitle;
         private String orderTime;
