@@ -13,10 +13,9 @@ import java.util.List;
 public class OrderDto {
     private Store store;
     private Long id;    // Order ID
-
-    private OrderStatus sellerOrderStatus; // 상태여부
-    private OrderStatus customerOrderStatus;
-    private String username; // 닉네임
+    
+    private OrderStatus orderStatus; // 주문 상태
+    private String userName; // 닉네임
     private String phoneNumber; // 전화번호 -> 필요 없으면 삭제할 것
     private String orderTitle;  // ex) 크로플 3개 외 3개
     private String orderTime;   // 주문 시간
