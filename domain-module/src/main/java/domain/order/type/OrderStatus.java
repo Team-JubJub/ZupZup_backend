@@ -8,7 +8,8 @@ public enum OrderStatus {
     SENDBACK("반려"),
     CANCEL("주문 취소"),
     COMPLETE("주문 완료"),
-    NEW("신규 주문");
+    NEW("신규 주문"),
+    WAITING("대기");
 
     private final String status;
 

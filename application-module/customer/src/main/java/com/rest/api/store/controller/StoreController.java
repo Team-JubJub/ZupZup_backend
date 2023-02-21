@@ -20,13 +20,13 @@ public class StoreController {
 
     private final StoreService storeService;
 
+    // <-------------------- GET part -------------------->
     @GetMapping("") // 가게들 list
-    public ResponseEntity getAllStoreList() {
-        List<StoreResponseDto.GetStoreDto> allStoreListDto = storeService.getAllStore();
+    public ResponseEntity storeList() {
+        List<StoreResponseDto.GetStoreDto> allStoreListDto = storeService.storeList();
         if(allStoreListDto.size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
-
         return new ResponseEntity(allStoreListDto, HttpStatus.OK);
     }
 

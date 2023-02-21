@@ -1,8 +1,8 @@
 package com.rest.api.advice;
 
-import exception.seller.order.NoSuchException;
-import exception.seller.order.OrderNotInStoreException;
-import exception.seller.order.RequestedCountExceedStockException;
+import com.rest.api.exception.order.NoSuchException;
+import com.rest.api.exception.order.OrderNotInStoreException;
+import com.rest.api.exception.order.RequestedCountExceedStockException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

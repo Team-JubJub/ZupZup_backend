@@ -20,10 +20,11 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false) @JoinColumn(name = "storeId")
     private Store store;    // store (relation with store table)
 
-    private OrderStatus orderStatus; // 상태여부 -> ERD에 추가
+    private OrderStatus sellerOrderStatus; // 상태여부 -> ERD에 추가
+    private OrderStatus customerOrderStatus;
     private String username; // 예약자명
     private String phoneNumber; // 예약자 전화번호
     private String orderTitle; // ex) 크로플 3개 외 3
@@ -34,8 +35,21 @@ public class Order {
     @CollectionTable(name="orderSpecific")
     private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img)
 
-    public void updateWhenPatch(OrderDto orderDto) {
-        this.orderStatus = orderDto.getOrderStatus();
+    public void addOrder(OrderDto orderDto) {
+        this.sellerOrderStatus = OrderStatus.NEW;
+        this.customerOrderStatus = OrderStatus.WAITING;
+        this.store = orderDto.getStore();
+        this.username = orderDto.getUsername();
+        this.phoneNumber = orderDto.getPhoneNumber();
+        this.orderTitle = orderDto.getOrderTitle();
+        this.orderTime = orderDto.getOrderTime();
+        this.visitTime = orderDto.getVisitTime();
+        this.orderList = orderDto.getOrderList();
+    }
+
+    public void updateOrder(OrderDto orderDto) {
+        this.sellerOrderStatus = orderDto.getSellerOrderStatus();
+        this.customerOrderStatus = orderDto.getSellerOrderStatus();
         this.orderList = orderDto.getOrderList();
     }
 

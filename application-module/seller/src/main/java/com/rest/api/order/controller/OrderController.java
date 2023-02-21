@@ -22,8 +22,8 @@ public class OrderController {
 
     // <-------------------- GET part -------------------->
     @GetMapping("")  // order에 대한 GET(주문 항목 모두)
-    public ResponseEntity getAllOrderList(@PathVariable Long storeId) { // ResponseEntity의 type이 뭐가될지 몰라서 우선 Type 지정 없이 둠.
-        List<OrderResponseDto.GetOrderDto> allOrderListDto = orderService.getAllOrder(storeId);
+    public ResponseEntity orderList(@PathVariable Long storeId) { // ResponseEntity의 type이 뭐가될지 몰라서 우선 Type 지정 없이 둠.
+        List<OrderResponseDto.GetOrderDto> allOrderListDto = orderService.orderList(storeId);
         if(allOrderListDto.size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT); // NO_CONTENT 시 body가 빈 상태로 감. 204
 //            return new ResponseEntity("주문 목록이 비어있습니다.", HttpStatus.OK); // OK로 반환하고 body에 해당 내용 넣어줄지 생각해볼 것.
@@ -33,16 +33,16 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")  // 각 order에 대한 단건 GET
-    public ResponseEntity getOrder(@PathVariable Long storeId, @PathVariable Long orderId) {
-        OrderResponseDto.GetOrderSpecificDto getOrderSpecificDto = orderService.getOrderSpecificById(storeId, orderId);
+    public ResponseEntity orderDetails(@PathVariable Long storeId, @PathVariable Long orderId) {
+        OrderResponseDto.GetOrderDetailsDto getOrderDetailsDto = orderService.orderDetails(storeId, orderId);
 
-        return new ResponseEntity(getOrderSpecificDto, HttpStatus.OK); // 한 개 order의 dto 반환
+        return new ResponseEntity(getOrderDetailsDto, HttpStatus.OK); // 한 개 order의 dto 반환
     }
 
     // <-------------------- PATCH part -------------------->
     @PatchMapping("/{orderId}")  // 각 order에 대해 사장님이 주문 확정시 사용할 request
-    public ResponseEntity patchOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
-        String response = orderService.patchOrderById(storeId, orderId, patchOrderDto);
+    public ResponseEntity updateOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
+        String response = orderService.updateOrder(storeId, orderId, patchOrderDto);
 
         return new ResponseEntity(response, HttpStatus.OK); // patch 된 order의 dto 반환
     }
