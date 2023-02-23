@@ -38,11 +38,11 @@ public class OrderController {
         return new ResponseEntity(allOrderListDto, HttpStatus.OK);
     }
 
-    @GetMapping("/order/{order_id}")
+    @GetMapping("/order/{orderId}")
     public ResponseEntity orderDetails(@PathVariable Long orderId) {
         OrderResponseDto.GetOrderDetailsDto orderDetailsDto = orderService.orderDetails(orderId);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(orderDetailsDto, HttpStatus.OK);
     }
 
 }
