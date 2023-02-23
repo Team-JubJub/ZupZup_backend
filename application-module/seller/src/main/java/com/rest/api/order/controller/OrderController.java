@@ -26,7 +26,6 @@ public class OrderController {
         List<OrderResponseDto.GetOrderDto> allOrderListDto = orderService.orderList(storeId);
         if(allOrderListDto.size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT); // NO_CONTENT 시 body가 빈 상태로 감. 204
-//            return new ResponseEntity("주문 목록이 비어있습니다.", HttpStatus.OK); // OK로 반환하고 body에 해당 내용 넣어줄지 생각해볼 것.
         }
 
         return new ResponseEntity(allOrderListDto, HttpStatus.OK); // order들의 dto list 반환, 200

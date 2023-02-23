@@ -1,4 +1,4 @@
-package com.rest.api.exception.order;
+package exception;
 
 import org.springframework.http.HttpStatus;
 

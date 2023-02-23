@@ -14,9 +14,9 @@ import dto.item.ItemDto;
 import dto.order.OrderDto;
 import dto.order.seller.request.OrderRequestDto;
 import dto.order.seller.response.OrderResponseDto;
-import com.rest.api.exception.order.NoSuchException;
-import com.rest.api.exception.order.OrderNotInStoreException;
-import com.rest.api.exception.order.RequestedCountExceedStockException;
+import exception.NoSuchException;
+import exception.OrderNotInStoreException;
+import exception.RequestedCountExceedStockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
@@ -109,6 +109,7 @@ public class OrderService {
             throw new NoSuchException("등록되지 않은 가게입니다.");
         }
     }
+
     private Order isOrderPresent(Long orderId) {
         try {
             Order orderEntity = orderRepository.findById(orderId).get();

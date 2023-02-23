@@ -7,6 +7,7 @@ import domain.store.Store;
 import dto.order.OrderDto;
 import dto.order.customer.request.OrderRequestDto;
 import dto.order.customer.response.OrderResponseDto;
+import exception.NoSuchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -20,6 +21,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,8 +57,24 @@ public class OrderService {
         return allOrderListDto;
     }
 
+    public OrderResponseDto.GetOrderDetailsDto orderDetails(Long orderId) {
+        Order orderDetailsEntity = isOrderPresent(orderId);
+        OrderResponseDto.GetOrderDetailsDto getOrderDetailsDto = modelMapper.map(orderDetailsEntity, OrderResponseDto.GetOrderDetailsDto.class);
+
+        return getOrderDetailsDto;
+    }
+
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
+    private Order isOrderPresent(Long orderId) {
+        try {
+            Order orderEntity = orderRepository.findById(orderId).get();
+            return orderEntity;
+        }   catch (NoSuchElementException e) {
+            throw new NoSuchException("해당 주문을 찾을 수 없습니다.");
+        }
+    }
+
     // <--- Methods for readability --->
     private String orderTimeSetter() {
         LocalTime nowTime = LocalTime.now();    // 주문한 시간

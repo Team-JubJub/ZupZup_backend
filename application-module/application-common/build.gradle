@@ -11,5 +11,4 @@ sourceCompatibility = '17'
 dependencies {
     implementation(project(':core-module'))
     implementation(project(':domain-module'))
-    implementation(project(':application-module:application-common'))
 }
