@@ -14,9 +14,9 @@ import dto.item.ItemDto;
 import dto.order.OrderDto;
 import dto.order.seller.request.OrderRequestDto;
 import dto.order.seller.response.OrderResponseDto;
-import com.rest.api.exception.order.NoSuchException;
-import com.rest.api.exception.order.OrderNotInStoreException;
-import com.rest.api.exception.order.RequestedCountExceedStockException;
+import com.rest.api.exception.order.SellerNoSuchException;
+import com.rest.api.exception.order.SellerOrderNotInStoreException;
+import com.rest.api.exception.order.SellerRequestedCountExceedStockException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 
@@ -106,7 +106,7 @@ public class OrderService {
             Store storeEntity = storeRepository.findById(storeId).get();    // 이 부분 entity 안받아와도 할 수 있는 방법 있는지 찾아볼 것.
             System.out.println("Store Found with ID: " + storeId + ", name: " + storeEntity.getStoreName());    // 확인용
         }   catch (NoSuchElementException e) {
-            throw new NoSuchException("등록되지 않은 가게입니다.");
+            throw new SellerNoSuchException("등록되지 않은 가게입니다.");
         }
     }
     private Order isOrderPresent(Long orderId) {
@@ -114,20 +114,20 @@ public class OrderService {
             Order orderEntity = orderRepository.findById(orderId).get();
             return orderEntity;
         }   catch (NoSuchElementException e) {
-            throw new NoSuchException("해당 주문을 찾을 수 없습니다.");
+            throw new SellerNoSuchException("해당 주문을 찾을 수 없습니다.");
         }
     }
 
     private void isOrderInStore(Long storeId, Order orderEntity) {
         if(orderEntity.getStore().getStoreId() != storeId){
-            throw new OrderNotInStoreException();
+            throw new SellerOrderNotInStoreException();
         }
     }
 
     private void isRequestedCountNotExceedStock(Long sellerRequestedItemId, int sellerRequestedItemCount) {
         Item itemEntity = itemRepository.findById(sellerRequestedItemId).get();
         if(sellerRequestedItemCount > itemEntity.getItemCount()) {
-            throw new RequestedCountExceedStockException(itemEntity.getItemId(), itemEntity.getItemName());
+            throw new SellerRequestedCountExceedStockException(itemEntity.getItemId(), itemEntity.getItemName());
         }
     }
 

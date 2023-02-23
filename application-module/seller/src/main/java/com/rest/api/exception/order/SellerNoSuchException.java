@@ -2,9 +2,9 @@ package com.rest.api.exception.order;
 
 import org.springframework.http.HttpStatus;
 
-public class NoSuchException extends OrderRuntimeException {
+public class SellerNoSuchException extends SellerOrderRuntimeException {
 
-    public NoSuchException(String message) {
+    public SellerNoSuchException(String message) {
         super(message, HttpStatus.NOT_FOUND);
     }
 
