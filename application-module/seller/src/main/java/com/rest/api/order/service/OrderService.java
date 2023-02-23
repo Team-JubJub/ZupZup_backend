@@ -109,6 +109,7 @@ public class OrderService {
             throw new NoSuchException("등록되지 않은 가게입니다.");
         }
     }
+
     private Order isOrderPresent(Long orderId) {
         try {
             Order orderEntity = orderRepository.findById(orderId).get();
