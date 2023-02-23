@@ -1,6 +1,5 @@
 package exception;
 
-import exception.OrderRuntimeException;
 import org.springframework.http.HttpStatus;
 
 public class OrderNotInStoreException extends OrderRuntimeException {
