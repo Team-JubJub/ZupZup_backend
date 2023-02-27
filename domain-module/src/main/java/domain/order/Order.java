@@ -6,6 +6,7 @@ import domain.store.Store;
 import dto.order.OrderDto;
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hibernate.annotations.Cascade;
 
 
 import java.util.List;
@@ -31,7 +32,8 @@ public class Order {
     private String visitTime; // 방문예정 시간
 
     @ElementCollection
-    @CollectionTable(name="orderSpecific")
+    @CollectionTable(name = "orderSpecific", joinColumns = @JoinColumn(name="orderId", referencedColumnName="orderId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img)
 
     public void addOrder(OrderDto orderDto) {
