@@ -69,7 +69,7 @@ public class OrderService {
         List<OrderSpecific> customerRequestedOrderSpecific = orderEntity.getOrderList();    // 여기서부터
         OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);
         orderDto.setOrderList(sellerRequestedOrderSpecific);  // 여기까지 request dto에서 바로 service용 dto 만들 수 있는지 방법 연구
-        if (isOrderCancel(orderEntity, sellerRequestedOrderStatus, orderDto)) return "주문이 취소되었습니다.";
+        if (isOrderCancel(orderEntity, sellerRequestedOrderStatus, orderDto)) return "주문이 취소되었습니다.";    // 반려 or 취소 시.
 
         if(orderEntity.getOrderStatus() == OrderStatus.NEW) {    //신규 주문에 대한 로직(확정)
             for(int i=0; i < sellerRequestedOrderSpecific.size(); i++) { // 지금은 같은 상품끼리 같은 인덱스일 거라 간주하고 하는데, item id나 이름으로 조회 하는 방법으로 바꿀 것.
