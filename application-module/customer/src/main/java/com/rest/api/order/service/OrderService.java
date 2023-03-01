@@ -40,8 +40,7 @@ public class OrderService {
         String formattedOrderTime = orderTimeSetter();
         OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderDto, formattedOrderTime);
 
-        Order orderEntity = new Order();
-        orderEntity.addOrder(orderDto);
+        Order orderEntity = new Order(orderDto);
         orderRepository.save(orderEntity);
 
         return "주문이 완료되었습니다.";
