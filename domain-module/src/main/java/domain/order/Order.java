@@ -5,6 +5,7 @@ import domain.order.type.OrderStatus;
 import domain.store.Store;
 import dto.order.OrderDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import org.hibernate.annotations.Cascade;
 
@@ -23,18 +24,26 @@ public class Order {
 
     @ManyToOne(optional = false) @JoinColumn(name = "storeId")
     private Store store;    // store (relation with store table)
-    
+
+    @NotNull
     private OrderStatus orderStatus;    // 주문 상태
+    @NotNull
     private String userName; // 예약자명
+    @NotNull
     private String phoneNumber; // 예약자 전화번호
+    @NotNull
     private String orderTitle; // ex) 크로플 3개 외 3
+    @NotNull
     private String orderTime; // 주문 시간 -> ERD에 추가
+    @NotNull
     private String visitTime; // 방문예정 시간
 
+    @NotNull
     @ElementCollection
     @CollectionTable(name = "orderSpecific", joinColumns = @JoinColumn(name="orderId", referencedColumnName="orderId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img)
+
 
     public void addOrder(OrderDto orderDto) {
         this.orderStatus = OrderStatus.NEW;
