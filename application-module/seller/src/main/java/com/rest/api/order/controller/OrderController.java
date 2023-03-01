@@ -15,7 +15,7 @@ import java.util.List;
 @RestController
 @Log
 @RequiredArgsConstructor
-@RequestMapping("/{storeId}/order")
+@RequestMapping("/seller/{storeId}/order")
 public class OrderController {
 
     private final OrderService orderService;
