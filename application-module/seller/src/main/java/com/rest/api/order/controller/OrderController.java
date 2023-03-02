@@ -7,12 +7,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.rest.api.order.service.OrderService;
 
 import java.util.List;
 
 @RestController
+@Validated
 @Log
 @RequiredArgsConstructor
 @RequestMapping("/seller/{storeId}/order")

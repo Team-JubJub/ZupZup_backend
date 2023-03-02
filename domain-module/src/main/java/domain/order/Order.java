@@ -5,6 +5,7 @@ import domain.order.type.OrderStatus;
 import domain.store.Store;
 import dto.order.OrderDto;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -36,7 +37,7 @@ public class Order {
     @NotNull private String visitTime; // 방문예정 시간
     @NotNull @ElementCollection
     @CollectionTable(name = "orderSpecific", joinColumns = @JoinColumn(name="orderId", referencedColumnName="orderId"))
-    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    @Cascade(org.hibernate.annotations.CascadeType.ALL) @Valid
     private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img)
 
     @Builder
