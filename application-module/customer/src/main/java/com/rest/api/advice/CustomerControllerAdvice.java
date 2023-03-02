@@ -15,7 +15,7 @@ import java.util.List;
 public class CustomerControllerAdvice {
 
     @ExceptionHandler(value = ConstraintViolationException.class)
-    public ResponseEntity orderConstraintViolation(ConstraintViolationException e) {
+    public ResponseEntity orderConstraintViolation(ConstraintViolationException e) {    // 이 exception은 set으로 반환해줌. itemName 넣을 수 있는 방법 찾아볼 것.
         List<String> constraintViolations = new ArrayList<>();
         e.getConstraintViolations().forEach(error -> {
             String message = error.getMessage();
