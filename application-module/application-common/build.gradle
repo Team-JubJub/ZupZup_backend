@@ -7,8 +7,3 @@ plugins {
 group = 'zupzup'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
-
-dependencies {
-    implementation(project(':core-module'))
-    implementation(project(':domain-module'))
-}

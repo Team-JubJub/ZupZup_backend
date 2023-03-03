@@ -56,7 +56,6 @@ project(':core-module') {	// 공통 코드 모듈
 	bootJar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
 		enabled = false
 	}
-
 	jar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
 		enabled = true
 	}
@@ -68,7 +67,6 @@ project(':domain-module') {	// domain 모듈
 	bootJar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
 		enabled = false
 	}
-
 	jar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
 		enabled = true
 	}
