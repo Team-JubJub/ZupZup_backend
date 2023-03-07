@@ -4,6 +4,31 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.0'
 }
 
-group = 'zupzup'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
+subprojects {   // Applied to application-common, seller, customer
+    group = 'zupzup'
+    version = '0.0.1-SNAPSHOT'
+    sourceCompatibility = '17'
+
+    dependencies {
+        implementation(project(":core-module"))
+        implementation(project(":domain-module"))
+    }
+}
+project(':application-module:application-common') {
+    bootJar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
+        enabled = false
+    }
+    jar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
+        enabled = true
+    }
+}
+project(':application-module:customer') {
+    dependencies {
+        implementation(project(":application-module:application-common"))
+    }
+}
+project(':application-module:seller') {
+    dependencies {
+        implementation(project(":application-module:application-common"))
+    }
+}
