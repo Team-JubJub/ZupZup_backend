@@ -17,6 +17,7 @@ public class StoreDto {
     private String storeAddress; //가게 주소
     private String openTime;
     private String endTime;
+    private String saleMatters; //영업 관련 사항 / ex. 공휴일 휴무
     private String saleTimeStart;
     private String saleTimeEnd;
     private Double longitude;

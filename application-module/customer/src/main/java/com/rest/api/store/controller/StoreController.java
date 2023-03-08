@@ -7,6 +7,7 @@ import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,5 +31,15 @@ public class StoreController {
         return new ResponseEntity(allStoreListDto, HttpStatus.OK);
     }
 
+    @GetMapping("/{storeId}") // 가게 상세 화면
+    public ResponseEntity storeDetail(@PathVariable Long storeId) {
+
+        StoreResponseDto.GetStoreDetailDto storeDetailDto = storeService.storeDetail(storeId);
+
+        if(storeDetailDto.getItemDtoList().size() == 0) {
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity(storeDetailDto, HttpStatus.OK);
+    }
 
 }

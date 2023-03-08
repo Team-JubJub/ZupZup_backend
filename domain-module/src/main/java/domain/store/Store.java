@@ -39,6 +39,8 @@ public class Store {
     private String openTime;
     @Column(nullable = false)
     private String endTime;
+    @Column
+    private String saleMatters;
     @Column(nullable = false)
     private String saleTimeStart;
     @Column(nullable = false)
@@ -69,6 +71,7 @@ public class Store {
         this.storeAddress = storeDto.getStoreAddress();
         this.openTime = storeDto.getOpenTime();
         this.endTime = storeDto.getEndTime();
+        this.saleMatters = storeDto.getSaleMatters();
         this.saleTimeStart = storeDto.getSaleTimeStart();
         this.saleTimeEnd = storeDto.getSaleTimeEnd();
         this.longitude = storeDto.getLongitude();
