@@ -31,7 +31,7 @@ public class CustomerControllerAdvice {
             String invalidValue = error.getInvalidValue().toString();   // ex) -3(잘못 요청한 개수)
 
             constraintViolations.add(wrongItem + ", " + wrongField + ": " + exceptionMessage + "(잘못된 요청 값: " + invalidValue + ")");
-            // ex) "[orderList[0], itemCount: 상품의 개수는 0개 미만일 수 없습니다.(잘못된 요청 값: -3)"
+            // ex) "[orderList[0], itemCount: 상품의 개수는 0개 미만일 수 없습니다.(잘못된 요청 값: -3), ...]"
         });
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(constraintViolations);
