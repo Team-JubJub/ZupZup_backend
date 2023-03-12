@@ -40,8 +40,18 @@ public class OrderService {
         String formattedOrderTime = orderTimeSetter();
         OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderDto, formattedOrderTime);
 
-        Order orderEntity = new Order(orderDto);
+ㅎ        Order orderEntity = Order.builder(orderDto.getStore())
+                .orderStatus(OrderStatus.NEW)
+                .userName(orderDto.getUserName())
+                .phoneNumber(orderDto.getPhoneNumber())
+                .orderTitle(orderDto.getOrderTitle())
+                .orderTime(orderDto.getOrderTime())
+                .visitTime(orderDto.getVisitTime())
+                .orderList(orderDto.getOrderList())
+                .build();
         orderRepository.save(orderEntity);
+//        Order orderEntity = new Order(orderDto);
+//        orderRepository.save(orderEntity);
 
         return "주문이 완료되었습니다.";
     }
@@ -102,4 +112,5 @@ public class OrderService {
 
         return orderDto;
     }
+
 }
