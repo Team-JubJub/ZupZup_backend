@@ -40,7 +40,7 @@ public class OrderService {
         String formattedOrderTime = orderTimeSetter();
         OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderDto, formattedOrderTime);
 
-ㅎ        Order orderEntity = Order.builder(orderDto.getStore())
+        Order orderEntity = Order.builder(orderDto.getStore())
                 .orderStatus(OrderStatus.NEW)
                 .userName(orderDto.getUserName())
                 .phoneNumber(orderDto.getPhoneNumber())
