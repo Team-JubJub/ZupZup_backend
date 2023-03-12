@@ -43,8 +43,19 @@ public class OrderService {
     public String addOrder(Long storeId, OrderRequestDto.PostOrderDto postOrderDto) {
         String formattedOrderTime = orderTimeSetter();
         OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderDto, formattedOrderTime);
-        Order orderEntity = new Order(orderDto);
+
+        Order orderEntity = Order.builder(orderDto.getStore())
+                .orderStatus(OrderStatus.NEW)
+                .userName(orderDto.getUserName())
+                .phoneNumber(orderDto.getPhoneNumber())
+                .orderTitle(orderDto.getOrderTitle())
+                .orderTime(orderDto.getOrderTime())
+                .visitTime(orderDto.getVisitTime())
+                .orderList(orderDto.getOrderList())
+                .build();
         orderRepository.save(orderEntity);
+//        Order orderEntity = new Order(orderDto);
+//        orderRepository.save(orderEntity);
 
 //        List<OrderSpecific> customerRequestedOrderList = postOrderDto.getOrderList();  // 개수 수정
 //        for(int i=0; i < customerRequestedOrderList.size(); i++) { //
@@ -118,4 +129,5 @@ public class OrderService {
 //        itemEntity.updateItemCount(itemDto);
 //        itemRepository.save(itemEntity);
 //    }
+
 }
