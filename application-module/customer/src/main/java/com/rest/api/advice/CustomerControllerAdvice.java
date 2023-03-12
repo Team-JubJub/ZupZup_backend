@@ -33,7 +33,7 @@ public class CustomerControllerAdvice {
             constraintViolations.add(wrongItem + ", " + wrongField + ": " + exceptionMessage + "(잘못된 요청 값: " + invalidValue + ")");
             // ex) "[orderList[0], itemCount: 상품의 개수는 0개 미만일 수 없습니다.(잘못된 요청 값: -3)"
         });
-        Collections.reverse(constraintViolations);  // 요청의 순서대로 출력해주기 위해 뒤집음.
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(constraintViolations);
     }
 
