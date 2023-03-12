@@ -1,9 +1,11 @@
 package com.rest.api.order.service;
 
+import domain.item.Item;
 import domain.order.Order;
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
 import domain.store.Store;
+import dto.item.ItemDto;
 import dto.order.OrderDto;
 import dto.order.customer.request.OrderRequestDto;
 import dto.order.customer.response.OrderResponseDto;
@@ -14,6 +16,7 @@ import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import repository.ItemRepository;
 import repository.OrderRepository;
 import repository.StoreRepository;
 
@@ -32,8 +35,9 @@ public class OrderService {
 
     @Autowired
     ModelMapper modelMapper;
-    private final OrderRepository orderRepository;
     private final StoreRepository storeRepository;
+    private final ItemRepository itemRepository;
+    private final OrderRepository orderRepository;
 
     // <-------------------- POST part -------------------->
     public String addOrder(Long storeId, OrderRequestDto.PostOrderDto postOrderDto) {
@@ -52,6 +56,11 @@ public class OrderService {
         orderRepository.save(orderEntity);
 //        Order orderEntity = new Order(orderDto);
 //        orderRepository.save(orderEntity);
+
+//        List<OrderSpecific> customerRequestedOrderList = postOrderDto.getOrderList();  // 개수 수정
+//        for(int i=0; i < customerRequestedOrderList.size(); i++) { //
+//            updateItemStock(customerRequestedOrderList.get(i).getItemId(), customerRequestedOrderList.get(i).getItemCount()); //재고 수정
+//        }
 
         return "주문이 완료되었습니다.";
     }
@@ -112,5 +121,13 @@ public class OrderService {
 
         return orderDto;
     }
+
+//    private void updateItemStock(Long customerRequestedItemId, int customerRequestedItemCount) {
+//        ItemDto itemDto = new ItemDto();    // Entity의 개수 변경을 위한 dto
+//        Item itemEntity = itemRepository.findById(customerRequestedItemId).get();
+//        itemDto.setItemCount(itemEntity.getItemCount() - customerRequestedItemCount);     // 상품 재고에서 요청받은 개수 차감
+//        itemEntity.updateItemCount(itemDto);
+//        itemRepository.save(itemEntity);
+//    }
 
 }
