@@ -81,9 +81,9 @@ public class OrderService {
             if(orderDto.getOrderStatus() != OrderStatus.PARTIAL) orderDto.setOrderStatus(OrderStatus.CONFIRM);
         }
         else {   //신규 주문 이외의 주문(확정된 주문)에 대한 로직 -> 주문 완료됐으니 재고 수정
-            for(int i=0; i < sellerRequestedOrderList.size(); i++) { //
-                updateItemStock(sellerRequestedOrderList.get(i).getItemId(), sellerRequestedOrderList.get(i).getItemCount()); //재고 수정
-            }
+//            for(int i=0; i < sellerRequestedOrderList.size(); i++) { //
+//                updateItemStock(sellerRequestedOrderList.get(i).getItemId(), sellerRequestedOrderList.get(i).getItemCount()); //재고 수정
+//            } -> 사용자 앱으로
             orderDto.setOrderStatus(OrderStatus.COMPLETE);
         }
 
@@ -142,13 +142,13 @@ public class OrderService {
         return false;
     }
 
-    private void updateItemStock(Long sellerRequestedItemId, int sellerRequestedItemCount) {
-        ItemDto itemDto = new ItemDto();    // Entity의 개수 변경을 위한 dto
-        Item itemEntity = itemRepository.findById(sellerRequestedItemId).get();
-        itemDto.setItemCount(itemEntity.getItemCount() - sellerRequestedItemCount);     // 상품 재고에서 요청받은 개수 차감
-        itemEntity.updateItemCount(itemDto);
-        itemRepository.save(itemEntity);
-    }
+//    private void updateItemStock(Long sellerRequestedItemId, int sellerRequestedItemCount) {
+//        ItemDto itemDto = new ItemDto();    // Entity의 개수 변경을 위한 dto
+//        Item itemEntity = itemRepository.findById(sellerRequestedItemId).get();
+//        itemDto.setItemCount(itemEntity.getItemCount() - sellerRequestedItemCount);     // 상품 재고에서 요청받은 개수 차감
+//        itemEntity.updateItemCount(itemDto);
+//        itemRepository.save(itemEntity);
+//    }
 
     private String patchSaveAndReturn(Order orderEntity, OrderDto orderDto) {
         orderEntity.updateOrder(orderDto);

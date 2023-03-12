@@ -46,10 +46,10 @@ public class OrderService {
         Order orderEntity = new Order(orderDto);
         orderRepository.save(orderEntity);
 
-        List<OrderSpecific> customerRequestedOrderList = postOrderDto.getOrderList();  // 개수 수정
-        for(int i=0; i < customerRequestedOrderList.size(); i++) { //
-            updateItemStock(customerRequestedOrderList.get(i).getItemId(), customerRequestedOrderList.get(i).getItemCount()); //재고 수정
-        }
+//        List<OrderSpecific> customerRequestedOrderList = postOrderDto.getOrderList();  // 개수 수정
+//        for(int i=0; i < customerRequestedOrderList.size(); i++) { //
+//            updateItemStock(customerRequestedOrderList.get(i).getItemId(), customerRequestedOrderList.get(i).getItemCount()); //재고 수정
+//        }
 
         return "주문이 완료되었습니다.";
     }
@@ -111,11 +111,11 @@ public class OrderService {
         return orderDto;
     }
 
-    private void updateItemStock(Long customerRequestedItemId, int customerRequestedItemCount) {
-        ItemDto itemDto = new ItemDto();    // Entity의 개수 변경을 위한 dto
-        Item itemEntity = itemRepository.findById(customerRequestedItemId).get();
-        itemDto.setItemCount(itemEntity.getItemCount() - customerRequestedItemCount);     // 상품 재고에서 요청받은 개수 차감
-        itemEntity.updateItemCount(itemDto);
-        itemRepository.save(itemEntity);
-    }
+//    private void updateItemStock(Long customerRequestedItemId, int customerRequestedItemCount) {
+//        ItemDto itemDto = new ItemDto();    // Entity의 개수 변경을 위한 dto
+//        Item itemEntity = itemRepository.findById(customerRequestedItemId).get();
+//        itemDto.setItemCount(itemEntity.getItemCount() - customerRequestedItemCount);     // 상품 재고에서 요청받은 개수 차감
+//        itemEntity.updateItemCount(itemDto);
+//        itemRepository.save(itemEntity);
+//    }
 }
