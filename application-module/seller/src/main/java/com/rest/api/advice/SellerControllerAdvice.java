@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,9 +32,9 @@ public class SellerControllerAdvice {
             String invalidValue = error.getInvalidValue().toString();   // ex) -3(잘못 요청한 개수)
 
             constraintViolations.add(wrongItem + ", " + wrongField + ": " + exceptionMessage + "(잘못된 요청 값: " + invalidValue + ")");
-            // ex) "[orderList[0], itemCount: 상품의 개수는 0개 미만일 수 없습니다.(잘못된 요청 값: -3)"
+            // ex) "[orderList[0], itemCount: 상품의 개수는 0개 미만일 수 없습니다.(잘못된 요청 값: -3), ...]"
         });
-        Collections.reverse(constraintViolations);  // 요청의 순서대로 출력해주기 위해 뒤집음.
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(constraintViolations);
     }
 
