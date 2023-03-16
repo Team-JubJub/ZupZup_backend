@@ -71,7 +71,7 @@ public class OrderService {
 
         if(orderEntity.getOrderStatus() == OrderStatus.NEW) {    //신규 주문에 대한 로직(확정)
             for(int i=0; i < sellerRequestedOrderList.size(); i++) { // 지금은 같은 상품끼리 같은 인덱스일 거라 간주하고 하는데, item id나 이름으로 조회 하는 방법으로 바꿀 것.
-                int sellerRequestedItemCount = sellerRequestedOrderList.get(i).getItemCount();
+                Integer sellerRequestedItemCount = sellerRequestedOrderList.get(i).getItemCount();  // 해당 부분 primitive vs wrapper 고민할 것 -> 산술연산 없으므로 wrapper로.
                 isRequestedCountNotExceedStock(sellerRequestedOrderList.get(i).getItemId(), sellerRequestedItemCount);  // 상품 재고보다 많은 수의 주문이 확정됐을 시 예외처리
                 if(customerRequestedOrderList.get(i).getItemCount() != sellerRequestedItemCount) {  // 사장님이 컨펌한 것과 원래 주문 요청에서의 개수가 하나라도 다르면
                     orderDto.getOrderList().get(i).setItemCount(sellerRequestedItemCount);
@@ -118,7 +118,7 @@ public class OrderService {
         }
     }
 
-    private void isRequestedCountNotExceedStock(Long sellerRequestedItemId, int sellerRequestedItemCount) {
+    private void isRequestedCountNotExceedStock(Long sellerRequestedItemId, Integer sellerRequestedItemCount) {
         Item itemEntity = itemRepository.findById(sellerRequestedItemId).get();
         if(sellerRequestedItemCount > itemEntity.getItemCount()) {
             throw new RequestedCountExceedStockException(itemEntity.getItemId(), itemEntity.getItemName());
