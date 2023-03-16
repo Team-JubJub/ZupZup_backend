@@ -69,7 +69,7 @@ public class OrderService {
         List<OrderSpecific> sellerRequestedOrderList = patchOrderDto.getOrderList();  // 사장님이 request한 주문
         orderDto.setOrderList(sellerRequestedOrderList);  // 여기까지 request dto에서 바로 service용 dto 만들 수 있는지 방법 연구
 
-        if(orderEntity.getOrderStatus() == OrderStatus.NEW) {    //신규 주문에 대한 로직(확정)
+        if(orderEntity.getOrderStatus().equals(OrderStatus.NEW)) {    //신규 주문에 대한 로직(확정)
             for(int i=0; i < sellerRequestedOrderList.size(); i++) { // 지금은 같은 상품끼리 같은 인덱스일 거라 간주하고 하는데, item id나 이름으로 조회 하는 방법으로 바꿀 것.
                 Integer sellerRequestedItemCount = sellerRequestedOrderList.get(i).getItemCount();  // 해당 부분 primitive vs wrapper 고민할 것 -> 산술연산 없으므로 wrapper로.
                 isRequestedCountNotExceedStock(sellerRequestedOrderList.get(i).getItemId(), sellerRequestedItemCount);  // 상품 재고보다 많은 수의 주문이 확정됐을 시 예외처리
@@ -78,7 +78,7 @@ public class OrderService {
                     orderDto.setOrderStatus(OrderStatus.PARTIAL); // 주문상태 부분확정으로
                 }
             }
-            if(orderDto.getOrderStatus() != OrderStatus.PARTIAL) orderDto.setOrderStatus(OrderStatus.CONFIRM);
+            if(!orderDto.getOrderStatus().equals(OrderStatus.PARTIAL)) orderDto.setOrderStatus(OrderStatus.CONFIRM);
         }
         else {   //신규 주문 이외의 주문(확정된 주문)에 대한 로직 -> 주문 완료됐으니 재고 수정
 //            for(int i=0; i < sellerRequestedOrderList.size(); i++) { //
@@ -113,14 +113,14 @@ public class OrderService {
     }
 
     private void isOrderInStore(Long storeId, Order orderEntity) {
-        if(orderEntity.getStore().getStoreId() != storeId){
+        if(orderEntity.getStore().getStoreId().equals(storeId)) {
             throw new OrderNotInStoreException();
         }
     }
 
     private void isRequestedCountNotExceedStock(Long sellerRequestedItemId, Integer sellerRequestedItemCount) {
         Item itemEntity = itemRepository.findById(sellerRequestedItemId).get();
-        if(sellerRequestedItemCount > itemEntity.getItemCount()) {
+        if(sellerRequestedItemCount.compareTo(itemEntity.getItemCount()) > 0) { // sellerReq - 가 itemEntity.get-보다 크면
             throw new RequestedCountExceedStockException(itemEntity.getItemId(), itemEntity.getItemName());
         }
     }
@@ -133,7 +133,7 @@ public class OrderService {
     }
 
     private boolean isOrderCancel(Order orderEntity, OrderStatus sellerRequestedOrderStatus, OrderDto orderDto) {
-        if(sellerRequestedOrderStatus == OrderStatus.SENDBACK || sellerRequestedOrderStatus == OrderStatus.CANCEL) { //신규든 아니든 취소인 경우
+        if(sellerRequestedOrderStatus.equals(OrderStatus.SENDBACK) || sellerRequestedOrderStatus.equals(OrderStatus.CANCEL)) { //신규든 아니든 취소인 경우
             orderDto.setOrderStatus(OrderStatus.CANCEL);
             orderEntity.updateOrder(orderDto);
             orderRepository.save(orderEntity);
@@ -153,9 +153,9 @@ public class OrderService {
     private String patchSaveAndReturn(Order orderEntity, OrderDto orderDto) {
         orderEntity.updateOrder(orderDto);
         orderRepository.save(orderEntity);
-        if(orderEntity.getOrderStatus() == OrderStatus.CONFIRM) return "주문이 확정되었습니다.";
-        else if(orderEntity.getOrderStatus() == OrderStatus.PARTIAL) return "주문이 부분확정되었습니다.";
-        else if(orderEntity.getOrderStatus() == OrderStatus.COMPLETE) return "주문이 완료되었습니다.";
+        if(orderEntity.getOrderStatus().equals(OrderStatus.CONFIRM)) return "주문이 확정되었습니다.";
+        else if(orderEntity.getOrderStatus().equals(OrderStatus.PARTIAL)) return "주문이 부분확정되었습니다.";
+        else if(orderEntity.getOrderStatus().equals(OrderStatus.COMPLETE)) return "주문이 완료되었습니다.";
         return "주문이 완료되었습니다.";
     }
 
