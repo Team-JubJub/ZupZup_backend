@@ -113,7 +113,7 @@ public class OrderService {
     }
 
     private void isOrderInStore(Long storeId, Order orderEntity) {
-        if(orderEntity.getStore().getStoreId().equals(storeId)) {
+        if(!orderEntity.getStore().getStoreId().equals(storeId)) {
             throw new OrderNotInStoreException();
         }
     }
