@@ -7,10 +7,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Entity @Getter
 @NoArgsConstructor
 @Table(name = "item")
-@Getter
 public class Item {
 
         @Id

@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 
 @Service
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
 public class ItemService {
 
@@ -31,6 +30,7 @@ public class ItemService {
     @Autowired
     ModelMapper modelMapper;
 
+    @Transactional
     public Long saveItem(ItemRequestDto requestDto, MultipartFile itemImgFile) throws Exception {
         /**
          * 상품 등록
@@ -61,6 +61,7 @@ public class ItemService {
         return item.getItemId();
     }
 
+    @Transactional
     public String deleteItem(Long itemId) {
         /**
          * 상품 삭제
@@ -75,6 +76,7 @@ public class ItemService {
         return "상품 삭제가 완료되었습니다.";
     }
 
+    @Transactional
     public String clearCount(Long storeId) {
         /**
          * 상품 개수 초기화
@@ -101,6 +103,7 @@ public class ItemService {
         return "상품 초기화에 성공했습니다.";
     }
 
+    @Transactional
     public String updateItem(Long itemId, UpdateRequestDto updateDto, MultipartFile itemImg) throws IOException {
         // 1. 상품과 가게가 존재하는지
         Item itemEntity = isItemPresent(itemId);

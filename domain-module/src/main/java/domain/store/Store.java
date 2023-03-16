@@ -56,7 +56,7 @@ public class Store {
 
     @OneToMany(
             mappedBy = "store",
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
+            //cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
             orphanRemoval = true,
             fetch = FetchType.EAGER
     )
