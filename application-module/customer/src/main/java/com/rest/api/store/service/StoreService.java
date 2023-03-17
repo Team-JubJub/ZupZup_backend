@@ -39,6 +39,15 @@ public class StoreService {
         return allStoreListDto;
     }
 
+    public List<StoreResponseDto.GetStoreDto> searchedStoreList(String storeName) {
+        List<Store> searchedStoreListEntity = storeRepository.findByStoreNameContaining(storeName);
+        List<StoreResponseDto.GetStoreDto> searchedStoreListDto = searchedStoreListEntity.stream()
+                .map(m -> modelMapper.map(m, StoreResponseDto.GetStoreDto.class))
+                .collect(Collectors.toList());
+
+        return searchedStoreListDto;
+    }
+
     public StoreResponseDto.GetStoreDetailDto storeDetail(Long storeId) {
 
         //store entity 가져와서 DTO로 변환
