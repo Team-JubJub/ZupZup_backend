@@ -21,7 +21,7 @@ public class StoreController {
     // <-------------------- GET part -------------------->
     @GetMapping("") // 가게들 list
     public ResponseEntity storeList(@RequestParam(required = false) String storeName) {
-        if(storeName != null || !storeName.isBlank()) { // 가게 검색건이 있을 경우
+        if(storeName != null && !storeName.isBlank()) { // 가게 검색건이 있을 경우
             List<StoreResponseDto.GetStoreDto> searchedStoreListDto = storeService.searchedStoreList(storeName);
             if (searchedStoreListDto.size() == 0) {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
