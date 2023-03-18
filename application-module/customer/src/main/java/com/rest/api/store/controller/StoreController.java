@@ -6,10 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,12 +20,21 @@ public class StoreController {
 
     // <-------------------- GET part -------------------->
     @GetMapping("") // 가게들 list
-    public ResponseEntity storeList() {
-        List<StoreResponseDto.GetStoreDto> allStoreListDto = storeService.storeList();
-        if(allStoreListDto.size() == 0) {
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+    public ResponseEntity storeList(@RequestParam(required = false) String storeName) {
+        if(storeName != null) { // 가게 검색건이 있을 경우
+            List<StoreResponseDto.GetStoreDto> searchedStoreListDto = storeService.searchedStoreList(storeName);
+            if (searchedStoreListDto.size() == 0) {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity(searchedStoreListDto, HttpStatus.OK);
         }
-        return new ResponseEntity(allStoreListDto, HttpStatus.OK);
+        else {  // 가게 검색건이 없는 경우
+            List<StoreResponseDto.GetStoreDto> allStoreListDto = storeService.storeList();
+            if (allStoreListDto.size() == 0) {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity(allStoreListDto, HttpStatus.OK);
+        }
     }
 
     @GetMapping("/{storeId}") // 가게 상세 화면
