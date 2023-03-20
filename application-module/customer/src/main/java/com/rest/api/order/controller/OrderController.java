@@ -23,7 +23,7 @@ public class OrderController {
     private final OrderService orderService;
 
     // <-------------------- POST part -------------------->
-    @PostMapping("/store/{storeId}/order")    // end point에 order 추가돼야할지 고민할 것
+    @PostMapping("/store/{storeId}/order")
     public ResponseEntity addOrder(@PathVariable Long storeId, @RequestBody @Valid OrderRequestDto.PostOrderDto postOrderDto) {
         String addOrderResult = orderService.addOrder(storeId, postOrderDto);
 
