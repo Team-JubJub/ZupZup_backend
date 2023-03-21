@@ -37,7 +37,7 @@ public class OrderResponseDto {
     // <-------------------- PATCH part -------------------->
     @Getter
     @Setter
-    public static class PostOrderResponseDto { // PATCH 시 return 할 DTO
+    public static class PatchOrderResponseDto { // PATCH 시 return 할 DTO
         private GetOrderDetailsDto data;
         private String href;
         private String message;
