@@ -38,7 +38,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     // <-------------------- POST part -------------------->
-    public String addOrder(Long storeId, OrderRequestDto.PostOrderDto postOrderDto) {
+    public OrderResponseDto.PostOrderResponseDto addOrder(Long storeId, OrderRequestDto.PostOrderDto postOrderDto) {
         String formattedOrderTime = orderTimeSetter();
         OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderDto, formattedOrderTime);
 
@@ -53,7 +53,7 @@ public class OrderService {
                 .build();
         orderRepository.save(orderEntity);
         Long madeOrderId = orderEntity.getId();
-//        Order orderEntity = new Order(orderDto);
+//        Order orderEntity = new Order(orderDto);  개수 수정 로직 -> 일단 주석처리
 //        orderRepository.save(orderEntity);
 
 //        List<OrderSpecific> customerRequestedOrderList = postOrderDto.getOrderList();  // 개수 수정
@@ -64,7 +64,7 @@ public class OrderService {
         postOrderResponseDto.setMessage("주문이 완료되었습니다.");
         postOrderResponseDto.setHref("http://localhost:8090/customer/order/"+madeOrderId);
 
-        return "주문이 완료되었습니다.";
+        return postOrderResponseDto;
     }
 
     // <-------------------- GET part -------------------->

@@ -25,9 +25,9 @@ public class OrderController {
     // <-------------------- POST part -------------------->
     @PostMapping("/store/{storeId}/order")
     public ResponseEntity addOrder(@PathVariable Long storeId, @RequestBody @Valid OrderRequestDto.PostOrderDto postOrderDto) {
-        String addOrderResult = orderService.addOrder(storeId, postOrderDto);
+        OrderResponseDto.PostOrderResponseDto postOrderResponseDto = orderService.addOrder(storeId, postOrderDto);
 
-        return new ResponseEntity(addOrderResult, HttpStatus.CREATED);
+        return new ResponseEntity(postOrderResponseDto, HttpStatus.CREATED);
     }
 
     // <-------------------- GET part -------------------->
