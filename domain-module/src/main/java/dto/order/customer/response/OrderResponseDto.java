@@ -21,7 +21,7 @@ public class OrderResponseDto {
     @Getter
     @Setter
     public static class GetOrderDto {
-        private Long orderId;
+        private Long id;
         private String storeName;   // entity에는 store 객체 저장, modelMapper가 알아서 name 빼내줌.
         private OrderStatus orderStatus;
         private String userName; // 닉네임
@@ -33,7 +33,7 @@ public class OrderResponseDto {
     @Getter
     @Setter
     public static class GetOrderDetailsDto {
-        private Long orderId;
+        private Long id;
         private String storeName;   // entity에는 store 객체 저장, modelMapper가 알아서 name 빼내줌.
         private String storeAddress; // 상동
         private OrderStatus orderStatus;
