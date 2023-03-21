@@ -54,6 +54,7 @@ public class OrderService {
                 .orderList(orderDto.getOrderList())
                 .build();
         orderRepository.save(orderEntity);
+        Long madeOrderId = orderEntity.getId();
 //        Order orderEntity = new Order(orderDto);
 //        orderRepository.save(orderEntity);
 
@@ -61,6 +62,9 @@ public class OrderService {
 //        for(int i=0; i < customerRequestedOrderList.size(); i++) { //
 //            updateItemStock(customerRequestedOrderList.get(i).getItemId(), customerRequestedOrderList.get(i).getItemCount()); //재고 수정
 //        }
+        OrderResponseDto.PostOrderDto postOrderResponseDto = modelMapper.map(orderEntity, OrderResponseDto.PostOrderDto.class);
+        postOrderResponseDto.setMessage("주문이 완료되었습니다.");
+        postOrderResponseDto.setHref("http://localhost:8090/customer/order/"+madeOrderId);
 
         return "주문이 완료되었습니다.";
     }
