@@ -11,7 +11,7 @@ public class OrderResponseDto {
     // <-------------------- POST part -------------------->
     @Getter
     @Setter
-    public static class PostOrderDto {
+    public static class PostOrderResponseDto {
         private String storeName;   // entity에는 store 객체 저장, modelMapper가 알아서 name 빼내줌.
         private String storeAddress; // 상동
         private OrderStatus orderStatus;

@@ -1,11 +1,9 @@
 package com.rest.api.order.service;
 
-import domain.item.Item;
 import domain.order.Order;
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
 import domain.store.Store;
-import dto.item.ItemDto;
 import dto.order.OrderDto;
 import dto.order.customer.request.OrderRequestDto;
 import dto.order.customer.response.OrderResponseDto;
@@ -62,7 +60,7 @@ public class OrderService {
 //        for(int i=0; i < customerRequestedOrderList.size(); i++) { //
 //            updateItemStock(customerRequestedOrderList.get(i).getItemId(), customerRequestedOrderList.get(i).getItemCount()); //재고 수정
 //        }
-        OrderResponseDto.PostOrderDto postOrderResponseDto = modelMapper.map(orderEntity, OrderResponseDto.PostOrderDto.class);
+        OrderResponseDto.PostOrderResponseDto postOrderResponseDto = modelMapper.map(orderEntity, OrderResponseDto.PostOrderResponseDto.class);
         postOrderResponseDto.setMessage("주문이 완료되었습니다.");
         postOrderResponseDto.setHref("http://localhost:8090/customer/order/"+madeOrderId);
 
