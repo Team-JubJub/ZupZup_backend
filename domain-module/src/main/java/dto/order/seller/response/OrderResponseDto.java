@@ -9,12 +9,20 @@ import java.util.List;
 
 public class OrderResponseDto {
 
+    // <-------------------- POST part -------------------->
+    @Getter
+    @Setter
+    public static class PostOrderResponseDto { // GET에 mapping할 DTO
+        private GetOrderDetailsDto data;
+        private String href;
+        private String message;
+    }
+
     // <-------------------- GET part -------------------->
     @Getter
     @Setter
     public static class GetOrderDto { // GET에 mapping할 DTO
         private Long id;    // order ID
-
         private OrderStatus orderStatus;
         private String userName; // 닉네임
         private String orderTitle; // ex) 크로플 3개 외 3
@@ -26,7 +34,6 @@ public class OrderResponseDto {
     @Setter
     public static class GetOrderDetailsDto { // 단건 GET에 mapping할 DTO
         private Long id;    // Order ID
-
         private OrderStatus orderStatus;
         private String userName; // 닉네임
         private String phoneNumber; // 전화번호 -> 필요 없으면 삭제할 것
