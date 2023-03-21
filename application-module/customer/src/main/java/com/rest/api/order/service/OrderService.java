@@ -52,7 +52,7 @@ public class OrderService {
                 .orderList(orderDto.getOrderList())
                 .build();
         orderRepository.save(orderEntity);
-        Long madeOrderId = orderEntity.getId();
+        OrderResponseDto.GetOrderDetailsDto madeOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
 //        Order orderEntity = new Order(orderDto);  개수 수정 로직 -> 일단 주석처리
 //        orderRepository.save(orderEntity);
 
@@ -60,9 +60,10 @@ public class OrderService {
 //        for(int i=0; i < customerRequestedOrderList.size(); i++) { //
 //            updateItemStock(customerRequestedOrderList.get(i).getItemId(), customerRequestedOrderList.get(i).getItemCount()); //재고 수정
 //        }
-        OrderResponseDto.PostOrderResponseDto postOrderResponseDto = modelMapper.map(orderEntity, OrderResponseDto.PostOrderResponseDto.class);
+        OrderResponseDto.PostOrderResponseDto postOrderResponseDto = new OrderResponseDto.PostOrderResponseDto();
+        postOrderResponseDto.setData(madeOrderDetailsDto);
+        postOrderResponseDto.setHref("http://localhost:8090/customer/order/"+madeOrderDetailsDto.getOrderId());
         postOrderResponseDto.setMessage("주문이 완료되었습니다.");
-        postOrderResponseDto.setHref("http://localhost:8090/customer/order/"+madeOrderId);
 
         return postOrderResponseDto;
     }
