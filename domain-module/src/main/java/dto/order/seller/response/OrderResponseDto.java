@@ -9,15 +9,6 @@ import java.util.List;
 
 public class OrderResponseDto {
 
-    // <-------------------- POST part -------------------->
-    @Getter
-    @Setter
-    public static class PostOrderResponseDto { // GET에 mapping할 DTO
-        private GetOrderDetailsDto data;
-        private String href;
-        private String message;
-    }
-
     // <-------------------- GET part -------------------->
     @Getter
     @Setter
@@ -41,6 +32,15 @@ public class OrderResponseDto {
         private String orderTime;   // 주문 시간
         private String visitTime; // 방문예정 시간
         private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수
+    }
+
+    // <-------------------- PATCH part -------------------->
+    @Getter
+    @Setter
+    public static class PostOrderResponseDto { // PATCH 시 return 할 DTO
+        private GetOrderDetailsDto data;
+        private String href;
+        private String message;
     }
 
 }
