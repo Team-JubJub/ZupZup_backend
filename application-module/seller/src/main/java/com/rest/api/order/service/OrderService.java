@@ -59,16 +59,21 @@ public class OrderService {
     }
 
     // <-------------------- PATCH part -------------------->
-    public String updateOrder(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
+    public OrderResponseDto.PatchOrderResponseDto updateOrder(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
         Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);
         OrderStatus sellerRequestedOrderStatus = patchOrderDto.getOrderStatus(); // 반려, 확정, 취소, 완료
         OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);
-        if (isOrderCancel(orderEntity, sellerRequestedOrderStatus, orderDto)) return "주문이 취소되었습니다.";    // 반려 or 취소 시.
+
+        if (isOrderCancel(orderEntity, sellerRequestedOrderStatus, orderDto)) { // 반려 or 취소 시.
+            orderDto.setOrderStatus(OrderStatus.CANCEL);
+            OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = setPatchOrderResponseDto(storeId, orderEntity, orderDto);
+            patchOrderResponseDto.setMessage("주문이 취소되었습니다.");
+            return patchOrderResponseDto;
+        }
 
         List<OrderSpecific> customerRequestedOrderList = orderEntity.getOrderList();    // 여기서부터
         List<OrderSpecific> sellerRequestedOrderList = patchOrderDto.getOrderList();  // 사장님이 request한 주문
         orderDto.setOrderList(sellerRequestedOrderList);  // 여기까지 request dto에서 바로 service용 dto 만들 수 있는지 방법 연구
-
         if(orderEntity.getOrderStatus().equals(OrderStatus.NEW)) {    //신규 주문에 대한 로직(확정)
             for(int i=0; i < sellerRequestedOrderList.size(); i++) { // 지금은 같은 상품끼리 같은 인덱스일 거라 간주하고 하는데, item id나 이름으로 조회 하는 방법으로 바꿀 것.
                 Integer sellerRequestedItemCount = sellerRequestedOrderList.get(i).getItemCount();  // 해당 부분 primitive vs wrapper 고민할 것 -> 산술연산 없으므로 wrapper로.
@@ -87,10 +92,9 @@ public class OrderService {
             orderDto.setOrderStatus(OrderStatus.COMPLETE);
         }
 
-        String patchResult = patchSaveAndReturn(orderEntity, orderDto);
-        return patchResult;
+        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = patchSaveAndReturn(storeId, orderEntity, orderDto);
+        return patchOrderResponseDto;
     }
-
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
@@ -118,6 +122,12 @@ public class OrderService {
         }
     }
 
+    private Order exceptionCheckAndGetOrderEntity(Long storeId, Long orderId) {
+        Order orderEntity = isOrderPresent(orderId);
+        isOrderInStore(storeId, orderEntity);
+        return orderEntity;
+    }
+
     private void isRequestedCountNotExceedStock(Long sellerRequestedItemId, Integer sellerRequestedItemCount) {
         Item itemEntity = itemRepository.findById(sellerRequestedItemId).get();
         if(sellerRequestedItemCount.compareTo(itemEntity.getItemCount()) > 0) { // sellerReq - 가 itemEntity.get-보다 크면
@@ -126,20 +136,19 @@ public class OrderService {
     }
 
     // <--- Methods for readability --->
-    private Order exceptionCheckAndGetOrderEntity(Long storeId, Long orderId) {
-        Order orderEntity = isOrderPresent(orderId);
-        isOrderInStore(storeId, orderEntity);
-        return orderEntity;
+    private boolean isOrderCancel(Order orderEntity, OrderStatus sellerRequestedOrderStatus, OrderDto orderDto) {
+        if(sellerRequestedOrderStatus.equals(OrderStatus.SENDBACK) || sellerRequestedOrderStatus.equals(OrderStatus.CANCEL)) return true;   //신규든 아니든 취소인 경우
+        else return false;
     }
 
-    private boolean isOrderCancel(Order orderEntity, OrderStatus sellerRequestedOrderStatus, OrderDto orderDto) {
-        if(sellerRequestedOrderStatus.equals(OrderStatus.SENDBACK) || sellerRequestedOrderStatus.equals(OrderStatus.CANCEL)) { //신규든 아니든 취소인 경우
-            orderDto.setOrderStatus(OrderStatus.CANCEL);
-            orderEntity.updateOrder(orderDto);
-            orderRepository.save(orderEntity);
-            return true;
-        }
-        return false;
+    private OrderResponseDto.PatchOrderResponseDto setPatchOrderResponseDto(Long storeId, Order orderEntity, OrderDto orderDto) {
+        orderEntity.updateOrder(orderDto);
+        orderRepository.save(orderEntity);
+        OrderResponseDto.GetOrderDetailsDto patchedOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
+        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = new OrderResponseDto.PatchOrderResponseDto();
+        patchOrderResponseDto.setData(patchedOrderDetailsDto);
+        patchOrderResponseDto.setHref("http://localhost:8080/seller/" + storeId + "/order/" + patchedOrderDetailsDto.getId());
+        return patchOrderResponseDto;
     }
 
 //    private void updateItemStock(Long sellerRequestedItemId, int sellerRequestedItemCount) {
@@ -150,13 +159,13 @@ public class OrderService {
 //        itemRepository.save(itemEntity);
 //    }
 
-    private String patchSaveAndReturn(Order orderEntity, OrderDto orderDto) {
-        orderEntity.updateOrder(orderDto);
-        orderRepository.save(orderEntity);
-        if(orderEntity.getOrderStatus().equals(OrderStatus.CONFIRM)) return "주문이 확정되었습니다.";
-        else if(orderEntity.getOrderStatus().equals(OrderStatus.PARTIAL)) return "주문이 부분확정되었습니다.";
-        else if(orderEntity.getOrderStatus().equals(OrderStatus.COMPLETE)) return "주문이 완료되었습니다.";
-        return "주문이 완료되었습니다.";
+    private OrderResponseDto.PatchOrderResponseDto patchSaveAndReturn(Long storeId, Order orderEntity, OrderDto orderDto) {
+        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = setPatchOrderResponseDto(storeId, orderEntity, orderDto);
+
+        if(orderEntity.getOrderStatus().equals(OrderStatus.CONFIRM)) patchOrderResponseDto.setMessage("주문이 확정되었습니다.");
+        else if(orderEntity.getOrderStatus().equals(OrderStatus.PARTIAL)) patchOrderResponseDto.setMessage("주문이 부분확정되었습니다.");
+        else if(orderEntity.getOrderStatus().equals(OrderStatus.COMPLETE)) patchOrderResponseDto.setMessage("주문이 완료되었습니다.");
+        return patchOrderResponseDto;
     }
 
 }
