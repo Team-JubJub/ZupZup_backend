@@ -85,7 +85,7 @@ public class OrderService {
             }
             if(!orderDto.getOrderStatus().equals(OrderStatus.PARTIAL)) orderDto.setOrderStatus(OrderStatus.CONFIRM);
         }
-        else {   //신규 주문 이외의 주문(확정된 주문)에 대한 로직 -> 주문 완료됐으니 재고 수정
+        else if (orderEntity.getOrderStatus().equals(OrderStatus.CONFIRM) || orderEntity.getOrderStatus().equals(OrderStatus.PARTIAL)){   //확정된 주문에 대한 로직 -> 주문 완료됐으니 재고 수정
 //            for(int i=0; i < sellerRequestedOrderList.size(); i++) { //
 //                updateItemStock(sellerRequestedOrderList.get(i).getItemId(), sellerRequestedOrderList.get(i).getItemCount()); //재고 수정
 //            } -> 사용자 앱으로
