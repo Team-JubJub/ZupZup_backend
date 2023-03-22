@@ -66,8 +66,8 @@ public class OrderService {
 
         if (isOrderCancel(orderEntity, sellerRequestedOrderStatus, orderDto)) { // 반려 or 취소 시.
             orderDto.setOrderStatus(OrderStatus.CANCEL);
-            OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = setPatchOrderResponseDto(storeId, orderEntity, orderDto);
-            patchOrderResponseDto.setMessage("주문이 취소되었습니다.");
+            OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = patchSaveAndReturn(storeId, orderEntity, orderDto);
+
             return patchOrderResponseDto;
         }
 
@@ -141,16 +141,6 @@ public class OrderService {
         else return false;
     }
 
-    private OrderResponseDto.PatchOrderResponseDto setPatchOrderResponseDto(Long storeId, Order orderEntity, OrderDto orderDto) {
-        orderEntity.updateOrder(orderDto);
-        orderRepository.save(orderEntity);
-        OrderResponseDto.GetOrderDetailsDto patchedOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = new OrderResponseDto.PatchOrderResponseDto();
-        patchOrderResponseDto.setData(patchedOrderDetailsDto);
-        patchOrderResponseDto.setHref("http://localhost:8080/seller/" + storeId + "/order/" + patchedOrderDetailsDto.getId());
-        return patchOrderResponseDto;
-    }
-
 //    private void updateItemStock(Long sellerRequestedItemId, int sellerRequestedItemCount) {
 //        ItemDto itemDto = new ItemDto();    // Entity의 개수 변경을 위한 dto
 //        Item itemEntity = itemRepository.findById(sellerRequestedItemId).get();
@@ -160,11 +150,18 @@ public class OrderService {
 //    }
 
     private OrderResponseDto.PatchOrderResponseDto patchSaveAndReturn(Long storeId, Order orderEntity, OrderDto orderDto) {
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = setPatchOrderResponseDto(storeId, orderEntity, orderDto);
+        orderEntity.updateOrder(orderDto);
+        orderRepository.save(orderEntity);
+        OrderResponseDto.GetOrderDetailsDto patchedOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
+        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = new OrderResponseDto.PatchOrderResponseDto();
+        patchOrderResponseDto.setData(patchedOrderDetailsDto);
+        patchOrderResponseDto.setHref("http://localhost:8080/seller/" + storeId + "/order/" + patchedOrderDetailsDto.getId());
 
-        if(orderEntity.getOrderStatus().equals(OrderStatus.CONFIRM)) patchOrderResponseDto.setMessage("주문이 확정되었습니다.");
+        if(orderEntity.getOrderStatus().equals(OrderStatus.CANCEL)) patchOrderResponseDto.setMessage("주문이 취소되었습니다.");
+        else if(orderEntity.getOrderStatus().equals(OrderStatus.CONFIRM)) patchOrderResponseDto.setMessage("주문이 확정되었습니다.");
         else if(orderEntity.getOrderStatus().equals(OrderStatus.PARTIAL)) patchOrderResponseDto.setMessage("주문이 부분확정되었습니다.");
         else if(orderEntity.getOrderStatus().equals(OrderStatus.COMPLETE)) patchOrderResponseDto.setMessage("주문이 완료되었습니다.");
+
         return patchOrderResponseDto;
     }
 
