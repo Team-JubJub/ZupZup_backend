@@ -43,9 +43,9 @@ public class OrderController {
     // <-------------------- PATCH part -------------------->
     @PatchMapping("/{orderId}")  // 각 order에 대해 사장님이 주문 확정시 사용할 request
     public ResponseEntity updateOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
-        String response = orderService.updateOrder(storeId, orderId, patchOrderDto);
+        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.updateOrder(storeId, orderId, patchOrderDto);
 
-        return new ResponseEntity(response, HttpStatus.OK); // patch 된 order의 dto 반환
+        return new ResponseEntity(patchOrderResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
     }
 
 }
