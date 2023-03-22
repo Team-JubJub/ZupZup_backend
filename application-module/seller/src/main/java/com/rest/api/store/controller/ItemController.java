@@ -25,8 +25,9 @@ public class ItemController {
     public ResponseEntity saveItem(@RequestPart(value = "item") ItemRequestDto requestDto,
                                    @RequestPart(value = "image", required = false) MultipartFile itemImg) throws Exception {
 
-        Long itemId = itemService.saveItem(requestDto, itemImg);
-        return new ResponseEntity(itemId, HttpStatus.CREATED); // 상품의 id 반환
+        String itemName = itemService.saveItem(requestDto, itemImg);
+        String format = String.format("상품 %s(이)가 저장되었습니다.", itemName);
+        return new ResponseEntity(format, HttpStatus.CREATED); // 상품의 이름 반환
     }
 
     @PutMapping("/{storeId}/{itemId}")

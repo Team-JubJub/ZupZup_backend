@@ -31,7 +31,7 @@ public class ItemService {
     ModelMapper modelMapper;
 
     @Transactional
-    public Long saveItem(ItemRequestDto requestDto, MultipartFile itemImgFile) throws Exception {
+    public String saveItem(ItemRequestDto requestDto, MultipartFile itemImgFile) throws Exception {
         /**
          * 상품 등록
          * param: itemDto & multipartFile
@@ -58,7 +58,7 @@ public class ItemService {
         //3. 상품 저장
         itemRepository.save(item);
 
-        return item.getItemId();
+        return item.getItemName();
     }
 
     @Transactional
