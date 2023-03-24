@@ -3,3 +3,11 @@ plugins {
     id 'org.springframework.boot' version '3.0.0'
     id 'io.spring.dependency-management' version '1.1.0'
 }
+
+dependencies {
+    //spring security oauth2 cleint
+    implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
+    //spring security
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.security:spring-security-test")
+}
