@@ -27,7 +27,8 @@ public class Order {
     @ManyToOne(optional = false) @JoinColumn(name = "storeId")
     private Store store;    // store (relation with store table)
 
-    @NotNull private OrderStatus orderStatus;    // 주문 상태
+    @Enumerated(EnumType.STRING) @NotNull
+    private OrderStatus orderStatus;    // 주문 상태
     @NotNull private String userName; // 예약자명
     @NotNull private String phoneNumber; // 예약자 전화번호
     @NotNull private String orderTitle; // ex) 크로플 3개 외 3
