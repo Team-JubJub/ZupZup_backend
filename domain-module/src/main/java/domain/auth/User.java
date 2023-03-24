@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Entity @Getter
 @NoArgsConstructor
-@Table(name = "user", indexes = @Index(name = "idx_email", columnList = "email"))
+@Table(name = "user", indexes = @Index(name = "idx_email", columnList = "email"))   // 나중에 customer, seller 구분해서 만들지 고민할 것
 public class User {
 
     @Id
