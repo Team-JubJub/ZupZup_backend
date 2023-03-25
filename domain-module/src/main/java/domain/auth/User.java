@@ -18,7 +18,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    private String password;
+    private String password;    // Encoded type, raw type 관련 고민하기
 
     @Enumerated(EnumType.STRING)
     private Provider provider;
