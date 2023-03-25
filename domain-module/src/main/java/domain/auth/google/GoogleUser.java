@@ -13,7 +13,6 @@ public class GoogleUser {   // 구글에 AccessToken 보낸 후 받아오는 사
     public String name;
     public String givenName;
     public String familyName;
-    public String picture;
     public String locale;
 
 }

@@ -5,7 +5,7 @@ plugins {
 }
 
 dependencies {
-    //spring security oauth2 cleint
+    //spring security oauth2 client
     implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
     //spring security
     implementation("org.springframework.boot:spring-boot-starter-security")
