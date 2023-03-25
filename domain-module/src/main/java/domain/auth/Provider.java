@@ -1,4 +1,4 @@
-package domain.item;
+package domain.auth;
 
 public enum Provider {
 

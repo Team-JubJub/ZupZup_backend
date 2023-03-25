@@ -1,6 +1,5 @@
 package domain.auth;
 
-import domain.item.Provider;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
