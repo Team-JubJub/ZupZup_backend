@@ -30,7 +30,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2UserService delegate = new DefaultOAuth2UserService();
+        OAuth2UserService delegate = new DefaultOAuth2UserService();    // 대리자, super와 같다고 보면 됨.
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
         String email;
         User userEntity;
