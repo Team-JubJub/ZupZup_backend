@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@Component
+@Component  // OAuth2 공급자에서 반환된 상태와 비교할 수 있도록 state 매개 변수를 저장하는 용도, 단기(short-lived) 쿠키에 상태와 redirect_uri를 저장하고 검색하는 기능을 제공
 public class HttpCookieOAuth2AuthorizationRequestRepository implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
     public static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE_NAME = "oauth2_auth_request";
