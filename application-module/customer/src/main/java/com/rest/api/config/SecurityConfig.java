@@ -1,5 +1,7 @@
 package com.rest.api.config;
 
+import com.rest.api.auth.handler.OAuth2AuthenticationFailureHandler;
+import com.rest.api.auth.handler.OAuth2AuthenticationSuccessHandler;
 import com.rest.api.auth.service.CustomOAuth2UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,9 +17,13 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+    private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
 
-    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService) {
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService, OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler, OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler) {
         this.customOAuth2UserService = customOAuth2UserService;
+        this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
+        this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
     }
 
     @Bean
@@ -38,10 +44,13 @@ public class SecurityConfig {
 //                .logout()
 //                .logoutSuccessUrl("/")
                 .and()
-                    .oauth2Login().loginPage("/login")    // 인증 필요한 URL 접근 시 이동할 login page
+                    .oauth2Login().loginPage("/login/oauth2")    // 인증 필요한 URL 접근 시 이동할 login page
                     .defaultSuccessUrl("/") // 로그인 성공 시 이동할 곳
                     .failureUrl("/login")   // 로그인 실패 시 이동할 곳
-                    .userInfoEndpoint().userService(customOAuth2UserService);   // // 로그인 성공 후 사용자 정보를 가져옴, 사용자 정보 처리 시 사용 될 service
+                    .userInfoEndpoint().userService(customOAuth2UserService)   // // 로그인 성공 후 사용자 정보를 가져옴, 사용자 정보 처리 시 사용 될 service
+                .and()
+                    .successHandler(oAuth2AuthenticationSuccessHandler)
+                    .failureHandler(oAuth2AuthenticationFailureHandler);
 
         return http.build();
     }

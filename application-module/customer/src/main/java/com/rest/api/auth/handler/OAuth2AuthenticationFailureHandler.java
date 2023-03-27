@@ -1,4 +1,6 @@
 package com.rest.api.auth.handler;
 
-public class OAuth2AuthenticationFailureHandler {
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+
+public class OAuth2AuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 }
