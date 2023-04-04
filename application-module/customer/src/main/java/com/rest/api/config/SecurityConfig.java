@@ -50,7 +50,7 @@ public class SecurityConfig {
                 .and()
                     .authorizeHttpRequests()    // authorizeRequests() -> authorizeHttpRequests()
                     .requestMatchers("/login/**").authenticated()       // antMatchers() -> requestMatchers()
-                    .requestMatchers("/customer/**", "/h2-console/**").permitAll()  // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리
+                    .requestMatchers( "http://localhost:8082/**", "/customer/**", "/h2-console/**").permitAll()  // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리
 //                .and()
 //                .logout()
 //                .logoutSuccessUrl("/")
