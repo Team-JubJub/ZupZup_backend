@@ -2,6 +2,9 @@ package domain.auth;
 
 public enum Provider {
 
-    GOOGLE;
+    GOOGLE,
+    NAVER,
+    KAKAO,
+    APPLE;
     
 }
