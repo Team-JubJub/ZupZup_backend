@@ -61,9 +61,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             userEntity = optionalUserEntity.get();
         }
         else {  // 가입하지 않은 user -> DB에 저장
-            userEntity = User.builder(userDto.getEmail())
+            userEntity = User.builder(userDto.getProvider())
                     .role(Role.ROLE_USER)
-                    .provider(userDto.getProvider())
                     .build();
             userRepository.save(userEntity);
         }
