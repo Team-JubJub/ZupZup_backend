@@ -2,8 +2,7 @@ server:
   port: 8090
 spring:
   profiles:
-    group:
-      local: oauth
+    active: oauth
 
   datasource:
     url: jdbc:h2:tcp://localhost/~/zupzup
