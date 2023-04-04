@@ -16,7 +16,6 @@ public class User {
     private Long id;
 
     @Column(nullable = false) private String nickName;
-    @Column(nullable = false) private String password;    // 뺄지말지 고민하기
     @Column(nullable = false) private String gender;
     @Column(nullable = false) private String phoneNumber;
 
