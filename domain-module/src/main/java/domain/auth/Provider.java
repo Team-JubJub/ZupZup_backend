@@ -2,10 +2,10 @@ package domain.auth;
 
 public enum Provider {
 
-    GOOGLE("구글"),
-    NAVER("네이버"),
-    KAKAO("카카오"),
-    APPLE("애플");
+    GOOGLE("GOOGLE"),
+    NAVER("NAVER"),
+    KAKAO("KAKAO"),
+    APPLE("APPLE");
 
     private final String provider;
 

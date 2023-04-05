@@ -33,8 +33,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2UserService delegate = new DefaultOAuth2UserService();    // 기본 처리 Service를 내가 정의한 Service에 위임함.
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 //        String email;
-        String phoneNumber; // 폰 넘버나
-        String userName;    // 이름 기반 최초로그인 판단해야할 것 같음. -> 의논해볼 것
+        Role role = Role.ROLE_USER; // 사용자 앱에서의 로그인이므로, ROLE_USER 부여
+        Provider provider;  // 각 플랫폼에 따라 추후에 설정
+        String providedId;  // 각 플랫폼에서 제공하는 유니크 ID, DB에서 조회 및 최초 로그인 판단에 사용
         User userEntity;
         UserDto userDto = new UserDto();
 
@@ -49,23 +50,24 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 //            userDto.setProvider(Provider.GOOGLE);
 //            userDto.setEmail(email);
 //        }
-        if(registrationId.equals(Provider.NAVER)) {   // In case of Naver Login
+        if(registrationId.equals(Provider.NAVER)) {   // In case of Naver Login // temp
+            provider = Provider.NAVER;
             Map<String, Object> hash = (Map<String, Object>)response.get("response");
-            userDto.setProvider(Provider.NAVER);
-            userDto.setRole(Role.ROLE_USER);
-            phoneNumber = "temp";
+            providedId = provider.getProvider() + "_" + "temp";   // ex) NAVER_uniqueID
+            userDto.setProvidedId(providedId);
+            userDto.setProvider(provider);
+            userDto.setRole(role);
         }
         else {
             throw new OAuth2AuthenticationException("구현되지 않은 인증입니다.");
         }
 
-        Optional<User> optionalUserEntity = userRepository.findByPhoneNumber(phoneNumber);  // User가 DB에 있는지 없는지 여부 확인 용
-        // 생각해보니 최초로그인인지 판단하려면 로그인 api에서 정보 받아와서 db에 있는지 확인해야함.
+        Optional<User> optionalUserEntity = userRepository.findByProvidedId(providedId);  // User가 DB에 있는지 없는지 여부 확인 용 -> 각 플랫폼에서 제공하는 user의 unique ID 이용
         if(optionalUserEntity.isPresent()) {  // 이미 가입한(ZupZup에) user에 대한 로직
             userEntity = optionalUserEntity.get();
         }
-        else {  // 가입하지 않은 user -> DB에 저장
-            userEntity = User.builder(userDto.getProvider())
+        else {  // 가입하지 않은 user -> DB에 저장   // temp
+            userEntity = User.builder(userDto.getProvidedId())
                     .role(Role.ROLE_USER)
                     .build();
             userRepository.save(userEntity);

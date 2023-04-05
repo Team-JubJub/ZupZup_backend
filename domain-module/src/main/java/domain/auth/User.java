@@ -31,11 +31,11 @@ public class User {
     @Column(nullable = false) private Boolean essentialTerms;
     @Column(nullable = false) private Boolean optionalTerm1;
 
-    public static UserBuilder builder(Provider provider) {  // 현재 필수 파라미터는 임시
-        if(provider == null) {
-            throw new IllegalArgumentException("필수 파라미터(제공자) 누락");
+    public static UserBuilder builder(String providedId) {  // 현재 필수 파라미터는 임시
+        if(providedId == null) {
+            throw new IllegalArgumentException("필수 파라미터(providedId) 누락");
         }
-        return UserBuilder().provider(provider);
+        return UserBuilder().providedId(providedId);
     }
 
 }
