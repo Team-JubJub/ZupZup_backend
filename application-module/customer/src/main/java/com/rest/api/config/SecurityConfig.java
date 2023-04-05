@@ -50,10 +50,10 @@ public class SecurityConfig {
                 .and()
                     .authorizeHttpRequests()    // authorizeRequests() -> authorizeHttpRequests()
                     .requestMatchers("/login/**").authenticated()       // For test, antMatchers() -> requestMatchers()
-                    .requestMatchers( "http://localhost:8082/**", "/customer/**", "/h2-console/**").permitAll()  // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리
-//                .and()
-//                .logout()
-//                .logoutSuccessUrl("/")
+                    .requestMatchers( "/", "http://localhost:8082/**", "/customer/**", "/h2-console/**").permitAll()  // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리
+                .and()
+                    .logout()
+                    .logoutSuccessUrl("/")  // 로그아웃 시 인덱스 페이지로
                 .and()
                     .oauth2Login()
                     .authorizationEndpoint().baseUri("/login/oauth2")   // ex) ~~/login/oauth2/{naver, kakao, etc...(이 부분은 클라이언트에서 설정)}
