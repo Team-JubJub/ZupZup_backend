@@ -2,8 +2,8 @@ package domain.auth;
 
 public enum Role {
 
-    ROLE_ADMIN("관리자"),
-    ROLE_USER("유저");
+    ROLE_ADMIN("ROLE_ADMIN"),
+    ROLE_USER("ROLE_USER");
 
     private final String role;
 
