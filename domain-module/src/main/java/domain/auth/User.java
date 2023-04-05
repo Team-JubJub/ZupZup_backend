@@ -14,6 +14,9 @@ public class User {
     @Column(name = "userId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
+    private String providedId;
+    private String refreshToken;
 
     @Column(nullable = false) private String nickName;
     @Column(nullable = false) private String gender;
