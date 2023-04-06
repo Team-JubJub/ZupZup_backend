@@ -1,6 +1,8 @@
 package com.rest.api.auth.controller;
 
+import com.rest.api.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +17,9 @@ public class AuthController {
     1. 회원가입으로 리더렉션, 다시 sign-up, POST를 통해 회원가입 -> 앱 사용 가능
     2. 앱 사용 가능
     */
+    @Autowired
+    private AuthService authService;
+
     @PostMapping("/sign-up")    // 회원가입 요청
     public String signUp() {
         return "temp";
