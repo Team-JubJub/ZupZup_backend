@@ -53,21 +53,21 @@ public class SecurityConfig {
                     .requestMatchers( "/", "http://localhost:8082/**", "/customer/**", "/h2-console/**").permitAll()  // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리
                 .and()
                     .logout()
-                    .logoutSuccessUrl("/")  // 로그아웃 시 인덱스 페이지로
-                .and()
-                    .oauth2Login()
-                    .authorizationEndpoint().baseUri("/login/oauth2")   // ex) ~~/login/oauth2/{naver, kakao, etc...(이 부분은 클라이언트에서 설정)}
-                    .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository())
-                .and()
-                    .redirectionEndpoint().baseUri("/login/oauth2/callback")   // 일단 이렇게 두고 나중에 수정
-//                    .loginPage("/login/oauth2")    // 인증 필요한 URL 접근 시 이동할 login page
-                .and()
-                    .userInfoEndpoint().userService(customOAuth2UserService)   // // 로그인 성공 후 사용자 정보를 가져옴, 사용자 정보 처리 시 사용 될 service
-                .and()
-                    .successHandler(oAuth2AuthenticationSuccessHandler)
-                    .failureHandler(oAuth2AuthenticationFailureHandler)
-                .and()
-                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                    .logoutSuccessUrl("/");  // 로그아웃 시 인덱스 페이지로
+//                .and()
+//                    .oauth2Login()
+//                    .authorizationEndpoint().baseUri("/login/oauth2")   // ex) ~~/login/oauth2/{naver, kakao, etc...(이 부분은 클라이언트에서 설정)}
+//                    .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository())
+//                .and()
+//                    .redirectionEndpoint().baseUri("/login/oauth2/callback")   // 일단 이렇게 두고 나중에 수정
+////                    .loginPage("/login/oauth2")    // 인증 필요한 URL 접근 시 이동할 login page
+//                .and()
+//                    .userInfoEndpoint().userService(customOAuth2UserService)   // // 로그인 성공 후 사용자 정보를 가져옴, 사용자 정보 처리 시 사용 될 service
+//                .and()
+//                    .successHandler(oAuth2AuthenticationSuccessHandler)
+//                    .failureHandler(oAuth2AuthenticationFailureHandler)
+//                .and()
+//                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
