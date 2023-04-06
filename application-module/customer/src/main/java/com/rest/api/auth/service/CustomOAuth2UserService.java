@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {  // For OAuth2
 
     @Autowired
     UserRepository userRepository;
@@ -32,7 +32,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2UserService delegate = new DefaultOAuth2UserService();    // 기본 처리 Service를 내가 정의한 Service에 위임함.
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
-        String email;
+//        String email;
+        Role role = Role.ROLE_USER; // 사용자 앱에서의 로그인이므로, ROLE_USER 부여
+        Provider provider;  // 각 플랫폼에 따라 추후에 설정
+        String providedId;  // 각 플랫폼에서 제공하는 유니크 ID, DB에서 조회 및 최초 로그인 판단에 사용
         User userEntity;
         UserDto userDto = new UserDto();
 
@@ -42,28 +45,30 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         Map<String, Object> response = oAuth2User.getAttributes();
 
-        if(registrationId.equals(Provider.GOOGLE)) {   // In case of Google Login
-            email = (String)response.get("email");
-            userDto.setProvider(Provider.GOOGLE);
-            userDto.setEmail(email);
-        }
-//        else if(registrationId.equals("naver")) {   // In case of Naver Login
-//            Map<String, Object> hash = (Map<String, Object>)response.get("response");
-//            email = (String)hash.get("email");
+//        if(registrationId.equals(Provider.GOOGLE)) {   // In case of Google Login
+//            email = (String)response.get("email");
+//            userDto.setProvider(Provider.GOOGLE);
+//            userDto.setEmail(email);
 //        }
+        if(registrationId.equals(Provider.NAVER)) {   // In case of Naver Login // temp
+            provider = Provider.NAVER;
+            Map<String, Object> hash = (Map<String, Object>)response.get("response");
+            providedId = provider.getProvider() + "_" + "temp";   // ex) NAVER_uniqueID
+            userDto.setProvidedId(providedId);
+            userDto.setProvider(provider);
+            userDto.setRole(role);
+        }
         else {
-            throw new OAuth2AuthenticationException("아직 구현되지 않은 인증입니다.");
+            throw new OAuth2AuthenticationException("구현되지 않은 인증입니다.");
         }
 
-        Optional<User> optionalUserEntity = userRepository.findByEmail(email);  // User가 DB에 있는지 없는지 여부 확인 용
-
+        Optional<User> optionalUserEntity = userRepository.findByProvidedId(providedId);  // User가 DB에 있는지 없는지 여부 확인 용 -> 각 플랫폼에서 제공하는 user의 unique ID 이용
         if(optionalUserEntity.isPresent()) {  // 이미 가입한(ZupZup에) user에 대한 로직
             userEntity = optionalUserEntity.get();
         }
-        else {  // 가입하지 않은 user -> DB에 저장
-            userEntity = User.builder(userDto.getEmail())
+        else {  // 가입하지 않은 user -> DB에 저장   // temp
+            userEntity = User.builder(userDto.getProvidedId())
                     .role(Role.ROLE_USER)
-                    .provider(userDto.getProvider())
                     .build();
             userRepository.save(userEntity);
         }

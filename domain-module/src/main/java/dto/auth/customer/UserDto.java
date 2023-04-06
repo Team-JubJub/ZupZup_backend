@@ -10,10 +10,17 @@ import lombok.Setter;
 public class UserDto {
 
     private Long id;
+    private String providedId;
+    private String refreshToken;
 
-    private String email;
-    private String password;
+    private String nickName;
+    private String gender;
+    private String phoneNumber;
+
     private Role role;
     private Provider provider;
+
+    private Boolean essentialTerms;
+    private Boolean optionalTerm1;
 
 }

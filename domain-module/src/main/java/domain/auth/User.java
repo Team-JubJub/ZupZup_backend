@@ -7,32 +7,35 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "UserBuilder")
-@Table(name = "users", indexes = @Index(name = "idx_email", columnList = "email"))   // 나중에 customer, seller 구분해서 만들지 고민할 것
+@Table(name = "users")   // 나중에 customer, seller 구분해서 만들지 고민할 것
 public class User {
 
     @Id
     @Column(name = "userId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
-    private String email;
+    private String providedId;
+    private String refreshToken;
 
-    @Column(nullable = false)
-    private String password;    // Encoded type, raw type 관련 고민하기
+    @Column(nullable = false) private String nickName;
+    @Column(nullable = false) private String gender;
+    @Column(nullable = false) private String phoneNumber;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
-
     @Enumerated(EnumType.STRING)
     private Provider provider;
 
-    public static UserBuilder builder(String email) {
-        if(email == null) {
-            throw new IllegalArgumentException("필수 파라미터(email) 누락");
+    @Column(nullable = false) private Boolean essentialTerms;
+    @Column(nullable = false) private Boolean optionalTerm1;
+
+    public static UserBuilder builder(String providedId) {  // 현재 필수 파라미터는 임시
+        if(providedId == null) {
+            throw new IllegalArgumentException("필수 파라미터(providedId) 누락");
         }
-        return UserBuilder().email(email);
+        return UserBuilder().providedId(providedId);
     }
 
 }
