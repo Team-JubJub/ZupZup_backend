@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
+public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {  // For OAuth2
 
     @Autowired
     UserRepository userRepository;
