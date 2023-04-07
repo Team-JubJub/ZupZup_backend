@@ -11,6 +11,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import repository.UserRepository;
 
+import java.util.Optional;
+
 @Service
 public class MobileOAuthService {  // For not a case of OAuth2
 
@@ -25,7 +27,10 @@ public class MobileOAuthService {  // For not a case of OAuth2
     public String naverOAuthLogin(String access_token, String refresh_token, UserRequestDto.UserOAuthSignInDto userOAuthSignInDto) {
         NaverProfileVo naverProfileVo = getNaverProfile(access_token);
         String userUniqueId = naverProfileVo.getId();
-        User userEntity = userRepository.findByProviderUserId("NAVER_" + userUniqueId);
+        Optional<User> userEntity = userRepository.findByProviderUserId("NAVER_" + userUniqueId);
+        if(userEntity.isPresent()) {
+
+        }
 
         return "temp";
     }
