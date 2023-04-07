@@ -1,16 +1,14 @@
 package com.rest.api.auth.controller;
 
-import com.rest.api.auth.service.AuthService;
+import com.rest.api.auth.service.MobileOAuthService;
+import domain.auth.Provider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-public class AuthController {
+public class MobileOAuthController {
     /*
     Description
     모바일에서 유저 정보 전달(sign-in, POST) -> DB와 비교, 없으면 1. redirect(sign-up, GET), 있으면 2. redirect(main page)
@@ -18,7 +16,7 @@ public class AuthController {
     2. 앱 사용 가능
     */
     @Autowired
-    private AuthService authService;
+    private MobileOAuthService mobileOAuthService;
 
     @PostMapping("/sign-up")    // 회원가입 요청
     public String signUp() {
@@ -29,8 +27,19 @@ public class AuthController {
         return "temp";
     }
 
-    @PostMapping("/sign-in")    // 로그인 요청
-    public String signIn() {
+    @PostMapping("/sign-in/{provider}")    // 로그인 요청
+    public String signIn(@PathVariable String provider, @RequestParam String access_token, @RequestParam String refresh_token
+            , @RequestBody String userUniqueId) {
+        if(provider.equals(Provider.NAVER)) {
+
+        }
+        else if(provider.equals(Provider.KAKAO)) {
+
+        }
+        else if(provider.equals(Provider.APPLE)) {
+
+        }
+
         return "temp";
     }
     @GetMapping("/sign-in") // 로그인 페이지

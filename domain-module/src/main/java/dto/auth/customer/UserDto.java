@@ -10,7 +10,7 @@ import lombok.Setter;
 public class UserDto {
 
     private Long id;
-    private String providedId;
+    private String providerUserId;
     private String refreshToken;
 
     private String nickName;

@@ -15,7 +15,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String providedId;
+    private String providerUserId;
     private String refreshToken;
 
     @Column(nullable = false) private String nickName;
@@ -31,11 +31,11 @@ public class User {
     @Column(nullable = false) private Boolean essentialTerms;
     @Column(nullable = false) private Boolean optionalTerm1;
 
-    public static UserBuilder builder(String providedId) {  // 현재 필수 파라미터는 임시
-        if(providedId == null) {
+    public static UserBuilder builder(String providerUserId) {  // 현재 필수 파라미터는 임시
+        if(providerUserId == null) {
             throw new IllegalArgumentException("필수 파라미터(providedId) 누락");
         }
-        return UserBuilder().providedId(providedId);
+        return UserBuilder().providerUserId(providerUserId);
     }
 
 }
