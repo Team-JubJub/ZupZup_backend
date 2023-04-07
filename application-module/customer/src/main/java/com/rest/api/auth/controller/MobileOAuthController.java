@@ -25,14 +25,20 @@ public class MobileOAuthController {
     }
     @GetMapping("/sign-up") // 회원가입 페이지
     public String signUpPage() {
-        return "temp";
+        return "Sign up page";
     }
 
     @PostMapping("/sign-in/{provider}")    // 로그인 요청
     public String signIn(@PathVariable String provider, @RequestParam String access_token, @RequestParam String refresh_token
             , @RequestBody UserRequestDto.UserOAuthSignInDto userOAuthSignInDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         if(provider.equals(Provider.NAVER)) {
+            String result = mobileOAuthService.naverOAuthSignIn(access_token, refresh_token, userOAuthSignInDto);
+            if(result.equals("SignIn")) {   // 로그인 처리
 
+            }
+            else if(result.equals("SignUp")) {  // 회원가입 페이지로
+
+            }
         }
         else if(provider.equals(Provider.KAKAO)) {
 
@@ -45,7 +51,12 @@ public class MobileOAuthController {
     }
     @GetMapping("/sign-in") // 로그인 페이지
     public String signInPage() {
-        return "temp";
+        return "Sign in page";
+    }
+
+    @GetMapping("/sign-in/test")
+    public String signInTestPage() {
+        return "Sign in test page";
     }
 
 

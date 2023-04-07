@@ -24,15 +24,19 @@ public class MobileOAuthService {  // For not a case of OAuth2
     // <-------------------- Sign-up part -------------------->
 
     // <-------------------- Sign-in part -------------------->
-    public String naverOAuthLogin(String access_token, String refresh_token, UserRequestDto.UserOAuthSignInDto userOAuthSignInDto) {
+    public String naverOAuthSignIn(String access_token, String refresh_token, UserRequestDto.UserOAuthSignInDto userOAuthSignInDto) {
+        String result = "";
         NaverProfileVo naverProfileVo = getNaverProfile(access_token);
         String userUniqueId = naverProfileVo.getId();
         Optional<User> userEntity = userRepository.findByProviderUserId("NAVER_" + userUniqueId);
-        if(userEntity.isPresent()) {
-
+        if(userEntity.isPresent()) {    // 줍줍에 가입이 된 회원의 경우 -> 로그인 처리
+            result = "SingIn";
+        }
+        else {  // 최초 로그인인 경우 -> 회원가입으로
+            result = "SignUp";
         }
 
-        return "temp";
+        return result;
     }
 
     // <-------------------- Common methods part -------------------->
