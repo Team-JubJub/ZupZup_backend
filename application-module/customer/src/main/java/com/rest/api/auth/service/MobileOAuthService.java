@@ -1,6 +1,7 @@
 package com.rest.api.auth.service;
 
 import com.rest.api.auth.naver.NaverConstants;
+import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.naver.vo.NaverProfileResponseVo;
 import com.rest.api.auth.naver.vo.NaverProfileVo;
 import domain.auth.User;
@@ -11,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import repository.UserRepository;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -59,5 +61,34 @@ public class MobileOAuthService {  // For not a case of OAuth2
                 .getNaverProfileVo();   // NaverProfileResponseVo에서 naverProfileVo만 return
 
         return naverProfileVo;
+    }
+
+    // <--- Methods for test --->
+    public NaverLoginVo signInTest(Map<String, String> resValue) {
+        String code = resValue.get("code");
+        String state = resValue.get("state");
+        System.out.println(code);
+        System.out.println(state);
+
+        final String uri = UriComponentsBuilder
+                .fromUriString(naverConstants.getToken_uri())
+                .queryParam("grant_type", "authorization_code")
+                .queryParam("client_id", naverConstants.getClient_id())
+                .queryParam("client_secret", naverConstants.getClient_secret())
+                .queryParam("code", resValue.get("code"))
+                .queryParam("state", resValue.get("state"))
+                .queryParam("refresh_token", resValue.get("refresh_token"))
+                .build()
+                .encode()
+                .toUriString();
+
+        NaverLoginVo naverLoginVo =  webClient
+                .get()
+                .uri(uri)
+                .retrieve()
+                .bodyToMono(NaverLoginVo.class)
+                .block();
+
+        return naverLoginVo;
     }
 }

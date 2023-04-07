@@ -1,11 +1,15 @@
 package com.rest.api.auth.controller;
 
+import com.rest.api.auth.naver.vo.NaverLoginVo;
+import com.rest.api.auth.naver.vo.NaverProfileVo;
 import com.rest.api.auth.service.MobileOAuthService;
 import domain.auth.Provider;
 import dto.auth.customer.request.UserRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,11 +37,11 @@ public class MobileOAuthController {
             , @RequestBody UserRequestDto.UserOAuthSignInDto userOAuthSignInDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         if(provider.equals(Provider.NAVER)) {
             String result = mobileOAuthService.naverOAuthSignIn(access_token, refresh_token, userOAuthSignInDto);
-            if(result.equals("SignIn")) {   // 로그인 처리
-
+            if(result.equals("SignIn")) {   // 로그인 처리 -> jwt토큰 발급
+                return "redirect:/sign-in/test";
             }
             else if(result.equals("SignUp")) {  // 회원가입 페이지로
-
+                return "redirect:/sign-up";
             }
         }
         else if(provider.equals(Provider.KAKAO)) {
@@ -54,10 +58,15 @@ public class MobileOAuthController {
         return "Sign in page";
     }
 
+    @GetMapping("/login/oauth2/callback/naver")
+    public NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) {
+        final NaverLoginVo naverLoginVo = mobileOAuthService.signInTest(resValue);
+
+        return naverLoginVo;
+    }
     @GetMapping("/sign-in/test")
     public String signInTestPage() {
         return "Sign in test page";
     }
-
 
 }
