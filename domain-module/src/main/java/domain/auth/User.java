@@ -13,7 +13,7 @@ public class User {
     @Id
     @Column(name = "userId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long userId;
     @Column(nullable = false)
     private String providerUserId;
     private String refreshToken;

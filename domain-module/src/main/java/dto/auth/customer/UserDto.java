@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class UserDto {
 
-    private Long id;
+    private Long userId;
     private String providerUserId;
     private String refreshToken;
 
