@@ -1,4 +1,4 @@
-package com.rest.api.auth.service.constants;
+package com.rest.api.auth.naver;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
