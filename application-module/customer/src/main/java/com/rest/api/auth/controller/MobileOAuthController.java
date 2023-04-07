@@ -30,7 +30,7 @@ public class MobileOAuthController {
 
     @PostMapping("/sign-in/{provider}")    // 로그인 요청
     public String signIn(@PathVariable String provider, @RequestParam String access_token, @RequestParam String refresh_token
-            , @RequestBody UserRequestDto.UserOAuthLoginDto userOAuthLoginDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
+            , @RequestBody UserRequestDto.UserOAuthSignInDto userOAuthSignInDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         if(provider.equals(Provider.NAVER)) {
 
         }
