@@ -2,6 +2,7 @@ package com.rest.api.auth.controller;
 
 import com.rest.api.auth.service.MobileOAuthService;
 import domain.auth.Provider;
+import dto.auth.customer.request.UserRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class MobileOAuthController {
 
     @PostMapping("/sign-in/{provider}")    // 로그인 요청
     public String signIn(@PathVariable String provider, @RequestParam String access_token, @RequestParam String refresh_token
-            , @RequestBody String userUniqueId) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
+            , @RequestBody UserRequestDto.UserOAuthLoginDto userOAuthLoginDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         if(provider.equals(Provider.NAVER)) {
 
         }
