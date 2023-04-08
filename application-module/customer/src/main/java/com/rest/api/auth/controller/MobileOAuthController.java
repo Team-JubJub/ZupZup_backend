@@ -20,8 +20,7 @@ public class MobileOAuthController {
     1. 회원가입으로 리더렉션, 다시 sign-up, POST를 통해 회원가입 -> 앱 사용 가능
     2. 앱 사용 가능
     */
-    @Autowired
-    private MobileOAuthService mobileOAuthService;
+    private final MobileOAuthService mobileOAuthService;
 
     @PostMapping("/sign-up")    // 회원가입 요청
     public String signUp() {
@@ -59,7 +58,8 @@ public class MobileOAuthController {
     }
 
     @GetMapping("/login/oauth2/callback/naver")
-    public NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) {
+    public @ResponseBody NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) throws Exception {
+        System.out.println(resValue);
         final NaverLoginVo naverLoginVo = mobileOAuthService.signInTest(resValue);
 
         return naverLoginVo;

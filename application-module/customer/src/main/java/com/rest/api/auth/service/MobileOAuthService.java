@@ -6,7 +6,11 @@ import com.rest.api.auth.naver.vo.NaverProfileResponseVo;
 import com.rest.api.auth.naver.vo.NaverProfileVo;
 import domain.auth.User;
 import dto.auth.customer.request.UserRequestDto;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -16,12 +20,16 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Log
+@Transactional
 public class MobileOAuthService {  // For not a case of OAuth2
 
     @Autowired
-    private WebClient webClient;
-    private UserRepository userRepository;
-    private NaverConstants naverConstants;
+    WebClient webClient;
+    @Autowired
+    NaverConstants naverConstants;
+    private final UserRepository userRepository;
 
     // <-------------------- Sign-up part -------------------->
 
@@ -81,7 +89,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
                 .build()
                 .encode()
                 .toUriString();
-
+        System.out.println(uri);
         NaverLoginVo naverLoginVo =  webClient
                 .get()
                 .uri(uri)
@@ -91,4 +99,5 @@ public class MobileOAuthService {  // For not a case of OAuth2
 
         return naverLoginVo;
     }
+
 }
