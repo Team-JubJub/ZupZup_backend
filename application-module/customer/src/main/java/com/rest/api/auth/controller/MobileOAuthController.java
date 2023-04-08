@@ -35,7 +35,6 @@ public class MobileOAuthController {
     public String signIn(@PathVariable String provider, @RequestParam String access_token, @RequestParam String refresh_token
             , @RequestBody UserRequestDto.UserOAuthSignInDto userOAuthSignInDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
-            System.out.println("In case of naver");
             String result = mobileOAuthService.naverOAuthSignIn(access_token, refresh_token, userOAuthSignInDto);
             if(result.equals("SignIn")) {   // 로그인 처리 -> jwt토큰 발급
                 return "redirect:/sign-in/test";
@@ -44,10 +43,10 @@ public class MobileOAuthController {
                 return "redirect:/sign-up";
             }
         }
-        else if(provider.equals(Provider.KAKAO)) {
+        else if(provider.equals(Provider.KAKAO.getProvider().toLowerCase())) {
 
         }
-        else if(provider.equals(Provider.APPLE)) {
+        else if(provider.equals(Provider.APPLE.getProvider().toLowerCase())) {
 
         }
 
