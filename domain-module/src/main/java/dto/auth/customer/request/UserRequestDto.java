@@ -7,7 +7,7 @@ public class UserRequestDto {
 
     @Getter
     @Setter
-    public class UserOAuthSignInDto {
+    public static class UserOAuthSignInDto {
         private String userUniqueId;    // 소셜 플랫폼에서 리턴해주는 user의 unique ID
     }
 

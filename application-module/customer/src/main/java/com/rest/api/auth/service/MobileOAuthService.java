@@ -38,6 +38,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
         String result = "";
         NaverProfileVo naverProfileVo = getNaverProfile(access_token);
         String userUniqueId = naverProfileVo.getId();
+        System.out.println(userUniqueId);
         Optional<User> userEntity = userRepository.findByProviderUserId("NAVER_" + userUniqueId);
         if(userEntity.isPresent()) {    // 줍줍에 가입이 된 회원의 경우 -> 로그인 처리
             result = "SingIn";
@@ -58,15 +59,19 @@ public class MobileOAuthService {  // For not a case of OAuth2
                 .build()
                 .encode()
                 .toUriString();
+        System.out.println(profileUri);
 
-        NaverProfileVo naverProfileVo = webClient
+        NaverProfileResponseVo naverProfileResponseVo = webClient
                 .get()
                 .uri(profileUri)
-                .header("Authorization", "Bearer" + access_token)
+                .header("Authorization", "Bearer " + access_token)
                 .retrieve()
                 .bodyToMono(NaverProfileResponseVo.class)
-                .block()
-                .getNaverProfileVo();   // NaverProfileResponseVo에서 naverProfileVo만 return
+                .block();
+//                .getNaverProfileVo();   // NaverProfileResponseVo에서 naverProfileVo만 return
+        System.out.println(naverProfileResponseVo.getResultcode());
+        System.out.println(naverProfileResponseVo.getMessage());
+        NaverProfileVo naverProfileVo = naverProfileResponseVo.getResponse();
 
         return naverProfileVo;
     }
@@ -89,13 +94,16 @@ public class MobileOAuthService {  // For not a case of OAuth2
                 .build()
                 .encode()
                 .toUriString();
-        System.out.println(uri);
         NaverLoginVo naverLoginVo =  webClient
                 .get()
                 .uri(uri)
                 .retrieve()
                 .bodyToMono(NaverLoginVo.class)
                 .block();
+
+        NaverProfileVo naverProfileVo = getNaverProfile(naverLoginVo.getAccess_token());
+        System.out.println("Id: " + naverProfileVo.getId());
+        System.out.println("access_token: " + naverLoginVo.getAccess_token());
 
         return naverLoginVo;
     }

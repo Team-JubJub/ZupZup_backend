@@ -34,7 +34,8 @@ public class MobileOAuthController {
     @PostMapping("/sign-in/{provider}")    // 로그인 요청
     public String signIn(@PathVariable String provider, @RequestParam String access_token, @RequestParam String refresh_token
             , @RequestBody UserRequestDto.UserOAuthSignInDto userOAuthSignInDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
-        if(provider.equals(Provider.NAVER)) {
+        if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
+            System.out.println("In case of naver");
             String result = mobileOAuthService.naverOAuthSignIn(access_token, refresh_token, userOAuthSignInDto);
             if(result.equals("SignIn")) {   // 로그인 처리 -> jwt토큰 발급
                 return "redirect:/sign-in/test";
