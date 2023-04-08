@@ -49,7 +49,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
             }
         }
         else {  // 다르다면 1차 인증 실패 -> 회원 정보가 다릅니다(?) 리턴
-            System.out.println("Authentication fail");
+            System.out.println("Authentication failed");
         }
 
         return result;
@@ -78,7 +78,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
     }
 
     // <--- Methods for test --->
-    public NaverLoginVo signInTest(Map<String, String> resValue) {
+    public NaverLoginVo signInTest(Map<String, String> resValue) {  // 로그인 테스트 위해서 액세스토큰, 유저 ID 얻어오는 함수
         final String uri = UriComponentsBuilder
                 .fromUriString(naverConstants.getToken_uri())
                 .queryParam("grant_type", "authorization_code")
@@ -97,6 +97,8 @@ public class MobileOAuthService {  // For not a case of OAuth2
                 .retrieve()
                 .bodyToMono(NaverLoginVo.class)
                 .block();
+        NaverProfileVo naverProfileVo = getNaverProfile(naverLoginVo.getAccess_token());
+        System.out.println(naverProfileVo.getId()); // zupzup에 로그인 요청 시 body로 실을 유저 ID
 
         return naverLoginVo;
     }

@@ -59,7 +59,6 @@ public class MobileOAuthController {
 
     @GetMapping("/login/oauth2/callback/naver")
     public @ResponseBody NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) throws Exception {
-        System.out.println(resValue);
         final NaverLoginVo naverLoginVo = mobileOAuthService.signInTest(resValue);
 
         return naverLoginVo;
