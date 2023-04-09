@@ -1,6 +1,6 @@
 package repository;
 
-import domain.auth.User;
+import domain.auth.User.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

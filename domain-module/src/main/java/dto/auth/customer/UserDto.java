@@ -1,7 +1,7 @@
 package dto.auth.customer;
 
-import domain.auth.Provider;
-import domain.auth.Role;
+import Provider;
+import Role;
 import lombok.Getter;
 import lombok.Setter;
 

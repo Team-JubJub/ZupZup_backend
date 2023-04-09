@@ -1,8 +1,8 @@
 package com.rest.api.auth.service;
 
-import domain.auth.Provider;
-import domain.auth.Role;
-import domain.auth.User;
+import Provider;
+import Role;
+import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;

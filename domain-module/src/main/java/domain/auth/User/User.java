@@ -1,4 +1,4 @@
-package domain.auth;
+package domain.auth.User;
 
 import jakarta.persistence.*;
 import lombok.*;

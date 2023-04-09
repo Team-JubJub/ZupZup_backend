@@ -1,6 +1,6 @@
 package exception.customer;
 
-import domain.auth.Provider;
+import Provider;
 import org.springframework.http.HttpStatus;
 
 public class AlreadySignedUpException extends AuthRuntimeException {
