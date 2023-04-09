@@ -23,20 +23,11 @@ public class MobileOAuthController {
 
         return result;  // temp
     }
-    @GetMapping("/sign-up") // 회원가입 페이지
-    public String signUpPage() {
-        return "Sign up page";
-    }
 
-    @PostMapping("/sign-in/")    // 로그인 요청(토큰 없이)
+    @PostMapping("/sign-in/")    // 로그인 요청(토큰 없을 경우)
     public String signIn() {
         return "temp";
     }
-    @GetMapping("/sign-in") // 로그인 페이지
-    public String signInPage() {
-        return "Sign in page";
-    }
-
 
     // <----------- Test Controller ----------->
     @GetMapping("/login/oauth2/callback/naver") // -> 클라이언트가 구현할 파트
