@@ -33,16 +33,16 @@ public class MobileOAuthService {  // For not a case of OAuth2
     private final UserRepository userRepository;
 
     // <-------------------- Sign-up part -------------------->
-    public String signUp(String provider, UserRequestDto.UserCheckDto userCheckDto, UserRequestDto.UserSignUpDto userSignUpDto) {
+    public String signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         UserDto userDto = new UserDto();
         if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
-            userSignUpDtoToUserDto(Provider.NAVER, userCheckDto, userSignUpDto);
+            userSignUpDtoToUserDto(Provider.NAVER, userSignUpDto);
         }
         else if(provider.equals(Provider.KAKAO.getProvider().toLowerCase())) {
-            userSignUpDtoToUserDto(Provider.KAKAO, userCheckDto, userSignUpDto);
+            userSignUpDtoToUserDto(Provider.KAKAO, userSignUpDto);
         }
         else if(provider.equals(Provider.APPLE.getProvider().toLowerCase())) {
-            userSignUpDtoToUserDto(Provider.APPLE, userCheckDto, userSignUpDto);
+            userSignUpDtoToUserDto(Provider.APPLE, userSignUpDto);
         }
 
         User userEntity = User.builder(userDto.getProviderUserId())
@@ -83,9 +83,9 @@ public class MobileOAuthService {  // For not a case of OAuth2
         return naverProfileVo;
     }
 
-    private UserDto userSignUpDtoToUserDto(Provider provider, UserRequestDto.UserCheckDto userCheckDto, UserRequestDto.UserSignUpDto userSignUpDto) {
+    private UserDto userSignUpDtoToUserDto(Provider provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         UserDto userDto = new UserDto();
-        userDto.setProviderUserId(provider.getProvider().toUpperCase() + "_" + userCheckDto.getUserUniqueId());
+        userDto.setProviderUserId(provider.getProvider().toUpperCase() + "_" + userSignUpDto.getUserUniqueId());
         userDto.setNickName(userSignUpDto.getNickName());
         userDto.setGender(userSignUpDto.getGender());
         userDto.setPhoneNumber(userSignUpDto.getPhoneNumber());

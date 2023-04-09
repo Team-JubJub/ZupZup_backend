@@ -13,15 +13,13 @@ import java.util.Map;
 public class MobileOAuthController {
     /*
     Description
-    모바일에서 유저 정보 전달(sign-in, POST) -> DB와 비교, 없으면 1. redirect(sign-up, GET), 있으면 2. redirect(main page)
-    1. 회원가입으로 리더렉션, 다시 sign-up, POST를 통해 회원가입 -> 앱 사용 가능
-    2. 앱 사용 가능
+
     */
     private final MobileOAuthService mobileOAuthService;
-
+    // < -------------- Sign up part -------------- >
     @PostMapping("/sign-up/{provider}")    // 회원가입 요청
-    public String signUp(@PathVariable String provider, @RequestHeader UserRequestDto.UserCheckDto userCheckDto, @RequestBody UserRequestDto.UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
-        String result = mobileOAuthService.signUp(provider, userCheckDto, userSignUpDto);
+    public String signUp(@PathVariable String provider, @RequestBody UserRequestDto.UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
+        String result = mobileOAuthService.signUp(provider, userSignUpDto);
 
         return result;  // temp
     }
@@ -30,7 +28,7 @@ public class MobileOAuthController {
         return "Sign up page";
     }
 
-    @PostMapping("/sign-in/{provider}")    // 로그인 요청, 최초 로그인에 사용할 예정
+    @PostMapping("/sign-in/")    // 로그인 요청(토큰 없이)
     public String signIn() {
         return "temp";
     }
