@@ -1,14 +1,23 @@
 package dto.auth.customer.request;
 
 import lombok.Getter;
-import lombok.Setter;
 
 public class UserRequestDto {
 
     @Getter
-    @Setter
-    public static class UserOAuthSignInDto {
-        private String userUniqueId;    // 소셜 플랫폼에서 리턴해주는 user의 unique ID
+    public static class UserCheckDto {
+        private String access_token;
+        private String refresh_token;
+        private String userUniqueId;
+    }
+
+    @Getter
+    public static class UserSignUpDto {
+        private String nickName;
+        private String gender;
+        private String phoneNumber;
+        private Boolean essentialTerms;
+        private Boolean optionalTerm1;
     }
 
 }

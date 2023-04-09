@@ -4,7 +4,10 @@ import com.rest.api.auth.naver.NaverConstants;
 import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.naver.vo.NaverProfileResponseVo;
 import com.rest.api.auth.naver.vo.NaverProfileVo;
+import domain.auth.Provider;
+import domain.auth.Role;
 import domain.auth.User;
+import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +19,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import repository.UserRepository;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,29 +33,33 @@ public class MobileOAuthService {  // For not a case of OAuth2
     private final UserRepository userRepository;
 
     // <-------------------- Sign-up part -------------------->
-
-    // <-------------------- Sign-in part -------------------->
-    public String naverOAuthSignIn(String access_token, String refresh_token, String userUniqueId) {
-        String result = "";
-        NaverProfileVo naverProfileVo = getNaverProfile(access_token);   // 클라이언트에서 제공한 access token을 이용, NAVER에 유저 ID요청
-        String naverUserUniqueId = naverProfileVo.getId();
-        if(naverUserUniqueId.equals(userUniqueId)) { // 요청한 유저 ID와 클라이언트에서 body에 실어 보낸 유저 ID가 같으면 1차 인증 성공
-            System.out.println("Authentication success");
-            Optional<User> userEntity = userRepository.findByProviderUserId("NAVER_" + userUniqueId);
-            if(userEntity.isPresent()) {    // 줍줍에 가입이 된 회원의 경우 -> 로그인 처리
-                result = "SingIn";
-            }
-            else {  // 최초 로그인인 경우 -> 회원가입으로
-                result = "SignUp";
-            }
+    public String signUp(String provider, UserRequestDto.UserCheckDto userCheckDto, UserRequestDto.UserSignUpDto userSignUpDto) {
+        UserDto userDto = new UserDto();
+        if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
+            userSignUpDtoToUserDto(Provider.NAVER, userCheckDto, userSignUpDto);
         }
-        else {  // 다르다면 1차 인증 실패 -> 회원 정보가 다릅니다(?) 리턴
-            System.out.println("Authentication failed");
-            result = "Authentication failed";
+        else if(provider.equals(Provider.KAKAO.getProvider().toLowerCase())) {
+            userSignUpDtoToUserDto(Provider.KAKAO, userCheckDto, userSignUpDto);
+        }
+        else if(provider.equals(Provider.APPLE.getProvider().toLowerCase())) {
+            userSignUpDtoToUserDto(Provider.APPLE, userCheckDto, userSignUpDto);
         }
 
-        return result;
+        User userEntity = User.builder(userDto.getProviderUserId())
+                .nickName(userDto.getNickName())
+                .gender(userDto.getGender())
+                .phoneNumber(userDto.getPhoneNumber())
+                .role(userDto.getRole())
+                .provider(userDto.getProvider())
+                .essentialTerms(userDto.getEssentialTerms())
+                .optionalTerm1(userDto.getOptionalTerm1())
+                .build();
+        userRepository.save(userEntity);
+
+        return "회원가입이 완료되었습니다";
     }
+    // <-------------------- Sign-in part -------------------->
+
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
@@ -75,6 +81,20 @@ public class MobileOAuthService {  // For not a case of OAuth2
                 .getResponse();   // NaverProfileResponseVo에서 naverProfileVo만 return
 
         return naverProfileVo;
+    }
+
+    private UserDto userSignUpDtoToUserDto(Provider provider, UserRequestDto.UserCheckDto userCheckDto, UserRequestDto.UserSignUpDto userSignUpDto) {
+        UserDto userDto = new UserDto();
+        userDto.setProviderUserId(provider.getProvider().toUpperCase() + "_" + userCheckDto.getUserUniqueId());
+        userDto.setNickName(userSignUpDto.getNickName());
+        userDto.setGender(userSignUpDto.getGender());
+        userDto.setPhoneNumber(userSignUpDto.getPhoneNumber());
+        userDto.setRole(Role.ROLE_USER);
+        userDto.setProvider(provider);
+        userDto.setEssentialTerms(userSignUpDto.getEssentialTerms());
+        userDto.setOptionalTerm1(userSignUpDto.getOptionalTerm1());
+
+        return userDto;
     }
 
     // <--- Methods for test --->

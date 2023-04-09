@@ -2,8 +2,6 @@ package com.rest.api.auth.controller;
 
 import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.service.MobileOAuthService;
-import domain.auth.Provider;
-import dto.auth.customer.request.TokenRequestDto;
 import dto.auth.customer.request.UserRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,9 +19,11 @@ public class MobileOAuthController {
     */
     private final MobileOAuthService mobileOAuthService;
 
-    @PostMapping("/sign-up")    // 회원가입 요청
-    public String signUp() {
-        return "temp";
+    @PostMapping("/sign-up/{provider}")    // 회원가입 요청
+    public String signUp(@PathVariable String provider, @RequestHeader UserRequestDto.UserCheckDto userCheckDto, @RequestBody UserRequestDto.UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
+        String result = mobileOAuthService.signUp(provider, userCheckDto, userSignUpDto);
+
+        return result;  // temp
     }
     @GetMapping("/sign-up") // 회원가입 페이지
     public String signUpPage() {
@@ -31,26 +31,7 @@ public class MobileOAuthController {
     }
 
     @PostMapping("/sign-in/{provider}")    // 로그인 요청, 최초 로그인에 사용할 예정
-    public String signIn(@PathVariable String provider, @RequestHeader TokenRequestDto tokenRequestDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
-        String access_token = tokenRequestDto.getAccess_token();
-        String refresh_token = tokenRequestDto.getRefresh_token();
-        String userUniqueId = tokenRequestDto.getUserUniqueId();
-        if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
-            String result = mobileOAuthService.naverOAuthSignIn(access_token, refresh_token, userUniqueId);
-            if(result.equals("SignIn")) {   // 로그인 처리 -> jwt토큰 발급
-                return "redirect:/sign-in/test";
-            }
-            else if(result.equals("SignUp")) {  // 회원가입 페이지로
-                return "redirect:/sign-up";
-            }
-        }
-        else if(provider.equals(Provider.KAKAO.getProvider().toLowerCase())) {
-
-        }
-        else if(provider.equals(Provider.APPLE.getProvider().toLowerCase())) {
-
-        }
-
+    public String signIn() {
         return "temp";
     }
     @GetMapping("/sign-in") // 로그인 페이지

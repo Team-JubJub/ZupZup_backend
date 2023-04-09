@@ -10,7 +10,7 @@ import lombok.Setter;
 public class UserDto {
 
     private Long userId;
-    private String providerUserId;
+    private String providerUserId;  // ex) NAVER_userID
     private String refreshToken;
 
     private String nickName;
