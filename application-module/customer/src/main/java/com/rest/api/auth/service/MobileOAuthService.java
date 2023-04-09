@@ -9,6 +9,7 @@ import domain.auth.Role;
 import domain.auth.User;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
+import exception.customer.AlreadySignedUpException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -68,7 +69,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
     private void checkIsSignedUp(String phoneNumber) {
         Optional<User> userEntity = userRepository.findByPhoneNumber(phoneNumber);
         if(userEntity.isPresent()) {
-
+            throw new AlreadySignedUpException(userEntity.get().getProvider());
         }
     }
     // <--- Methods for readability --->
