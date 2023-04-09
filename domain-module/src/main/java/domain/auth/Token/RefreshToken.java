@@ -6,6 +6,10 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -19,13 +23,16 @@ public class RefreshToken {
 
     private String providerUserId;  // User id(우선은 조인시키지 말고)
     private String refreshToken;
+    private LocalDateTime expiredAt;
 
-    private RefreshToken(String providerUserId, String refreshToken) {
+    private RefreshToken(final String providerUserId, final String refreshToken, final LocalDateTime expiredAt) {
         this.providerUserId = providerUserId;
         this.refreshToken = refreshToken;
+        this.expiredAt = expiredAt;
     }
-    public static RefreshToken createToken(String providerUserId, String refreshToken){
-        return new RefreshToken(providerUserId, refreshToken);
+
+    public Boolean isExpiredAt(final LocalDateTime now) {
+        return now.isAfter(expiredAt);
     }
 
     public void changeToken(String token) {
