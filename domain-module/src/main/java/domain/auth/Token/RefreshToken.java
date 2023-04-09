@@ -17,7 +17,7 @@ public class RefreshToken {
     @Column(name = "refreshTokenId")
     private Long refreshTokenId;
 
-    private String userId;
+    private String userId;  // 우선은 조인시키지 말고
     private String refreshToken;
 
     private RefreshToken(String userId, String refreshToken) {
