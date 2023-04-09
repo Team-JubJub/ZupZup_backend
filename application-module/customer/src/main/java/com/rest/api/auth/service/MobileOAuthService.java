@@ -33,11 +33,11 @@ public class MobileOAuthService {  // For not a case of OAuth2
     // <-------------------- Sign-up part -------------------->
 
     // <-------------------- Sign-in part -------------------->
-    public String naverOAuthSignIn(String access_token, String refresh_token, UserRequestDto.UserOAuthSignInDto userOAuthSignInDto) {
+    public String naverOAuthSignIn(String access_token, String refresh_token, String userUniqueId) {
         String result = "";
         NaverProfileVo naverProfileVo = getNaverProfile(access_token);   // 클라이언트에서 제공한 access token을 이용, NAVER에 유저 ID요청
-        String userUniqueId = naverProfileVo.getId();
-        if(userUniqueId.equals(userOAuthSignInDto.getUserUniqueId())) { // 요청한 유저 ID와 클라이언트에서 body에 실어 보낸 유저 ID가 같으면 1차 인증 성공
+        String naverUserUniqueId = naverProfileVo.getId();
+        if(naverUserUniqueId.equals(userUniqueId)) { // 요청한 유저 ID와 클라이언트에서 body에 실어 보낸 유저 ID가 같으면 1차 인증 성공
             System.out.println("Authentication success");
             Optional<User> userEntity = userRepository.findByProviderUserId("NAVER_" + userUniqueId);
             if(userEntity.isPresent()) {    // 줍줍에 가입이 된 회원의 경우 -> 로그인 처리
@@ -49,6 +49,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
         }
         else {  // 다르다면 1차 인증 실패 -> 회원 정보가 다릅니다(?) 리턴
             System.out.println("Authentication failed");
+            result = "Authentication failed";
         }
 
         return result;

@@ -3,6 +3,7 @@ package com.rest.api.auth.controller;
 import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.service.MobileOAuthService;
 import domain.auth.Provider;
+import dto.auth.customer.request.TokenRequestDto;
 import dto.auth.customer.request.UserRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -29,11 +30,13 @@ public class MobileOAuthController {
         return "Sign up page";
     }
 
-    @PostMapping("/sign-in/{provider}")    // 로그인 요청
-    public String signIn(@PathVariable String provider, @RequestParam String access_token, @RequestParam String refresh_token
-            , @RequestBody UserRequestDto.UserOAuthSignInDto userOAuthSignInDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
+    @PostMapping("/sign-in/{provider}")    // 로그인 요청, 최초 로그인에 사용할 예정
+    public String signIn(@PathVariable String provider, @RequestHeader TokenRequestDto tokenRequestDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
+        String access_token = tokenRequestDto.getAccess_token();
+        String refresh_token = tokenRequestDto.getRefresh_token();
+        String userUniqueId = tokenRequestDto.getUserUniqueId();
         if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
-            String result = mobileOAuthService.naverOAuthSignIn(access_token, refresh_token, userOAuthSignInDto);
+            String result = mobileOAuthService.naverOAuthSignIn(access_token, refresh_token, userUniqueId);
             if(result.equals("SignIn")) {   // 로그인 처리 -> jwt토큰 발급
                 return "redirect:/sign-in/test";
             }
@@ -55,8 +58,10 @@ public class MobileOAuthController {
         return "Sign in page";
     }
 
-    @GetMapping("/login/oauth2/callback/naver")
-    public @ResponseBody NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) throws Exception {
+
+    // <----------- Test Controller ----------->
+    @GetMapping("/login/oauth2/callback/naver") // -> 클라이언트가 구현할 파트
+    public NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) throws Exception {
         final NaverLoginVo naverLoginVo = mobileOAuthService.signInTest(resValue);
 
         return naverLoginVo;

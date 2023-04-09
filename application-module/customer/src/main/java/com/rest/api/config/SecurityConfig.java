@@ -47,17 +47,18 @@ public class SecurityConfig {
         http
                     .csrf().disable()
                     .headers().frameOptions().disable()
-                .and()
-                    .authorizeHttpRequests()    // authorizeRequests() -> authorizeHttpRequests()
-//                    .requestMatchers("/login/**").authenticated()       // For test, antMatchers() -> requestMatchers()
+                .and().authorizeHttpRequests()    // authorizeRequests() -> authorizeHttpRequests()
                     .requestMatchers( "/", "http://localhost:8082/**", "/sign-up/**", "/sign-in/**", "/customer/**", "/h2-console/**", "/login/oauth2/callback/**").permitAll()  // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리
-                .and()
-                    .logout()
+                .and().rememberMe()
+                    .key("test")
+                .and().logout()
+                    .logoutUrl("/logout")
                     .logoutSuccessUrl("/")  // 로그아웃 시 인덱스 페이지로
-                .and()
-                    .oauth2Login()
+                    .invalidateHttpSession(true)
+                    .deleteCookies("remember-me", "JSESSIONID")
+                .and().oauth2Login()
                     .authorizationEndpoint().baseUri("/login/oauth2");   // ex) ~~/login/oauth2/{naver, kakao, etc...(이 부분은 클라이언트에서 설정)}
-////                    .authorizationRequestRepository(cookieOAuth2AuthorizationRequestRepository())
+
 //                .and()
 //                    .redirectionEndpoint().baseUri("/login/oauth2/callback/naver");   // 일단 이렇게 두고 나중에 수정
 //                    .loginPage("/login/oauth2")    // 인증 필요한 URL 접근 시 이동할 login page
