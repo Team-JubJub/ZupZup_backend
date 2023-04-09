@@ -17,15 +17,15 @@ public class RefreshToken {
     @Column(name = "refreshTokenId")
     private Long refreshTokenId;
 
-    private String userId;  // 우선은 조인시키지 말고
+    private String providerUserId;  // User id(우선은 조인시키지 말고)
     private String refreshToken;
 
-    private RefreshToken(String userId, String refreshToken) {
-        this.userId = userId;
+    private RefreshToken(String providerUserId, String refreshToken) {
+        this.providerUserId = providerUserId;
         this.refreshToken = refreshToken;
     }
-    public static RefreshToken createToken(String userId, String refreshToken){
-        return new RefreshToken(userId, refreshToken);
+    public static RefreshToken createToken(String providerUserId, String refreshToken){
+        return new RefreshToken(providerUserId, refreshToken);
     }
 
     public void changeToken(String token) {
