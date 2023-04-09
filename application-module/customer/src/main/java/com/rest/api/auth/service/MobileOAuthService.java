@@ -19,6 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import repository.UserRepository;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +35,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
 
     // <-------------------- Sign-up part -------------------->
     public String signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
+        checkIsSignedUp(userSignUpDto.getPhoneNumber());
         UserDto userDto = new UserDto();
         if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
             userSignUpDtoToUserDto(Provider.NAVER, userSignUpDto);
@@ -63,7 +65,28 @@ public class MobileOAuthService {  // For not a case of OAuth2
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
+    private void checkIsSignedUp(String phoneNumber) {
+        Optional<User> userEntity = userRepository.findByPhoneNumber(phoneNumber);
+        if(userEntity.isPresent()) {
+
+        }
+    }
     // <--- Methods for readability --->
+    private UserDto userSignUpDtoToUserDto(Provider provider, UserRequestDto.UserSignUpDto userSignUpDto) {
+        UserDto userDto = new UserDto();
+        userDto.setProviderUserId(provider.getProvider().toUpperCase() + "_" + userSignUpDto.getUserUniqueId());
+        userDto.setNickName(userSignUpDto.getNickName());
+        userDto.setGender(userSignUpDto.getGender());
+        userDto.setPhoneNumber(userSignUpDto.getPhoneNumber());
+        userDto.setRole(Role.ROLE_USER);
+        userDto.setProvider(provider);
+        userDto.setEssentialTerms(userSignUpDto.getEssentialTerms());
+        userDto.setOptionalTerm1(userSignUpDto.getOptionalTerm1());
+
+        return userDto;
+    }
+
+    // <--- Methods for test --->
     private NaverProfileVo getNaverProfile(String access_token) {   // 여기서 한 번 더 인증거치는 걸로. (NaverProfileResponseVo에서 상태코드, 메세지 확인하는 방법 알아보기)
         final String profileUri = UriComponentsBuilder
                 .fromUriString(naverConstants.getUser_info_uri())
@@ -82,22 +105,6 @@ public class MobileOAuthService {  // For not a case of OAuth2
 
         return naverProfileVo;
     }
-
-    private UserDto userSignUpDtoToUserDto(Provider provider, UserRequestDto.UserSignUpDto userSignUpDto) {
-        UserDto userDto = new UserDto();
-        userDto.setProviderUserId(provider.getProvider().toUpperCase() + "_" + userSignUpDto.getUserUniqueId());
-        userDto.setNickName(userSignUpDto.getNickName());
-        userDto.setGender(userSignUpDto.getGender());
-        userDto.setPhoneNumber(userSignUpDto.getPhoneNumber());
-        userDto.setRole(Role.ROLE_USER);
-        userDto.setProvider(provider);
-        userDto.setEssentialTerms(userSignUpDto.getEssentialTerms());
-        userDto.setOptionalTerm1(userSignUpDto.getOptionalTerm1());
-
-        return userDto;
-    }
-
-    // <--- Methods for test --->
     public NaverLoginVo signInTest(Map<String, String> resValue) {  // 로그인 테스트 위해서 액세스토큰, 유저 ID 얻어오는 함수
         final String uri = UriComponentsBuilder
                 .fromUriString(naverConstants.getToken_uri())

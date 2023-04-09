@@ -10,5 +10,6 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByProviderUserId(String providerUserId); //isPresent() 사용 위해 Optional<> 타입으로 선언
+    Optional<User> findByPhoneNumber(String phoneNumber);
 
 }
