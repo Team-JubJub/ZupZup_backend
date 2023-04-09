@@ -16,7 +16,6 @@ public class User {
     private Long userId;
     @Column(nullable = false)
     private String providerUserId;
-    private String refreshToken;
 
     @Column(nullable = false) private String nickName;
     @Column(nullable = false) private String gender;

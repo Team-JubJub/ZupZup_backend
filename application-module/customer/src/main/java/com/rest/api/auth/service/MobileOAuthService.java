@@ -4,8 +4,10 @@ import com.rest.api.auth.naver.NaverConstants;
 import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.naver.vo.NaverProfileResponseVo;
 import com.rest.api.auth.naver.vo.NaverProfileVo;
-import Provider;
-import Role;
+
+
+import domain.auth.User.Provider;
+import domain.auth.User.Role;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;

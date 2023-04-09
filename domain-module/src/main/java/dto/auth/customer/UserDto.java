@@ -1,7 +1,8 @@
 package dto.auth.customer;
 
-import Provider;
-import Role;
+
+import domain.auth.User.Provider;
+import domain.auth.User.Role;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +12,6 @@ public class UserDto {
 
     private Long userId;
     private String providerUserId;  // ex) NAVER_userID
-    private String refreshToken;
 
     private String nickName;
     private String gender;
