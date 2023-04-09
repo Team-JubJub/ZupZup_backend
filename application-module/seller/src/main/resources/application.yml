@@ -31,3 +31,10 @@ cloud:
       access-key:
     s3:
       bucket: zupzupbucket
+
+#springdoc swagger
+springdoc:
+  api-docs:
+    enabled: true #false 지정 시 외부 노출 X
+  swagger-ui:
+    enabled: true
