@@ -16,6 +16,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -46,8 +50,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {    // Http Security part
         http
-                    .cors()
-                .and()
+                    .cors(c -> {
+                        CorsConfigurationSource source = request -> {
+                            // Cors 허용 패턴
+                            CorsConfiguration config = new CorsConfiguration();
+                            config.setAllowedOrigins(
+                                    List.of("*")
+                            );
+                            config.setAllowedMethods(
+                                    List.of("*")
+                            );
+                            return config;
+                        };
+                        c.configurationSource(source);
+                    })
                     .httpBasic().disable()
                     .csrf().disable()
                     .headers().frameOptions().disable()

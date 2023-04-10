@@ -1,9 +1,11 @@
 package com.rest.api.auth.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,24 +22,24 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    // JwtAuthenticationFilter를 filterChain에 등록
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = resolveToken((HttpServletRequest) request);
-
-        if (token!=null && jwtTokenProvider.validateToken(token)) { // 토큰 유효성 검사
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        String accessToken = null;
+        Cookie[] cookies = ((HttpServletRequest) request).getCookies();
+        if (cookies != null)
+            accessToken = jwtTokenProvider.getCookie((HttpServletRequest) request, JwtTokenProvider.ACCESS_TOKEN_NAME).getValue();
+        if (!jwtTokenProvider.isLoggedOut(accessToken)) {
+            try {
+                if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
+                    Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
+            } catch (ExpiredJwtException e) {
+                //재발급
+            }
         }
-        chain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
-
-    private String resolveToken(HttpServletRequest request) {   // 헤더에서 토큰 추출
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
 
 }
