@@ -16,6 +16,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -37,7 +39,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
     private final UserRepository userRepository;
 
     // <-------------------- Sign-up part -------------------->
-    public String signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
+    public ResponseEntity signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         checkIsSignedUp(userSignUpDto.getPhoneNumber());
         UserDto userDto = new UserDto();
         if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
@@ -61,7 +63,9 @@ public class MobileOAuthService {  // For not a case of OAuth2
                 .build();
         userRepository.save(userEntity);
 
-        return "회원가입이 완료되었습니다";
+
+
+        return new ResponseEntity("회원가입이 완료되었습니다.", HttpStatus.CREATED);
     }
     // <-------------------- Sign-in part -------------------->
 

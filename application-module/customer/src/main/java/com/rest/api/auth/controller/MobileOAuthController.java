@@ -22,9 +22,9 @@ public class MobileOAuthController {
     // < -------------- Sign up part -------------- >
     @PostMapping("/sign-up/{provider}")    // 회원가입 요청
     public ResponseEntity signUp(@PathVariable String provider, @RequestBody UserRequestDto.UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
-        String result = mobileOAuthService.signUp(provider, userSignUpDto);
+        ResponseEntity signUpResult = mobileOAuthService.signUp(provider, userSignUpDto);
 
-        return new ResponseEntity("temp", HttpStatus.CREATED);  // temp
+        return signUpResult;  // temp
     }
 
     @PostMapping("/sign-in/")    // 로그인 요청(토큰 없을 경우)

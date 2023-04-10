@@ -1,4 +1,4 @@
-package com.rest.api.auth.jwt;
+package dto.auth.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class JwtToken {
+public class JwtTokenDto {
 
     private String grantType;
     private String accessToken;
