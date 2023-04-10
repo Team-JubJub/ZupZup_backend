@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.xml.bind.DatatypeConverter;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,21 +23,38 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private final Key key;
+    private long accessTokenValidityInMilliseconds = 100*60*30; // 30분
+    private long refreshTokenValidityInMilliseconds = 100*60*30*2;  // 2일
 
     public JwtTokenProvider(@Value("${spring.security.jwt.secret}") String secretKey) {
         byte[] secretByteKey = DatatypeConverter.parseBase64Binary(secretKey);
         this.key = Keys.hmacShaKeyFor(secretByteKey);
     }
 
-    public String generateToken(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
+    public String generateAccessToken(String payload) {
+        String acces_token = generateToken(payload, accessTokenValidityInMilliseconds);
+
+        return acces_token;
+    }
+
+    public String generateRefreshToken() {
+        byte[] array = new byte[7];
+        new Random().nextBytes(array);
+        String generatedString = new String(array, StandardCharsets.UTF_8);
+        String refresh_token = generateToken(generatedString, refreshTokenValidityInMilliseconds);
+
+        return refresh_token;
+    }
+
+    public String generateToken(String payload, long expireLength) {
+        Claims claims = Jwts.claims().setSubject(payload);
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + expireLength);
         
         return Jwts.builder()   // Access token 생성
-                .setSubject(authentication.getName())
-                .claim("auth", authorities)
-                .setExpiration(new Date(System.currentTimeMillis() + 100*60*30))    // 30초
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)    // 30초
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
