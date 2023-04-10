@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -45,17 +46,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {    // Http Security part
         http
+                    .cors()
+                .and()
                     .csrf().disable()
                     .headers().frameOptions().disable()
+                .and()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeHttpRequests()    // authorizeRequests() -> authorizeHttpRequests()
+                    .requestMatchers("/test/sign-in").authenticated()
                     .requestMatchers( "/", "http://localhost:8082/**", "/sign-up/**", "/sign-in/**", "/customer/**", "/h2-console/**", "/login/oauth2/callback/**").permitAll()  // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리
-                .and().rememberMe()
-                    .key("test")
+                    .anyRequest().permitAll()
                 .and().logout()
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/")  // 로그아웃 시 인덱스 페이지로
-                    .invalidateHttpSession(true)
-                    .deleteCookies("remember-me", "JSESSIONID")
                 .and().oauth2Login()
                     .authorizationEndpoint().baseUri("/login/oauth2");   // ex) ~~/login/oauth2/{naver, kakao, etc...(이 부분은 클라이언트에서 설정)}
 

@@ -4,6 +4,9 @@ import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.service.MobileOAuthService;
 import dto.auth.customer.request.UserRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,15 +21,16 @@ public class MobileOAuthController {
     private final MobileOAuthService mobileOAuthService;
     // < -------------- Sign up part -------------- >
     @PostMapping("/sign-up/{provider}")    // 회원가입 요청
-    public String signUp(@PathVariable String provider, @RequestBody UserRequestDto.UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
+    public ResponseEntity signUp(@PathVariable String provider, @RequestBody UserRequestDto.UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         String result = mobileOAuthService.signUp(provider, userSignUpDto);
 
-        return result;  // temp
+        return new ResponseEntity("temp", HttpStatus.CREATED);  // temp
     }
 
     @PostMapping("/sign-in/")    // 로그인 요청(토큰 없을 경우)
-    public String signIn() {
-        return "temp";
+    public ResponseEntity signIn() {
+
+        return new ResponseEntity("temp", HttpStatus.OK);
     }
 
     // <----------- Test Controller ----------->
@@ -36,7 +40,7 @@ public class MobileOAuthController {
 
         return naverLoginVo;
     }
-    @GetMapping("/sign-in/test")
+    @GetMapping("/test/sign-in")
     public String signInTestPage() {
         return "Sign in test page";
     }
