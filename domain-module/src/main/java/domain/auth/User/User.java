@@ -16,6 +16,8 @@ public class User {
     private Long userId;
     @Column(nullable = false)
     private String providerUserId;
+    @Column(nullable = false)
+    private String userName;
 
     @Column(nullable = false) private String nickName;
     @Column(nullable = false) private String gender;

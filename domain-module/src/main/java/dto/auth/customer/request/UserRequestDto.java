@@ -7,6 +7,7 @@ public class UserRequestDto {
     @Getter
     public static class UserSignUpDto {
         private String userUniqueId;
+        private String userName;
         private String nickName;
         private String gender;
         private String phoneNumber;

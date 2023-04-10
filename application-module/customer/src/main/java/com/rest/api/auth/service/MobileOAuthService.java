@@ -53,6 +53,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
         }
 
         User userEntity = User.builder(userDto.getProviderUserId())
+                .userName(userDto.getUserName())
                 .nickName(userDto.getNickName())
                 .gender(userDto.getGender())
                 .phoneNumber(userDto.getPhoneNumber())
@@ -82,6 +83,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
     private UserDto userSignUpDtoToUserDto(Provider provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         UserDto userDto = new UserDto();
         userDto.setProviderUserId(provider.getProvider().toUpperCase() + "_" + userSignUpDto.getUserUniqueId());
+        userDto.setUserName(userSignUpDto.getUserName());
         userDto.setNickName(userSignUpDto.getNickName());
         userDto.setGender(userSignUpDto.getGender());
         userDto.setPhoneNumber(userSignUpDto.getPhoneNumber());

@@ -1,7 +1,7 @@
 package com.rest.api.auth.service;
 
-import Provider;
-import Role;
+import domain.auth.User.Provider;
+import domain.auth.User.Role;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import jakarta.servlet.http.HttpSession;
