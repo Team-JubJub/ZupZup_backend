@@ -48,6 +48,7 @@ public class SecurityConfig {
         http
                     .cors()
                 .and()
+                    .httpBasic().disable()
                     .csrf().disable()
                     .headers().frameOptions().disable()
                 .and()
@@ -59,8 +60,10 @@ public class SecurityConfig {
                 .and().logout()
                     .logoutUrl("/logout")
                     .logoutSuccessUrl("/")  // 로그아웃 시 인덱스 페이지로
-                .and().oauth2Login()
-                    .authorizationEndpoint().baseUri("/login/oauth2");   // ex) ~~/login/oauth2/{naver, kakao, etc...(이 부분은 클라이언트에서 설정)}
+                .and()  // Filter로 JwtAuthenticationFilter 적용
+                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+//                .and().oauth2Login()  // for test
+//                    .authorizationEndpoint().baseUri("/login/oauth2");   // ex) ~~/login/oauth2/{naver, kakao, etc...(이 부분은 클라이언트에서 설정)}
 
 //                .and()
 //                    .redirectionEndpoint().baseUri("/login/oauth2/callback/naver");   // 일단 이렇게 두고 나중에 수정
