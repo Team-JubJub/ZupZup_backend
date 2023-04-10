@@ -6,15 +6,14 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.cglib.core.Local;
+import org.springframework.data.redis.core.RedisHash;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 
-@Entity
+@RedisHash(value = "refreshToken", timeToLive = 100*60*60*24*14)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class RefreshToken {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

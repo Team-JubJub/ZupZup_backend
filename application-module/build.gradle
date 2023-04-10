@@ -13,7 +13,6 @@ subprojects {   // Applied to application-common, seller, customer
         implementation(project(":core-module"))
         implementation(project(":domain-module"))
         implementation 'org.springframework.boot:spring-boot-starter-webflux'   // WebClient 의존성 주입
-        implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '2.4.10' // redis 의존성 주입
     }
 }
 project(':application-module:application-common') {

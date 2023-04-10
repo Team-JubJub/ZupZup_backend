@@ -11,7 +11,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
 @EnableRedisRepositories
-public class RedisRepositoryConfig {
+public class RedisConfig {
 
     @Value("${spring.redis.host}")
     private String host;
@@ -30,6 +30,10 @@ public class RedisRepositoryConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+
         return redisTemplate;
     }
+
 }
