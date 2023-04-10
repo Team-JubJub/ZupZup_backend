@@ -25,5 +25,10 @@ public class RedisService {
         return findInfo;
     }
 
+    public RefreshToken getStringValue(String accessToken) {
+        RefreshToken refreshTokenEntity = refreshTokenRepository.findByAccessToken(accessToken);
+
+        return refreshTokenEntity;
+    }
 
 }

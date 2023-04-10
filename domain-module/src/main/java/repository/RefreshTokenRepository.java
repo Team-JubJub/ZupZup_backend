@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface RefreshTokenRepository extends CrudRepository<RefreshToken, String> {
 
+    RefreshToken findByAccessToken(String accessToken);
     RefreshToken findByRefreshToken(String refreshToken);
     Optional<RefreshToken> findByProviderUserId(String providerUserId);
 

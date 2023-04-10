@@ -1,6 +1,8 @@
 package com.rest.api.auth.jwt;
 
 import com.rest.api.auth.service.RedisService;
+import com.rest.api.auth.service.CustomUserDetailsService;
+import com.rest.api.dto.LoginInfo;
 import domain.auth.Token.response.ValidRefreshTokenResponse;
 import io.jsonwebtoken.*;
 
@@ -12,9 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +26,7 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private final RedisService redisService;
+    private final CustomUserDetailsService customUserDetailsService;
     @Value("${spring.security.jwt.secret}")
     private String secretKey;
     public static final long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 100*60*30; // 30분
@@ -41,16 +41,16 @@ public class JwtTokenProvider {
 
     public ValidRefreshTokenResponse validateRefreshToken(String accessToken, String refreshToken)
     {
-        List<String> findInfo = redisService.getListValue(refreshToken);
+        List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = providerUserId, 1 = refreshToken
         String providerUserId = getProviderUserId(accessToken);
         if (findInfo.get(0).equals(null)) { // 유저 정보가 없으면 401 반환
             return new ValidRefreshTokenResponse(null, 401, null);
         }
         if (providerUserId.equals(findInfo.get(0)) && validateToken(refreshToken))
         {
-            UserDetails findMember = userDetailsService.loadUserByUsername((String)findInfo.get(0));
+            UserDetails findMember = customUserDetailsService.loadUserByProviderUserId((String)findInfo.get(0));
             List<String> roles = findMember.getAuthorities().stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
-            String newAccessToken = generateAccessToken((String)findInfo.get(0), roles);
+            String newAccessToken = generateAccessToken((String)findInfo.get(0));
             return new ValidRefreshTokenResponse((String)findInfo.get(0), 200, newAccessToken);
         }
         return new ValidRefreshTokenResponse(null, 403, null);
@@ -80,25 +80,9 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public Authentication getAuthentication(String accessToken) {
-        Claims claims = parseClaims(accessToken);   // 토큰 복호화
-
-        if(claims.get("auth") == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
-        }
-
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get("auth").toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
-
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
-    }
-
     // Jwt 토큰으로 인증 정보를 조회
     public Authentication getAuthentication(String token) {
-        LoginInfo userDetails = ((LoginInfo)userDetailsService.loadUserByUsername(this.getProviderUserId(token)));
+        LoginInfo userDetails = ((LoginInfo) customUserDetailsService.loadUserByProviderUserId(this.getProviderUserId(token)));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
