@@ -39,25 +39,31 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public ValidRefreshTokenResponse validateRefreshToken(String accessToken, String refreshToken)
+    public ValidRefreshTokenResponse validateRefreshToken(String accessToken, String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
     {
         List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = providerUserId, 1 = refreshToken
         String providerUserId = getProviderUserId(accessToken);
         if (findInfo.get(0).equals(null)) { // 유저 정보가 없으면 401 반환
             return new ValidRefreshTokenResponse(null, 401, null);
         }
-        if (providerUserId.equals(findInfo.get(0)) && validateToken(refreshToken))
+        if (providerUserId.equals(findInfo.get(0)) && validateToken(refreshToken))  // User 정보 확인, refresh Token 유효성 검증 완료 시
         {
-            UserDetails findMember = customUserDetailsService.loadUserByProviderUserId((String)findInfo.get(0));
-            List<String> roles = findMember.getAuthorities().stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
-            String newAccessToken = generateAccessToken((String)findInfo.get(0));
+            UserDetails findUser = customUserDetailsService.loadUserByProviderUserId((String)findInfo.get(0));
+            List<String> roles = findUser.getAuthorities().stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
+            String newAccessToken = generateAccessToken((String)findInfo.get(0), roles);
             return new ValidRefreshTokenResponse((String)findInfo.get(0), 200, newAccessToken);
         }
-        return new ValidRefreshTokenResponse(null, 403, null);
+        return new ValidRefreshTokenResponse(null, 403, null);  // refresh Token 만료 시
     }
 
-    public String generateAccessToken(String payload) {
-        Claims claims = Jwts.claims().setSubject(payload);
+    public boolean validateToken(String jwtToken) { // Jwt 토큰의 유효성 + 만료일자 확인
+        Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+        return !claims.getBody().getExpiration().before(new Date());
+    }
+
+    public String generateAccessToken(String providerUserId, List<String> roles) {
+        Claims claims = Jwts.claims().setSubject(providerUserId);
+        claims.put("roles", roles);
         Date now = new Date();
         String accessToken = Jwts.builder()
                 .setClaims(claims) // 데이터
@@ -72,34 +78,33 @@ public class JwtTokenProvider {
     public String generateRefreshToken() {
         Date now = new Date();
         Date validity = new Date(now.getTime() + REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
-
-        return Jwts.builder()   // Access token 생성
+        String refreshToken = Jwts.builder()   // Access token 생성
                 .setIssuedAt(now)
                 .setExpiration(validity)    // 30초
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
+
+        return refreshToken;
     }
 
-    // Jwt 토큰으로 인증 정보를 조회
-    public Authentication getAuthentication(String token) {
+    public Authentication getAuthentication(String token) { // Jwt 토큰으로 인증 정보를 조회
         LoginInfo userDetails = ((LoginInfo) customUserDetailsService.loadUserByProviderUserId(this.getProviderUserId(token)));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());  // password(credentials)는 비우고 사용
     }
 
-    // Jwt 토큰에서 회원 구별 정보 추출
-    public String getProviderUserId(String token) {
+    public String getProviderUserId(String token) { // Jwt 토큰에서 회원 구별 정보(providerUserId) 추출
         try
         {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
         }
         catch (ExpiredJwtException e)
         {
-            //e.printStackTrace();
+            e.printStackTrace();
             return "Expired";
         }
         catch (JwtException e)
         {
-            //e.printStackTrace();
+            e.printStackTrace();
             return "Invalid";
         }
     }
@@ -114,15 +119,8 @@ public class JwtTokenProvider {
         return null;
     }
 
-    // Request의 Header에서 token 파싱
-    public String resolveToken(HttpServletRequest req, String headerName) {
+    public String resolveToken(HttpServletRequest req, String headerName) { // Request의 Header에서 token 파싱
         return req.getHeader(headerName);
-    }
-
-    // Jwt 토큰의 유효성 + 만료일자 확인
-    public boolean validateToken(String jwtToken) {
-        Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-        return !claims.getBody().getExpiration().before(new Date());
     }
 
     public Long remainExpiration(String token)

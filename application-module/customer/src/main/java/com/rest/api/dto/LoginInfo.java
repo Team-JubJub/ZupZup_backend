@@ -16,8 +16,8 @@ public class LoginInfo implements UserDetails { // Token validation에 사용할
 
     private Long number;
     private String providerUserId;
-    private String password;
     private String name;
+    private String password;    // 안쓰임
     private Collection<GrantedAuthority> roles;
 
     public LoginInfo() {
@@ -29,7 +29,7 @@ public class LoginInfo implements UserDetails { // Token validation에 사용할
     public LoginInfo(User user) {
         this.number = user.getUserId();
         this.providerUserId = user.getProviderUserId();
-        this.name = user.getNickName();
+        this.name = user.getUserName();
         roles = new ArrayList<GrantedAuthority>();
         roles.add(new SimpleGrantedAuthority(user.getRole().getRole()));
     }
@@ -43,6 +43,7 @@ public class LoginInfo implements UserDetails { // Token validation에 사용할
         return roles;
     }
 
+    public String getProviderUserId() { return providerUserId; }
     @Override
     public String getUsername() {
         return name;
