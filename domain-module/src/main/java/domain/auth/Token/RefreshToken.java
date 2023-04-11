@@ -4,12 +4,14 @@ package domain.auth.Token;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 import org.springframework.data.redis.core.index.Indexed;
 
 
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
-@RedisHash(value = "refreshToken", timeToLive = 100*60*60*24*14)
+@RedisHash(value = "refreshToken")
 @Getter
 @Builder
 @AllArgsConstructor
@@ -22,17 +24,18 @@ public class RefreshToken {
     private String providerUserId;  // User id(우선은 조인시키지 말고)
     private String accessToken; // 로그아웃 된 유저의 경우 access token을 저장해놓음.
     private String refreshToken;
-    private LocalDateTime expiredAt;
+    @TimeToLive(unit = TimeUnit.MILLISECONDS)
+    private Long expiration;
 
-    private RefreshToken(final String providerUserId, final String refreshToken, final LocalDateTime expiredAt) {
+    private RefreshToken(final String providerUserId, final String refreshToken, final Long expiration) {
         this.providerUserId = providerUserId;
         this.refreshToken = refreshToken;
-        this.expiredAt = expiredAt;
+        this.expiration = expiration;
     }
 
-    public Boolean isExpiredAt(final LocalDateTime now) {
-        return now.isAfter(expiredAt);
-    }
+//    public Boolean isExpiredAt(final LocalDateTime now) {
+//        return now.isAfter(LocalDateTime().now().expiration);
+//    }
 
     public void changeToken(String token) {
         this.refreshToken = token;

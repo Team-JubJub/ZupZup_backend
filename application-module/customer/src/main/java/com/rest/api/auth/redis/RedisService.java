@@ -1,6 +1,7 @@
 package com.rest.api.auth.redis;
 
 import domain.auth.Token.RefreshToken;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class RedisService {
     @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
+    @Transactional
     public List<String> getListValue(String refreshToken) {
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByRefreshToken(refreshToken);
         String getRefreshToken = refreshTokenEntity.getRefreshToken();
@@ -27,6 +29,7 @@ public class RedisService {
         return findInfo;
     }
 
+    @Transactional
     public String getStringValue(String accessToken) {  // redis에 accessToken 저장돼있는지(로그아웃인지) 판단
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByAccessToken(accessToken);
         String foundAccessToken = refreshTokenEntity.getAccessToken();
@@ -34,30 +37,36 @@ public class RedisService {
         return foundAccessToken;
     }
 
+    @Transactional
     public void setStringValue(String token, String data, Long expirationTime) {
         if(data.equals("sign-out")) {    // 로그아웃 상황에 data를 "sign-out"로 줌.
             String accessToken = token;
             Long remainExpirationTime = expirationTime; // 로그아웃 시 access token의 남은 유효시간
             LocalDateTime expiredAt = LocalDateTime.now().plusSeconds((int) (expirationTime / 1000));  // 밀리초 단위이므로 나누기 100해줌
+            System.out.println(expiredAt);  // For test
+            Long expiration = expirationTime;
 
             refreshTokenRepository.save(RefreshToken.builder()
                     .accessToken(accessToken)
-                    .expiredAt(expiredAt)
+                    .expiration(expiration)
                     .build());
         }
         else {  // 로그인 상황에 data는 providerUserId
             String refreshToken = token;
             String providerUserId = data;
             LocalDateTime expiredAt = LocalDateTime.now().plusSeconds((int) (expirationTime / 1000));
+            System.out.println(expiredAt);  // For test
+            Long expiration = expirationTime;
 
             refreshTokenRepository.save(RefreshToken.builder()
                     .refreshToken(refreshToken)
                     .providerUserId(providerUserId)
-                    .expiredAt(expiredAt)
+                    .expiration(expiration)
                     .build());
         }
     }
 
+    @Transactional
     public void deleteToken(String refreshToken) {
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByRefreshToken(refreshToken);
     }
