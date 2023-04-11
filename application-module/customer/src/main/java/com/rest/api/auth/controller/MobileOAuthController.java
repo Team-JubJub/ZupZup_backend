@@ -3,11 +3,13 @@ package com.rest.api.auth.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.service.MobileOAuthService;
+import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.customer.response.UserResponseDto;
 import dto.auth.token.TokenInfoDto;
 import dto.auth.token.ValidRefreshTokenResponseDto;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -67,13 +69,16 @@ public class MobileOAuthController {
     // <----------- Test Controller ----------->
     @GetMapping("/login/oauth2/callback/naver") // -> 클라이언트가 구현할 파트
     public NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) throws Exception {
-        final NaverLoginVo naverLoginVo = mobileOAuthService.signInTest(resValue);
+        final NaverLoginVo naverLoginVo = mobileOAuthService.signInTestNaver(resValue);
 
         return naverLoginVo;
     }
     @GetMapping("/test/sign-in")
-    public String signInTestPage() {
-        return "Sign in test page";
+    public ResponseEntity signInTestPage(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        UserDto userDto = mobileOAuthService.signInTestToken(cookies);
+
+        return new ResponseEntity(userDto, HttpStatus.OK);
     }
 
 }
