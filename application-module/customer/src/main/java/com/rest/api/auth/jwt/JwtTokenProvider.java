@@ -133,11 +133,11 @@ public class JwtTokenProvider {
         }
     }
 
-    public Boolean isLoggedOut(String accessToken)
+    public Boolean isLoggedOut(String accessToken)  // true -> 로그아웃된 상황
     {
         if (accessToken == null)
             return false;
-        return redisService.getStringValue(accessToken) != null;
+        return redisService.getStringValue(accessToken) != null;    // redis에 accesstoken이 저장돼있다면 로그인된 경우
     }
 
 }

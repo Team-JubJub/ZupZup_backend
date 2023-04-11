@@ -9,23 +9,23 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-//@Configuration
-//@EnableRedisRepositories
-public class RedisConfig {  // Redis template을 사용해 repository 정의할 경우 필요함, 우리 프로젝트는 Redis Repository를 이용하므로 필요 X
+@Configuration
+@EnableRedisRepositories
+public class RedisConfig {
 
-//    @Value("${spring.redis.host}")
-//    private String host;
-//
-//    @Value("${spring.redis.port}")
-//    private int port;
+    @Value("${spring.redis.host}")
+    private String host;
+
+    @Value("${spring.redis.port}")
+    private int port;
+
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory(host, port);
+    }
 //
 //    @Bean
-//    public RedisConnectionFactory redisConnectionFactory() {
-//        return new LettuceConnectionFactory(host, port);
-//    }
-//
-//    @Bean
-//    public RedisTemplate<String, Object> redisTemplate() {
+//    public RedisTemplate<String, Object> redisTemplate() {    // 우리 프로젝트는 Redis repository를 이용하여 repository 구현하므로 필요 없음.
 //        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 //        redisTemplate.setConnectionFactory(redisConnectionFactory());
 //        redisTemplate.setKeySerializer(new StringRedisSerializer());
