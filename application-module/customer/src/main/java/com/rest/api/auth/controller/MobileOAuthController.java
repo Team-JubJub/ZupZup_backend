@@ -3,9 +3,9 @@ package com.rest.api.auth.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.service.MobileOAuthService;
-import com.rest.api.auth.redis.RedisService;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.token.TokenInfoDto;
+import dto.auth.token.ValidRefreshTokenResponseDto;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class MobileOAuthController {
 
     */
     private final MobileOAuthService mobileOAuthService;
-    private final RedisService redisService;
+    private final JwtTokenProvider jwtTokenProvider;
     // < -------------- Sign up part -------------- >
     @PostMapping("/sign-up/{provider}")    // 회원가입 요청
     public ResponseEntity signUp(@PathVariable String provider, @RequestBody UserRequestDto.UserSignUpDto userSignUpDto, HttpServletResponse response) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
@@ -44,12 +44,11 @@ public class MobileOAuthController {
     }
 
     @PostMapping("/sign-in/refresh")    // 로그인 요청(refresh token 유효할 경우)
-    public ResponseEntity refresh(HttpServletResponse response,
-            @CookieValue(value = "accessToken") String accessToken
+    public ResponseEntity refresh(HttpServletResponse response, @CookieValue(value = "accessToken") String accessToken
             , @CookieValue(value = "refreshToken") String refreshToken) {
         if (accessToken == null || refreshToken == null)
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        ValidRefreshTokenResponse result = jwtTokenProvider.validateRefreshToken(accessToken, refreshToken);
+            return new ResponseEntity<>("message: redirect :/sign-in/{provider}", HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
+        ValidRefreshTokenResponseDto result = jwtTokenProvider.validateRefreshToken(accessToken, refreshToken);
         if (result.getStatus() == 200) {
             response.addCookie((new Cookie("accessToken", result.getAccessToken())));
             return new ResponseEntity(result, HttpStatus.OK);
