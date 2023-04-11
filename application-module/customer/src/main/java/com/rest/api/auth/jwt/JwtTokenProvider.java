@@ -2,8 +2,8 @@ package com.rest.api.auth.jwt;
 
 import com.rest.api.auth.service.RedisService;
 import com.rest.api.auth.service.CustomUserDetailsService;
-import com.rest.api.dto.LoginInfo;
-import domain.auth.Token.response.ValidRefreshTokenResponse;
+import com.rest.api.auth.dto.LoginInfoDto;
+import dto.auth.token.ValidRefreshTokenResponseDto;
 import io.jsonwebtoken.*;
 
 import jakarta.annotation.PostConstruct;
@@ -39,21 +39,21 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public ValidRefreshTokenResponse validateRefreshToken(String accessToken, String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
+    public ValidRefreshTokenResponseDto validateRefreshToken(String accessToken, String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
     {
         List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = providerUserId, 1 = refreshToken
         String providerUserId = getProviderUserId(accessToken);
         if (findInfo.get(0).equals(null)) { // 유저 정보가 없으면 401 반환
-            return new ValidRefreshTokenResponse(null, 401, null);
+            return new ValidRefreshTokenResponseDto(null, 401, null);
         }
         if (providerUserId.equals(findInfo.get(0)) && validateToken(refreshToken))  // User 정보 확인, refresh Token 유효성 검증 완료 시
         {
             UserDetails findUser = customUserDetailsService.loadUserByProviderUserId((String)findInfo.get(0));
             List<String> roles = findUser.getAuthorities().stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
             String newAccessToken = generateAccessToken((String)findInfo.get(0), roles);
-            return new ValidRefreshTokenResponse((String)findInfo.get(0), 200, newAccessToken);
+            return new ValidRefreshTokenResponseDto((String)findInfo.get(0), 200, newAccessToken);
         }
-        return new ValidRefreshTokenResponse(null, 403, null);  // refresh Token 만료 시
+        return new ValidRefreshTokenResponseDto(null, 403, null);  // refresh Token 만료 시
     }
 
     public boolean validateToken(String jwtToken) { // Jwt 토큰의 유효성 + 만료일자 확인
@@ -88,7 +88,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) { // Jwt 토큰으로 인증 정보를 조회
-        LoginInfo userDetails = ((LoginInfo) customUserDetailsService.loadUserByProviderUserId(this.getProviderUserId(token)));
+        LoginInfoDto userDetails = ((LoginInfoDto) customUserDetailsService.loadUserByProviderUserId(this.getProviderUserId(token)));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());  // password(credentials)는 비우고 사용
     }
 

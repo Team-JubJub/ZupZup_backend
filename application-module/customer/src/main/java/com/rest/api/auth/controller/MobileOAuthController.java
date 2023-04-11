@@ -28,12 +28,17 @@ public class MobileOAuthController {
         return signUpResult;  // temp
     }
 
-    @PostMapping("/sign-in/")    // 로그인 요청(토큰 없을 경우)
+    @PostMapping("/sign-in")    // 로그인 요청(토큰 없을 경우)
     public ResponseEntity signIn() {
 
         return new ResponseEntity("temp", HttpStatus.OK);
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity reissueRefreshToken() {
+
+        return new ResponseEntity("temp", HttpStatus.OK);
+    }
     // <----------- Test Controller ----------->
     @GetMapping("/login/oauth2/callback/naver") // -> 클라이언트가 구현할 파트
     public NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) throws Exception {

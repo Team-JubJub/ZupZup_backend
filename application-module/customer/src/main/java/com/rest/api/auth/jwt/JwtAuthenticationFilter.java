@@ -27,9 +27,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         String accessToken = null;
         Cookie[] cookies = ((HttpServletRequest) request).getCookies();
-        if (cookies != null)
+        if (cookies != null)    // 쿠키가 있다면
             accessToken = jwtTokenProvider.getCookie((HttpServletRequest) request, JwtTokenProvider.ACCESS_TOKEN_NAME).getValue();
-        if (!jwtTokenProvider.isLoggedOut(accessToken)) {
+        if (!jwtTokenProvider.isLoggedOut(accessToken)) {   // 로그아웃 된 상황이 아니라면(redis refreshToken 테이블에 accessToken이 저장된 게 아니라면)
             try {
                 if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
                     Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
