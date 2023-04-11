@@ -4,7 +4,6 @@ import domain.auth.Token.RefreshToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.RefreshTokenRepository;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,6 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RedisService {
 
+    @Autowired
     private RefreshTokenRepository refreshTokenRepository;
 
     public List<String> getListValue(String refreshToken) {
