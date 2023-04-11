@@ -9,8 +9,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-@Configuration
-@EnableRedisRepositories
+//@Configuration
+//@EnableRedisRepositories
 public class RedisConfig {  // Redis template을 사용해 repository 정의할 경우 필요함, 우리 프로젝트는 Redis Repository를 이용하므로 필요 X
 
 //    @Value("${spring.redis.host}")
