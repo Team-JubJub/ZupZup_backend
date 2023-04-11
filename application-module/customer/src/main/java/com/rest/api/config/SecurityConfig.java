@@ -73,9 +73,6 @@ public class SecurityConfig {
                     .requestMatchers("/test/sign-in").authenticated()
                     .requestMatchers( "/", "http://localhost:8082/**", "/sign-up/**", "/sign-in/**", "/customer/**", "/h2-console/**", "/login/oauth2/callback/**").permitAll()  // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리
                     .anyRequest().permitAll()
-                .and().logout()
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/")  // 로그아웃 시 인덱스 페이지로
                 .and()  // Filter로 JwtAuthenticationFilter 적용
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 //                .and().oauth2Login()  // for test

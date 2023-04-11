@@ -119,11 +119,11 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public String resolveToken(HttpServletRequest req, String headerName) { // Request의 Header에서 token 파싱
-        return req.getHeader(headerName);
+    public String resolveToken(HttpServletRequest request, String headerName) { // Request의 Header에서 token 파싱
+        return request.getHeader(headerName);
     }
 
-    public Long remainExpiration(String token)
+    public Long remainExpiration(String token)  // 토큰의 남은 유효기간
     {
         try {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getExpiration().getTime() - new Date().getTime();

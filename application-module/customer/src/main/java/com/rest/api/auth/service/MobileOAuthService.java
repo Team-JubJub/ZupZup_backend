@@ -1,5 +1,6 @@
 package com.rest.api.auth.service;
 
+import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.naver.NaverConstants;
 import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.naver.vo.NaverProfileResponseVo;
@@ -11,6 +12,7 @@ import domain.auth.User.Role;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
+import dto.auth.token.TokenInfoDto;
 import exception.customer.AlreadySignedUpException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import repository.UserRepository;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -37,6 +41,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
     @Autowired
     NaverConstants naverConstants;
     private final UserRepository userRepository;
+    private JwtTokenProvider jwtTokenProvider;
 
     // <-------------------- Sign-up part -------------------->
     public ResponseEntity signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
@@ -64,9 +69,12 @@ public class MobileOAuthService {  // For not a case of OAuth2
                 .build();
         userRepository.save(userEntity);
 
+        List<String> roles = Arrays.asList(userDto.getRole().getRole());
+        String accessToken = jwtTokenProvider.generateAccessToken(userDto.getProviderUserId(), roles);
+        String refreshtoken = jwtTokenProvider.generateRefreshToken();
+        TokenInfoDto tokenInfoDto = new TokenInfoDto("success", "Create user success", accessToken, refreshtoken);
 
-
-        return new ResponseEntity("회원가입이 완료되었습니다.", HttpStatus.CREATED);
+        return new ResponseEntity(tokenInfoDto, HttpStatus.CREATED);
     }
     // <-------------------- Sign-in part -------------------->
 

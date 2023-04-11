@@ -31,4 +31,9 @@ public class RedisService {
         return refreshTokenEntity;
     }
 
+    public void deleteToken(String refreshToken) {
+        RefreshToken refreshTokenEntity = refreshTokenRepository.findByRefreshToken(refreshToken);
+
+    }
+
 }
