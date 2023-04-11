@@ -4,6 +4,7 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.service.MobileOAuthService;
 import dto.auth.customer.request.UserRequestDto;
+import dto.auth.customer.response.UserResponseDto;
 import dto.auth.token.TokenInfoDto;
 import dto.auth.token.ValidRefreshTokenResponseDto;
 import jakarta.servlet.http.Cookie;
@@ -47,7 +48,7 @@ public class MobileOAuthController {
     public ResponseEntity signInWithRefreshToken(HttpServletResponse response, @CookieValue(value = "accessToken") String accessToken
             , @CookieValue(value = "refreshToken") String refreshToken) {
         if (accessToken == null || refreshToken == null)
-            return new ResponseEntity<>("message: redirect :/sign-in/{provider}", HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
+            return new ResponseEntity<>(new UserResponseDto.MessageDto("redirect: /mobile/sign-in/refresh"), HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
         ValidRefreshTokenResponseDto result = jwtTokenProvider.validateRefreshToken(accessToken, refreshToken);
         if (result.getStatus() == 200) {
             response.addCookie((new Cookie("accessToken", result.getAccessToken())));
