@@ -71,8 +71,8 @@ public class MobileOAuthService {  // For not a case of OAuth2
 
         List<String> roles = Arrays.asList(userDto.getRole().getRole());
         String accessToken = jwtTokenProvider.generateAccessToken(userDto.getProviderUserId(), roles);
-        String refreshtoken = jwtTokenProvider.generateRefreshToken();
-        TokenInfoDto tokenInfoDto = new TokenInfoDto("success", "Create user success", accessToken, refreshtoken);
+        String refreshToken = jwtTokenProvider.generateRefreshToken();
+        TokenInfoDto tokenInfoDto = new TokenInfoDto("success", "Create user success", accessToken, refreshToken);
 
         return new ResponseEntity(tokenInfoDto, HttpStatus.CREATED);
     }

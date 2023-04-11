@@ -1,9 +1,7 @@
 package domain.auth.Token;
 
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
@@ -12,6 +10,8 @@ import java.time.LocalDateTime;
 
 @RedisHash(value = "refreshToken", timeToLive = 100*60*60*24*14)
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RefreshToken {
 

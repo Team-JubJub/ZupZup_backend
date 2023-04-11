@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                     Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
-            } catch (ExpiredJwtException e) {
+            } catch (ExpiredJwtException e) {   // validateToken의 claims.getBody().getExpiration()에서 발생
                 //재발급
             }
         }

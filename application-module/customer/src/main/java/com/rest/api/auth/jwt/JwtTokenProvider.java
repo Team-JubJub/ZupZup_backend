@@ -58,7 +58,7 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String jwtToken) { // Jwt 토큰의 유효성 + 만료일자 확인
         Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-        return !claims.getBody().getExpiration().before(new Date());
+        return !claims.getBody().getExpiration().before(new Date());    // expire 된 게 아니라면 false + ! => true
     }
 
     public String generateAccessToken(String providerUserId, List<String> roles) {
@@ -135,7 +135,7 @@ public class JwtTokenProvider {
 
     public Boolean isLoggedOut(String accessToken)  // true -> 로그아웃된 상황
     {
-        if (accessToken == null)
+        if (accessToken == null)    // cookie의 access token 값이 null인 경우(만료)
             return false;
         return redisService.getStringValue(accessToken) != null;    // redis에 accesstoken이 저장돼있다면 로그인된 경우
     }
