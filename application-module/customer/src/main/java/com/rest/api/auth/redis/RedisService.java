@@ -38,7 +38,7 @@ public class RedisService {
         if(data.equals("sign-out")) {    // 로그아웃 상황에 data를 "sign-out"로 줌.
             String accessToken = token;
             Long remainExpirationTime = expirationTime; // 로그아웃 시 access token의 남은 유효시간
-            LocalDateTime expiredAt = LocalDateTime.now().plusSeconds((int) (expirationTime / 100));  // 밀리초 단위이므로 나누기 100해줌
+            LocalDateTime expiredAt = LocalDateTime.now().plusSeconds((int) (expirationTime / 1000));  // 밀리초 단위이므로 나누기 100해줌
 
             refreshTokenRepository.save(RefreshToken.builder()
                     .accessToken(accessToken)
@@ -48,7 +48,7 @@ public class RedisService {
         else {  // 로그인 상황에 data는 providerUserId
             String refreshToken = token;
             String providerUserId = data;
-            LocalDateTime expiredAt = LocalDateTime.now().plusSeconds((int) (expirationTime / 100));
+            LocalDateTime expiredAt = LocalDateTime.now().plusSeconds((int) (expirationTime / 1000));
 
             refreshTokenRepository.save(RefreshToken.builder()
                     .refreshToken(refreshToken)
