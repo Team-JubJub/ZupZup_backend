@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Long> {
+public interface RefreshTokenRepository extends CrudRepository<RefreshToken, String> {
 
     RefreshToken findByAccessToken(String accessToken);
     RefreshToken findByRefreshToken(String refreshToken);
