@@ -1,4 +1,4 @@
-package com.rest.api.auth.service;
+package com.rest.api.auth.redis;
 
 import domain.auth.Token.RefreshToken;
 import org.springframework.data.repository.CrudRepository;

@@ -1,6 +1,6 @@
 package com.rest.api.auth.jwt;
 
-import com.rest.api.auth.service.RedisService;
+import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.CustomUserDetailsService;
 import com.rest.api.auth.dto.LoginInfoDto;
 import dto.auth.token.ValidRefreshTokenResponseDto;

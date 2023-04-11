@@ -7,6 +7,7 @@ import com.rest.api.auth.naver.vo.NaverProfileResponseVo;
 import com.rest.api.auth.naver.vo.NaverProfileVo;
 
 
+import com.rest.api.auth.redis.RedisService;
 import domain.auth.User.Provider;
 import domain.auth.User.Role;
 import domain.auth.User.User;
@@ -78,7 +79,9 @@ public class MobileOAuthService {  // For not a case of OAuth2
         return tokenInfoDto;
     }
     // <-------------------- Sign-in part -------------------->
+    public void signIn() {
 
+    }
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->

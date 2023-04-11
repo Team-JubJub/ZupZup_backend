@@ -1,4 +1,4 @@
-package com.rest.api.auth.service;
+package com.rest.api.auth.redis;
 
 import domain.auth.Token.RefreshToken;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class RedisService {
     }
 
     public void setStringValue(String token, String data, Long expirationTime) {
-        if(data.equals("true")) {    // 로그아웃 상황에 data를 "true"로 줌.
+        if(data.equals("sign-out")) {    // 로그아웃 상황에 data를 "sign-out"로 줌.
             String accessToken = token;
             Long remainExpirationTime = expirationTime; // 로그아웃 시 access token의 남은 유효시간
             LocalDateTime expiredAt = LocalDateTime.now().plusSeconds((int) (expirationTime / 100));  // 밀리초 단위이므로 나누기 100해줌

@@ -15,4 +15,9 @@ public class UserRequestDto {
         private Boolean optionalTerm1;
     }
 
+    @Getter
+    public static class UserSignInDto {
+        private String userUniqueId;
+    }
+
 }

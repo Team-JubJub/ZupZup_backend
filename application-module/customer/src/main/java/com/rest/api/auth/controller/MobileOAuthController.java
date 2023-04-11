@@ -3,7 +3,7 @@ package com.rest.api.auth.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.service.MobileOAuthService;
-import com.rest.api.auth.service.RedisService;
+import com.rest.api.auth.redis.RedisService;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.token.TokenInfoDto;
 import jakarta.servlet.http.Cookie;
@@ -43,10 +43,18 @@ public class MobileOAuthController {
         return new ResponseEntity(signUpResult, HttpStatus.CREATED);  // temp
     }
 
-    @PostMapping("/sign-in")    // 로그인 요청(토큰 없을 경우)
-    public ResponseEntity signIn() {
-
-        return new ResponseEntity("temp", HttpStatus.OK);
+    @PostMapping("/sign-in/refresh")    // 로그인 요청(refresh token 유효할 경우)
+    public ResponseEntity refresh(HttpServletResponse response,
+            @CookieValue(value = "accessToken") String accessToken
+            , @CookieValue(value = "refreshToken") String refreshToken) {
+        if (accessToken == null || refreshToken == null)
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        ValidRefreshTokenResponse result = jwtTokenProvider.validateRefreshToken(accessToken, refreshToken);
+        if (result.getStatus() == 200) {
+            response.addCookie((new Cookie("accessToken", result.getAccessToken())));
+            return new ResponseEntity(result, HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/refresh")
