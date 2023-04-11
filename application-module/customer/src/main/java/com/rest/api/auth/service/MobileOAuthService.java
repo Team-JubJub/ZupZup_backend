@@ -119,11 +119,17 @@ public class MobileOAuthService {  // For not a case of OAuth2
         String accessToken = "";
         String refreshToken = "";
         for (Cookie cookie: cookies) {
+            if (cookie.getValue() == null) {    // 쿠키 값이 null 인 것에 대해 패스
+                String cookieName = cookie.getName();
+                System.out.println("Null cookie name: " + cookieName);
+                System.out.println("Null cookie attribute: " + cookie.getAttribute(cookieName));
+                continue;
+            }
             if(cookie.getName().equals(jwtTokenProvider.ACCESS_TOKEN_NAME)) {
-                accessToken = cookie.getAttribute(jwtTokenProvider.ACCESS_TOKEN_NAME);
+                accessToken = cookie.getValue();
             }
             else if(cookie.getName().equals(jwtTokenProvider.REFRESH_TOKEN_NAME)) {
-                refreshToken = cookie.getAttribute(jwtTokenProvider.REFRESH_TOKEN_NAME);
+                refreshToken = cookie.getValue();
             }
         }
 
