@@ -2,6 +2,7 @@ package com.rest.api.auth.service;
 
 import domain.auth.Token.RefreshToken;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.RefreshTokenRepository;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RedisService {
 
-    private final RefreshTokenRepository refreshTokenRepository;
+    private RefreshTokenRepository refreshTokenRepository;
 
     public List<String> getListValue(String refreshToken) {
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByRefreshToken(refreshToken);

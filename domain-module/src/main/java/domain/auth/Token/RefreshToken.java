@@ -4,6 +4,7 @@ package domain.auth.Token;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 
 
 import java.time.LocalDateTime;
@@ -16,6 +17,8 @@ import java.time.LocalDateTime;
 public class RefreshToken {
 
     @Id
+    private String id;
+    @Indexed
     private String providerUserId;  // User id(우선은 조인시키지 말고)
     private String accessToken; // 로그아웃 된 유저의 경우 access token을 저장해놓음.
     private String refreshToken;
