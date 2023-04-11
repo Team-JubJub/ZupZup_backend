@@ -18,8 +18,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -41,10 +39,11 @@ public class MobileOAuthService {  // For not a case of OAuth2
     @Autowired
     NaverConstants naverConstants;
     private final UserRepository userRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final RedisService redisService;
+    private final JwtTokenProvider jwtTokenProvider;
 
     // <-------------------- Sign-up part -------------------->
-    public ResponseEntity signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
+    public TokenInfoDto signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         checkIsSignedUp(userSignUpDto.getPhoneNumber());
         UserDto userDto = new UserDto();
         if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
@@ -72,9 +71,11 @@ public class MobileOAuthService {  // For not a case of OAuth2
         List<String> roles = Arrays.asList(userDto.getRole().getRole());
         String accessToken = jwtTokenProvider.generateAccessToken(userDto.getProviderUserId(), roles);
         String refreshToken = jwtTokenProvider.generateRefreshToken();
+        redisService.setStringValue(refreshToken, userDto.getProviderUserId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
+
         TokenInfoDto tokenInfoDto = new TokenInfoDto("success", "Create user success", accessToken, refreshToken);
 
-        return new ResponseEntity(tokenInfoDto, HttpStatus.CREATED);
+        return tokenInfoDto;
     }
     // <-------------------- Sign-in part -------------------->
 

@@ -1,12 +1,15 @@
 package com.rest.api.auth.controller;
 
+import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.service.MobileOAuthService;
+import com.rest.api.auth.service.RedisService;
 import dto.auth.customer.request.UserRequestDto;
+import dto.auth.token.TokenInfoDto;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,13 +24,23 @@ public class MobileOAuthController {
 
     */
     private final MobileOAuthService mobileOAuthService;
+    private final RedisService redisService;
     // < -------------- Sign up part -------------- >
     @PostMapping("/sign-up/{provider}")    // 회원가입 요청
     public ResponseEntity signUp(@PathVariable String provider, @RequestBody UserRequestDto.UserSignUpDto userSignUpDto, HttpServletResponse response) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
-        ResponseEntity signUpResult = mobileOAuthService.signUp(provider, userSignUpDto);
+        TokenInfoDto signUpResult = mobileOAuthService.signUp(provider, userSignUpDto); // service layer에서 user 정보 저장, refresh token redis에 저장까지
+        Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, signUpResult.getAccessToken());   // 쿠키 set
+        Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, signUpResult.getRefreshToken());
+         accessTokenCookie.setMaxAge((int) JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS);
+        // accessTokenCookie.setSecure(true);
+        // accessTokenCookie.setHttpOnly(true);
+         refreshTokenCookie.setMaxAge((int) JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
+        // refreshTokenCookie.setSecure(true);
+        // refreshTokenCookie.setHttpOnly(true);
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
 
-
-        return signUpResult;  // temp
+        return new ResponseEntity(signUpResult, HttpStatus.CREATED);  // temp
     }
 
     @PostMapping("/sign-in")    // 로그인 요청(토큰 없을 경우)
