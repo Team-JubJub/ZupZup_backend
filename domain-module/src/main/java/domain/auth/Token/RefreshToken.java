@@ -25,9 +25,9 @@ public class RefreshToken {
     private String accessToken; // 로그아웃 된 유저의 경우 access token을 저장해놓음.
     private String refreshToken;
     @TimeToLive(unit = TimeUnit.MILLISECONDS)
-    private Long expiration;
+    private Integer expiration;
 
-    private RefreshToken(final String providerUserId, final String refreshToken, final Long expiration) {
+    private RefreshToken(final String providerUserId, final String refreshToken, final Integer expiration) {
         this.providerUserId = providerUserId;
         this.refreshToken = refreshToken;
         this.expiration = expiration;

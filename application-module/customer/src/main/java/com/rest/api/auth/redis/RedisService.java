@@ -44,7 +44,7 @@ public class RedisService {
             Long remainExpirationTime = expirationTime; // 로그아웃 시 access token의 남은 유효시간
             LocalDateTime expiredAt = LocalDateTime.now().plusSeconds((int) (expirationTime / 1000));  // 밀리초 단위이므로 나누기 100해줌
             System.out.println(expiredAt);  // For test
-            Long expiration = expirationTime;
+            Integer expiration = (int) (expirationTime / 1);
 
             refreshTokenRepository.save(RefreshToken.builder()
                     .accessToken(accessToken)
@@ -56,7 +56,7 @@ public class RedisService {
             String providerUserId = data;
             LocalDateTime expiredAt = LocalDateTime.now().plusSeconds((int) (expirationTime / 1000));
             System.out.println(expiredAt);  // For test
-            Long expiration = expirationTime;
+            Integer expiration = (int) (expirationTime / 1);
 
             refreshTokenRepository.save(RefreshToken.builder()
                     .refreshToken(refreshToken)
