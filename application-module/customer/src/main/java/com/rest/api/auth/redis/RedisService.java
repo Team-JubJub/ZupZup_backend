@@ -60,7 +60,6 @@ public class RedisService {
 
     public void deleteToken(String refreshToken) {
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByRefreshToken(refreshToken);
-
     }
 
 }
