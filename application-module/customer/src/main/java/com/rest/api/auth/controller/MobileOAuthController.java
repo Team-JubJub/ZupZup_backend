@@ -44,7 +44,7 @@ public class MobileOAuthController {
     }
 
     @PostMapping("/sign-in/refresh")    // 로그인 요청(refresh token 유효할 경우)
-    public ResponseEntity refresh(HttpServletResponse response, @CookieValue(value = "accessToken") String accessToken
+    public ResponseEntity signInWithRefreshToken(HttpServletResponse response, @CookieValue(value = "accessToken") String accessToken
             , @CookieValue(value = "refreshToken") String refreshToken) {
         if (accessToken == null || refreshToken == null)
             return new ResponseEntity<>("message: redirect :/sign-in/{provider}", HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
@@ -56,11 +56,13 @@ public class MobileOAuthController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/refresh")
-    public ResponseEntity reissueRefreshToken() {
+    @PostMapping("/sign-in/{provider}")
+    public String signInWithProviderRequest() {
 
-        return new ResponseEntity("temp", HttpStatus.OK);
+        return "temp";
     }
+
+
     // <----------- Test Controller ----------->
     @GetMapping("/login/oauth2/callback/naver") // -> 클라이언트가 구현할 파트
     public NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) throws Exception {
