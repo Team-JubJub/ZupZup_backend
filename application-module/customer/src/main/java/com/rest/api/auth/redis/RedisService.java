@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +51,7 @@ public class RedisService {
     @Transactional
     public void setStringValue(String token, String data, Long expirationTime) {
         ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
-        stringValueOperations.set(token, data, (int) (expirationTime / 1));
+        stringValueOperations.set(token, data, (int) (expirationTime / 1), TimeUnit.MILLISECONDS);
         // 로그아웃 -> token = accessToken, data = "sign-out" / 로그인 -> token = refreshToken, data = providerUserId
 //        if(data.equals("sign-out")) {    // 로그아웃 상황에 data를 "sign-out"로 줌.
 ////            String accessToken = token;

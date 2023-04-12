@@ -38,10 +38,10 @@ class RedisTest {
     @Test
     void redisTest() {
         ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
-        stringValueOperations.set("test", "testvalue", 60, TimeUnit.SECONDS);
-        String test = stringValueOperations.get("test");
+        stringValueOperations.set("eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2ODEyODg4MzAsImV4cCI6MTY4MjQ5ODQzMH0.xCPzYdOFFigZoItSj-XRxfa1mfcIG8L0EJDsG32GTMU", "testvalue", 60, TimeUnit.SECONDS);
+        String test = stringValueOperations.get("eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2ODEyODg4MzAsImV4cCI6MTY4MjQ5ODQzMH0.xCPzYdOFFigZoItSj-XRxfa1mfcIG8L0EJDsG32GTMU");
         System.out.println(test);
-        stringValueOperations.getAndDelete("test");
+        stringValueOperations.getAndDelete("eyJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2ODEyODg4MzAsImV4cCI6MTY4MjQ5ODQzMH0.xCPzYdOFFigZoItSj-XRxfa1mfcIG8L0EJDsG32GTMU");
         System.out.println(stringValueOperations.get("test"));
 //        if(test == null) {
 //            System.out.println("is null");
