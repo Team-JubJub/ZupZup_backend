@@ -46,7 +46,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 }
             }
         } catch (NullPointerException e) {
-
+            // 쿠키가 필요한 요청에 대해 쿠키가 없는 경우 예외처리 로직 구현하기
         }
         filterChain.doFilter(request, response);
     }
