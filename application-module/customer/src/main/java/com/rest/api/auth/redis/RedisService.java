@@ -30,10 +30,10 @@ public class RedisService {
     }
 
     @Transactional
-    public String getStringValue(String accessToken) {  // redis에 accessToken 저장돼있는지(로그아웃인지) 판단
-        RefreshToken refreshTokenEntity = refreshTokenRepository.findByAccessToken(accessToken);
-        if(refreshTokenEntity == null) return null;
-        String foundAccessToken = refreshTokenEntity.getAccessToken();
+    public String getAccessTokenValue(String accessToken) {  // redis에 accessToken 저장돼있는지(로그아웃인지) 판단
+        RefreshToken refreshTokenEntityFoundWithAccessToken = refreshTokenRepository.findByAccessToken(accessToken);
+        if(refreshTokenEntityFoundWithAccessToken == null) return null; // 없으면 null 리턴
+        String foundAccessToken = refreshTokenEntityFoundWithAccessToken.getAccessToken();
 
         return foundAccessToken;
     }
