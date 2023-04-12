@@ -46,11 +46,11 @@ public class MobileOAuthController {
         return new ResponseEntity(signUpResult, HttpStatus.CREATED);  // temp
     }
 
-    @PostMapping("/sign-in/refresh")    // 로그인 요청(refresh token 유효할 경우)
-    public ResponseEntity signInWithRefreshToken(HttpServletResponse response, @CookieValue(value = "accessToken") String accessToken
-            , @CookieValue(value = "refreshToken") String refreshToken) {
+    @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우)
+    public ResponseEntity signInWithRefreshToken(HttpServletResponse response, @CookieValue(value = JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken
+            , @CookieValue(value = JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         if (accessToken == null || refreshToken == null)
-            return new ResponseEntity<>(new UserResponseDto.MessageDto("redirect: /mobile/sign-in/temp"), HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
+            return new ResponseEntity<>(new UserResponseDto.MessageDto("redirect: /mobile/sign-in/{provider}"), HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
         ValidRefreshTokenResponseDto result = jwtTokenProvider.validateRefreshToken(accessToken, refreshToken);
         if (result.getStatus() == 200) {
             Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, result.getAccessToken());
@@ -61,8 +61,8 @@ public class MobileOAuthController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/sign-in/{provider}")
-    public String signInWithProviderRequest() {
+    @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
+    public String signInWithProviderRequest(@RequestParam String provider) {
 
         return "temp";
     }
