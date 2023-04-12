@@ -62,7 +62,9 @@ public class MobileOAuthController {
     }
 
     @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
-    public String signInWithProviderRequest(@RequestParam String provider) {
+    public String signInWithProviderRequest(@RequestParam String provider, @RequestBody UserRequestDto.UserSignInDto userSignInDto) {
+
+
 
         return "temp";
     }
