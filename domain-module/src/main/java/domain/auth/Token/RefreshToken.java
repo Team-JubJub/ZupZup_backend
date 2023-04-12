@@ -29,7 +29,7 @@ public class RefreshToken {
     @TimeToLive(unit = TimeUnit.MILLISECONDS)
     private Integer expiration;
 
-    private RefreshToken(final String providerUserId, final String refreshToken, final Integer expiration) {
+    public RefreshToken(final String providerUserId, final String refreshToken, final Integer expiration) {
         this.providerUserId = providerUserId;
         this.refreshToken = refreshToken;
         this.expiration = expiration;
