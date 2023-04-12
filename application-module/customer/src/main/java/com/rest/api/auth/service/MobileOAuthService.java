@@ -94,6 +94,9 @@ public class MobileOAuthService {  // For not a case of OAuth2
         else if(provider.equals(Provider.APPLE.getProvider().toLowerCase())) {
             // 애플에 정보 요청 로직
         }
+        else if(provider.equals(Provider.GOOGLE.getProvider().toLowerCase())) {
+            // 구글에 정보 요청 로직
+        }
 
     }
 
