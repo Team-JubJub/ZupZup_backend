@@ -11,7 +11,7 @@ import org.springframework.data.redis.core.index.Indexed;
 import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 
-@RedisHash(value = "refreshToken")
+@RedisHash(value = "refreshTokens")
 @Getter
 @Builder
 @AllArgsConstructor
