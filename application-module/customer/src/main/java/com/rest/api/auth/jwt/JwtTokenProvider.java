@@ -42,7 +42,7 @@ public class JwtTokenProvider {
     public ValidRefreshTokenResponseDto validateRefreshToken(String accessToken, String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
     {
         List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = providerUserId, 1 = refreshToken
-        String providerUserId = getProviderUserId(accessToken);
+        String providerUserId = getProviderUserId(accessToken); // access Token 유효 시 providerUserId, accessToken 만료 시 expired, invalid 시 invalid
         if (findInfo.get(0).equals(null)) { // 유저 정보가 없으면 401 반환
             return new ValidRefreshTokenResponseDto(null, 401, null);
         }

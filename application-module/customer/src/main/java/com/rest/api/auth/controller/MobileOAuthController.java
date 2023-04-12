@@ -50,10 +50,12 @@ public class MobileOAuthController {
     public ResponseEntity signInWithRefreshToken(HttpServletResponse response, @CookieValue(value = "accessToken") String accessToken
             , @CookieValue(value = "refreshToken") String refreshToken) {
         if (accessToken == null || refreshToken == null)
-            return new ResponseEntity<>(new UserResponseDto.MessageDto("redirect: /mobile/sign-in/refresh"), HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
+            return new ResponseEntity<>(new UserResponseDto.MessageDto("redirect: /mobile/sign-in/temp"), HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
         ValidRefreshTokenResponseDto result = jwtTokenProvider.validateRefreshToken(accessToken, refreshToken);
         if (result.getStatus() == 200) {
-            response.addCookie((new Cookie("accessToken", result.getAccessToken())));
+            Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, result.getAccessToken());
+            accessTokenCookie.setMaxAge((int) (JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
+            response.addCookie(accessTokenCookie);
             return new ResponseEntity(result, HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
