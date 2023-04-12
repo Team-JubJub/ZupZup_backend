@@ -1,10 +1,13 @@
 package com.rest.api.auth.jwt;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Null;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -20,24 +23,30 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    // JwtAuthenticationFilter를 filterChain에 등록
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = resolveToken((HttpServletRequest) request);
-
-        if (token!=null && jwtTokenProvider.validateToken(token)) { // 토큰 유효성 검사
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        String accessToken = null;
+        Cookie[] cookies = ((HttpServletRequest) request).getCookies();
+        try {
+            if (cookies != null) {   // 쿠키가 있다면
+                accessToken = jwtTokenProvider.getCookie((HttpServletRequest) request, JwtTokenProvider.ACCESS_TOKEN_NAME).getValue();
+                if (!jwtTokenProvider.isLoggedOut(accessToken)) {   // 로그아웃 된 상황이 아니라면(redis refreshToken 테이블에 accessToken이 저장된 게 아니라면)
+                    try {
+                        if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
+                            Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
+                            SecurityContextHolder.getContext().setAuthentication(auth);
+                        }
+                    } catch (ExpiredJwtException e) {   // validateToken의 claims.getBody().getExpiration()에서 발생
+                        System.out.println("Validation failed");
+                        // 재발급 로직 구현하기
+                    }
+                }
+            }
+        } catch (NullPointerException e) {
+            // 쿠키가 필요한 요청에 대해 쿠키가 없는 경우 예외처리 로직 구현하기
         }
-        chain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
-
-    private String resolveToken(HttpServletRequest request) {   // 헤더에서 토큰 추출
-        String bearerToken = request.getHeader("Authorization");
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
-
 
 }

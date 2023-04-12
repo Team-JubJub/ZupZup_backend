@@ -47,6 +47,12 @@ subprojects {	// 모든 하위 모듈에 적용되는 setting
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 		testImplementation 'junit:junit:4.13.2'
 
+		// Redis
+		implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '3.0.0'
+
+		// Mac OS -> 소셜 로그인 구현 중 네이버에 access, refresh 토큰 요청 때 에러가 나 추가한 의존성
+		// 참고: https://junho85.pe.kr/2054
+		implementation 'io.netty:netty-resolver-dns-native-macos'
 	}
 
 	test {
