@@ -75,6 +75,7 @@ public class MobileOAuthController {
     }
     @GetMapping("/test/sign-in")
     public ResponseEntity signInTestPage(HttpServletRequest request) {
+        System.out.println("Sign in test start");
         Cookie[] cookies = request.getCookies();
         UserDto userDto = mobileOAuthService.signInTestToken(cookies);
 
