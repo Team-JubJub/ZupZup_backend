@@ -22,7 +22,9 @@ public class RefreshToken {
     private String id;
     @Indexed
     private String providerUserId;  // User id(우선은 조인시키지 말고)
+    @Indexed
     private String accessToken; // 로그아웃 된 유저의 경우 access token을 저장해놓음.
+    @Indexed
     private String refreshToken;
     @TimeToLive(unit = TimeUnit.MILLISECONDS)
     private Integer expiration;

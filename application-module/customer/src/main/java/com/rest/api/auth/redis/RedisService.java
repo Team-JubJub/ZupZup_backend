@@ -32,6 +32,7 @@ public class RedisService {
     @Transactional
     public String getStringValue(String accessToken) {  // redis에 accessToken 저장돼있는지(로그아웃인지) 판단
         RefreshToken refreshTokenEntity = refreshTokenRepository.findByAccessToken(accessToken);
+        if(refreshTokenEntity == null) return null;
         String foundAccessToken = refreshTokenEntity.getAccessToken();
 
         return foundAccessToken;
