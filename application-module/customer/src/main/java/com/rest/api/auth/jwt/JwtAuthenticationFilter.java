@@ -33,7 +33,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                 accessToken = jwtTokenProvider.getCookie((HttpServletRequest) request, JwtTokenProvider.ACCESS_TOKEN_NAME).getValue();
                 if (!jwtTokenProvider.isLoggedOut(accessToken)) {   // 로그아웃 된 상황이 아니라면(redis refreshToken 테이블에 accessToken이 저장된 게 아니라면)
                     try {
-                        if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
+                        if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {   // access token이 만료되지 않았을 경우
                             Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
                             SecurityContextHolder.getContext().setAuthentication(auth);
                         }
