@@ -7,6 +7,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Null;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
@@ -28,28 +29,24 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
         String accessToken = null;
         Cookie[] cookies = ((HttpServletRequest) request).getCookies();
         try {
-            System.out.println("Cookie read");
-            if (cookies != null)    // 쿠키가 있다면
-                System.out.println("Cookie exists");
+            if (cookies != null) {   // 쿠키가 있다면
                 accessToken = jwtTokenProvider.getCookie((HttpServletRequest) request, JwtTokenProvider.ACCESS_TOKEN_NAME).getValue();
-        } catch (NullPointerException e) {
-            System.out.println("nullpointer exception");
-            System.out.println(e);
-        }
-        if (cookies != null) {
-            if (!jwtTokenProvider.isLoggedOut(accessToken)) {   // 로그아웃 된 상황이 아니라면(redis refreshToken 테이블에 accessToken이 저장된 게 아니라면)
-                try {
-                    System.out.println("Validate access token: " + accessToken);
-                    if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
-                        System.out.println("Validation success");
-                        Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
-                        SecurityContextHolder.getContext().setAuthentication(auth);
+                if (!jwtTokenProvider.isLoggedOut(accessToken)) {   // 로그아웃 된 상황이 아니라면(redis refreshToken 테이블에 accessToken이 저장된 게 아니라면)
+                    try {
+                        System.out.println("Validate access token: " + accessToken);
+                        if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {
+                            System.out.println("Validation success");
+                            Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
+                            SecurityContextHolder.getContext().setAuthentication(auth);
+                        }
+                    } catch (ExpiredJwtException e) {   // validateToken의 claims.getBody().getExpiration()에서 발생
+                        System.out.println("Validation failed");
+                        //재발급
                     }
-                } catch (ExpiredJwtException e) {   // validateToken의 claims.getBody().getExpiration()에서 발생
-                    System.out.println("Validation failed");
-                    //재발급
                 }
             }
+        } catch (NullPointerException e) {
+
         }
         filterChain.doFilter(request, response);
     }
