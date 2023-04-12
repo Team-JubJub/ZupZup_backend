@@ -85,7 +85,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
     // <-------------------- Sign-in part -------------------->
     public void signIn(String provider, UserRequestDto.UserSignInDto userSignInDto) {
         if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
-            System.out.println("naver sign up");
+            System.out.println("naver sign in");
             // 네이버에 정보 요청 로직
         }
         else if(provider.equals(Provider.KAKAO.getProvider().toLowerCase())) {
@@ -97,7 +97,6 @@ public class MobileOAuthService {  // For not a case of OAuth2
         else if(provider.equals(Provider.GOOGLE.getProvider().toLowerCase())) {
             // 구글에 정보 요청 로직
         }
-
     }
 
     // <-------------------- Common methods part -------------------->
@@ -145,7 +144,6 @@ public class MobileOAuthService {  // For not a case of OAuth2
 
         return userDto;
     }
-
 
     public NaverLoginVo signInTestNaver(Map<String, String> resValue) {  // 로그인 테스트 위해서 액세스토큰, 유저 ID 얻어오는 함수
         final String uri = UriComponentsBuilder
