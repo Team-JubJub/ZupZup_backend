@@ -46,7 +46,7 @@ public class MobileOAuthController {
         return new ResponseEntity(signUpResult, HttpStatus.CREATED);  // temp
     }
 
-    @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우)
+    @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우)  -> 추후에 파라미터 CookieValue말고 HttpServletRequest로 바꾸는 것 고민해볼 것
     public ResponseEntity signInWithRefreshToken(HttpServletResponse response, @CookieValue(value = JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken
             , @CookieValue(value = JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         if (accessToken == null || refreshToken == null)
