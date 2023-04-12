@@ -83,7 +83,17 @@ public class MobileOAuthService {  // For not a case of OAuth2
         return tokenInfoDto;
     }
     // <-------------------- Sign-in part -------------------->
-    public void signIn() {
+    public void signIn(String provider, UserRequestDto.UserSignInDto userSignInDto) {
+        if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
+            System.out.println("naver sign up");
+            // 네이버에 정보 요청 로직
+        }
+        else if(provider.equals(Provider.KAKAO.getProvider().toLowerCase())) {
+            // 카카오에 정보 요청 로직
+        }
+        else if(provider.equals(Provider.APPLE.getProvider().toLowerCase())) {
+            // 애플에 정보 요청 로직
+        }
 
     }
 
