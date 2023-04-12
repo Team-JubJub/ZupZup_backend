@@ -3,10 +3,10 @@ package com.rest.api.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -25,7 +25,7 @@ public class RedisConfig {
     }
 //
 //    @Bean
-//    public RedisTemplate<String, Object> redisTemplate() {    // 우리 프로젝트는 Redis repository를 이용하여 repository 구현하므로 필요 없음.
+//    public RedisTemplate<String, Object> redisTemplate() {    // StringRedisTemplate 사용하므로, Object로 매핑할 template은 우선 필요 없음.
 //        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 //        redisTemplate.setConnectionFactory(redisConnectionFactory());
 //        redisTemplate.setKeySerializer(new StringRedisSerializer());

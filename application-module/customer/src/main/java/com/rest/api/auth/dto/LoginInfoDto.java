@@ -12,7 +12,7 @@ import java.util.Collection;
 
 @Getter
 @ToString
-public class LoginInfoDto implements UserDetails { // Token validation에 사용할 user dto, 의존성 때문에 customer에 정의해놓음.
+public class LoginInfoDto implements UserDetails { // Token validation에 사용할 user dto, 의존성 때문에 customer module에 정의해놓음.
 
     private Long number;
     private String providerUserId;

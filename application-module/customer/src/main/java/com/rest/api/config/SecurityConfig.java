@@ -2,8 +2,6 @@ package com.rest.api.config;
 
 import com.rest.api.auth.jwt.JwtAuthenticationFilter;
 import com.rest.api.auth.jwt.JwtTokenProvider;
-import com.rest.api.auth.repository.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.rest.api.auth.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,16 +20,9 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final CustomOAuth2UserService customOAuth2UserService;
 
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider, CustomOAuth2UserService customOAuth2UserService) {
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.customOAuth2UserService = customOAuth2UserService;
-    }
-
-    @Bean
-    public HttpCookieOAuth2AuthorizationRequestRepository cookieOAuth2AuthorizationRequestRepository() {
-        return new HttpCookieOAuth2AuthorizationRequestRepository();
     }
 
     @Bean
@@ -70,6 +61,5 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 
 }

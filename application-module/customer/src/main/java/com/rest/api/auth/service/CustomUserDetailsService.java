@@ -8,7 +8,7 @@ import repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
-public class CustomUserDetailsService {
+public class CustomUserDetailsService { // jwtTokenProvider에서 user 정보 load 할 때 사용
 
     private final UserRepository userRepository;
 
