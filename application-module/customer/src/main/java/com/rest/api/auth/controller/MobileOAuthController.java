@@ -50,7 +50,7 @@ public class MobileOAuthController {
     public ResponseEntity signInWithRefreshToken(HttpServletResponse response, @CookieValue(value = JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken
             , @CookieValue(value = JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         if (accessToken == null || refreshToken == null)
-            return new ResponseEntity<>(new UserResponseDto.MessageDto("redirect: /mobile/sign-in/{provider}"), HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
+            return new ResponseEntity<>(new UserResponseDto.MessageDto("redirect: /mobile/sign-in/{provider} with provider's access token and provider's user unique ID"), HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
         ValidRefreshTokenResponseDto result = jwtTokenProvider.validateRefreshToken(accessToken, refreshToken);
         if (result.getStatus() == 200) {
             Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, result.getAccessToken());
