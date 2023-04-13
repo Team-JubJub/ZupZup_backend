@@ -91,8 +91,16 @@ public class MobileOAuthController {
         return new ResponseEntity(reSignInResult, HttpStatus.OK);
     }
 
+    @Operation(summary = "로그아웃", description = "로그아웃 요청")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공",
+                    content = @Content(schema = @Schema(implementation = TokenInfoDto.class))),
+            @ApiResponse(responseCode = "400", description = "유효하지 않은 토큰"),
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 직전")
+    })
     @PostMapping("/sign-out")
-    public ResponseEntity signOut(@CookieValue(value = "accessToken", required = false) String accessToken, @CookieValue(value = "refreshToken", required = false) String refreshToken) {
+    public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.COOKIE) @CookieValue(value = "accessToken", required = false) String accessToken,
+                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.COOKIE) @CookieValue(value = "refreshToken", required = false) String refreshToken) {
         if (accessToken == null || !jwtTokenProvider.validateToken(accessToken) || refreshToken == null || !jwtTokenProvider.validateToken(refreshToken)) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);    // Token 중 유효하지 않은 토큰이 하나라도 있으면 BAD_REQUEST 반환
         }
