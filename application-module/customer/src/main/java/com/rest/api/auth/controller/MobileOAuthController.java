@@ -1,7 +1,6 @@
 package com.rest.api.auth.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
-import com.rest.api.auth.naver.vo.NaverLoginVo;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileOAuthService;
 import dto.auth.customer.UserDto;
@@ -16,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/mobile")
@@ -49,23 +46,23 @@ public class MobileOAuthController {
     }
 
     @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우)  -> 추후에 파라미터 CookieValue말고 HttpServletRequest로 바꾸는 것 고민해볼 것
-    public ResponseEntity signInWithRefreshToken(HttpServletResponse response, @CookieValue(value = JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken
-            , @CookieValue(value = JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        if (accessToken == null || refreshToken == null)
-            return new ResponseEntity<>(new UserResponseDto.MessageDto("redirect: /mobile/sign-in/{provider} with provider's access token and provider's user unique ID"), HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
-        ValidRefreshTokenResponseDto result = jwtTokenProvider.validateRefreshToken(accessToken, refreshToken);
-        if (result.getStatus() == 200) {
+    public ResponseEntity signInWithRefreshToken(HttpServletResponse response, @CookieValue(value = JwtTokenProvider.ACCESS_TOKEN_NAME, required = false) String accessToken
+            , @CookieValue(value = JwtTokenProvider.REFRESH_TOKEN_NAME, required = false) String refreshToken) {
+        if (accessToken == null && refreshToken == null)    // 액세스, 리프레시 모두 만료인 상태로 요청이 들어왔을 경우
+            return new ResponseEntity(new UserResponseDto.MessageDto("Access token and refresh token expired. Login required."), HttpStatus.UNAUTHORIZED);
+        ValidRefreshTokenResponseDto result = jwtTokenProvider.validateRefreshToken(refreshToken);
+        if (result.getStatus() == 200) {    // Refresh token 유효성 검증 성공
             Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, result.getAccessToken());
             accessTokenCookie.setMaxAge((int) (JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
             response.addCookie(accessTokenCookie);
             return new ResponseEntity(result, HttpStatus.OK);
         }
-        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity(new UserResponseDto.MessageDto("Refresh token validation failed. Login required."), HttpStatus.UNAUTHORIZED); // Refresh token 유효성 인증 실패
     }
 
     @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
-    public ResponseEntity signInWithProviderRequest(@PathVariable String provider, @RequestBody UserRequestDto.UserSignInDto userSignInDto, HttpServletResponse response) {
-        TokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderRequest(provider, userSignInDto);
+    public ResponseEntity signInWithProviderUserId(@PathVariable String provider, @RequestBody UserRequestDto.UserSignInDto userSignInDto, HttpServletResponse response) {
+        TokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderUserId(provider, userSignInDto);
         Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());   // 쿠키 set
         Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());
         accessTokenCookie.setMaxAge((int) (JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
@@ -76,15 +73,15 @@ public class MobileOAuthController {
         return new ResponseEntity(reSignInResult, HttpStatus.OK);
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity logout_jwt(@CookieValue(value = "accessToken") String accessToken, @CookieValue(value = "refreshToken") String refreshToken) {
+    @PostMapping("/sign-out")
+    public ResponseEntity signOut(@CookieValue(value = "accessToken", required = false) String accessToken, @CookieValue(value = "refreshToken", required = false) String refreshToken) {
         if (accessToken == null || !jwtTokenProvider.validateToken(accessToken) || refreshToken == null || !jwtTokenProvider.validateToken(refreshToken)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);    // Token 중 유효하지 않은 토큰이 하나라도 있으면 BAD_REQUEST 반환
         }
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
 
         if (remainExpiration >= 1) {
-            redisService.deleteToken(refreshToken); // refreshToken을 key로 하는 값 삭제
+            redisService.deleteToken(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
             return new ResponseEntity(HttpStatus.OK);
         }

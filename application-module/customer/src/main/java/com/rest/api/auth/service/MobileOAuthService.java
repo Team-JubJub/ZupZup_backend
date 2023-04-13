@@ -1,10 +1,6 @@
 package com.rest.api.auth.service;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
-import com.rest.api.auth.naver.NaverConstants;
-import com.rest.api.auth.naver.vo.NaverLoginVo;
-import com.rest.api.auth.naver.vo.NaverProfileResponseVo;
-import com.rest.api.auth.naver.vo.NaverProfileVo;
 
 import com.rest.api.auth.redis.RedisService;
 import domain.auth.User.Provider;
@@ -14,7 +10,6 @@ import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.token.TokenInfoDto;
 import exception.customer.AlreadySignedUpException;
-import exception.customer.UserInfoNotMatchException;
 import jakarta.servlet.http.Cookie;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +17,10 @@ import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
 import repository.UserRepository;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -79,7 +71,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
     }
 
     // <-------------------- Sign-in part -------------------->
-    public TokenInfoDto signInWithProviderRequest(String provider, UserRequestDto.UserSignInDto userSignInDto) {
+    public TokenInfoDto signInWithProviderUserId(String provider, UserRequestDto.UserSignInDto userSignInDto) {
         String userUniqueId = userSignInDto.getUserUniqueId();
 //        String providerAccessToken = userSignInDto.getProviderAccessToken();
 
