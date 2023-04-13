@@ -84,7 +84,9 @@ public class MobileOAuthService {  // For not a case of OAuth2
 
         if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
             System.out.println("naver sign in");
-            // 네이버에 정보 요청 로직
+            if(!isUserOfNaver(providerAccessToken, userUniqueId)) {
+
+            }
         }
         else if(provider.equals(Provider.KAKAO.getProvider().toLowerCase())) {
             // 카카오에 정보 요청 로직
@@ -95,16 +97,20 @@ public class MobileOAuthService {  // For not a case of OAuth2
         else if(provider.equals(Provider.GOOGLE.getProvider().toLowerCase())) {
             // 구글에 정보 요청 로직
         }
-
-        TokenInfoDto tokenInfoDto = new TokenInfoDto();
+        User userEntity = userRepository.findByProviderUserId(provider + "_" + userUniqueId).get();
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+        TokenInfoDto tokenInfoDto = generateTokens(userDto, "Token refreshed");
 
         return tokenInfoDto;
     }
     // <--- Sign-in Naver part --->
-    private void isUserOfNaver() {
-
+    private boolean isUserOfNaver(String providerAccessToken, String userUniqueId) {
+        if (!(getNaverProfile(providerAccessToken).getId()).equals(userUniqueId)) { // 네이버에 요청해 얻은 유저의 id와 다르면
+            return false;
+        }
+        return true;
     }
-    private NaverProfileVo getNaverProfile(String access_token) {   // 여기서 한 번 더 인증거치는 걸로. (NaverProfileResponseVo에서 상태코드, 메세지 확인하는 방법 알아보기)
+    private NaverProfileVo getNaverProfile(String accessToken) {   // 여기서 한 번 더 인증거치는 걸로. (NaverProfileResponseVo에서 상태코드, 메세지 확인하는 방법 알아보기)
         final String profileUri = UriComponentsBuilder
                 .fromUriString(naverConstants.getUser_info_uri())
                 .build()
@@ -114,7 +120,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
         NaverProfileVo naverProfileVo = webClient
                 .get()
                 .uri(profileUri)
-                .header("Authorization", "Bearer " + access_token)
+                .header("Authorization", "Bearer " + accessToken)
                 .retrieve()
                 .bodyToMono(NaverProfileResponseVo.class)
                 .block()
