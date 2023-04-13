@@ -14,6 +14,7 @@ import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.token.TokenInfoDto;
 import exception.customer.AlreadySignedUpException;
+import exception.customer.UserInfoNotMatchException;
 import jakarta.servlet.http.Cookie;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -50,14 +51,14 @@ public class MobileOAuthService {  // For not a case of OAuth2
     public TokenInfoDto signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         checkIsSignedUp(userSignUpDto.getPhoneNumber());
         UserDto userDto = new UserDto();
-        if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
+        if((provider.toUpperCase()).equals(Provider.NAVER.getProvider())) {
             System.out.println("naver sign up");
             userDto = userSignUpDtoToUserDto(Provider.NAVER, userSignUpDto);
         }
-        else if(provider.equals(Provider.KAKAO.getProvider().toLowerCase())) {
+        else if((provider.toUpperCase()).equals(Provider.KAKAO.getProvider())) {
             userDto = userSignUpDtoToUserDto(Provider.KAKAO, userSignUpDto);
         }
-        else if(provider.equals(Provider.APPLE.getProvider().toLowerCase())) {
+        else if((provider.toUpperCase()).equals(Provider.APPLE.getProvider())) {
             userDto = userSignUpDtoToUserDto(Provider.APPLE, userSignUpDto);
         }
 
@@ -82,22 +83,22 @@ public class MobileOAuthService {  // For not a case of OAuth2
         String userUniqueId = userSignInDto.getUserUniqueId();
         String providerAccessToken = userSignInDto.getProviderAccessToken();
 
-        if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
+        if((provider.toUpperCase()).equals(Provider.NAVER.getProvider())) {
             System.out.println("naver sign in");
             if(!isUserOfNaver(providerAccessToken, userUniqueId)) {
-
+                throw new UserInfoNotMatchException();
             }
         }
-        else if(provider.equals(Provider.KAKAO.getProvider().toLowerCase())) {
+        else if((provider.toUpperCase()).equals(Provider.KAKAO.getProvider())) {
             // 카카오에 정보 요청 로직
         }
-        else if(provider.equals(Provider.APPLE.getProvider().toLowerCase())) {
+        else if((provider.toUpperCase()).equals(Provider.APPLE.getProvider())) {
             // 애플에 정보 요청 로직
         }
-        else if(provider.equals(Provider.GOOGLE.getProvider().toLowerCase())) {
+        else if((provider.toUpperCase()).equals(Provider.GOOGLE.getProvider())) {
             // 구글에 정보 요청 로직
         }
-        User userEntity = userRepository.findByProviderUserId(provider + "_" + userUniqueId).get();
+        User userEntity = userRepository.findByProviderUserId(provider.toUpperCase() + "_" + userUniqueId).get();
         UserDto userDto = modelMapper.map(userEntity, UserDto.class);
         TokenInfoDto tokenInfoDto = generateTokens(userDto, "Token refreshed");
 
