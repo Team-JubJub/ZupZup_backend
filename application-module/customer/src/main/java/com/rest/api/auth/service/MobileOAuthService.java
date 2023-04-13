@@ -106,9 +106,16 @@ public class MobileOAuthService {  // For not a case of OAuth2
     }
     // <--- Sign-in Naver part --->
     private boolean isUserOfNaver(String providerAccessToken, String userUniqueId) {
-        if (!(getNaverProfile(providerAccessToken).getId()).equals(userUniqueId)) { // 네이버에 요청해 얻은 유저의 id와 다르면
+        String fromNaver = getNaverProfile(providerAccessToken).getId();
+        System.out.println("----------");
+        System.out.println("From naver: " + fromNaver);
+        System.out.println("Requested userUniqueId: " + userUniqueId);
+        System.out.println("----------");
+        if (!fromNaver.equals(userUniqueId)) { // 네이버에 요청해 얻은 유저의 id와 다르면
+            System.out.println("Not Match!");
             return false;
         }
+        System.out.println("Match!");
         return true;
     }
     private NaverProfileVo getNaverProfile(String accessToken) {   // 여기서 한 번 더 인증거치는 걸로. (NaverProfileResponseVo에서 상태코드, 메세지 확인하는 방법 알아보기)
@@ -212,7 +219,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
                 .bodyToMono(NaverLoginVo.class)
                 .block();
         NaverProfileVo naverProfileVo = getNaverProfile(naverLoginVo.getAccess_token());
-        System.out.println(naverProfileVo.getId()); // zupzup에 로그인 요청 시 body로 실을 유저 ID
+        System.out.println("User Id: " + naverProfileVo.getId()); // zupzup에 로그인 요청 시 body로 실을 유저 ID
 
         return naverLoginVo;
     }

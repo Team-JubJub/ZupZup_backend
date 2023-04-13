@@ -54,8 +54,11 @@ public class SecurityConfig {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeHttpRequests()    // authorizeRequests() -> authorizeHttpRequests()
                     .requestMatchers("/mobile/test/sign-in").authenticated()
-                    .requestMatchers( "/", "http://localhost:8082/**", "/mobile/sign-up/**", "/mobile/sign-in/**", "/customer/**", "/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**", "/login/oauth2/callback/**").permitAll()  // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리
+                    .requestMatchers( "/", "http://localhost:8082/**", "/mobile/sign-up/**", "/mobile/sign-in/**", "/customer/**", "/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**", "/mobile/sign-in/oauth2/callback/**").permitAll()  // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리
+                    .requestMatchers("/login").permitAll()  // for login test
                     .anyRequest().permitAll()
+                .and()
+                    .oauth2Login()  // for login test
                 .and()  // Filter로 JwtAuthenticationFilter 적용
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 

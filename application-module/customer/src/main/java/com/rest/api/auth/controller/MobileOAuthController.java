@@ -62,7 +62,7 @@ public class MobileOAuthController {
     }
 
     @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
-    public ResponseEntity signInWithProviderRequest(@RequestParam String provider, @RequestBody UserRequestDto.UserSignInDto userSignInDto, HttpServletResponse response) {
+    public ResponseEntity signInWithProviderRequest(@PathVariable String provider, @RequestBody UserRequestDto.UserSignInDto userSignInDto, HttpServletResponse response) {
         TokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderRequest(provider, userSignInDto);
         Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());   // 쿠키 set
         Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());
@@ -76,7 +76,7 @@ public class MobileOAuthController {
 
 
     // <----------- Test Controller ----------->
-    @GetMapping("/login/oauth2/callback/naver") // -> 클라이언트가 구현할 파트
+    @GetMapping("/sign-in/oauth2/callback/naver") // -> 클라이언트가 구현할 파트
     public NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) throws Exception {
         final NaverLoginVo naverLoginVo = mobileOAuthService.signInTestNaver(resValue);
 
