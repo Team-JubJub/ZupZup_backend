@@ -35,9 +35,9 @@ public class MobileOAuthController {
         Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, signUpResult.getAccessToken());   // 쿠키 set
         Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, signUpResult.getRefreshToken());
          accessTokenCookie.setMaxAge((int) (JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
+         refreshTokenCookie.setMaxAge((int) (JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
         // accessTokenCookie.setSecure(true);
         // accessTokenCookie.setHttpOnly(true);
-         refreshTokenCookie.setMaxAge((int) (JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
         // refreshTokenCookie.setSecure(true);
         // refreshTokenCookie.setHttpOnly(true);
         response.addCookie(accessTokenCookie);
@@ -64,9 +64,14 @@ public class MobileOAuthController {
     @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
     public ResponseEntity signInWithProviderRequest(@RequestParam String provider, @RequestBody UserRequestDto.UserSignInDto userSignInDto, HttpServletResponse response) {
         TokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderRequest(provider, userSignInDto);
+        Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());   // 쿠키 set
+        Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());
+        accessTokenCookie.setMaxAge((int) (JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
+        refreshTokenCookie.setMaxAge((int) (JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
 
-
-        return new ResponseEntity("temp", HttpStatus.OK);
+        return new ResponseEntity(reSignInResult, HttpStatus.OK);
     }
 
 
