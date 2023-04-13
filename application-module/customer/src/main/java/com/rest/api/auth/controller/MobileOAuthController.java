@@ -2,6 +2,7 @@ package com.rest.api.auth.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.naver.vo.NaverLoginVo;
+import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileOAuthService;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
@@ -28,6 +29,7 @@ public class MobileOAuthController {
     */
     private final MobileOAuthService mobileOAuthService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisService redisService;
     // < -------------- Sign up part -------------- >
     @PostMapping("/sign-up/{provider}")    // 회원가입 요청
     public ResponseEntity signUp(@PathVariable String provider, @RequestBody UserRequestDto.UserSignUpDto userSignUpDto, HttpServletResponse response) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
@@ -74,14 +76,28 @@ public class MobileOAuthController {
         return new ResponseEntity(reSignInResult, HttpStatus.OK);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity logout_jwt(@CookieValue(value = "accessToken") String accessToken, @CookieValue(value = "refreshToken") String refreshToken) {
+        if (accessToken == null || !jwtTokenProvider.validateToken(accessToken) || refreshToken == null || !jwtTokenProvider.validateToken(refreshToken)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
+
+        if (remainExpiration >= 1) {
+            redisService.deleteToken(refreshToken); // refreshToken을 key로 하는 값 삭제
+            redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+    }
 
     // <----------- Test Controller ----------->
-    @GetMapping("/sign-in/oauth2/callback/naver") // -> 클라이언트가 구현할 파트
-    public NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) throws Exception {
-        final NaverLoginVo naverLoginVo = mobileOAuthService.signInTestNaver(resValue);
-
-        return naverLoginVo;
-    }
+//    @GetMapping("/sign-in/oauth2/callback/naver") // -> 클라이언트가 구현할 파트
+//    public NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) throws Exception {
+//        final NaverLoginVo naverLoginVo = mobileOAuthService.signInTestNaver(resValue);
+//
+//        return naverLoginVo;
+//    }
     @GetMapping("/test/sign-in")
     public ResponseEntity signInTestPage(HttpServletRequest request) {
         System.out.println("Sign in test start");

@@ -17,8 +17,8 @@ public class UserRequestDto {
 
     @Getter
     public static class UserSignInDto {
-        private String userUniqueId;    // 소셜 플랫폼에서 제공한 user unique ID
-        private String providerAccessToken; // 소셜플랫폼에서 받은 access token
+        private String userUniqueId;    // 클라이언트에서 제공한 소셜 플랫폼의 user unique ID
+//        private String providerAccessToken; // 클라이언트에게서 받은 소셜 플랫폼의 access token
     }
 
 }
