@@ -3,6 +3,7 @@ package com.rest.api.auth.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileOAuthService;
+import domain.auth.User.Provider;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.customer.response.UserResponseDto;
@@ -44,7 +45,8 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "409", description = "(다른 소셜 플랫폼을 이용하여)이미 가입된 유저")
     })
     @PostMapping("/sign-up/{provider}")    // 회원가입 요청
-    public ResponseEntity signUp(@Parameter(name = "provider", description = "소셜 플랫폼 종류", in = ParameterIn.PATH) @PathVariable String provider,
+    public ResponseEntity signUp(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
+            content = @Content(schema = @Schema(implementation = Provider.class))) @PathVariable String provider,
                                  @RequestBody UserRequestDto.UserSignUpDto userSignUpDto, HttpServletResponse response) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         TokenInfoDto signUpResult = mobileOAuthService.signUp(provider, userSignUpDto); // service layer에서 user 정보 저장, refresh token redis에 저장까지
         Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, signUpResult.getAccessToken());   // 쿠키 set
