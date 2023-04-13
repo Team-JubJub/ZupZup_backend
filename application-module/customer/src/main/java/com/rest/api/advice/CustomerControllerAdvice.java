@@ -2,6 +2,7 @@ package com.rest.api.advice;
 
 import exception.NoSuchException;
 import exception.customer.AlreadySignedUpException;
+import exception.customer.UserInfoNotMatchException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,11 @@ public class CustomerControllerAdvice {
     @ExceptionHandler(value = AlreadySignedUpException.class)
     public ResponseEntity alreadySignedUp(AlreadySignedUpException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = UserInfoNotMatchException.class)
+    public ResponseEntity userInfoNotMatch(UserInfoNotMatchException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
     @ExceptionHandler(value = ConstraintViolationException.class)
