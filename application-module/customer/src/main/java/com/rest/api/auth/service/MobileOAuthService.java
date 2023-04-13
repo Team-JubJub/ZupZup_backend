@@ -14,6 +14,7 @@ import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.token.TokenInfoDto;
 import exception.customer.AlreadySignedUpException;
+import exception.customer.UserInfoNotMatchException;
 import jakarta.servlet.http.Cookie;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -50,14 +51,14 @@ public class MobileOAuthService {  // For not a case of OAuth2
     public TokenInfoDto signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         checkIsSignedUp(userSignUpDto.getPhoneNumber());
         UserDto userDto = new UserDto();
-        if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
+        if((provider.toUpperCase()).equals(Provider.NAVER.getProvider())) {
             System.out.println("naver sign up");
             userDto = userSignUpDtoToUserDto(Provider.NAVER, userSignUpDto);
         }
-        else if(provider.equals(Provider.KAKAO.getProvider().toLowerCase())) {
+        else if((provider.toUpperCase()).equals(Provider.KAKAO.getProvider())) {
             userDto = userSignUpDtoToUserDto(Provider.KAKAO, userSignUpDto);
         }
-        else if(provider.equals(Provider.APPLE.getProvider().toLowerCase())) {
+        else if((provider.toUpperCase()).equals(Provider.APPLE.getProvider())) {
             userDto = userSignUpDtoToUserDto(Provider.APPLE, userSignUpDto);
         }
 
@@ -72,20 +73,73 @@ public class MobileOAuthService {  // For not a case of OAuth2
                 .optionalTerm1(userDto.getOptionalTerm1())
                 .build();
         userRepository.save(userEntity);
-
-        List<String> roles = Arrays.asList(userDto.getRole().getRole());
-        String accessToken = jwtTokenProvider.generateAccessToken(userDto.getProviderUserId(), roles);
-        String refreshToken = jwtTokenProvider.generateRefreshToken();
-        redisService.setStringValue(refreshToken, userDto.getProviderUserId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
-
-        TokenInfoDto tokenInfoDto = new TokenInfoDto("success", "Create user success", accessToken, refreshToken);
+        TokenInfoDto tokenInfoDto = generateTokens(userDto, "Create user success");
 
         return tokenInfoDto;
     }
-    // <-------------------- Sign-in part -------------------->
-    public void signIn() {
 
+    // <-------------------- Sign-in part -------------------->
+    public TokenInfoDto signInWithProviderRequest(String provider, UserRequestDto.UserSignInDto userSignInDto) {
+        String userUniqueId = userSignInDto.getUserUniqueId();
+        String providerAccessToken = userSignInDto.getProviderAccessToken();
+
+        if((provider.toUpperCase()).equals(Provider.NAVER.getProvider())) {
+            System.out.println("naver sign in");
+            if(!isUserOfNaver(providerAccessToken, userUniqueId)) {
+                throw new UserInfoNotMatchException();
+            }
+        }
+        else if((provider.toUpperCase()).equals(Provider.KAKAO.getProvider())) {
+            // 카카오에 정보 요청 로직
+        }
+        else if((provider.toUpperCase()).equals(Provider.APPLE.getProvider())) {
+            // 애플에 정보 요청 로직
+        }
+        else if((provider.toUpperCase()).equals(Provider.GOOGLE.getProvider())) {
+            // 구글에 정보 요청 로직
+        }
+        User userEntity = userRepository.findByProviderUserId(provider.toUpperCase() + "_" + userUniqueId).get();
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+        TokenInfoDto tokenInfoDto = generateTokens(userDto, "Token refreshed");
+
+        return tokenInfoDto;
     }
+    // <--- Sign-in Naver part --->
+    private boolean isUserOfNaver(String providerAccessToken, String userUniqueId) {
+        String fromNaver = getNaverProfile(providerAccessToken).getId();
+        System.out.println("----------");
+        System.out.println("From naver: " + fromNaver);
+        System.out.println("Requested userUniqueId: " + userUniqueId);
+        System.out.println("----------");
+        if (!fromNaver.equals(userUniqueId)) { // 네이버에 요청해 얻은 유저의 id와 다르면
+            System.out.println("Not Match!");
+            return false;
+        }
+        System.out.println("Match!");
+        return true;
+    }
+    private NaverProfileVo getNaverProfile(String accessToken) {   // 여기서 한 번 더 인증거치는 걸로. (NaverProfileResponseVo에서 상태코드, 메세지 확인하는 방법 알아보기)
+        final String profileUri = UriComponentsBuilder
+                .fromUriString(naverConstants.getUser_info_uri())
+                .build()
+                .encode()
+                .toUriString();
+
+        NaverProfileVo naverProfileVo = webClient
+                .get()
+                .uri(profileUri)
+                .header("Authorization", "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(NaverProfileResponseVo.class)
+                .block()
+                .getResponse();   // NaverProfileResponseVo에서 naverProfileVo만 return
+
+        return naverProfileVo;
+    }
+    // <--- Sign-in Kakao part --->
+    // <--- Sign-in Apple part --->
+    // <--- Sign-in Google part --->
+
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
@@ -95,6 +149,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
             throw new AlreadySignedUpException(userEntity.get().getProvider());
         }
     }
+
     // <--- Methods for readability --->
     private UserDto userSignUpDtoToUserDto(Provider provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         UserDto userDto = new UserDto();
@@ -112,7 +167,18 @@ public class MobileOAuthService {  // For not a case of OAuth2
         return userDto;
     }
 
-    // <--- Methods for test --->
+    private TokenInfoDto generateTokens(UserDto userDto, String message) {
+        List<String> roles = Arrays.asList(userDto.getRole().getRole());
+        String accessToken = jwtTokenProvider.generateAccessToken(userDto.getProviderUserId(), roles);
+        String refreshToken = jwtTokenProvider.generateRefreshToken();
+        redisService.setStringValue(refreshToken, userDto.getProviderUserId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
+        TokenInfoDto tokenInfoDto = new TokenInfoDto("success", message, accessToken, refreshToken);
+
+        return tokenInfoDto;
+    }
+
+
+    // <-------------------- Test part -------------------->
     public UserDto signInTestToken(Cookie[] cookies) {
         String accessToken = "";
         String refreshToken = "";
@@ -132,7 +198,6 @@ public class MobileOAuthService {  // For not a case of OAuth2
 
         return userDto;
     }
-
 
     public NaverLoginVo signInTestNaver(Map<String, String> resValue) {  // 로그인 테스트 위해서 액세스토큰, 유저 ID 얻어오는 함수
         final String uri = UriComponentsBuilder
@@ -154,28 +219,9 @@ public class MobileOAuthService {  // For not a case of OAuth2
                 .bodyToMono(NaverLoginVo.class)
                 .block();
         NaverProfileVo naverProfileVo = getNaverProfile(naverLoginVo.getAccess_token());
-        System.out.println(naverProfileVo.getId()); // zupzup에 로그인 요청 시 body로 실을 유저 ID
+        System.out.println("User Id: " + naverProfileVo.getId()); // zupzup에 로그인 요청 시 body로 실을 유저 ID
 
         return naverLoginVo;
-    }
-
-    private NaverProfileVo getNaverProfile(String access_token) {   // 여기서 한 번 더 인증거치는 걸로. (NaverProfileResponseVo에서 상태코드, 메세지 확인하는 방법 알아보기)
-        final String profileUri = UriComponentsBuilder
-                .fromUriString(naverConstants.getUser_info_uri())
-                .build()
-                .encode()
-                .toUriString();
-
-        NaverProfileVo naverProfileVo = webClient
-                .get()
-                .uri(profileUri)
-                .header("Authorization", "Bearer " + access_token)
-                .retrieve()
-                .bodyToMono(NaverProfileResponseVo.class)
-                .block()
-                .getResponse();   // NaverProfileResponseVo에서 naverProfileVo만 return
-
-        return naverProfileVo;
     }
 
 }

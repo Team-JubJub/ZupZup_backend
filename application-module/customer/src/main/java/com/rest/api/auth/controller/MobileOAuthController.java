@@ -35,9 +35,9 @@ public class MobileOAuthController {
         Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, signUpResult.getAccessToken());   // 쿠키 set
         Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, signUpResult.getRefreshToken());
          accessTokenCookie.setMaxAge((int) (JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
+         refreshTokenCookie.setMaxAge((int) (JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
         // accessTokenCookie.setSecure(true);
         // accessTokenCookie.setHttpOnly(true);
-         refreshTokenCookie.setMaxAge((int) (JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
         // refreshTokenCookie.setSecure(true);
         // refreshTokenCookie.setHttpOnly(true);
         response.addCookie(accessTokenCookie);
@@ -46,11 +46,11 @@ public class MobileOAuthController {
         return new ResponseEntity(signUpResult, HttpStatus.CREATED);  // temp
     }
 
-    @PostMapping("/sign-in/refresh")    // 로그인 요청(refresh token 유효할 경우)
-    public ResponseEntity signInWithRefreshToken(HttpServletResponse response, @CookieValue(value = "accessToken") String accessToken
-            , @CookieValue(value = "refreshToken") String refreshToken) {
+    @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우)  -> 추후에 파라미터 CookieValue말고 HttpServletRequest로 바꾸는 것 고민해볼 것
+    public ResponseEntity signInWithRefreshToken(HttpServletResponse response, @CookieValue(value = JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken
+            , @CookieValue(value = JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         if (accessToken == null || refreshToken == null)
-            return new ResponseEntity<>(new UserResponseDto.MessageDto("redirect: /mobile/sign-in/temp"), HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
+            return new ResponseEntity<>(new UserResponseDto.MessageDto("redirect: /mobile/sign-in/{provider} with provider's access token and provider's user unique ID"), HttpStatus.UNAUTHORIZED);   // 소셜에 인증을 거쳐 로그인하는 곳으로 redirect
         ValidRefreshTokenResponseDto result = jwtTokenProvider.validateRefreshToken(accessToken, refreshToken);
         if (result.getStatus() == 200) {
             Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, result.getAccessToken());
@@ -61,15 +61,22 @@ public class MobileOAuthController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/sign-in/{provider}")
-    public String signInWithProviderRequest() {
+    @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
+    public ResponseEntity signInWithProviderRequest(@PathVariable String provider, @RequestBody UserRequestDto.UserSignInDto userSignInDto, HttpServletResponse response) {
+        TokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderRequest(provider, userSignInDto);
+        Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());   // 쿠키 set
+        Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());
+        accessTokenCookie.setMaxAge((int) (JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
+        refreshTokenCookie.setMaxAge((int) (JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
 
-        return "temp";
+        return new ResponseEntity(reSignInResult, HttpStatus.OK);
     }
 
 
     // <----------- Test Controller ----------->
-    @GetMapping("/login/oauth2/callback/naver") // -> 클라이언트가 구현할 파트
+    @GetMapping("/sign-in/oauth2/callback/naver") // -> 클라이언트가 구현할 파트
     public NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) throws Exception {
         final NaverLoginVo naverLoginVo = mobileOAuthService.signInTestNaver(resValue);
 
