@@ -72,18 +72,16 @@ public class MobileOAuthService {  // For not a case of OAuth2
                 .optionalTerm1(userDto.getOptionalTerm1())
                 .build();
         userRepository.save(userEntity);
-
-        List<String> roles = Arrays.asList(userDto.getRole().getRole());
-        String accessToken = jwtTokenProvider.generateAccessToken(userDto.getProviderUserId(), roles);
-        String refreshToken = jwtTokenProvider.generateRefreshToken();
-        redisService.setStringValue(refreshToken, userDto.getProviderUserId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
-
-        TokenInfoDto tokenInfoDto = new TokenInfoDto("success", "Create user success", accessToken, refreshToken);
+        TokenInfoDto tokenInfoDto = generateTokens(userDto, "Create user success");
 
         return tokenInfoDto;
     }
+
     // <-------------------- Sign-in part -------------------->
     public TokenInfoDto signInWithProviderRequest(String provider, UserRequestDto.UserSignInDto userSignInDto) {
+        String userUniqueId = userSignInDto.getUserUniqueId();
+        String providerAccessToken = userSignInDto.getProviderAccessToken();
+
         if(provider.equals(Provider.NAVER.getProvider().toLowerCase())) {
             System.out.println("naver sign in");
             // 네이버에 정보 요청 로직
@@ -102,6 +100,32 @@ public class MobileOAuthService {  // For not a case of OAuth2
 
         return tokenInfoDto;
     }
+    // <--- Sign-in Naver part --->
+    private void isUserOfNaver() {
+
+    }
+    private NaverProfileVo getNaverProfile(String access_token) {   // 여기서 한 번 더 인증거치는 걸로. (NaverProfileResponseVo에서 상태코드, 메세지 확인하는 방법 알아보기)
+        final String profileUri = UriComponentsBuilder
+                .fromUriString(naverConstants.getUser_info_uri())
+                .build()
+                .encode()
+                .toUriString();
+
+        NaverProfileVo naverProfileVo = webClient
+                .get()
+                .uri(profileUri)
+                .header("Authorization", "Bearer " + access_token)
+                .retrieve()
+                .bodyToMono(NaverProfileResponseVo.class)
+                .block()
+                .getResponse();   // NaverProfileResponseVo에서 naverProfileVo만 return
+
+        return naverProfileVo;
+    }
+    // <--- Sign-in Kakao part --->
+    // <--- Sign-in Apple part --->
+    // <--- Sign-in Google part --->
+
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
@@ -111,6 +135,7 @@ public class MobileOAuthService {  // For not a case of OAuth2
             throw new AlreadySignedUpException(userEntity.get().getProvider());
         }
     }
+
     // <--- Methods for readability --->
     private UserDto userSignUpDtoToUserDto(Provider provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         UserDto userDto = new UserDto();
@@ -128,7 +153,18 @@ public class MobileOAuthService {  // For not a case of OAuth2
         return userDto;
     }
 
-    // <--- Methods for test --->
+    private TokenInfoDto generateTokens(UserDto userDto, String message) {
+        List<String> roles = Arrays.asList(userDto.getRole().getRole());
+        String accessToken = jwtTokenProvider.generateAccessToken(userDto.getProviderUserId(), roles);
+        String refreshToken = jwtTokenProvider.generateRefreshToken();
+        redisService.setStringValue(refreshToken, userDto.getProviderUserId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
+        TokenInfoDto tokenInfoDto = new TokenInfoDto("success", message, accessToken, refreshToken);
+
+        return tokenInfoDto;
+    }
+
+
+    // <-------------------- Test part -------------------->
     public UserDto signInTestToken(Cookie[] cookies) {
         String accessToken = "";
         String refreshToken = "";
@@ -172,25 +208,6 @@ public class MobileOAuthService {  // For not a case of OAuth2
         System.out.println(naverProfileVo.getId()); // zupzup에 로그인 요청 시 body로 실을 유저 ID
 
         return naverLoginVo;
-    }
-
-    private NaverProfileVo getNaverProfile(String access_token) {   // 여기서 한 번 더 인증거치는 걸로. (NaverProfileResponseVo에서 상태코드, 메세지 확인하는 방법 알아보기)
-        final String profileUri = UriComponentsBuilder
-                .fromUriString(naverConstants.getUser_info_uri())
-                .build()
-                .encode()
-                .toUriString();
-
-        NaverProfileVo naverProfileVo = webClient
-                .get()
-                .uri(profileUri)
-                .header("Authorization", "Bearer " + access_token)
-                .retrieve()
-                .bodyToMono(NaverProfileResponseVo.class)
-                .block()
-                .getResponse();   // NaverProfileResponseVo에서 naverProfileVo만 return
-
-        return naverProfileVo;
     }
 
 }
