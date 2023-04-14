@@ -53,6 +53,9 @@ public class MobileOAuthService {  // For not a case of OAuth2
         else if((provider.toUpperCase()).equals(Provider.APPLE.getProvider())) {
             userDto = userSignUpDtoToUserDto(Provider.APPLE, userSignUpDto);
         }
+        else if((provider.toUpperCase()).equals(Provider.GOOGLE.getProvider())) {
+            userDto = userSignUpDtoToUserDto(Provider.GOOGLE, userSignUpDto);
+        }
 
         User userEntity = User.builder(userDto.getProviderUserId())
                 .userName(userDto.getUserName())

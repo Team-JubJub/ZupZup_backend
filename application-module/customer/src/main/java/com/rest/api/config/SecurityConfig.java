@@ -53,12 +53,13 @@ public class SecurityConfig {
                 .and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeHttpRequests()    // authorizeRequests() -> authorizeHttpRequests()
-                    .requestMatchers("/mobile/test/sign-in").authenticated()
-                    .requestMatchers( "/", "http://localhost:8082/**", "/mobile/sign-up/**", "/mobile/sign-in/**", "/customer/**", "/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**", "/mobile/sign-in/oauth2/callback/**").permitAll()  // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리
-                    .requestMatchers("/login").permitAll()  // for login test
-                    .anyRequest().permitAll()
-                .and()
-                    .oauth2Login()  // for login test
+                    .requestMatchers( "/", "http://localhost:8082/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // H2, swagger permit all
+                    .requestMatchers("/customer/**").permitAll() // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리)
+                    .requestMatchers("/mobile/sign-up/**", "/mobile/sign-in/**").permitAll()    // 회원가입, 로그인 permit all
+//                    .requestMatchers("/login", "/mobile/sign-in/oauth2/callback/**").permitAll() // For login test
+//                    .requestMatchers("/mobile/test/sign-in").authenticated()  // For Login test
+//                .and()
+//                    .oauth2Login()  // For login test
                 .and()  // Filter로 JwtAuthenticationFilter 적용
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
