@@ -8,7 +8,7 @@ import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.customer.response.UserResponseDto;
 import dto.auth.token.TokenInfoDto;
-import dto.auth.token.ValidRefreshTokenResponseDto;
+import dto.auth.token.RefreshResultDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -66,7 +66,7 @@ public class MobileOAuthController {
     @Operation(summary = "로그인(리프레시 토큰 유효 시)", description = "리프레시 토큰을 이용한 액세스 토큰 갱신")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
-                    content = @Content(schema = @Schema(implementation = ValidRefreshTokenResponseDto.class))),
+                    content = @Content(schema = @Schema(implementation = RefreshResultDto.class))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰과 리프레시 토큰 모두 만료인 경우, 리프레시 토큰의 유효성 인증이 실패한 경우")
     })
     @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우)  -> 추후에 파라미터 CookieValue말고 HttpServletRequest로 바꾸는 것 고민해볼 것
@@ -75,8 +75,8 @@ public class MobileOAuthController {
                                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.COOKIE) @CookieValue(value = JwtTokenProvider.REFRESH_TOKEN_NAME, required = false) String refreshToken) {
         if (accessToken == null && refreshToken == null)    // 액세스, 리프레시 모두 만료인 상태로 요청이 들어왔을 경우
             return new ResponseEntity(new UserResponseDto.MessageDto("Access token and refresh token expired. Login required."), HttpStatus.UNAUTHORIZED);
-        ValidRefreshTokenResponseDto result = jwtTokenProvider.validateRefreshToken(refreshToken);
-        if (result.getStatus() == 200) {    // Refresh token 유효성 검증 성공
+        RefreshResultDto result = jwtTokenProvider.validateRefreshToken(refreshToken);
+        if (result.getResult().equals("success")) {    // Refresh token 유효성 검증 성공
             Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, result.getAccessToken());
             accessTokenCookie.setMaxAge((int) (JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
             response.addCookie(accessTokenCookie);

@@ -5,15 +5,17 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class ValidRefreshTokenResponseDto {
+public class RefreshResultDto {
 
+    private String result;
+    private String message;
     private String providerUserId;
-    private int status;
     private String accessToken;
 
-    public ValidRefreshTokenResponseDto(String providerUserId, int status, String accessToken) {
+    public RefreshResultDto(String result, String message, String providerUserId, String accessToken) {
+        this.result = result;
+        this.message = message;
         this.providerUserId = providerUserId;
-        this.status = status;
         this.accessToken = accessToken;
     }
 
