@@ -67,7 +67,7 @@ public class JwtTokenProvider {
         String accessToken = Jwts.builder()
                 .setClaims(claims) // 데이터
                 .setIssuedAt(now) // 토큰 발행일자
-                .setExpiration(new Date(now.getTime() +  ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS)) // set Expire Time
+                .setExpiration(new Date(now.getTime() +  ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS)) // set Expire Time(30분)
                 .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret값 세팅
                 .compact();
 
@@ -77,9 +77,9 @@ public class JwtTokenProvider {
     public String generateRefreshToken() {
         Date now = new Date();
         Date validity = new Date(now.getTime() + REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
-        String refreshToken = Jwts.builder()   // Access token 생성
+        String refreshToken = Jwts.builder()   // Refresh token 생성
                 .setIssuedAt(now)
-                .setExpiration(validity)    // 30초
+                .setExpiration(validity)    // 2주
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
