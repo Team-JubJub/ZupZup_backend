@@ -47,7 +47,7 @@ public class SecurityConfig {
                         };
                         c.configurationSource(source);
                     })
-                    .httpBasic().disable()
+                    .httpBasic().disable()  // http basic Auth 기반 인증 창(httpBasic) 안뜨게(disable)
                     .csrf().disable()
                     .headers().frameOptions().disable()
                 .and()
@@ -57,7 +57,8 @@ public class SecurityConfig {
                     .requestMatchers("/customer/**").permitAll() // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리)
                     .requestMatchers("/mobile/sign-up/**", "/mobile/sign-in/**").permitAll()    // 회원가입, 로그인 permit all
 //                    .requestMatchers("/login", "/mobile/sign-in/oauth2/callback/**").permitAll() // For login test
-                    .requestMatchers("/mobile/test/sign-in").authenticated()  // For Login test
+//                    .requestMatchers("/mobile/test/sign-in").authenticated()  // For Login test
+                    .anyRequest().authenticated()   // permitAll() 이외의 모든 request authenticated 처리
 //                .and()
 //                    .oauth2Login()  // For login test
                 .and()  // Filter로 JwtAuthenticationFilter 적용
