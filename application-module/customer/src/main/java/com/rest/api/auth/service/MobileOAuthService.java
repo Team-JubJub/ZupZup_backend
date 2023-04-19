@@ -38,19 +38,7 @@ public class MobileOAuthService {
     // <-------------------- Sign-up part -------------------->
     public TokenInfoDto signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         checkIsSignedUp(userSignUpDto.getPhoneNumber());
-        UserDto userDto = new UserDto();
-        if((provider.toUpperCase()).equals(Provider.NAVER.getProvider())) {
-            userDto = userSignUpDtoToUserDto(Provider.NAVER, userSignUpDto);
-        }
-        else if((provider.toUpperCase()).equals(Provider.KAKAO.getProvider())) {
-            userDto = userSignUpDtoToUserDto(Provider.KAKAO, userSignUpDto);
-        }
-        else if((provider.toUpperCase()).equals(Provider.APPLE.getProvider())) {
-            userDto = userSignUpDtoToUserDto(Provider.APPLE, userSignUpDto);
-        }
-        else if((provider.toUpperCase()).equals(Provider.GOOGLE.getProvider())) {
-            userDto = userSignUpDtoToUserDto(Provider.GOOGLE, userSignUpDto);
-        }
+        UserDto userDto = userSignUpDtoToUserDto(provider, userSignUpDto);
 
         User userEntity = User.builder(userDto.getProviderUserId())
                 .userName(userDto.getUserName())
@@ -89,15 +77,26 @@ public class MobileOAuthService {
     }
 
     // <--- Methods for readability --->
-    private UserDto userSignUpDtoToUserDto(Provider provider, UserRequestDto.UserSignUpDto userSignUpDto) {
+    private UserDto userSignUpDtoToUserDto(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         UserDto userDto = new UserDto();
-        userDto.setProviderUserId(provider.getProvider().toUpperCase() + "_" + userSignUpDto.getUserUniqueId());
+        if((provider.toUpperCase()).equals(Provider.NAVER.getProvider())) {
+            userDto.setProvider(Provider.NAVER);
+        }
+        else if((provider.toUpperCase()).equals(Provider.KAKAO.getProvider())) {
+            userDto.setProvider(Provider.KAKAO);
+        }
+        else if((provider.toUpperCase()).equals(Provider.APPLE.getProvider())) {
+            userDto.setProvider(Provider.APPLE);
+        }
+        else if((provider.toUpperCase()).equals(Provider.GOOGLE.getProvider())) {
+            userDto.setProvider(Provider.GOOGLE);
+        }
+        userDto.setProviderUserId(provider.toUpperCase() + "_" + userSignUpDto.getUserUniqueId());
         userDto.setUserName(userSignUpDto.getUserName());
         userDto.setNickName(userSignUpDto.getNickName());
         userDto.setGender(userSignUpDto.getGender());
         userDto.setPhoneNumber(userSignUpDto.getPhoneNumber());
         userDto.setRole(Role.ROLE_USER);
-        userDto.setProvider(provider);
         userDto.setEssentialTerms(userSignUpDto.getEssentialTerms());
         userDto.setOptionalTerm1(userSignUpDto.getOptionalTerm1());
 
