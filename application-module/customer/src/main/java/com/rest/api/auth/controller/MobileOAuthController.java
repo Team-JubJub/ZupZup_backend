@@ -79,12 +79,12 @@ public class MobileOAuthController {
                                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.COOKIE) @CookieValue(value = JwtTokenProvider.REFRESH_TOKEN_NAME, required = false) String refreshToken) {
         if (accessToken == null && refreshToken == null)    // 액세스, 리프레시 모두 만료인 상태로 요청이 들어왔을 경우
             return new ResponseEntity(new UserResponseDto.MessageDto("Access token and refresh token expired. Login required."), HttpStatus.UNAUTHORIZED);
-        RefreshResultDto result = jwtTokenProvider.validateRefreshToken(refreshToken);
-        if (result.getResult().equals("success")) {    // Refresh token 유효성 검증 성공
-            Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, result.getAccessToken());
+        RefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);
+        if (refreshResult.getResult().equals("success")) {    // Refresh token 유효성 검증 성공
+            Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, refreshResult.getAccessToken());
             accessTokenCookie.setMaxAge((int) (JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
             response.addCookie(accessTokenCookie);
-            return new ResponseEntity(result, HttpStatus.OK);
+            return new ResponseEntity(refreshResult, HttpStatus.OK);
         }
         return new ResponseEntity(new UserResponseDto.MessageDto("Refresh token validation failed. Login required."), HttpStatus.UNAUTHORIZED); // Refresh token 유효성 인증 실패
     }
