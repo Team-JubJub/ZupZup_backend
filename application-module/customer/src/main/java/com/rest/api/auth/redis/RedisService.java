@@ -30,7 +30,7 @@ public class RedisService {
     }
 
     @Transactional
-    public String getAccessTokenValue(String accessToken) {  // 현재는 redis에 accessToken 저장돼있는지(로그아웃인지) 판단하는 데 사용.
+    public String getStringValue(String accessToken) {  // 현재는 redis에 accessToken 저장돼있는지(로그아웃인지) 판단하는 데 사용.
         ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
         String accessTokenValue = stringValueOperations.get(accessToken);   // log out된 상태라면 "sign-out", 아니라면 null
         if(accessTokenValue == null) {    // access token을 이용해 받은 정보가 없으면(access token을 key로 저장한 providerUserId 없으면) null 리턴
@@ -49,7 +49,7 @@ public class RedisService {
     }
 
     @Transactional
-    public void deleteToken(String refreshToken) {
+    public void deleteKey(String refreshToken) {
         ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
         stringValueOperations.getAndDelete(refreshToken);   // redis에서 해당 refresh token 데이터 삭제
     }

@@ -3,7 +3,6 @@ package com.rest.api.auth.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileOAuthService;
-import domain.auth.User.Provider;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.customer.response.UserResponseDto;
@@ -127,7 +126,7 @@ public class MobileOAuthController {
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
 
         if (remainExpiration >= 1) {
-            redisService.deleteToken(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
+            redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
             return new ResponseEntity(HttpStatus.OK);
         }
