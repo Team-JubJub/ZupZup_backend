@@ -95,12 +95,6 @@ public class MobileOAuthController {
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
             @RequestBody UserRequestDto.UserSignInDto userSignInDto) {
         TokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderUserId(provider, userSignInDto);
-//        Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());   // 쿠키 set
-//        Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());
-//        accessTokenCookie.setMaxAge((int) (JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
-//        refreshTokenCookie.setMaxAge((int) (JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
-//        response.addCookie(accessTokenCookie);
-//        response.addCookie(refreshTokenCookie);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(JwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());
         responseHeaders.set(JwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());
@@ -112,7 +106,7 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
             @ApiResponse(responseCode = "400", description = "유효하지 않은 토큰"),
-            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 직전")
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 1초 전, 로그아웃 처리도 없이 토큰 만료 시간 경과로 처리")
     })
     @PostMapping("/sign-out")
     public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.COOKIE) @CookieValue(value = "accessToken", required = false) String accessToken,
@@ -127,7 +121,7 @@ public class MobileOAuthController {
             redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
             return new ResponseEntity(HttpStatus.OK);
         }
-        return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity("Token expired", HttpStatus.UNAUTHORIZED);
     }
 
     // <----------- Test Controller ----------->
