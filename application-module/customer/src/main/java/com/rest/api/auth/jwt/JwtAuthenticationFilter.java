@@ -1,5 +1,6 @@
 package com.rest.api.auth.jwt;
 
+import exception.customer.RefreshRequiredException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,24 +25,21 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
     // JwtAuthenticationFilter를 filterChain에 등록
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        try {
-            String accessToken = jwtTokenProvider.resolveToken((HttpServletRequest) request, jwtTokenProvider.ACCESS_TOKEN_NAME);
-            if (accessToken != null) {  // 헤더에 access token이 존재한다면
-                if (!jwtTokenProvider.isLoggedOut(accessToken)) {   // 로그아웃 된 상황이 아니라면(redis refreshToken 테이블에 accessToken이 저장된 게 아니라면)
-                    try {
-                        if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {   // access token이 만료되지 않았을 경우
-                            Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
-                            SecurityContextHolder.getContext().setAuthentication(auth);
-                        }
-                    } catch (ExpiredJwtException e) {   // validateToken의 claims.getBody().getExpiration()에서 발생
-                        System.out.println("Validation failed");
-                        // 재발급 로직 구현하기
+        String accessToken = jwtTokenProvider.resolveToken((HttpServletRequest) request, jwtTokenProvider.ACCESS_TOKEN_NAME);
+        if (accessToken != null) {  // 헤더에 access token이 존재한다면
+            if (!jwtTokenProvider.isLoggedOut(accessToken)) {   // 로그아웃 된 상황이 아니라면(redis refreshToken 테이블에 accessToken이 저장된 게 아니라면)
+                try {
+                    if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {   // access token이 만료되지 않았을 경우
+                        Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
+                        SecurityContextHolder.getContext().setAuthentication(auth);
                     }
+                } catch (ExpiredJwtException e) {   // validateToken의 claims.getBody().getExpiration()에서 발생
+                    System.out.println("Validation failed");
+                    throw new RefreshRequiredException();
                 }
             }
-        } catch (NullPointerException e) {
-            // 쿠키가 필요한 요청에 대해 쿠키가 없는 경우 예외처리 로직 구현하기
         }
+
         filterChain.doFilter(request, response);
     }
 
