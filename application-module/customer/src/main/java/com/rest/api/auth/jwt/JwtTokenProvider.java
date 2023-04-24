@@ -134,8 +134,6 @@ public class JwtTokenProvider {
 
     public Boolean isLoggedOut(String accessToken)  // true -> 로그아웃된 상황
     {
-        if (accessToken == null)    // cookie의 access token 값이 null인 경우(만료)
-            return false;
         return redisService.getStringValue(accessToken) != null;    // redis에 accesstoken이 저장돼있다면 로그아웃된 경우
     }
 

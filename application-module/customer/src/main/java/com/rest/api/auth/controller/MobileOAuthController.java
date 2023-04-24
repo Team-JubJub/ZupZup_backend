@@ -57,7 +57,6 @@ public class MobileOAuthController {
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");    // 모든 경로에 대해 쿠키 사용하기 위해 set
         response.addCookie(refreshTokenCookie);
-//        responseHeaders.set(JwtTokenProvider.REFRESH_TOKEN_NAME, signUpResult.getRefreshToken());
 
         return new ResponseEntity(signUpResult, responseHeaders, HttpStatus.CREATED);  // temp
     }
