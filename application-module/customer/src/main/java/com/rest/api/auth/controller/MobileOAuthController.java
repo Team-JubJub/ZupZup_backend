@@ -49,16 +49,6 @@ public class MobileOAuthController {
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
                                  @RequestBody UserRequestDto.UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         TokenInfoDto signUpResult = mobileOAuthService.signUp(provider, userSignUpDto); // service layer에서 user 정보 저장, refresh token redis에 저장까지
-//        Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, signUpResult.getAccessToken());   // 쿠키 set
-//        Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, signUpResult.getRefreshToken());
-//         accessTokenCookie.setMaxAge((int) (JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
-//         refreshTokenCookie.setMaxAge((int) (JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
-        // accessTokenCookie.setSecure(true);
-        // accessTokenCookie.setHttpOnly(true);
-        // refreshTokenCookie.setSecure(true);
-        // refreshTokenCookie.setHttpOnly(true);
-//        response.addCookie(accessTokenCookie);
-//        response.addCookie(refreshTokenCookie);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(JwtTokenProvider.ACCESS_TOKEN_NAME, signUpResult.getAccessToken());
         responseHeaders.set(JwtTokenProvider.REFRESH_TOKEN_NAME, signUpResult.getRefreshToken());
