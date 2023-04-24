@@ -69,7 +69,7 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "401", description = "리프레시 토큰의 유효성 인증이 실패한 경우")
     })
     @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우), refresh token만 받아옴
-    public ResponseEntity signInWithRefreshToken(@Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.COOKIE) @CookieValue(value = JwtTokenProvider.REFRESH_TOKEN_NAME, required = true) String refreshToken) {
+    public ResponseEntity signInWithRefreshToken(@Parameter(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.COOKIE) @CookieValue(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         RefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
         if (refreshResult.getResult().equals("success")) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
             HttpHeaders responseHeaders = new HttpHeaders();
@@ -110,17 +110,17 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 1초 전, 로그아웃 처리도 없이 토큰 만료 시간 경과로 처리")
     })
     @PostMapping("/sign-out")
-    public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.COOKIE) @CookieValue(value = "accessToken", required = false) String accessToken,
-                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.COOKIE) @CookieValue(value = "refreshToken", required = false) String refreshToken) {
-        if (accessToken == null || !jwtTokenProvider.validateToken(accessToken) || refreshToken == null || !jwtTokenProvider.validateToken(refreshToken)) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);    // Token 중 유효하지 않은 토큰이 하나라도 있으면 BAD_REQUEST 반환
+    public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.COOKIE) @CookieValue(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+        if (accessToken == null || !jwtTokenProvider.validateToken(accessToken)) {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);    // access token이 유효하지 않다면
         }
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
 
         if (remainExpiration >= 1) {
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
-            return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity("Sign-out successful", HttpStatus.OK);
         }
         return new ResponseEntity("Token expired", HttpStatus.UNAUTHORIZED);
     }
