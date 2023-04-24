@@ -115,21 +115,13 @@ public class MobileOAuthService {
 
 
     // <-------------------- Test part -------------------->
-    public UserDto signInTestToken(Cookie[] cookies) {
-        String accessToken = "";
-        String refreshToken = "";
-        for (Cookie cookie: cookies) {
-            if(cookie.getName().equals(jwtTokenProvider.ACCESS_TOKEN_NAME)) {
-                accessToken = cookie.getValue();
-            }
-            else if(cookie.getName().equals(jwtTokenProvider.REFRESH_TOKEN_NAME)) {
-                refreshToken = cookie.getValue();
-            }
-        }
-
+    public UserDto signInTestToken(String accessToken, String refreshToken) {
         List<String> findInfo = redisService.getListValue(refreshToken);
-        String providerUserId = findInfo.get(0);
-        User userEntity = userRepository.findByProviderUserId(providerUserId).get();
+        String providerUserIdRefresh = findInfo.get(0);
+        System.out.println(providerUserIdRefresh);
+
+        String providerUserIdAccess = jwtTokenProvider.getProviderUserId(accessToken);
+        User userEntity = userRepository.findByProviderUserId(providerUserIdAccess).get();
         UserDto userDto = modelMapper.map(userEntity, UserDto.class);
 
         return userDto;

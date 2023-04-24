@@ -133,10 +133,10 @@ public class MobileOAuthController {
 //    }
     @Operation(summary = "김영후의 테스트용 컨트롤러")
     @GetMapping("/test/sign-in")
-    public ResponseEntity signInTestPage(HttpServletRequest request) {
+    public ResponseEntity signInTestPage(@RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                         @CookieValue(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         System.out.println("Sign in test start");
-        Cookie[] cookies = request.getCookies();
-        UserDto userDto = mobileOAuthService.signInTestToken(cookies);
+        UserDto userDto = mobileOAuthService.signInTestToken(accessToken, refreshToken);
 
         return new ResponseEntity(userDto, HttpStatus.OK);
     }

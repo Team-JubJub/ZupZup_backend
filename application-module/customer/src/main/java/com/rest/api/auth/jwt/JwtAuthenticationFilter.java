@@ -4,28 +4,26 @@ import exception.customer.RefreshRequiredException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.stereotype.Component;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-public class JwtAuthenticationFilter extends GenericFilterBean {
+@Component
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
     // JwtAuthenticationFilter를 filterChain에 등록
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-        String accessToken = jwtTokenProvider.resolveToken((HttpServletRequest) request, jwtTokenProvider.ACCESS_TOKEN_NAME);
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        String accessToken = jwtTokenProvider.resolveToken(request, jwtTokenProvider.ACCESS_TOKEN_NAME);
         if (accessToken != null) {  // 헤더에 access token이 존재한다면
             if (!jwtTokenProvider.isLoggedOut(accessToken)) {   // 로그아웃 된 상황이 아니라면(redis refreshToken 테이블에 accessToken이 저장된 게 아니라면)
                 try {
@@ -37,6 +35,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                     System.out.println("Validation failed");
                     throw new RefreshRequiredException();
                 }
+            }
+            else {  // log out된 유저
+                System.out.println("Sign-outed user");
             }
         }
 
