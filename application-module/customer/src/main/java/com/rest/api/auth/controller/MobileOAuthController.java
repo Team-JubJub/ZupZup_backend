@@ -47,11 +47,17 @@ public class MobileOAuthController {
     @PostMapping("/sign-up/{provider}")    // 회원가입 요청
     public ResponseEntity signUp(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
-                                 @RequestBody UserRequestDto.UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
+                                 @RequestBody UserRequestDto.UserSignUpDto userSignUpDto, HttpServletResponse response) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         TokenInfoDto signUpResult = mobileOAuthService.signUp(provider, userSignUpDto); // service layer에서 user 정보 저장, refresh token redis에 저장까지
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(JwtTokenProvider.ACCESS_TOKEN_NAME, signUpResult.getAccessToken());
-        responseHeaders.set(JwtTokenProvider.REFRESH_TOKEN_NAME, signUpResult.getRefreshToken());
+        Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, signUpResult.getRefreshToken());    // refresh token은 cookie에
+        refreshTokenCookie.setMaxAge((int) (JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");    // 모든 경로에 대해 쿠키 사용하기 위해 set
+        response.addCookie(refreshTokenCookie);
+//        responseHeaders.set(JwtTokenProvider.REFRESH_TOKEN_NAME, signUpResult.getRefreshToken());
 
         return new ResponseEntity(signUpResult, responseHeaders, HttpStatus.CREATED);  // temp
     }
@@ -83,11 +89,16 @@ public class MobileOAuthController {
     @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
     public ResponseEntity signInWithProviderUserId(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
-            @RequestBody UserRequestDto.UserSignInDto userSignInDto) {
+            @RequestBody UserRequestDto.UserSignInDto userSignInDto, HttpServletResponse response) {
         TokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderUserId(provider, userSignInDto);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(JwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());
-        responseHeaders.set(JwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());
+        Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());    // refresh token은 cookie에
+        refreshTokenCookie.setMaxAge((int) (JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
+        refreshTokenCookie.setSecure(true);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");    // 모든 경로에 대해 쿠키 사용하기 위해 set
+        response.addCookie(refreshTokenCookie);
 
         return new ResponseEntity(reSignInResult, responseHeaders, HttpStatus.OK);
     }
