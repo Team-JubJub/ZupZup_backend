@@ -70,21 +70,18 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
                     content = @Content(schema = @Schema(implementation = RefreshResultDto.class))),
-            @ApiResponse(responseCode = "401", description = "액세스 토큰과 리프레시 토큰 모두 만료인 경우, 리프레시 토큰의 유효성 인증이 실패한 경우")
+            @ApiResponse(responseCode = "401", description = "리프레시 토큰의 유효성 인증이 실패한 경우")
     })
-    @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우)  -> 추후에 파라미터 CookieValue말고 HttpServletRequest로 바꾸는 것 고민해볼 것
-    public ResponseEntity signInWithRefreshToken(HttpServletResponse response,
-                                                 @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.COOKIE) @CookieValue(value = JwtTokenProvider.ACCESS_TOKEN_NAME, required = false) String accessToken,
-                                                 @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.COOKIE) @CookieValue(value = JwtTokenProvider.REFRESH_TOKEN_NAME, required = false) String refreshToken) {
-        if (accessToken == null && refreshToken == null)    // 액세스, 리프레시 모두 만료인 상태로 요청이 들어왔을 경우
-            return new ResponseEntity(new UserResponseDto.MessageDto("Access token and refresh token expired. Login required."), HttpStatus.UNAUTHORIZED);
-        RefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);
-        if (refreshResult.getResult().equals("success")) {    // Refresh token 유효성 검증 성공
-            Cookie accessTokenCookie = new Cookie(JwtTokenProvider.ACCESS_TOKEN_NAME, refreshResult.getAccessToken());
-            accessTokenCookie.setMaxAge((int) (JwtTokenProvider.ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
-            response.addCookie(accessTokenCookie);
-            return new ResponseEntity(refreshResult, HttpStatus.OK);
+    @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우), refresh token만 받아옴
+    public ResponseEntity signInWithRefreshToken(@Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.COOKIE) @CookieValue(value = JwtTokenProvider.REFRESH_TOKEN_NAME, required = true) String refreshToken) {
+        RefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
+        if (refreshResult.getResult().equals("success")) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.set(JwtTokenProvider.ACCESS_TOKEN_NAME, refreshResult.getAccessToken());
+
+            return new ResponseEntity(refreshResult, responseHeaders, HttpStatus.OK);
         }
+
         return new ResponseEntity(new UserResponseDto.MessageDto("Refresh token validation failed. Login required."), HttpStatus.UNAUTHORIZED); // Refresh token 유효성 인증 실패
     }
 
