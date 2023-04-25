@@ -98,15 +98,15 @@ public class JwtTokenProvider {
         {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
         }
-        catch (ExpiredJwtException e)
+        catch (ExpiredJwtException e)   // filter에서 검증을 거치는 예외, 여기서 삭제할지 고민해볼 것
         {
             e.printStackTrace();
-            return "Expired";
+            return "Expired Token";
         }
-        catch (JwtException e)
+        catch (JwtException e)  // JWT 관련 모든 예외, 여기서 삭제할지 고민해볼 것
         {
             e.printStackTrace();
-            return "Invalid";
+            return "JWT Exception occurred";
         }
     }
 
