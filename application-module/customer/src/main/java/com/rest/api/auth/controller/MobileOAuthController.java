@@ -16,8 +16,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -50,13 +48,8 @@ public class MobileOAuthController {
                                  @RequestBody UserRequestDto.UserSignUpDto userSignUpDto, HttpServletResponse response) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         TokenInfoDto signUpResult = mobileOAuthService.signUp(provider, userSignUpDto); // service layer에서 user 정보 저장, refresh token redis에 저장까지
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set(JwtTokenProvider.ACCESS_TOKEN_NAME, signUpResult.getAccessToken());
-        Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, signUpResult.getRefreshToken());    // refresh token은 cookie에
-        refreshTokenCookie.setMaxAge((int) (JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
-        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");    // 모든 경로에 대해 쿠키 사용하기 위해 set
-        response.addCookie(refreshTokenCookie);
+        responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, signUpResult.getAccessToken());
+        responseHeaders.set(jwtTokenProvider.REFRESH_TOKEN_NAME, signUpResult.getRefreshToken());
 
         return new ResponseEntity(signUpResult, responseHeaders, HttpStatus.CREATED);  // temp
     }
@@ -68,11 +61,11 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "401", description = "리프레시 토큰의 유효성 인증이 실패한 경우")
     })
     @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우), refresh token만 받아옴
-    public ResponseEntity signInWithRefreshToken(@Parameter(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.COOKIE) @CookieValue(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+    public ResponseEntity signInWithRefreshToken(@Parameter(name = jwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(jwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         RefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
         if (refreshResult.getResult().equals("success")) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
             HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.set(JwtTokenProvider.ACCESS_TOKEN_NAME, refreshResult.getAccessToken());
+            responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, refreshResult.getAccessToken());
 
             return new ResponseEntity(refreshResult, responseHeaders, HttpStatus.OK);
         }
@@ -91,13 +84,8 @@ public class MobileOAuthController {
             @RequestBody UserRequestDto.UserSignInDto userSignInDto, HttpServletResponse response) {
         TokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderUserId(provider, userSignInDto);
         HttpHeaders responseHeaders = new HttpHeaders();
-        responseHeaders.set(JwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());
-        Cookie refreshTokenCookie = new Cookie(JwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());    // refresh token은 cookie에
-        refreshTokenCookie.setMaxAge((int) (JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS / 1000));
-        refreshTokenCookie.setSecure(true);
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");    // 모든 경로에 대해 쿠키 사용하기 위해 set
-        response.addCookie(refreshTokenCookie);
+        responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());
+        responseHeaders.set(jwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());
 
         return new ResponseEntity(reSignInResult, responseHeaders, HttpStatus.OK);
     }
@@ -105,14 +93,14 @@ public class MobileOAuthController {
     @Operation(summary = "로그아웃", description = "로그아웃 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 토큰"),
+            @ApiResponse(responseCode = "400", description = "정보가 잘못된 토큰"),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 1초 전, 로그아웃 처리도 없이 토큰 만료 시간 경과로 처리")
     })
     @PostMapping("/sign-out")
-    public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.COOKIE) @CookieValue(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+    public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(jwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(jwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         if (accessToken == null || !jwtTokenProvider.validateToken(accessToken)) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);    // access token이 유효하지 않다면
+            return new ResponseEntity("Token invalid", HttpStatus.BAD_REQUEST);    // access token 정보가 잘못된 형식이라면
         }
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
 
@@ -125,16 +113,10 @@ public class MobileOAuthController {
     }
 
     // <----------- Test Controller ----------->
-//    @GetMapping("/sign-in/oauth2/callback/naver") // -> 클라이언트가 구현할 파트
-//    public NaverLoginVo naverOAuthTestPage(@RequestParam Map<String, String> resValue) throws Exception {
-//        final NaverLoginVo naverLoginVo = mobileOAuthService.signInTestNaver(resValue);
-//
-//        return naverLoginVo;
-//    }
     @Operation(summary = "김영후의 테스트용 컨트롤러")
     @GetMapping("/test/sign-in")
-    public ResponseEntity signInTestPage(@RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                         @CookieValue(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+    public ResponseEntity signInTestPage(@RequestHeader(jwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                         @RequestHeader(jwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         System.out.println("Sign in test start");
         UserDto userDto = mobileOAuthService.signInTestToken(accessToken, refreshToken);
 
