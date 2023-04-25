@@ -33,6 +33,8 @@ public class JwtTokenProvider {
     public static final long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
     final static public String ACCESS_TOKEN_NAME = "accessToken";
     final static public String REFRESH_TOKEN_NAME = "refreshToken";
+    final static public String SUCCESS_STRING = "SUCCESS";
+    final static public String FAIL_STRING = "FAILED";
 
     @PostConstruct
     protected void init() {
@@ -43,16 +45,16 @@ public class JwtTokenProvider {
     {
         List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = providerUserId, 1 = refreshToken
         if (findInfo.get(0).equals(null)) { // 유저 정보가 없으면 401 반환
-            return new RefreshResultDto("failed", "No user found", null, null);
+            return new RefreshResultDto(FAIL_STRING, "No user found", null, null);
         }
         if (validateToken(refreshToken))  // refresh Token 유효성 검증 완료 시
         {
             UserDetails findUser = customUserDetailsService.loadUserByProviderUserId((String)findInfo.get(0));
             List<String> roles = findUser.getAuthorities().stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
             String newAccessToken = generateAccessToken((String)findInfo.get(0), roles);
-            return new RefreshResultDto("success", "Access token refreshed", findInfo.get(0), newAccessToken);
+            return new RefreshResultDto(SUCCESS_STRING, "Access token refreshed", findInfo.get(0), newAccessToken);
         }
-        return new RefreshResultDto("failed", "Refresh token expired", null, null);  // refresh Token 만료 시
+        return new RefreshResultDto(FAIL_STRING, "Refresh token expired", null, null);  // refresh Token 만료 시
     }
 
     public boolean validateToken(String jwtToken) { // Jwt 토큰의 유효성 + 만료일자 확인
