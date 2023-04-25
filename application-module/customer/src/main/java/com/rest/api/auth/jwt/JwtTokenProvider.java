@@ -108,16 +108,6 @@ public class JwtTokenProvider {
         }
     }
 
-    public Cookie getCookie(HttpServletRequest req, String cookieName)
-    {
-        Cookie[] cookies = req.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(cookieName))
-                return cookie;
-        }
-        return null;
-    }
-
     public String resolveToken(HttpServletRequest request, String headerName) { // Request의 Header에서 token 파싱
         return request.getHeader(headerName);
     }

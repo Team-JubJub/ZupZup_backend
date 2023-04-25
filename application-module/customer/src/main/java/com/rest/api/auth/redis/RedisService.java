@@ -1,6 +1,5 @@
 package com.rest.api.auth.redis;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -18,7 +17,6 @@ public class RedisService {
     @Autowired
     private final StringRedisTemplate stringRedisTemplate;    // String value을 redis에 저장하기 위한 template
 
-    @Transactional
     public List<String> getListValue(String refreshToken) {
         ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
         String providerUserId = stringValueOperations.get(refreshToken);
@@ -29,7 +27,6 @@ public class RedisService {
         return findInfo;
     }
 
-    @Transactional
     public String getStringValue(String accessToken) {  // 현재는 redis에 accessToken 저장돼있는지(로그아웃인지) 판단하는 데 사용.
         ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
         String accessTokenValue = stringValueOperations.get(accessToken);   // log out된 상태라면 "sign-out", 아니라면 null
@@ -40,7 +37,6 @@ public class RedisService {
         return accessToken;
     }
 
-    @Transactional
     public void setStringValue(String token, String data, Long expirationTime) {
         ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
         // 로그아웃 -> token = accessToken, data = "sign-out" / 로그인 -> token = refreshToken, data = providerUserId
@@ -48,7 +44,6 @@ public class RedisService {
 
     }
 
-    @Transactional
     public void deleteKey(String refreshToken) {
         ValueOperations<String, String> stringValueOperations = stringRedisTemplate.opsForValue();
         stringValueOperations.getAndDelete(refreshToken);   // redis에서 해당 refresh token 데이터 삭제
