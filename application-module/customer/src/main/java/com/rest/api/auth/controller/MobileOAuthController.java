@@ -100,16 +100,16 @@ public class MobileOAuthController {
     public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(jwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                   @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(jwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         if (accessToken == null || !jwtTokenProvider.validateToken(accessToken)) {
-            return new ResponseEntity("Token invalid", HttpStatus.BAD_REQUEST);    // access token 정보가 잘못된 형식이라면
+            return new ResponseEntity(new UserResponseDto.MessageDto("Token invalid"), HttpStatus.BAD_REQUEST);    // access token 정보가 잘못된 형식이라면
         }
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
 
         if (remainExpiration >= 1) {
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
-            return new ResponseEntity("Sign-out successful", HttpStatus.OK);
+            return new ResponseEntity(new UserResponseDto.MessageDto("Sign-out successful"), HttpStatus.OK);
         }
-        return new ResponseEntity("Token expired", HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(new UserResponseDto.MessageDto("Token expired"), HttpStatus.UNAUTHORIZED);
     }
 
     // <----------- Test Controller ----------->
