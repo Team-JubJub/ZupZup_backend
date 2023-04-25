@@ -1,13 +1,14 @@
 package com.rest.api.config;
 
 import com.rest.api.auth.jwt.JwtAuthenticationFilter;
+import com.rest.api.auth.jwt.JwtExceptionFilter;
 import com.rest.api.auth.jwt.JwtTokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -16,19 +17,12 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
-
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
-    @Bean
-    public BCryptPasswordEncoder encoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {    // Http Security part
@@ -47,21 +41,19 @@ public class SecurityConfig {
                         };
                         c.configurationSource(source);
                     })
-                    .httpBasic().disable()
-                    .csrf().disable()
-                    .headers().frameOptions().disable()
+                    .csrf().disable()   // 쿠키를 통한 보안 인증을 하지 않으면 disable 처리해도 좋다고 함. 토큰 전달 방식 쿠키 -> 헤더로 변경할 것.
+                    .httpBasic().disable()  // http basic Auth 기반 인증 창(httpBasic) 안뜨게(disable)
+                    .headers().frameOptions().disable() // iFrame과 관련한 보안 설정을 disable(현재는 H2 콘솔의 사용을 위해 disable처리)
                 .and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeHttpRequests()    // authorizeRequests() -> authorizeHttpRequests()
                     .requestMatchers( "/", "http://localhost:8082/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // H2, swagger permit all
                     .requestMatchers("/customer/**").permitAll() // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리)
                     .requestMatchers("/mobile/sign-up/**", "/mobile/sign-in/**").permitAll()    // 회원가입, 로그인 permit all
-//                    .requestMatchers("/login", "/mobile/sign-in/oauth2/callback/**").permitAll() // For login test
-//                    .requestMatchers("/mobile/test/sign-in").authenticated()  // For Login test
-//                .and()
-//                    .oauth2Login()  // For login test
-                .and()  // Filter로 JwtAuthenticationFilter 적용
-                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                    .anyRequest().authenticated()   // permitAll() 이외의 모든 request authenticated 처리
+                .and()  // Filter로 JwtAuthenticationFilter 적용, 그 앞에 Exception handle 위해 JwtExceptionFilter 추가
+                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }

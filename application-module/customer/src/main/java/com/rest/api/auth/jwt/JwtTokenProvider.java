@@ -7,7 +7,6 @@ import dto.auth.token.RefreshResultDto;
 import io.jsonwebtoken.*;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,26 +32,29 @@ public class JwtTokenProvider {
     public static final long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
     final static public String ACCESS_TOKEN_NAME = "accessToken";
     final static public String REFRESH_TOKEN_NAME = "refreshToken";
+    final static public String SUCCESS_STRING = "SUCCESS";
+    final static public String FAIL_STRING = "FAILED";
 
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public RefreshResultDto validateRefreshToken(String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
+    public RefreshResultDto validateRefreshToken(String accessToken, String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
     {
         List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = providerUserId, 1 = refreshToken
-        if (findInfo.get(0).equals(null)) { // 유저 정보가 없으면 401 반환
-            return new RefreshResultDto("failed", "No user found", null, null);
+        String providerUserId = getProviderUserId(accessToken);
+        if (findInfo.get(0).equals(null)) { // 유저 정보가 없으면 FAILED 반환
+            return new RefreshResultDto(FAIL_STRING, "No user found", null, null);
         }
-        if (validateToken(refreshToken))  // refresh Token 유효성 검증 완료 시
+        if (findInfo.get(0).equals(providerUserId) && validateToken(refreshToken))  // refresh Token 유효성 검증 완료 시
         {
             UserDetails findUser = customUserDetailsService.loadUserByProviderUserId((String)findInfo.get(0));
             List<String> roles = findUser.getAuthorities().stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
             String newAccessToken = generateAccessToken((String)findInfo.get(0), roles);
-            return new RefreshResultDto("success", "Access token refreshed", findInfo.get(0), newAccessToken);
+            return new RefreshResultDto(SUCCESS_STRING, "Access token refreshed", findInfo.get(0), newAccessToken);
         }
-        return new RefreshResultDto("failed", "Refresh token expired", null, null);  // refresh Token 만료 시
+        return new RefreshResultDto(FAIL_STRING, "Refresh token expired", null, null);  // refresh Token 만료 시
     }
 
     public boolean validateToken(String jwtToken) { // Jwt 토큰의 유효성 + 만료일자 확인
@@ -67,7 +69,7 @@ public class JwtTokenProvider {
         String accessToken = Jwts.builder()
                 .setClaims(claims) // 데이터
                 .setIssuedAt(now) // 토큰 발행일자
-                .setExpiration(new Date(now.getTime() +  ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS)) // set Expire Time
+                .setExpiration(new Date(now.getTime() +  ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS)) // set Expire Time(30분)
                 .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret값 세팅
                 .compact();
 
@@ -77,9 +79,9 @@ public class JwtTokenProvider {
     public String generateRefreshToken() {
         Date now = new Date();
         Date validity = new Date(now.getTime() + REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
-        String refreshToken = Jwts.builder()   // Access token 생성
+        String refreshToken = Jwts.builder()   // Refresh token 생성
                 .setIssuedAt(now)
-                .setExpiration(validity)    // 30초
+                .setExpiration(validity)    // 2주
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
 
@@ -96,26 +98,16 @@ public class JwtTokenProvider {
         {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
         }
-        catch (ExpiredJwtException e)
+        catch (ExpiredJwtException e)   // filter에서 검증을 거치는 예외, 여기서 삭제할지 고민해볼 것
         {
             e.printStackTrace();
-            return "Expired";
+            return "Expired Token";
         }
-        catch (JwtException e)
+        catch (JwtException e)  // JWT 관련 모든 예외, 여기서 삭제할지 고민해볼 것
         {
             e.printStackTrace();
-            return "Invalid";
+            return "JWT Exception occurred";
         }
-    }
-
-    public Cookie getCookie(HttpServletRequest req, String cookieName)
-    {
-        Cookie[] cookies = req.getCookies();
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(cookieName))
-                return cookie;
-        }
-        return null;
     }
 
     public String resolveToken(HttpServletRequest request, String headerName) { // Request의 Header에서 token 파싱
@@ -134,9 +126,7 @@ public class JwtTokenProvider {
 
     public Boolean isLoggedOut(String accessToken)  // true -> 로그아웃된 상황
     {
-        if (accessToken == null)    // cookie의 access token 값이 null인 경우(만료)
-            return false;
-        return redisService.getAccessTokenValue(accessToken) != null;    // redis에 accesstoken이 저장돼있다면 로그아웃된 경우
+        return redisService.getStringValue(accessToken) != null;    // redis에 accessToken이 저장돼있다면 로그아웃된 경우
     }
 
 }
