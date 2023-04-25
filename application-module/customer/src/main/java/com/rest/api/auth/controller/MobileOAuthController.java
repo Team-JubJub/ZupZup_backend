@@ -70,7 +70,7 @@ public class MobileOAuthController {
             return new ResponseEntity(refreshResult, responseHeaders, HttpStatus.OK);
         }
 
-        return new ResponseEntity(new UserResponseDto.MessageDto("Refresh token validation failed. Login required."), HttpStatus.UNAUTHORIZED); // Refresh token 유효성 인증 실패
+        return new ResponseEntity(new UserResponseDto.MessageDto("Refresh token validation failed. Login required"), HttpStatus.UNAUTHORIZED); // Refresh token 유효성 인증 실패
     }
 
     @Operation(summary = "로그인(모든 토큰 만료 시)", description = "소셜 플랫폼에 재로그인을 통해 받아온 user unique ID를 이용, 액세스와 리프레시 토큰 재발급")

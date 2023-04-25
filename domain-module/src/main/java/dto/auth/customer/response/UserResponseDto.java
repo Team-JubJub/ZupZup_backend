@@ -13,7 +13,7 @@ public class UserResponseDto {
     @Getter
     @Setter
     public static class MessageDto {
-        @Schema(description = "처리 결과 메세지")
+        @Schema(description = "처리 결과 메세지", example = "Refresh token validation failed. Login required, Token invalid, Sign-out successful, Token expired, etc...")
         private String message;
     }
 
