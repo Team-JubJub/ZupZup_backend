@@ -40,7 +40,8 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "회원가입 성공",
                     content = @Content(schema = @Schema(implementation = TokenInfoDto.class))),
-            @ApiResponse(responseCode = "409", description = "(다른 소셜 플랫폼을 이용하여)이미 가입된 유저")
+            @ApiResponse(responseCode = "409", description = "(다른 소셜 플랫폼을 이용하여)이미 가입된 유저",
+                    content = @Content(schema = @Schema(example = "User already sign uped.(Platform with: NAVER)")))
     })
     @PostMapping("/sign-up/{provider}")    // 회원가입 요청
     public ResponseEntity signUp(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
@@ -94,13 +95,13 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공"),
             @ApiResponse(responseCode = "400", description = "정보가 잘못된 토큰"),
-            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 1초 전, 로그아웃 처리도 없이 토큰 만료 시간 경과로 처리")
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 직전(1초 미만), 로그아웃 처리도 없이 토큰 만료 시간 경과로 처리")
     })
     @PostMapping("/sign-out")
     public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(jwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                   @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(jwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         if (accessToken == null || !jwtTokenProvider.validateToken(accessToken)) {
-            return new ResponseEntity(new UserResponseDto.MessageDto("Token invalid"), HttpStatus.BAD_REQUEST);    // access token 정보가 잘못된 형식이라면
+            return new ResponseEntity(new UserResponseDto.MessageDto("Access token invalid"), HttpStatus.BAD_REQUEST);    // access token 정보가 잘못된 형식이라면
         }
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
 
@@ -109,7 +110,7 @@ public class MobileOAuthController {
             redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
             return new ResponseEntity(new UserResponseDto.MessageDto("Sign-out successful"), HttpStatus.OK);
         }
-        return new ResponseEntity(new UserResponseDto.MessageDto("Token expired"), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(new UserResponseDto.MessageDto("Access Token expired"), HttpStatus.UNAUTHORIZED);
     }
 
     // <----------- Test Controller ----------->
