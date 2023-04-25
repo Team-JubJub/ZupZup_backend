@@ -28,7 +28,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write(e.getMessage());
         }
-
     }
 
 }
