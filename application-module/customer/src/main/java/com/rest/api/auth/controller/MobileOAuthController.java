@@ -125,6 +125,14 @@ public class MobileOAuthController {
         return new ResponseEntity(new UserResponseDto.MessageDto("Access token expired"), HttpStatus.UNAUTHORIZED);
     }
 
+    // < -------------- Account recovery part -------------- >
+    @GetMapping("/account-recovery")
+    public String accountRecovery(@RequestBody String phoneNumber) {
+
+
+        return "temp";
+    }
+
     // <----------- Test Controller ----------->
     @Operation(summary = "김영후의 테스트용 컨트롤러")
     @GetMapping("/test/sign-in")
