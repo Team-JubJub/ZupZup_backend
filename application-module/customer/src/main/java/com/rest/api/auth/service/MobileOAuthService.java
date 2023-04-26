@@ -65,6 +65,14 @@ public class MobileOAuthService {
         return tokenInfoDto;
     }
 
+    // <-------------------- Account recovery part -------------------->
+    public String accountRecovery(String phoneNumber) {
+        User userEntity = userRepository.findByPhoneNumber(phoneNumber).get();
+        String provider = userEntity.getProvider().getProvider();
+
+        return provider;
+    }
+
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->

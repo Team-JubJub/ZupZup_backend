@@ -28,14 +28,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/mobile")
 @RequiredArgsConstructor
 public class MobileOAuthController {
-    /*
-    Description
+    /* Description
+        /sign-up : 회원가입(가입 완료 시 토큰 발급)
+        /sign-in/refresh : refresh token 이용, access token 갱신
+        /sign-in/{provider} : 모든 토큰 만료 시, 소셜 로그인을 통한 토큰 발급
+        /sign-out : 로그아웃(액세스토큰 유효 시 가능)
+        /account-recovery : 계정 찾기(가입한 플랫폼 리턴)
+     */
 
-    */
     private final MobileOAuthService mobileOAuthService;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
-    // < -------------- Sign up part -------------- >
+    // < -------------- Sign-up part -------------- >
     @Operation(summary = "회원가입", description = "회원가입 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "회원가입 성공",
@@ -57,7 +61,7 @@ public class MobileOAuthController {
         return new ResponseEntity(signUpResult, responseHeaders, HttpStatus.CREATED);  // temp
     }
 
-    // < -------------- Sign in part -------------- >
+    // < -------------- Sign-in part -------------- >
     @Operation(summary = "로그인(리프레시 토큰 유효 시)", description = "리프레시 토큰을 이용한 액세스 토큰 갱신")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
@@ -99,7 +103,7 @@ public class MobileOAuthController {
         return new ResponseEntity(reSignInResult, responseHeaders, HttpStatus.OK);
     }
 
-    // < -------------- Sign out part -------------- >
+    // < -------------- Sign-out part -------------- >
     @Operation(summary = "로그아웃", description = "로그아웃 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공",
@@ -128,10 +132,11 @@ public class MobileOAuthController {
     // < -------------- Account recovery part -------------- >
     @GetMapping("/account-recovery")
     public String accountRecovery(@RequestBody String phoneNumber) {
+        String provider = mobileOAuthService.accountRecovery(phoneNumber);
 
-
-        return "temp";
+        return provider;
     }
+
 
     // <----------- Test Controller ----------->
     @Operation(summary = "김영후의 테스트용 컨트롤러")
