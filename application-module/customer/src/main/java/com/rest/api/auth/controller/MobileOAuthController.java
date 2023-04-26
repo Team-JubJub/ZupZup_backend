@@ -57,6 +57,7 @@ public class MobileOAuthController {
         return new ResponseEntity(signUpResult, responseHeaders, HttpStatus.CREATED);  // temp
     }
 
+    // < -------------- Sign in part -------------- >
     @Operation(summary = "로그인(리프레시 토큰 유효 시)", description = "리프레시 토큰을 이용한 액세스 토큰 갱신")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
@@ -98,6 +99,7 @@ public class MobileOAuthController {
         return new ResponseEntity(reSignInResult, responseHeaders, HttpStatus.OK);
     }
 
+    // < -------------- Sign out part -------------- >
     @Operation(summary = "로그아웃", description = "로그아웃 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공",
