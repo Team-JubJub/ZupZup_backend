@@ -130,6 +130,13 @@ public class MobileOAuthController {
     }
 
     // < -------------- Account recovery part -------------- >
+    @Operation(summary = "계정 찾기", description = "휴대폰 번호 인증을 통해 가입시 이용한 플랫폼 리턴")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "가입시 이용한 플랫폼 리턴",
+                    content = @Content(schema = @Schema(example = "NAVER"))),
+            @ApiResponse(responseCode = "404", description = "해당 유저는 가입한 적이 없음(자원 없음)",
+                    content = @Content(schema = @Schema(example = "No user found")))
+    })
     @GetMapping("/account-recovery")
     public ResponseEntity accountRecovery(@RequestBody String phoneNumber) {
         String result = mobileOAuthService.accountRecovery(phoneNumber);
