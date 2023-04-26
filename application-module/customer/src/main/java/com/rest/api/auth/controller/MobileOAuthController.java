@@ -131,10 +131,13 @@ public class MobileOAuthController {
 
     // < -------------- Account recovery part -------------- >
     @GetMapping("/account-recovery")
-    public String accountRecovery(@RequestBody String phoneNumber) {
-        String provider = mobileOAuthService.accountRecovery(phoneNumber);
+    public ResponseEntity accountRecovery(@RequestBody String phoneNumber) {
+        String result = mobileOAuthService.accountRecovery(phoneNumber);
+        if(result.equals("No user found")) {
+            return new ResponseEntity(result, HttpStatus.NOT_FOUND);
+        }
 
-        return provider;
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 
 
