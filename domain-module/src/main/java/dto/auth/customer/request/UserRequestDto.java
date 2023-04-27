@@ -26,6 +26,8 @@ public class UserRequestDto {
         private Boolean optionalTerm1;
     }
 
+    @Schema(description = "닉네임 중복체크 시 사용되는 DTO")
+    @Getter
     public static class NickNameCheckDto {
         @Schema(description = "중복 체크를 할 유저의 닉네임", example = "S2줍줍화이팅")
         private String nickName;
