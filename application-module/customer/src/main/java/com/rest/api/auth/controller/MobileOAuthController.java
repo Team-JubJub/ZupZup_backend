@@ -60,11 +60,19 @@ public class MobileOAuthController {
 
         return new ResponseEntity(signUpResult, responseHeaders, HttpStatus.CREATED);  // temp
     }
-    @GetMapping("/sign-up/check-nickname")
-    public ResponseEntity nickNameCheck(UserRequestDto.NickNameCheckDto nickNameCheckDto) {
+
+    @Operation(summary = "닉네임 중복 체크", description = "닉네임 중복 체크(중복 시 true, 사용 가능 시 false 반환)")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "닉네임 사용 가능",
+                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"false\"\n}"))),
+            @ApiResponse(responseCode = "409", description = "이미 존재하는 닉네임",
+                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"true\"\n}")))
+    })
+    @GetMapping("/sign-up/nickname-check")
+    public ResponseEntity nickNameCheck(@RequestBody UserRequestDto.NickNameCheckDto nickNameCheckDto) {
         Boolean checkResult = mobileOAuthService.nickNameCheck(nickNameCheckDto);
         if(checkResult) {
-            return new ResponseEntity(new UserResponseDto.MessageDto("true"), HttpStatus.OK);   // 이미 존재하는 닉네임
+            return new ResponseEntity(new UserResponseDto.MessageDto("true"), HttpStatus.CONFLICT);   // 이미 존재하는 닉네임
         }
 
         return new ResponseEntity(new UserResponseDto.MessageDto("false"), HttpStatus.OK);  // 사용 가능한 닉네임
