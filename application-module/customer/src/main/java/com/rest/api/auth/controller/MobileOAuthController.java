@@ -141,10 +141,10 @@ public class MobileOAuthController {
     public ResponseEntity accountRecovery(@RequestBody UserRequestDto.AccountRecoveryDto accountRecoveryDto) {
         String result = mobileOAuthService.accountRecovery(accountRecoveryDto);
         if(result.equals(mobileOAuthService.NO_USER_FOUND)) {
-            return new ResponseEntity(result, HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity(result, HttpStatus.OK);
+        return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.OK);
     }
 
 
