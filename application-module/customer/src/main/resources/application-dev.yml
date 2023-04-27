@@ -1,0 +1,31 @@
+server:
+  port: 8090
+spring:
+  profiles:
+    active: oauth
+
+  datasource:
+    url: jdbc:mariadb://zupzup.c9mmmxstxn7u.ap-northeast-2.rds.amazonaws.com:3306/test_server
+    username:
+    password:
+    driver-class-name: org.mariadb.jdbc.Driver
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+#springdoc swagger
+springdoc:
+  api-docs:
+    enabled: true #false 지정 시 외부 노출 X
+  swagger-ui:
+    enabled: true
