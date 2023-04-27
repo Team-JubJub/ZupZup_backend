@@ -57,6 +57,16 @@ public class MobileOAuthService {
         return tokenInfoDto;
     }
 
+    public Boolean nickNameCheck(UserRequestDto.NickNameCheckDto nickNameCheckDto) {
+        String nickName = nickNameCheckDto.getNickName();
+        Optional<User> userEntity = userRepository.findByNickName(nickName);
+        if(userEntity.isPresent()) {
+            return true;
+        }
+
+        return false;
+    }
+
     // <-------------------- Sign-in part -------------------->
     public TokenInfoDto signInWithProviderUserId(String provider, UserRequestDto.UserSignInDto userSignInDto) {
         String userUniqueId = userSignInDto.getUserUniqueId();

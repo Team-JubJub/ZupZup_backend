@@ -61,8 +61,13 @@ public class MobileOAuthController {
         return new ResponseEntity(signUpResult, responseHeaders, HttpStatus.CREATED);  // temp
     }
     @GetMapping("/sign-up/check-nickname")
-    public ResponseEntity nickNameCheck() {
+    public ResponseEntity nickNameCheck(UserRequestDto.NickNameCheckDto nickNameCheckDto) {
+        Boolean checkResult = mobileOAuthService.nickNameCheck(nickNameCheckDto);
+        if(checkResult) {
+            return new ResponseEntity(new UserResponseDto.MessageDto("true"), HttpStatus.OK);   // 이미 존재하는 닉네임
+        }
 
+        return new ResponseEntity(new UserResponseDto.MessageDto("false"), HttpStatus.OK);  // 사용 가능한 닉네임
     }
 
     // < -------------- Sign-in part -------------- >
