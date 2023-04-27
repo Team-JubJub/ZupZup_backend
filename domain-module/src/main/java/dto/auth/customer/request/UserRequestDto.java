@@ -33,4 +33,11 @@ public class UserRequestDto {
         private String userUniqueId;    // 클라이언트에서 제공한 소셜 플랫폼의 user unique ID
     }
 
+    @Schema(description = "계정 찾기 시 사용되는 DTO")
+    @Getter
+    public static class AccountRecoveryDto {
+        @Schema(description = "계정을 찾고자 하는 유저의 전화번호", example = "010-2828-7449")
+        private String phoneNumber;    // 클라이언트에서 제공한 소셜 플랫폼의 user unique ID
+    }
+
 }

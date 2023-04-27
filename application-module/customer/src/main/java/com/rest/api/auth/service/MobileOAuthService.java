@@ -67,8 +67,10 @@ public class MobileOAuthService {
 
     // <-------------------- Account recovery part -------------------->
     public String accountRecovery(String phoneNumber) {
+        System.out.println(phoneNumber);
         Optional<User> userEntity = userRepository.findByPhoneNumber(phoneNumber);
         if(userEntity.isEmpty()) {  // 가입된 회원이 없으면
+            System.out.println("no user found");
             return "No user found";
         }
         String provider = userEntity.get().getProvider().getProvider();
