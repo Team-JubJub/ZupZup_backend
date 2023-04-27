@@ -5,10 +5,10 @@ spring:
     active: oauth
 
   datasource:
-    url: jdbc:h2:tcp://localhost/~/zupzup
-    username: sa
+    url: jdbc:mariadb://zupzup.c9mmmxstxn7u.ap-northeast-2.rds.amazonaws.com:3306/test_server
+    username:
     password:
-    driver-class-name: #org.h2.Driver
+    driver-class-name: org.mariadb.jdbc.Driver
 
   servlet:
     multipart:
