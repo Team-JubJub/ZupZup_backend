@@ -1,84 +1,132 @@
 package com.rest.api.auth.jwt;
 
+import com.rest.api.auth.redis.RedisService;
+import com.rest.api.auth.service.CustomUserDetailsService;
+import com.rest.api.auth.dto.LoginInfoDto;
+import dto.auth.token.RefreshResultDto;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import javax.xml.bind.DatatypeConverter;
-import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    private final Key key;
+    private final RedisService redisService;
+    private final CustomUserDetailsService customUserDetailsService;
+    @Value("${spring.security.jwt.secret}")
+    private String secretKey;
+    public static final long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*30; // 30분
+    public static final long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
+    final static public String ACCESS_TOKEN_NAME = "accessToken";
+    final static public String REFRESH_TOKEN_NAME = "refreshToken";
+    final static public String SUCCESS_STRING = "SUCCESS";
+    final static public String FAIL_STRING = "FAILED";
 
-    public JwtTokenProvider(@Value("${spring.security.jwt.secret}") String secretKey) {
-        byte[] secretByteKey = DatatypeConverter.parseBase64Binary(secretKey);
-        this.key = Keys.hmacShaKeyFor(secretByteKey);
+    @PostConstruct
+    protected void init() {
+        secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public String generateToken(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-        
-        return Jwts.builder()   // Access token 생성
-                .setSubject(authentication.getName())
-                .claim("auth", authorities)
-                .setExpiration(new Date(System.currentTimeMillis() + 100*60*30))
-                .signWith(key, SignatureAlgorithm.HS256)
+    public RefreshResultDto validateRefreshToken(String accessToken, String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
+    {
+        List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = providerUserId, 1 = refreshToken
+        String providerUserId = getProviderUserId(accessToken);
+        if (findInfo.get(0).equals(null)) { // 유저 정보가 없으면 FAILED 반환
+            return new RefreshResultDto(FAIL_STRING, "No user found", null, null);
+        }
+        if (findInfo.get(0).equals(providerUserId) && validateToken(refreshToken))  // refresh Token 유효성 검증 완료 시
+        {
+            UserDetails findUser = customUserDetailsService.loadUserByProviderUserId((String)findInfo.get(0));
+            List<String> roles = findUser.getAuthorities().stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
+            String newAccessToken = generateAccessToken((String)findInfo.get(0), roles);
+            return new RefreshResultDto(SUCCESS_STRING, "Access token refreshed", findInfo.get(0), newAccessToken);
+        }
+        return new RefreshResultDto(FAIL_STRING, "Refresh token expired", null, null);  // refresh Token 만료 시
+    }
+
+    public boolean validateToken(String jwtToken) { // Jwt 토큰의 유효성 + 만료일자 확인
+        Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+        return !claims.getBody().getExpiration().before(new Date());    // expire 된 게 아니라면 false + ! => true
+    }
+
+    public String generateAccessToken(String providerUserId, List<String> roles) {
+        Claims claims = Jwts.claims().setSubject(providerUserId);
+        claims.put("roles", roles);
+        Date now = new Date();
+        String accessToken = Jwts.builder()
+                .setClaims(claims) // 데이터
+                .setIssuedAt(now) // 토큰 발행일자
+                .setExpiration(new Date(now.getTime() +  ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS)) // set Expire Time(30분)
+                .signWith(SignatureAlgorithm.HS256, secretKey) // 암호화 알고리즘, secret값 세팅
                 .compact();
+
+        return accessToken;
     }
 
-    public Authentication getAuthentication(String accessToken) {
-        Claims claims = parseClaims(accessToken);   // 토큰 복호화
+    public String generateRefreshToken() {
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
+        String refreshToken = Jwts.builder()   // Refresh token 생성
+                .setIssuedAt(now)
+                .setExpiration(validity)    // 2주
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
 
-        if(claims.get("auth") == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+        return refreshToken;
+    }
+
+    public Authentication getAuthentication(String token) { // Jwt 토큰으로 인증 정보를 조회
+        LoginInfoDto userDetails = ((LoginInfoDto) customUserDetailsService.loadUserByProviderUserId(this.getProviderUserId(token)));
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());  // password(credentials)는 비우고 사용
+    }
+
+    public String getProviderUserId(String token) { // Jwt 토큰에서 회원 구별 정보(providerUserId) 추출
+        try
+        {
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
         }
-
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get("auth").toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
-
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        catch (ExpiredJwtException e)   // filter에서 검증을 거치는 예외, 여기서 삭제할지 고민해볼 것
+        {
+            e.printStackTrace();
+            return "Expired Token";
+        }
+        catch (JwtException e)  // JWT 관련 모든 예외, 여기서 삭제할지 고민해볼 것
+        {
+            e.printStackTrace();
+            return "JWT Exception occurred";
+        }
     }
 
-    public boolean validateToken(String token) {
+    public String resolveToken(HttpServletRequest request, String headerName) { // Request의 Header에서 token 파싱
+        return request.getHeader(headerName);
+    }
+
+    public Long remainExpiration(String token)  // 토큰의 남은 유효기간
+    {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch(io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("Invalid JWT Token", e);
-        } catch(ExpiredJwtException e) {
-            log.info("Expired JWT Token", e);
-        } catch(UnsupportedJwtException e) {
-            log.info("Unsupported JWT Token", e);
-        } catch(IllegalArgumentException e) {
-            log.info("JWT claims string is empty", e);
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getExpiration().getTime() - new Date().getTime();
         }
-        return false;
+        catch (ExpiredJwtException e) {
+            return -1L;
+        }
     }
 
-    private Claims parseClaims(String accessToken) {
-        try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        }
+    public Boolean isLoggedOut(String accessToken)  // true -> 로그아웃된 상황
+    {
+        return redisService.getStringValue(accessToken) != null;    // redis에 accessToken이 저장돼있다면 로그아웃된 경우
     }
 
 }
