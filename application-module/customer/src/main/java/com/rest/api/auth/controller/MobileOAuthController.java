@@ -60,6 +60,10 @@ public class MobileOAuthController {
 
         return new ResponseEntity(signUpResult, responseHeaders, HttpStatus.CREATED);  // temp
     }
+    @GetMapping("/sign-up/check-nickname")
+    public ResponseEntity nickNameCheck() {
+
+    }
 
     // < -------------- Sign-in part -------------- >
     @Operation(summary = "로그인(리프레시 토큰 유효 시)", description = "리프레시 토큰을 이용한 액세스 토큰 갱신")
