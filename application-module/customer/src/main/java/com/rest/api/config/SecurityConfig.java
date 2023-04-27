@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .and().authorizeHttpRequests()    // authorizeRequests() -> authorizeHttpRequests()
                     .requestMatchers( "/", "http://localhost:8082/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // H2, swagger permit all
                     .requestMatchers("/customer/**").permitAll() // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리)
-                    .requestMatchers("/mobile/sign-up/**", "/mobile/sign-in/**").permitAll()    // 회원가입, 로그인 permit all
+                    .requestMatchers("/mobile/sign-up/**", "/mobile/sign-in/**", "/mobile/account-recovery").permitAll()    // 회원가입, 로그인, 계정 찾기 permit all
                     .anyRequest().authenticated()   // permitAll() 이외의 모든 request authenticated 처리
                 .and()  // Filter로 JwtAuthenticationFilter 적용, 그 앞에 Exception handle 위해 JwtExceptionFilter 추가
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)

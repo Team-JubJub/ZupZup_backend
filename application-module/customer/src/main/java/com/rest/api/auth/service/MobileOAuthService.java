@@ -34,6 +34,8 @@ public class MobileOAuthService {
     private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
 
+    final static public String NO_USER_FOUND = "No user found";
+
     // <-------------------- Sign-up part -------------------->
     public TokenInfoDto signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         checkIsSignedUp(userSignUpDto.getPhoneNumber());
@@ -63,6 +65,18 @@ public class MobileOAuthService {
         TokenInfoDto tokenInfoDto = generateTokens(userDto, "Token refreshed");
 
         return tokenInfoDto;
+    }
+
+    // <-------------------- Account recovery part -------------------->
+    public String accountRecovery(UserRequestDto.AccountRecoveryDto accountRecoveryDto) {
+        String phoneNumber = accountRecoveryDto.getPhoneNumber();
+        Optional<User> userEntity = userRepository.findByPhoneNumber(phoneNumber);
+        if(userEntity.isEmpty()) {  // 가입된 회원이 없으면
+            return NO_USER_FOUND;
+        }
+        String provider = userEntity.get().getProvider().getProvider();
+
+        return provider;
     }
 
 

@@ -28,14 +28,18 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/mobile")
 @RequiredArgsConstructor
 public class MobileOAuthController {
-    /*
-    Description
+    /* Description
+        /sign-up : 회원가입(가입 완료 시 토큰 발급)
+        /sign-in/refresh : refresh token 이용, access token 갱신
+        /sign-in/{provider} : 모든 토큰 만료 시, 소셜 로그인을 통한 토큰 발급
+        /sign-out : 로그아웃(액세스토큰 유효 시 가능)
+        /account-recovery : 계정 찾기(가입한 플랫폼 리턴)
+     */
 
-    */
     private final MobileOAuthService mobileOAuthService;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
-    // < -------------- Sign up part -------------- >
+    // < -------------- Sign-up part -------------- >
     @Operation(summary = "회원가입", description = "회원가입 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "회원가입 성공",
@@ -43,7 +47,7 @@ public class MobileOAuthController {
                             @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
                     content = @Content(schema = @Schema(implementation = TokenInfoDto.class))),
             @ApiResponse(responseCode = "409", description = "(다른 소셜 플랫폼을 이용하여)이미 가입된 유저",
-                    content = @Content(schema = @Schema(example = "User already sign uped.(Platform with: NAVER)")))
+                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"User already sign uped.(Platform with: NAVER)\"\n}")))
     })
     @PostMapping("/sign-up/{provider}")    // 회원가입 요청
     public ResponseEntity signUp(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
@@ -57,13 +61,14 @@ public class MobileOAuthController {
         return new ResponseEntity(signUpResult, responseHeaders, HttpStatus.CREATED);  // temp
     }
 
+    // < -------------- Sign-in part -------------- >
     @Operation(summary = "로그인(리프레시 토큰 유효 시)", description = "리프레시 토큰을 이용한 액세스 토큰 갱신")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
                     headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰")},
                     content = @Content(schema = @Schema(implementation = RefreshResultDto.class))),
             @ApiResponse(responseCode = "401", description = "리프레시 토큰의 유효성 인증이 실패한 경우",
-                    content = @Content(schema = @Schema(example = "Refresh token validation failed. Login required")))
+                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"Refresh token validation failed. Login required\"\n}")))
     })
     @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우), refresh token만 받아옴
     public ResponseEntity signInWithRefreshToken(@Parameter(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -98,14 +103,15 @@ public class MobileOAuthController {
         return new ResponseEntity(reSignInResult, responseHeaders, HttpStatus.OK);
     }
 
+    // < -------------- Sign-out part -------------- >
     @Operation(summary = "로그아웃", description = "로그아웃 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공",
-                content = @Content(schema = @Schema(example = "Sign-out successful"))),
+                content = @Content(schema = @Schema(example = "{\n\"message\" : \"Sign-out successful\"\n}"))),
             @ApiResponse(responseCode = "400", description = "정보가 잘못된 토큰",
-                content = @Content(schema = @Schema(example = "Access token invalid"))),
+                content = @Content(schema = @Schema(example = "{\n\"message\" : \"Access token invalid\"\n}"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 직전(1초 미만), 로그아웃 처리도 없이 토큰 만료 시간 경과로 처리",
-                content = @Content(schema = @Schema(example = "Access token expired")))
+                content = @Content(schema = @Schema(example = "{\n\"message\" : \"Access token expired\"\n}")))
     })
     @PostMapping("/sign-out")
     public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -122,6 +128,25 @@ public class MobileOAuthController {
         }
         return new ResponseEntity(new UserResponseDto.MessageDto("Access token expired"), HttpStatus.UNAUTHORIZED);
     }
+
+    // < -------------- Account recovery part -------------- >
+    @Operation(summary = "계정 찾기", description = "휴대폰 번호 인증을 통해 가입시 이용한 플랫폼 리턴")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "가입시 이용한 플랫폼 리턴",
+                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"NAVER\"\n}"))),
+            @ApiResponse(responseCode = "404", description = "해당 유저는 가입한 적이 없음(자원 없음)",
+                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"No user found\"\n}")))
+    })
+    @GetMapping("/account-recovery")
+    public ResponseEntity accountRecovery(@RequestBody UserRequestDto.AccountRecoveryDto accountRecoveryDto) {
+        String result = mobileOAuthService.accountRecovery(accountRecoveryDto);
+        if(result.equals(mobileOAuthService.NO_USER_FOUND)) {
+            return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.OK);
+    }
+
 
     // <----------- Test Controller ----------->
     @Operation(summary = "김영후의 테스트용 컨트롤러")
