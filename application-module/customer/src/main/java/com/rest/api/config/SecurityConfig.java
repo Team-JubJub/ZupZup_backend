@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -22,7 +23,21 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final JwtExceptionFilter jwtExceptionFilter;
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer(){
+        return web -> {
+            web.ignoring()
+                    .requestMatchers( "/", "http://localhost:8082/**", "/swagger-ui/**", "/v3/api-docs/**") // H2, swagger permit all
+                    .requestMatchers("/customer/**")
+                    .requestMatchers(
+                            "/mobile/sign-up/**",
+                            "/mobile/sign-in/*{provider}",
+                            "/mobile/account-recovery"
+                    );
+
+        };
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {    // Http Security part
@@ -53,7 +68,7 @@ public class SecurityConfig {
                     .anyRequest().authenticated()   // permitAll() 이외의 모든 request authenticated 처리
                 .and()  // Filter로 JwtAuthenticationFilter 적용, 그 앞에 Exception handle 위해 JwtExceptionFilter 추가
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                    .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
+                    .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
 
         return http.build();
     }
