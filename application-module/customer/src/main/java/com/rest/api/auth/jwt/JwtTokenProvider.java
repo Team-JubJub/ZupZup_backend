@@ -40,14 +40,13 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public RefreshResultDto validateRefreshToken(String accessToken, String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
+    public RefreshResultDto validateRefreshToken(String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
     {
         List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = providerUserId, 1 = refreshToken
-        String providerUserId = getProviderUserId(accessToken);
         if (findInfo.get(0).equals(null)) { // 유저 정보가 없으면 FAILED 반환
             return new RefreshResultDto(FAIL_STRING, "No user found", null, null);
         }
-        if (findInfo.get(0).equals(providerUserId) && validateToken(refreshToken))  // refresh Token 유효성 검증 완료 시
+        if (validateToken(refreshToken))  // refresh Token 유효성 검증 완료 시
         {
             UserDetails findUser = customUserDetailsService.loadUserByProviderUserId((String)findInfo.get(0));
             List<String> roles = findUser.getAuthorities().stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
@@ -98,15 +97,15 @@ public class JwtTokenProvider {
         {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
         }
-        catch (ExpiredJwtException e)   // filter에서 검증을 거치는 예외, 여기서 삭제할지 고민해볼 것
+        catch (ExpiredJwtException e)
         {
             e.printStackTrace();
-            return "Expired Token";
+            return "expired";
         }
         catch (JwtException e)  // JWT 관련 모든 예외, 여기서 삭제할지 고민해볼 것
         {
             e.printStackTrace();
-            return "JWT Exception occurred";
+            return "invalid";
         }
     }
 
