@@ -32,7 +32,7 @@ public class SecurityConfig {
                     .requestMatchers("/customer/**")
                     .requestMatchers(
                             "/mobile/sign-up/**",
-                            "/mobile/sign-in/*{provider}",
+                            "/mobile/sign-in/**",
                             "/mobile/account-recovery"
                     );
 
