@@ -61,6 +61,25 @@ public class MobileOAuthController {
         return new ResponseEntity(signUpResult, responseHeaders, HttpStatus.CREATED);  // temp
     }
 
+    @Operation(summary = "회원탈퇴", description = "회원탈퇴 요청")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공",
+                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"Sign-out successful\"\n}"))),
+            @ApiResponse(responseCode = "400", description = "정보가 잘못된 토큰",
+                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"Access token invalid\"\n}"))),
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 직전(1초 미만), 로그아웃 처리도 없이 토큰 만료 시간 경과로 처리",
+                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"Access token expired\"\n}")))
+    })
+    @DeleteMapping("/account/{provider}")
+    public ResponseEntity deleteUser(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
+            content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
+                                     @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                     @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @Operation(summary = "닉네임 중복 체크", description = "닉네임 중복 체크(중복 시 true, 사용 가능 시 false 반환)")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "닉네임 사용 가능",
@@ -77,16 +96,6 @@ public class MobileOAuthController {
         }
 
         return new ResponseEntity(new UserResponseDto.MessageDto("false"), HttpStatus.OK);  // 사용 가능한 닉네임
-    }
-
-    @DeleteMapping("/account/{provider}")
-    public ResponseEntity deleteUser(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
-            content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
-                                     @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                     @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-
-
-        return new ResponseEntity(HttpStatus.OK);
     }
 
     // < -------------- Sign-in part -------------- >

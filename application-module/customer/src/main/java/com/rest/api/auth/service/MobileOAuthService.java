@@ -57,6 +57,11 @@ public class MobileOAuthService {
         return tokenInfoDto;
     }
 
+    public String deleteUser(String accessToken) {
+
+        return "temp";
+    }
+
     public Boolean nickNameCheck(String nickName) {
         Optional<User> userEntity = userRepository.findByNickName(nickName);
         if(userEntity.isPresent()) {
@@ -64,11 +69,6 @@ public class MobileOAuthService {
         }
 
         return false;
-    }
-
-    public String deleteUser(String accessToken) {
-
-        return "temp";
     }
 
     // <-------------------- Sign-in part -------------------->
