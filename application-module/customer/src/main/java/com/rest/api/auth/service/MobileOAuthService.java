@@ -57,7 +57,8 @@ public class MobileOAuthService {
         return tokenInfoDto;
     }
 
-    public String deleteUser(String accessToken) {
+    public String deleteUser(String accessToken, String refreshToken) {
+
 
         return "temp";
     }

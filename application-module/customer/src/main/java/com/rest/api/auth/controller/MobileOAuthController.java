@@ -73,7 +73,7 @@ public class MobileOAuthController {
     @DeleteMapping("/account")   // 회원탈퇴 요청
     public ResponseEntity deleteUser(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        String result = mobileOAuthService.deleteUser(accessToken);
+        String result = mobileOAuthService.deleteUser(accessToken, refreshToken);
 
         return new ResponseEntity(new UserResponseDto.MessageDto("Delete user successful"), HttpStatus.OK);
     }
