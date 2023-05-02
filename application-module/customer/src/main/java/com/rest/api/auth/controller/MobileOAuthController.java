@@ -79,6 +79,16 @@ public class MobileOAuthController {
         return new ResponseEntity(new UserResponseDto.MessageDto("false"), HttpStatus.OK);  // 사용 가능한 닉네임
     }
 
+    @DeleteMapping("/account/{provider}")
+    public ResponseEntity deleteUser(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
+            content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
+                                     @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                     @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     // < -------------- Sign-in part -------------- >
     @Operation(summary = "로그인(리프레시 토큰 유효 시)", description = "리프레시 토큰을 이용한 액세스 토큰 갱신")
     @ApiResponses({
