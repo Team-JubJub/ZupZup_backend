@@ -58,7 +58,7 @@ public class MobileOAuthService {
     }
 
     public String deleteUser(String accessToken, String refreshToken) {
-        if (accessToken == null || !jwtTokenProvider.validateToken(accessToken)) {
+        if (accessToken == null || !jwtTokenProvider.validateToken(accessToken)) {  // 정상적인 access token이 아닌 경우
             return jwtTokenProvider.INVALID_ACCESS_TOKEN;
         }
         if (isNotExpiredToken(accessToken)) {   // 만료 직전 혹은 만료된 토큰이 아니라면
@@ -70,7 +70,7 @@ public class MobileOAuthService {
             return jwtTokenProvider.SUCCESS_STRING;
         }
 
-        return jwtTokenProvider.EXPIRED_ACCESS_TOKEN;
+        return jwtTokenProvider.EXPIRED_ACCESS_TOKEN;   // 만료된 access token인 경우
     }
 
     public Boolean nickNameCheck(String nickName) {
