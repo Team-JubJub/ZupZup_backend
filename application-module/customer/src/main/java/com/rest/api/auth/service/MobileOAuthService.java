@@ -66,6 +66,11 @@ public class MobileOAuthService {
         return false;
     }
 
+    public String deleteUser(String accessToken) {
+
+        return "temp";
+    }
+
     // <-------------------- Sign-in part -------------------->
     public TokenInfoDto signInWithProviderUserId(String provider, UserRequestDto.UserSignInDto userSignInDto) {
         String userUniqueId = userSignInDto.getUserUniqueId();
