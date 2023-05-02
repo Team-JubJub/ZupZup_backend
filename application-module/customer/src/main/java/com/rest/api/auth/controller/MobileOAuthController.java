@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/mobile")
 @RequiredArgsConstructor
 public class MobileOAuthController {
+
     /* Description
         /sign-up : 회원가입(가입 완료 시 토큰 발급)
         /sign-in/refresh : refresh token 이용, access token 갱신
@@ -35,10 +36,10 @@ public class MobileOAuthController {
         /sign-out : 로그아웃(액세스토큰 유효 시 가능)
         /account-recovery : 계정 찾기(가입한 플랫폼 리턴)
      */
-
     private final MobileOAuthService mobileOAuthService;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
+
     // < -------------- Sign-up part -------------- >
     @Operation(summary = "회원가입", description = "회원가입 요청")
     @ApiResponses({

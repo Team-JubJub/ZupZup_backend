@@ -58,9 +58,18 @@ public class MobileOAuthService {
     }
 
     public String deleteUser(String accessToken, String refreshToken) {
+        if (accessToken == null || !jwtTokenProvider.validateToken(accessToken)) {
+            return jwtTokenProvider.INVALID_ACCESS_TOKEN;
+        }
+        if (isNotExpiredToken(accessToken)) {   // 만료 직전 혹은 만료된 토큰이 아니라면
+            String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);
+            userRepository.delete(userRepository.findByProviderUserId(providerUserId).orElseThrow(() -> new RuntimeException()));   // RDB에서 유저 정보 삭제, Exception 생각해낼 것
+            redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
 
+            return jwtTokenProvider.SUCCESS_STRING;
+        }
 
-        return "temp";
+        return jwtTokenProvider.FAIL_STRING;
     }
 
     public Boolean nickNameCheck(String nickName) {
@@ -129,6 +138,11 @@ public class MobileOAuthService {
         userDto.setOptionalTerm1(userSignUpDto.getOptionalTerm1());
 
         return userDto;
+    }
+
+    private boolean isNotExpiredToken(String accessToken) {  // 1초 이상 남았는지 판단
+        Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
+        return remainExpiration >= 1;
     }
 
     private TokenInfoDto generateTokens(UserDto userDto, String message) {

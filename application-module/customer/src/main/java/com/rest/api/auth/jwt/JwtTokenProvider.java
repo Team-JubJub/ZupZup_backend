@@ -34,6 +34,8 @@ public class JwtTokenProvider {
     final static public String REFRESH_TOKEN_NAME = "refreshToken";
     final static public String SUCCESS_STRING = "SUCCESS";
     final static public String FAIL_STRING = "FAILED";
+    final static public String INVALID_ACCESS_TOKEN = "Invalid access token";
+    final static public String EXPIRED_ACCESS_TOKEN = "Expired access token";
 
     @PostConstruct
     protected void init() {
