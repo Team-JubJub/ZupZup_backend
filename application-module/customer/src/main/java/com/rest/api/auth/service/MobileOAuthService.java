@@ -63,7 +63,8 @@ public class MobileOAuthService {
         }
         if (isNotExpiredToken(accessToken)) {   // 만료 직전 혹은 만료된 토큰이 아니라면
             String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);
-            userRepository.delete(userRepository.findByProviderUserId(providerUserId).orElseThrow(() -> new RuntimeException()));   // RDB에서 유저 정보 삭제, Exception 생각해낼 것
+            User userEntity = userRepository.findByProviderUserId(providerUserId).get();    // delete()와 deleteById() 모두 findBy로 유저 엔티티 찾는 과정은 거침. 예외 처리를 직접 하는 것이냐 아니냐의 차이인데, 일단 이렇게 적용하고 delete()가 더 나을지 고민해볼 것.
+            userRepository.deleteById(userEntity.getUserId());  // RDB에서 유저 삭제
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
 
             return jwtTokenProvider.SUCCESS_STRING;
