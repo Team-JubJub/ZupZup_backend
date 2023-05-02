@@ -68,10 +68,10 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "409", description = "이미 존재하는 닉네임",
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"true\"\n}")))
     })
-    @GetMapping("/sign-up/nickname-check")
+    @GetMapping("/account/nickname-check")
     public ResponseEntity nickNameCheck(@Parameter(name = "nickName", description = "중복 체크를 할 닉네임", in = ParameterIn.QUERY,
-            content = @Content(schema = @Schema(type = "string", example = "S2줍줍화이팅"))) @RequestParam UserRequestDto.NickNameCheckDto nickNameCheckDto) {
-        Boolean checkResult = mobileOAuthService.nickNameCheck(nickNameCheckDto);
+            content = @Content(schema = @Schema(type = "string", example = "S2줍줍화이팅"))) @RequestParam String nickName) {
+        Boolean checkResult = mobileOAuthService.nickNameCheck(nickName);
         if(checkResult) {
             return new ResponseEntity(new UserResponseDto.MessageDto("true"), HttpStatus.CONFLICT);   // 이미 존재하는 닉네임
         }
