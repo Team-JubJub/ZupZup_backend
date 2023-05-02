@@ -69,7 +69,7 @@ public class MobileOAuthService {
             return jwtTokenProvider.SUCCESS_STRING;
         }
 
-        return jwtTokenProvider.FAIL_STRING;
+        return jwtTokenProvider.EXPIRED_ACCESS_TOKEN;
     }
 
     public Boolean nickNameCheck(String nickName) {

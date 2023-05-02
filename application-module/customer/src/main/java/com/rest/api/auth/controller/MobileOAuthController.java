@@ -75,8 +75,14 @@ public class MobileOAuthController {
     public ResponseEntity deleteUser(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         String result = mobileOAuthService.deleteUser(accessToken, refreshToken);
+        if (result.equals(jwtTokenProvider.SUCCESS_STRING)) {
+            return new ResponseEntity(new UserResponseDto.MessageDto("Delete user successful"), HttpStatus.OK);
+        }
+        else if (result.equals(jwtTokenProvider.INVALID_ACCESS_TOKEN)) {
+            return new ResponseEntity(new UserResponseDto.MessageDto("Access token invalid"), HttpStatus.BAD_REQUEST);    // access token 정보가 잘못된 형식이라면
+        }
 
-        return new ResponseEntity(new UserResponseDto.MessageDto("Delete user successful"), HttpStatus.OK);
+        return new ResponseEntity(new UserResponseDto.MessageDto("Access token expired"), HttpStatus.UNAUTHORIZED);
     }
 
     @Operation(summary = "닉네임 중복 체크", description = "닉네임 중복 체크(중복 시 true, 사용 가능 시 false 반환)")
