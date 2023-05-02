@@ -49,7 +49,7 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "409", description = "(다른 소셜 플랫폼을 이용하여)이미 가입된 유저",
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"User already sign uped.(Platform with: NAVER)\"\n}")))
     })
-    @PostMapping("/mobile/{provider}")    // 회원가입 요청
+    @PostMapping("/account/{provider}")    // 회원가입 요청
     public ResponseEntity signUp(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
                                  @RequestBody UserRequestDto.UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
