@@ -1,6 +1,7 @@
 package com.rest.api.auth.jwt;
 
 import exception.customer.RefreshRequiredException;
+import exception.customer.RequiredHeaderNotExistException;
 import exception.customer.SignOutedUserException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
@@ -23,11 +24,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException {
         String accessToken = jwtTokenProvider.resolveToken(request, jwtTokenProvider.ACCESS_TOKEN_NAME);
-        if (accessToken == null) throw new RuntimeException();
+        if (accessToken == null) throw new RequiredHeaderNotExistException(jwtTokenProvider.ACCESS_TOKEN_NAME);
 
         if (!jwtTokenProvider.isRedisBlackList(accessToken)) {   // 로그아웃 된 상황이 아니라면(redis refreshToken 테이블에 accessToken이 저장된 게 아니라면)
             try {
-                if (accessToken != null && jwtTokenProvider.validateToken(accessToken)) {   // access token이 만료되지 않았을 경우
+                if (jwtTokenProvider.validateToken(accessToken)) {   // access token이 만료되지 않았을 경우
                     Authentication auth = jwtTokenProvider.getAuthentication(accessToken);
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
