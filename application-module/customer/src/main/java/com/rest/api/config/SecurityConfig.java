@@ -28,15 +28,13 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer(){
         return web -> {
             web.ignoring()
-                    .requestMatchers( "/", "http://localhost:8082/**", "/swagger-ui/**", "/v3/api-docs/**") // H2, swagger permit all
+                    .requestMatchers( "", "/", "/error/**", "http://localhost:8082/**", "/swagger-ui/**", "/v3/api-docs/**") // H2, swagger permit all
                     .requestMatchers("/customer/**")
                     .requestMatchers(
-                            "/mobile/account/{provider}",
-                            "/mobile/account/nickname-check",
+                            "/mobile/account", "/mobile/account/", "/mobile/account/{provider}", "/mobile/account/nickname-check",
                             "/mobile/sign-in/**",
                             "/mobile/account-recovery"
                     );
-
         };
     }
 

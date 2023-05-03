@@ -9,7 +9,7 @@ import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.token.TokenInfoDto;
-import exception.customer.AlreadySignUpedException;
+import exception.customer.AlreadySignUppedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -38,7 +38,7 @@ public class MobileOAuthService {
 
     // <-------------------- Sign-up part -------------------->
     public TokenInfoDto signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
-        checkIsSignedUp(userSignUpDto.getPhoneNumber());
+        checkIsSignUpped(userSignUpDto.getPhoneNumber());
         UserDto userDto = userSignUpDtoToUserDto(provider, userSignUpDto);
 
         User userEntity = User.builder(userDto.getProviderUserId())
@@ -55,6 +55,21 @@ public class MobileOAuthService {
         TokenInfoDto tokenInfoDto = generateTokens(userDto, "Create user success");
 
         return tokenInfoDto;
+    }
+
+    public String deleteUser(String accessToken, String refreshToken) {
+        Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
+        if (remainExpiration >= 1) {   // 만료 직전 혹은 만료된 토큰이 아니라면
+            String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);
+            User userEntity = userRepository.findByProviderUserId(providerUserId).get();    // delete()와 deleteById() 모두 findBy로 유저 엔티티 찾는 과정은 거침. 예외 처리를 직접 하는 것이냐 아니냐의 차이인데, 일단 이렇게 적용하고 delete()가 더 나을지 고민해볼 것.
+            userRepository.deleteById(userEntity.getUserId());  // RDB에서 유저 삭제
+            redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
+            redisService.setStringValue(accessToken, "deleted-user", remainExpiration); // access token 저장(key: acc_token, value: "deleted-user")
+
+            return jwtTokenProvider.SUCCESS_STRING;
+        }
+
+        return jwtTokenProvider.EXPIRED_ACCESS_TOKEN;   // 만료된 access token인 경우
     }
 
     public Boolean nickNameCheck(String nickName) {
@@ -91,10 +106,10 @@ public class MobileOAuthService {
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
-    private void checkIsSignedUp(String phoneNumber) {
+    private void checkIsSignUpped(String phoneNumber) {
         Optional<User> userEntity = userRepository.findByPhoneNumber(phoneNumber);
         if(userEntity.isPresent()) {
-            throw new AlreadySignUpedException(userEntity.get().getProvider()); // "User already sign uped.(Platform with: {provider})
+            throw new AlreadySignUppedException(userEntity.get().getProvider()); // "User already sign-upped.(Platform with: {provider})
         }
     }
 

@@ -1,11 +1,14 @@
 package com.rest.api.advice;
 
 import exception.NoSuchException;
-import exception.customer.AlreadySignUpedException;
+import exception.customer.AlreadySignUppedException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -19,8 +22,23 @@ import java.util.stream.StreamSupport;
 @RestControllerAdvice
 public class CustomerControllerAdvice {
 
-    @ExceptionHandler(value = AlreadySignUpedException.class)
-    public ResponseEntity alreadySignUped(AlreadySignUpedException e) {
+    @ExceptionHandler(value = MissingRequestHeaderException.class)
+    public ResponseEntity missingRequestHeader(MissingRequestHeaderException e) {   // 요청 파라미터 중 바디에 문제가 있는 경우
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = MissingServletRequestParameterException.class)
+    public ResponseEntity missingServletRequestParameter(MissingServletRequestParameterException e) {   // 요청 파라미터 중 바디에 문제가 있는 경우
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = HttpMessageNotReadableException.class)
+    public ResponseEntity httpMessageNotReadable(HttpMessageNotReadableException e) {   // 요청 파라미터 중 바디에 문제가 있는 경우
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = AlreadySignUppedException.class)
+    public ResponseEntity alreadySignUpped(AlreadySignUppedException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 

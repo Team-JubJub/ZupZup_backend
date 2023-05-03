@@ -48,7 +48,7 @@ subprojects {	// 모든 하위 모듈에 적용되는 setting
 		implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 		implementation 'org.projectlombok:lombok:1.18.20'
 
-		//runtimeOnly 'com.h2database:h2'
+		runtimeOnly 'com.h2database:h2'
 		//implementation 'mysql:mysql-connector-java'
 
 		annotationProcessor 'org.projectlombok:lombok'
