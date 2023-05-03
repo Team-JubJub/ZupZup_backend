@@ -163,7 +163,7 @@ public class MobileOAuthController {
             redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
             return new ResponseEntity(new UserResponseDto.MessageDto("Sign-out successful"), HttpStatus.OK);
         }
-        return new ResponseEntity(new UserResponseDto.MessageDto("redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity("redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)", HttpStatus.UNAUTHORIZED);
     }
 
     // < -------------- Account recovery part -------------- >
