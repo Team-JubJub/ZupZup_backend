@@ -149,25 +149,21 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공",
                 content = @Content(schema = @Schema(example = "{\n\"message\" : \"Sign-out successful\"\n}"))),
-            @ApiResponse(responseCode = "400", description = "정보가 잘못된 토큰",
-                content = @Content(schema = @Schema(example = "{\n\"message\" : \"Access token invalid\"\n}"))),
-            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 직전(1초 미만), 로그아웃 처리도 없이 토큰 만료 시간 경과로 처리",
-                content = @Content(schema = @Schema(example = "{\n\"message\" : \"Access token expired\"\n}")))
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
+                content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
+            @ApiResponse(responseCode = "403", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
+                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits")))
     })
     @PostMapping("/sign-out")
     public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                   @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        if (accessToken == null || !jwtTokenProvider.validateToken(accessToken)) {
-            return new ResponseEntity(new UserResponseDto.MessageDto("Access token invalid"), HttpStatus.BAD_REQUEST);    // access token 정보가 잘못된 형식이라면
-        }
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
-
         if (remainExpiration >= 1) {
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
             return new ResponseEntity(new UserResponseDto.MessageDto("Sign-out successful"), HttpStatus.OK);
         }
-        return new ResponseEntity(new UserResponseDto.MessageDto("Access token expired"), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity(new UserResponseDto.MessageDto("redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"), HttpStatus.UNAUTHORIZED);
     }
 
     // < -------------- Account recovery part -------------- >

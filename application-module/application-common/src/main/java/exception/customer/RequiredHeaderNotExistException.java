@@ -9,7 +9,7 @@ public class RequiredHeaderNotExistException extends AuthRuntimeException {
     private static final String MESSAGE = "Required header parameter(";
 
     public RequiredHeaderNotExistException(String requiredParameter) {
-        super(MESSAGE + requiredParameter + ") does not exits", HttpStatus.BAD_REQUEST);
+        super(MESSAGE + requiredParameter + ") does not exits", HttpStatus.FORBIDDEN);
         this.requiredParameter = requiredParameter;
     }
 

@@ -21,7 +21,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);    // SecurityConfig에서 JwtAuthenticationFilter 이전에 이 필터를 등록, JwtAuthenticationFilter에서 발생하는 예외를 여기서 핸들링.
         } catch (RequiredHeaderNotExistException e) {
-            response.setStatus(HttpStatus.BAD_REQUEST.value());
+            response.setStatus(HttpStatus.FORBIDDEN.value());
             response.getWriter().write(e.getMessage());
         } catch (RefreshRequiredException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
