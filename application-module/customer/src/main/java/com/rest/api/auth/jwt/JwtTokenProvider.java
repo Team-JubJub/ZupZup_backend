@@ -125,9 +125,9 @@ public class JwtTokenProvider {
         }
     }
 
-    public Boolean isLoggedOut(String accessToken)  // true -> 로그아웃된 상황
+    public Boolean isRedisBlackList(String accessToken)  // true -> 로그아웃 혹은 회원탈퇴한 상황
     {
-        return redisService.getStringValue(accessToken) != null;    // redis에 accessToken이 저장돼있다면 로그아웃된 경우
+        return redisService.getStringValue(accessToken) != null;    // redis에 accessToken이 저장돼있다면 로그아웃 혹은 회원탈퇴한 경우
     }
 
 }

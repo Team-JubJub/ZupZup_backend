@@ -36,7 +36,6 @@ public class SecurityConfig {
                             "/mobile/sign-in/**",
                             "/mobile/account-recovery"
                     );
-
         };
     }
 
