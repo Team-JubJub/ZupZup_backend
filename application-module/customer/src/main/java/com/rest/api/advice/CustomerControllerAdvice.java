@@ -23,18 +23,18 @@ import java.util.stream.StreamSupport;
 public class CustomerControllerAdvice {
 
     @ExceptionHandler(value = MissingRequestHeaderException.class)
-    public ResponseEntity missingRequestHeader(MissingRequestHeaderException e) {   // 요청 파라미터 중 바디에 문제가 있는 경우
+    public ResponseEntity missingRequestHeader(MissingRequestHeaderException e) {   // 요청 파라미터 중 헤더에 문제가 있는 경우
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     @ExceptionHandler(value = MissingServletRequestParameterException.class)
-    public ResponseEntity missingServletRequestParameter(MissingServletRequestParameterException e) {   // 요청 파라미터 중 바디에 문제가 있는 경우
+    public ResponseEntity missingServletRequestParameter(MissingServletRequestParameterException e) {   // 요청 파라미터 중 query에 문제가 있는 경우
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
     public ResponseEntity httpMessageNotReadable(HttpMessageNotReadableException e) {   // 요청 파라미터 중 바디에 문제가 있는 경우
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage().substring(0, 32));
     }
 
     @ExceptionHandler(value = AlreadySignUppedException.class)
