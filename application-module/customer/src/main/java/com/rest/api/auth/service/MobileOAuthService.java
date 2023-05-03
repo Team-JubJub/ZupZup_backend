@@ -9,7 +9,7 @@ import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.token.TokenInfoDto;
-import exception.customer.AlreadySignUpedException;
+import exception.customer.AlreadySignUppedException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -112,7 +112,7 @@ public class MobileOAuthService {
     private void checkIsSignUpped(String phoneNumber) {
         Optional<User> userEntity = userRepository.findByPhoneNumber(phoneNumber);
         if(userEntity.isPresent()) {
-            throw new AlreadySignUpedException(userEntity.get().getProvider()); // "User already sign uped.(Platform with: {provider})
+            throw new AlreadySignUppedException(userEntity.get().getProvider()); // "User already sign-upped.(Platform with: {provider})
         }
     }
 

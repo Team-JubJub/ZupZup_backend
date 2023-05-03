@@ -1,7 +1,7 @@
 package com.rest.api.advice;
 
 import exception.NoSuchException;
-import exception.customer.AlreadySignUpedException;
+import exception.customer.AlreadySignUppedException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ import java.util.stream.StreamSupport;
 @RestControllerAdvice
 public class CustomerControllerAdvice {
 
-    @ExceptionHandler(value = AlreadySignUpedException.class)
-    public ResponseEntity alreadySignUped(AlreadySignUpedException e) {
+    @ExceptionHandler(value = AlreadySignUppedException.class)
+    public ResponseEntity alreadySignUped(AlreadySignUppedException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
