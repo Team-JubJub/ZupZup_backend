@@ -48,9 +48,9 @@ public class MobileOAuthController {
                             @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
                     content = @Content(schema = @Schema(implementation = TokenInfoDto.class))),
             @ApiResponse(responseCode = "400", description = "Request body가 잘못된 경우",
-                    content = @Content(schema = @Schema(example = "Required request body is missing: public org.springframework.http.ResponseEntity com.rest.api.auth.controller.MobileOAuthController.signUp(java.lang.String,dto.auth.customer.request.UserRequestDto$UserSignUpDto)"))),
+                    content = @Content(schema = @Schema(example = "Required request body is missing"))),
             @ApiResponse(responseCode = "409", description = "(다른 소셜 플랫폼을 이용하여)이미 가입된 유저",
-                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"User already sign uped.(Platform with: NAVER)\"\n}")))
+                    content = @Content(schema = @Schema(example = "User already sign uped.(Platform with: NAVER)")))
     })
     @PostMapping("/account/{provider}")    // 회원가입 요청
     public ResponseEntity signUp(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
@@ -139,7 +139,7 @@ public class MobileOAuthController {
                             @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
                     content = @Content(schema = @Schema(implementation = TokenInfoDto.class))),
             @ApiResponse(responseCode = "400", description = "Request body가 잘못된 경우",
-                    content = @Content(schema = @Schema(example = "Required request body is missing: public org.springframework.http.ResponseEntity com.rest.api.auth.controller.MobileOAuthController.signInWithProviderUserId(java.lang.String,dto.auth.customer.request.UserRequestDto$UserSignInDto)")))
+                    content = @Content(schema = @Schema(example = "Required request body is missing")))
     })
     @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
     public ResponseEntity signInWithProviderUserId(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
@@ -185,7 +185,7 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "200", description = "가입시 이용한 플랫폼 리턴",
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"NAVER\"\n}"))),
             @ApiResponse(responseCode = "400", description = "Request body가 잘못된 경우",
-                    content = @Content(schema = @Schema(example = "Required request body is missing: public org.springframework.http.ResponseEntity com.rest.api.auth.controller.MobileOAuthController.accountRecovery(dto.auth.customer.request.UserRequestDto$AccountRecoveryDto)"))),
+                    content = @Content(schema = @Schema(example = "Required request body is missing"))),
             @ApiResponse(responseCode = "404", description = "해당 유저는 가입한 적이 없음(자원 없음)",
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"No user found\"\n}")))
     })
