@@ -9,10 +9,9 @@ import lombok.ToString;
 @ToString
 public class RefreshResultDto {
 
-    @Schema(description = "요청 처리 결과", example = "success, failed")
+    @Schema(description = "요청 처리 결과", example = "success")
     private String result;
-    @Schema(description = "요청 처리 결과에 대한 메세지", example = "Access token refreshed(액세스 토큰 갱신 성공)," +
-            " No user found(리프레시 토큰이 유효하지 않음), Refresh token expired(만료된 리프레시 토큰)")
+    @Schema(description = "요청 처리 결과에 대한 메세지", example = "Access token refreshed(액세스 토큰 갱신 성공)")
     private String message;
     @Schema(description = "줍줍의 유저 식별자('소셜플랫폼 명_소셜플랫폼에서 제공한 uniqueID' 포맷)", example = "NAVER_im1from2naver3")
     private String providerUserId;
