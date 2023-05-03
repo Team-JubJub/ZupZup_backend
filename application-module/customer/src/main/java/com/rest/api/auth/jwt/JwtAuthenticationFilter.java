@@ -31,7 +31,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(auth);
                     }
                 } catch (ExpiredJwtException e) {   // validateToken의 claims.getBody().getExpiration()에서 발생
-                    System.out.println("Validation failed");
+                    System.out.println("Token expired");
                     throw new RefreshRequiredException();
                 }
             }
