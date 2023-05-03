@@ -58,9 +58,6 @@ public class MobileOAuthService {
     }
 
     public String deleteUser(String accessToken, String refreshToken) {
-        if (accessToken == null || !jwtTokenProvider.validateToken(accessToken)) {  // 정상적인 access token이 아닌 경우
-            return jwtTokenProvider.INVALID_ACCESS_TOKEN;
-        }
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
         if (remainExpiration >= 1) {   // 만료 직전 혹은 만료된 토큰이 아니라면
             String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);

@@ -2,7 +2,7 @@ package com.rest.api.auth.jwt;
 
 import exception.customer.RefreshRequiredException;
 import exception.customer.RequiredHeaderNotExistException;
-import exception.customer.SignOutedUserException;
+import exception.customer.BlackListTokenException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -37,9 +37,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 throw new RefreshRequiredException();
             }
         }
-        else {  // log out된 유저
-            System.out.println("Sign-outed user");
-            throw new SignOutedUserException();
+        else {  // 로그아웃 혹은 회원탈퇴한 유저
+            System.out.println("Sign-outed or deleted user");
+            throw new BlackListTokenException();
         }
 
         filterChain.doFilter(request, response);

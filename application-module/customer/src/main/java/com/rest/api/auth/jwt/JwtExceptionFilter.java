@@ -2,7 +2,7 @@ package com.rest.api.auth.jwt;
 
 import exception.customer.RefreshRequiredException;
 import exception.customer.RequiredHeaderNotExistException;
-import exception.customer.SignOutedUserException;
+import exception.customer.BlackListTokenException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,10 +23,10 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         } catch (RequiredHeaderNotExistException e) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
             response.getWriter().write(e.getMessage());
-        } catch (RefreshRequiredException e) {
+        } catch (RefreshRequiredException e) {  // 액세스 토큰 만료 시
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write(e.getMessage());
-        } catch (SignOutedUserException e) {
+        } catch (BlackListTokenException e) {   // 로그아웃, 회원탈퇴 된 회원의 액세스토큰으로 요청한 경우
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write(e.getMessage());
         }
