@@ -38,7 +38,7 @@ public class CustomerControllerAdvice {
     }
 
     @ExceptionHandler(value = AlreadySignUppedException.class)
-    public ResponseEntity alreadySignUped(AlreadySignUppedException e) {
+    public ResponseEntity alreadySignUpped(AlreadySignUppedException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
     }
 
