@@ -61,11 +61,13 @@ public class MobileOAuthService {
         if (accessToken == null || !jwtTokenProvider.validateToken(accessToken)) {  // 정상적인 access token이 아닌 경우
             return jwtTokenProvider.INVALID_ACCESS_TOKEN;
         }
-        if (isNotExpiredToken(accessToken)) {   // 만료 직전 혹은 만료된 토큰이 아니라면
+        Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
+        if (remainExpiration >= 1) {   // 만료 직전 혹은 만료된 토큰이 아니라면
             String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);
             User userEntity = userRepository.findByProviderUserId(providerUserId).get();    // delete()와 deleteById() 모두 findBy로 유저 엔티티 찾는 과정은 거침. 예외 처리를 직접 하는 것이냐 아니냐의 차이인데, 일단 이렇게 적용하고 delete()가 더 나을지 고민해볼 것.
             userRepository.deleteById(userEntity.getUserId());  // RDB에서 유저 삭제
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
+            redisService.setStringValue(accessToken, "deleted-user", remainExpiration); // access token 저장(key: acc_token, value: "deleted-user")
 
             return jwtTokenProvider.SUCCESS_STRING;
         }
@@ -139,11 +141,6 @@ public class MobileOAuthService {
         userDto.setOptionalTerm1(userSignUpDto.getOptionalTerm1());
 
         return userDto;
-    }
-
-    private boolean isNotExpiredToken(String accessToken) {  // 1초 이상 남았는지 판단
-        Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
-        return remainExpiration >= 1;
     }
 
     private TokenInfoDto generateTokens(UserDto userDto, String message) {
