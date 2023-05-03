@@ -38,7 +38,7 @@ public class MobileOAuthService {
 
     // <-------------------- Sign-up part -------------------->
     public TokenInfoDto signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
-        checkIsSignUped(userSignUpDto.getPhoneNumber());
+        checkIsSignUpped(userSignUpDto.getPhoneNumber());
         UserDto userDto = userSignUpDtoToUserDto(provider, userSignUpDto);
 
         User userEntity = User.builder(userDto.getProviderUserId())
@@ -109,7 +109,7 @@ public class MobileOAuthService {
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
-    private void checkIsSignUped(String phoneNumber) {
+    private void checkIsSignUpped(String phoneNumber) {
         Optional<User> userEntity = userRepository.findByPhoneNumber(phoneNumber);
         if(userEntity.isPresent()) {
             throw new AlreadySignUpedException(userEntity.get().getProvider()); // "User already sign uped.(Platform with: {provider})
