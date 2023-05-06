@@ -2,6 +2,7 @@ package com.rest.api.auth.controller;
 
 import com.rest.api.auth.service.MobileAuthService;
 import dto.auth.seller.request.AuthRequestDto;
+import dto.auth.seller.response.AuthResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class MobileAuthController {
 
     @PostMapping("/sign-in")
     public ResponseEntity singIn(@RequestBody AuthRequestDto.SellerSignInDto sellerSignInDto) {
-
+        AuthResponseDto.SignInResponseDto signInResponseDto = mobileAuthService.signIn(sellerSignInDto);
 
         return new ResponseEntity(HttpStatus.OK);
     }

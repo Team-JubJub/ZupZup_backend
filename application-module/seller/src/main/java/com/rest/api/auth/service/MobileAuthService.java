@@ -9,4 +9,5 @@ public class MobileAuthService {
         AuthResponseDto.SignInResponseDto signInResponseDto = new AuthResponseDto.SignInResponseDto();
         return signInResponseDto;
     }
+
 }
