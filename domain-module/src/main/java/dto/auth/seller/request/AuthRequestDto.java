@@ -6,4 +6,5 @@ public class AuthRequestDto {
         private String loginId;
         private String loginPwd;
     }
+
 }
