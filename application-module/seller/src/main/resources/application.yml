@@ -1,11 +1,8 @@
 server:
   port: 8080
 spring:
-  #datasource:
-    #url: jdbc:h2:tcp://localhost/~/zupzup
-    #username: sa
-    #password:
-    #driver-class-name: org.h2.Driver
+  profiles:
+    active: ${profile}
 
   servlet:
     multipart:
@@ -19,6 +16,11 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+
+logging:  # 로그 레벨 설정
+  level:
+    org.hibernate.SQL: debug  # hibernate 가 남기는 모든 로그가 debug모드로 설정, jpa hibernate가 생성하는 sql이 로거를 통해서 찍히도록 하는 설정
+    org.hibernate.type: trace # 실제 들어가는 파라미터값 찍어주는 설정
 
 cloud:
   aws:
