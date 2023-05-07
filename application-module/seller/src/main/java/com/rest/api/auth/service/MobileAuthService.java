@@ -7,6 +7,8 @@ public class MobileAuthService {
 
     public AuthResponseDto.SignInResponseDto signIn(AuthRequestDto.SellerSignInDto sellerSignInDto) {
         AuthResponseDto.SignInResponseDto signInResponseDto = new AuthResponseDto.SignInResponseDto();
+
+
         return signInResponseDto;
     }
 

@@ -21,6 +21,7 @@ public class MobileAuthController {
     public ResponseEntity singIn(@RequestBody AuthRequestDto.SellerSignInDto sellerSignInDto) {
         AuthResponseDto.SignInResponseDto signInResponseDto = mobileAuthService.signIn(sellerSignInDto);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(signInResponseDto, HttpStatus.OK);
     }
+
 }
