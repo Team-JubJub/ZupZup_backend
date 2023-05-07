@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
+    Store findByLoginId(String loginId);
     List<Store> findByStoreNameContaining(String keyword);
 }
