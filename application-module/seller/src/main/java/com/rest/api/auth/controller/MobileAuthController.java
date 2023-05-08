@@ -22,6 +22,9 @@ public class MobileAuthController {
     @PostMapping("/sign-in")
     public ResponseEntity singIn(@RequestBody AuthRequestDto.SellerSignInDto sellerSignInDto) {
         AuthResponseDto.SignInResponseDto signInResponseDto = mobileAuthService.signIn(sellerSignInDto);
+        if (signInResponseDto.getMessage().equals(mobileAuthService.LOGIN_FAILS)) {
+            return new ResponseEntity(signInResponseDto, HttpStatus.BAD_REQUEST);
+        }
 
         return new ResponseEntity(signInResponseDto, HttpStatus.OK);
     }
