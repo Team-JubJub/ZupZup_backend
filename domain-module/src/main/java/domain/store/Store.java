@@ -86,4 +86,5 @@ public class Store {
         this.eventList = storeDto.getEventList();
         this.storeItems = storeDto.getStoreItems();
     }
+
 }
