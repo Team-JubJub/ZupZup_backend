@@ -13,7 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import repository.StoreRepository;
 
-import java.util.NoSuchElementException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +48,7 @@ public class MobileAuthService {
 
     private boolean isValidPassword(Store storeEntity, String loginPwd) {
         String encodedPwd = passwordEncoder.encode(loginPwd);
-        if (!storeEntity.getLoginPwd().equals(encodedPwd)) return false;    // 비밀번호가 다르면 false 리턴
+        if (!passwordEncoder.matches(loginPwd, storeEntity.getLoginPwd())) return false;    // 비밀번호가 다르면 false 리턴
 
         return true;
     }
@@ -56,17 +57,18 @@ public class MobileAuthService {
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
     private Store isStorePresent(String loginId) {
-        try {
-            Store storeEntity = storeRepository.findByLoginId(loginId);
-            return storeEntity;
-        }   catch (NoSuchElementException e) {
-            throw new NoSuchException("No user found");
-        }
+        Store storeEntity = storeRepository.findByLoginId(loginId);
+        if (storeEntity == null) throw new NoSuchException("No user found");
+
+        return storeEntity;
     }
 
 
     // <-------------------- Methods for test -------------------->
     public Store testSignUp(AuthRequestDto.SellerTestSingUpDto sellerTestSingUpDto) {
+        List<String> eventList = new ArrayList<>();
+        eventList.add("event1");
+        eventList.add("event2");
         Store storeEntity = Store.builder("Test")
                 .fireBaseStoreId(Long.valueOf(0))
                 .loginId(sellerTestSingUpDto.getLoginId())
@@ -80,6 +82,7 @@ public class MobileAuthService {
                 .saleTimeEnd("00:00")
                 .longitude(23.05)
                 .latitude(23.05)
+                .eventList(eventList)
                 .build();
         storeRepository.save(storeEntity);
 
