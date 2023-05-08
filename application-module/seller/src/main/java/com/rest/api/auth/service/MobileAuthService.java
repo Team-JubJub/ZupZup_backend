@@ -26,13 +26,14 @@ public class MobileAuthService {
         String loginId = sellerSignInDto.getLoginId();
         String loginPwd = sellerSignInDto.getLoginPwd();
         AuthResponseDto.SignInResponseDto signInResponseDto = new AuthResponseDto.SignInResponseDto();
-        if (!isValidPassword(loginPwd)) {   // 비밀번호 검증 실패 시
+        Store storeEntity = storeRepository.findByLoginId(loginId);
+
+        if (!isValidPassword(storeEntity, loginPwd)) {   // 비밀번호 검증 실패 시
             signInResponseDto.setMessage("Login fails");
             signInResponseDto.setFireBaseStoreId(Long.valueOf(-1)); // 실패 시 id -1 리턴
             return signInResponseDto;
         }
 
-        Store storeEntity = storeRepository.findByLoginId(loginId);
         Long fireBaseStoreId = storeEntity.getFireBaseStoreId();
         signInResponseDto.setMessage("Login success");   // 임시임. Dto 필드 유형 String -> Long으로 수정 등 구조 수정 할 것.
         signInResponseDto.setFireBaseStoreId(fireBaseStoreId);
@@ -40,8 +41,9 @@ public class MobileAuthService {
         return signInResponseDto;
     }
 
-    public boolean isValidPassword(String loginPwd) {
-
+    public boolean isValidPassword(Store storeEntity, String loginPwd) {
+        String encodedPwd = passwordEncoder.encode(loginPwd);
+        if (!storeEntity.getLoginPwd().equals(encodedPwd)) return false;    // 비밀번호가 다르면 false 리턴
 
         return true;
     }
