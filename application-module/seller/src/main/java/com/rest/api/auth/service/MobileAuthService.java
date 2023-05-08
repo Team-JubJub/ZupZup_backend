@@ -5,6 +5,8 @@ import dto.auth.seller.request.AuthRequestDto;
 import dto.auth.seller.response.AuthResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import repository.StoreRepository;
@@ -15,6 +17,8 @@ import repository.StoreRepository;
 @Transactional
 public class MobileAuthService {
 
+    @Autowired
+    private final PasswordEncoder passwordEncoder;
     private final StoreRepository storeRepository;
 
     // <-------------------- Sign-in part -------------------->
