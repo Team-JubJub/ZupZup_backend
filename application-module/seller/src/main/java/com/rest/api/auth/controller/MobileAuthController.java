@@ -28,8 +28,10 @@ public class MobileAuthController {
 
     // < -------------- Test part -------------- >
     @PostMapping("/test/sign-up")
-    public ResponseEntity signUp(@RequestBody AuthRequestDto.SellerTestSingUpDto sellerTestSingUpDto) {
-        Store storeEntity = new Store();
+    public ResponseEntity testSignUp(@RequestBody AuthRequestDto.SellerTestSingUpDto sellerTestSingUpDto) {
+        Store storeEntity = mobileAuthService.testSignUp(sellerTestSingUpDto);
+
+        return new ResponseEntity(storeEntity, HttpStatus.CREATED);
     }
 
 }

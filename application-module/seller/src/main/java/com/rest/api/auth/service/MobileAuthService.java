@@ -66,6 +66,24 @@ public class MobileAuthService {
 
 
     // <-------------------- Methods for test -------------------->
+    public Store testSignUp(AuthRequestDto.SellerTestSingUpDto sellerTestSingUpDto) {
+        Store storeEntity = Store.builder("Test")
+                .fireBaseStoreId(Long.valueOf(0))
+                .loginId(sellerTestSingUpDto.getLoginId())
+                .loginPwd(passwordEncoder.encode(sellerTestSingUpDto.getLoginPwd()))
+                .category("test")
+                .storeAddress("test")
+                .openTime("00:00")
+                .endTime("00:00")
+                .saleMatters("test")
+                .saleTimeStart("00:00")
+                .saleTimeEnd("00:00")
+                .longitude(23.05)
+                .latitude(23.05)
+                .build();
+        storeRepository.save(storeEntity);
 
+        return storeEntity;
+    }
 
 }

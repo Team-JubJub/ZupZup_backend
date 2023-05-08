@@ -5,20 +5,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import converter.StringListConverter;
 import domain.item.Item;
+import domain.order.Order;
 import dto.store.StoreDto;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Builder @Table(name = "store")
-@AllArgsConstructor
-@NoArgsConstructor
+@Table(name = "store")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder(builderMethodName = "StoreBuilder")
 @Getter
 public class Store {
 
@@ -65,6 +64,13 @@ public class Store {
     )
     @JsonIgnore
     private List<Item> storeItems = new ArrayList<>();
+
+    public static StoreBuilder builder(String storeName) {   // 필수 파라미터 고려해볼 것
+        if(storeName == null) {
+            throw new IllegalArgumentException("필수 파라미터(store name) 누락");
+        }
+        return StoreBuilder().storeName(storeName);
+    }
 
     // 가게 데이터를 업데이트 하는 로직
     public void updateStore(StoreDto storeDto) {
