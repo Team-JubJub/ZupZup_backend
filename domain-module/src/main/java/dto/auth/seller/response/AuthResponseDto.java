@@ -10,7 +10,8 @@ public class AuthResponseDto {
     @Setter
     @RequiredArgsConstructor
     public static class SignInResponseDto {
-        private String storeId;
+        private String message;
+        private Long fireBaseStoreId;
     }
 
 }

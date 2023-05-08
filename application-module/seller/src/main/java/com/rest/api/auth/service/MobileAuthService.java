@@ -18,23 +18,26 @@ public class MobileAuthService {
     private final StoreRepository storeRepository;
 
     // <-------------------- Sign-in part -------------------->
-    public AuthResponseDto.SignInResponseDto signIn(AuthRequestDto.SellerSignInDto sellerSignInDto) {
+    public AuthResponseDto.SignInResponseDto signIn(AuthRequestDto.SellerSignInDto sellerSignInDto) {   // 현재 로그인은 파이어베이스 스토어 값 리턴하게
         String loginId = sellerSignInDto.getLoginId();
         String loginPwd = sellerSignInDto.getLoginPwd();
         AuthResponseDto.SignInResponseDto signInResponseDto = new AuthResponseDto.SignInResponseDto();
         if (!isValidPassword(loginPwd)) {   // 비밀번호 검증 실패 시
-            signInResponseDto.setStoreId("Login fails");
+            signInResponseDto.setMessage("Login fails");
+            signInResponseDto.setFireBaseStoreId(Long.valueOf(-1)); // 실패 시 id -1 리턴
             return signInResponseDto;
         }
 
         Store storeEntity = storeRepository.findByLoginId(loginId);
-        Long storeId = storeEntity.getStoreId();
-        signInResponseDto.setStoreId(Long.toString(storeId));   // 임시임. Dto 필드 유형 String -> Long으로 수정 등 구조 수정 할 것.
+        Long fireBaseStoreId = storeEntity.getFireBaseStoreId();
+        signInResponseDto.setMessage("Login success");   // 임시임. Dto 필드 유형 String -> Long으로 수정 등 구조 수정 할 것.
+        signInResponseDto.setFireBaseStoreId(fireBaseStoreId);
 
         return signInResponseDto;
     }
 
     public boolean isValidPassword(String loginPwd) {
+
 
         return true;
     }

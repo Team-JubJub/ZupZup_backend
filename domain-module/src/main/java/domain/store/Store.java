@@ -25,6 +25,7 @@ public class Store {
     @Column(name = "storeId")
     @Getter
     private Long storeId;
+    private Long fireBaseStoreId;
 
     private String loginId;
     private String loginPwd;
