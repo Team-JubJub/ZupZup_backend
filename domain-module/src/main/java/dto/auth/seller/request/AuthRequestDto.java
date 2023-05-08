@@ -12,7 +12,6 @@ public class AuthRequestDto {
 
     @Getter
     public static class SellerTestSingUpDto {
-        private Long fireBaseStoreId;
         private String loginId;
         private String loginPwd;
     }
