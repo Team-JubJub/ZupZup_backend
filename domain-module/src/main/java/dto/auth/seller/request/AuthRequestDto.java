@@ -10,4 +10,11 @@ public class AuthRequestDto {
         private String loginPwd;
     }
 
+    @Getter
+    public static class SellerTestSingUpDto {
+        private Long fireBaseStoreId;
+        private String loginId;
+        private String loginPwd;
+    }
+
 }

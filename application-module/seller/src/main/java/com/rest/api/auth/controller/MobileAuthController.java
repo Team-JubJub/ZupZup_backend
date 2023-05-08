@@ -1,6 +1,7 @@
 package com.rest.api.auth.controller;
 
 import com.rest.api.auth.service.MobileAuthService;
+import domain.store.Store;
 import dto.auth.seller.request.AuthRequestDto;
 import dto.auth.seller.response.AuthResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -17,11 +18,18 @@ public class MobileAuthController {
 
     private final MobileAuthService mobileAuthService;
 
+    // < -------------- Sign-in part -------------- >
     @PostMapping("/sign-in")
     public ResponseEntity singIn(@RequestBody AuthRequestDto.SellerSignInDto sellerSignInDto) {
         AuthResponseDto.SignInResponseDto signInResponseDto = mobileAuthService.signIn(sellerSignInDto);
 
         return new ResponseEntity(signInResponseDto, HttpStatus.OK);
+    }
+
+    // < -------------- Test part -------------- >
+    @PostMapping("/test/sign-up")
+    public ResponseEntity signUp(@RequestBody AuthRequestDto.SellerTestSingUpDto sellerTestSingUpDto) {
+        Store storeEntity = new Store();
     }
 
 }

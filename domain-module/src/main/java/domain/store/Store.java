@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @Entity
 @Builder @Table(name = "store")
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class Store {
 
@@ -63,8 +65,6 @@ public class Store {
     )
     @JsonIgnore
     private List<Item> storeItems = new ArrayList<>();
-
-    protected Store() {}
 
     // 가게 데이터를 업데이트 하는 로직
     public void updateStore(StoreDto storeDto) {
