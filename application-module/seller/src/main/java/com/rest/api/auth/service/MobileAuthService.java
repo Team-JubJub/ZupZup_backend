@@ -1,8 +1,10 @@
 package com.rest.api.auth.service;
 
+import domain.order.Order;
 import domain.store.Store;
 import dto.auth.seller.request.AuthRequestDto;
 import dto.auth.seller.response.AuthResponseDto;
+import exception.NoSuchException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import repository.StoreRepository;
+
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +30,7 @@ public class MobileAuthService {
         String loginId = sellerSignInDto.getLoginId();
         String loginPwd = sellerSignInDto.getLoginPwd();
         AuthResponseDto.SignInResponseDto signInResponseDto = new AuthResponseDto.SignInResponseDto();
-        Store storeEntity = storeRepository.findByLoginId(loginId);
+        Store storeEntity = isStorePresent(loginId);
 
         if (!isValidPassword(storeEntity, loginPwd)) {   // 비밀번호 검증 실패 시
             signInResponseDto.setMessage("Login fails");
@@ -41,11 +45,27 @@ public class MobileAuthService {
         return signInResponseDto;
     }
 
-    public boolean isValidPassword(Store storeEntity, String loginPwd) {
+    private boolean isValidPassword(Store storeEntity, String loginPwd) {
         String encodedPwd = passwordEncoder.encode(loginPwd);
         if (!storeEntity.getLoginPwd().equals(encodedPwd)) return false;    // 비밀번호가 다르면 false 리턴
 
         return true;
     }
+
+
+    // <-------------------- Common methods part -------------------->
+    // <--- Methods for error handling --->
+    private Store isStorePresent(String loginId) {
+        try {
+            Store storeEntity = storeRepository.findByLoginId(loginId);
+            return storeEntity;
+        }   catch (NoSuchElementException e) {
+            throw new NoSuchException("No user found");
+        }
+    }
+
+
+    // <-------------------- Methods for test -------------------->
+
 
 }
