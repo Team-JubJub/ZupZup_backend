@@ -29,9 +29,9 @@ public class MobileAuthController {
     @Operation(summary = "로그인", description = "로그인 성공 시 firebase에 저장된 가게의 키값을 리턴해줌.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = @Content(schema = @Schema(implementation = AuthRequestDto.SellerSignInDto.class))),
+                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"Login success\",\n\"fireBaseStoreId\" : 0\n}"))),
             @ApiResponse(responseCode = "400", description = "비밀번호가 다름",
-                    content = @Content(schema = @Schema(implementation = AuthRequestDto.SellerSignInDto.class))),
+                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"Login fails\",\n\"fireBaseStoreId\" : -1\n}"))),
             @ApiResponse(responseCode = "404", description = "찾는 유저가 없는 경우",
                     content = @Content(schema = @Schema(example = "No user found")))
     })
