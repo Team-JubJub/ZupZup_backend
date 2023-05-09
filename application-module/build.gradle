@@ -13,8 +13,11 @@ subprojects {   // Applied to application-common, seller, customer
         implementation(project(":core-module"))
         implementation(project(":domain-module"))
         implementation 'org.springframework.boot:spring-boot-starter-webflux'   // WebClient 의존성 주입
-        //swagger
+        // swagger
         implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
+        //spring security
+        implementation("org.springframework.boot:spring-boot-starter-security")
+        implementation("org.springframework.security:spring-security-test")
     }
 }
 project(':application-module:application-common') {
