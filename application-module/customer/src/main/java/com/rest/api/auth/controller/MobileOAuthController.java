@@ -50,7 +50,7 @@ public class MobileOAuthController {
                     content = @Content(schema = @Schema(implementation = TokenInfoDto.class))),
             @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우",
                     content = @Content(schema = @Schema(example = "Required request body is missing"))),
-            @ApiResponse(responseCode = "400", description = "Request body 값의 유효셩에 어긋나는 경우",
+            @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
                     content = @Content(schema = @Schema(example = "{\n" +
                             "\t\"phoneNumber\": \"Phone number pattern should be like \\\"010-xxxx-xxxx\\\"\",\n" +
                             "\t\"userUniqueId\": \"User unique id cannot be null or \\\"\\\" or \\\" \\\"\",\n" +
@@ -145,13 +145,17 @@ public class MobileOAuthController {
                     headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
                             @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
                     content = @Content(schema = @Schema(implementation = TokenInfoDto.class))),
-            @ApiResponse(responseCode = "400", description = "Request body가 잘못된 경우(null이 아니라 파라미터 자체가 빠진 경우)",
-                    content = @Content(schema = @Schema(example = "Required request body is missing")))
+            @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우",
+                    content = @Content(schema = @Schema(example = "Required request body is missing"))),
+            @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
+                    content = @Content(schema = @Schema(example = "{\n" +
+                            "\t\"userUniqueId\": \"User unique id cannot be null or \\\"\\\" or \\\" \\\"\",\n" +
+                            "}")))
     })
     @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
     public ResponseEntity signInWithProviderUserId(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
-            @RequestBody UserRequestDto.UserSignInDto userSignInDto) {
+            @Valid @RequestBody UserRequestDto.UserSignInDto userSignInDto) {
         TokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderUserId(provider, userSignInDto);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());
@@ -191,13 +195,17 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가입시 이용한 플랫폼 리턴",
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"NAVER\"\n}"))),
-            @ApiResponse(responseCode = "400", description = "Request body가 잘못된 경우",
+            @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우",
                     content = @Content(schema = @Schema(example = "Required request body is missing"))),
+            @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
+                    content = @Content(schema = @Schema(example = "{\n" +
+                            "\t\"phoneNumber\": \"Phone number pattern should be like \\\"010-xxxx-xxxx\\\"\",\n" +
+                            "}"))),
             @ApiResponse(responseCode = "404", description = "해당 유저는 가입한 적이 없음(자원 없음)",
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"No user found\"\n}")))
     })
     @PostMapping("/account-recovery")
-    public ResponseEntity accountRecovery(@RequestBody UserRequestDto.AccountRecoveryDto accountRecoveryDto) {
+    public ResponseEntity accountRecovery(@Valid @RequestBody UserRequestDto.AccountRecoveryDto accountRecoveryDto) {
         String result = mobileOAuthService.accountRecovery(accountRecoveryDto);
         if(result.equals(mobileOAuthService.NO_USER_FOUND)) {
             return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.NOT_FOUND);
