@@ -52,9 +52,11 @@ public class MobileOAuthController {
                     content = @Content(schema = @Schema(example = "Required request body is missing"))),
             @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
                     content = @Content(schema = @Schema(example = "{\n" +
-                            "\t\"phoneNumber\": \"Phone number pattern should be like \\\"010-xxxx-xxxx\\\"\",\n" +
-                            "\t\"userUniqueId\": \"User unique id cannot be null or \\\"\\\" or \\\" \\\"\",\n" +
-                            "\t\"userName\": \"User name cannot be null or \\\"\\\" or \\\" \\\"\"\n" +
+                            "\t\"phoneNumber\": \"Phone number pattern should be like 010-xxxx-xxxx\",\n" +
+                            "\t\"nickName\": \"Nickname cannot be null or empty or space\",\n" +
+                            "\t\"userUniqueId\": \"User unique id cannot be null or empty or space\",\n" +
+                            "\t\"userName\": \"User name cannot be null or empty or space\",\n" +
+                            "\t\"nickNameValid\": \"Nickname should be in range 4bytes to 12bytes\"\n" +
                             "}"))),
             @ApiResponse(responseCode = "409", description = "(다른 소셜 플랫폼을 이용하여)이미 가입된 유저",
                     content = @Content(schema = @Schema(example = "User already sign uped.(Platform with: NAVER)")))
@@ -149,7 +151,7 @@ public class MobileOAuthController {
                     content = @Content(schema = @Schema(example = "Required request body is missing"))),
             @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
                     content = @Content(schema = @Schema(example = "{\n" +
-                            "\t\"userUniqueId\": \"User unique id cannot be null or \\\"\\\" or \\\" \\\"\",\n" +
+                            "\t\"userUniqueId\": \"User unique id cannot be null or empty or space\"\n" +
                             "}")))
     })
     @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
@@ -199,7 +201,7 @@ public class MobileOAuthController {
                     content = @Content(schema = @Schema(example = "Required request body is missing"))),
             @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
                     content = @Content(schema = @Schema(example = "{\n" +
-                            "\t\"phoneNumber\": \"Phone number pattern should be like \\\"010-xxxx-xxxx\\\"\",\n" +
+                            "\t\"phoneNumber\": \"Phone number pattern should be like 010-xxxx-xxxx\"\n" +
                             "}"))),
             @ApiResponse(responseCode = "404", description = "해당 유저는 가입한 적이 없음(자원 없음)",
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"No user found\"\n}")))
