@@ -3,6 +3,7 @@ package dto.auth.customer.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
+import java.nio.charset.Charset;
 
 public class UserRequestDto {
 
@@ -16,9 +17,16 @@ public class UserRequestDto {
         @NotBlank(message = "User name cannot be null or empty or space")
         private String userName;
         @Schema(description = "줍줍에 회원가입 시 입력한 유저의 닉네임(특수문자, 공백 불가, 12bytes(한:2bytes, 영어&숫자: 1byte) 제한)", example = "S2줍줍화이팅")
-        @Size(min = 4, max = 12, message = "Size must be in range 4bytes to 12bytes")
         @NotBlank(message = "Nickname cannot be null or empty or space")
         private String nickName;
+        @AssertTrue(message = "Nickname should be in range 4bytes to 12bytes")
+        private boolean isNickNameValid() {
+            int bytes = getNickName().getBytes(Charset.forName("EUC-KR")).length;
+            if (bytes < 4 || bytes > 12) return false;
+
+            return true;
+        }
+
         @Schema(description = "성별", allowableValues = {"male", "female"})
         @NotNull(message = "Gender cannot be null")
         private String gender;
