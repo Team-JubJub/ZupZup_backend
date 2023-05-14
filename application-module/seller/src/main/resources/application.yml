@@ -3,17 +3,10 @@ server:
 spring:
   profiles:
     active: ${profile}
-
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-
-  jpa:
-    hibernate:
-      ddl-auto: create
-  database-platform: org.hibernate.dialect.H2Dialect
-
   output:
     ansi:
       enabled: ALWAYS
