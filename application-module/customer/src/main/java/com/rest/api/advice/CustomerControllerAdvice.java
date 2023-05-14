@@ -2,6 +2,7 @@ package com.rest.api.advice;
 
 import exception.NoSuchException;
 import exception.customer.AlreadySignUppedException;
+import exception.customer.NoUserPresentsException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import org.springframework.http.HttpStatus;
@@ -52,6 +53,11 @@ public class CustomerControllerAdvice {
     @ExceptionHandler(value = AlreadySignUppedException.class)
     public ResponseEntity alreadySignUpped(AlreadySignUppedException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = NoUserPresentsException.class)
+    public ResponseEntity noUserPresents(NoUserPresentsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
     @ExceptionHandler(value = ConstraintViolationException.class)

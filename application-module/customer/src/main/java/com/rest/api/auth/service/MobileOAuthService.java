@@ -9,7 +9,9 @@ import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.token.TokenInfoDto;
+import exception.NoSuchException;
 import exception.customer.AlreadySignUppedException;
+import exception.customer.NoUserPresentsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -20,6 +22,7 @@ import repository.UserRepository;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -84,9 +87,14 @@ public class MobileOAuthService {
     // <-------------------- Sign-in part -------------------->
     public TokenInfoDto signInWithProviderUserId(String provider, UserRequestDto.UserSignInDto userSignInDto) {
         String userUniqueId = userSignInDto.getUserUniqueId();
-        User userEntity = userRepository.findByProviderUserId(provider.toUpperCase() + "_" + userUniqueId).get();
-        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-        TokenInfoDto tokenInfoDto = generateTokens(userDto, "Token refreshed");
+        TokenInfoDto tokenInfoDto = new TokenInfoDto();
+        try {
+            User userEntity = userRepository.findByProviderUserId(provider.toUpperCase() + "_" + userUniqueId).get();
+            UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+            tokenInfoDto = generateTokens(userDto, "Token refreshed");
+        } catch (NoSuchElementException e) {
+            throw new NoUserPresentsException();
+        }
 
         return tokenInfoDto;
     }
