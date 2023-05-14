@@ -152,7 +152,9 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
                     content = @Content(schema = @Schema(example = "{\n" +
                             "\t\"userUniqueId\": \"User unique id cannot be null or empty or space\"\n" +
-                            "}")))
+                            "}"))),
+            @ApiResponse(responseCode = "401", description = "제공된 user unique ID를 가진 회원 조회가 불가능한 경우(unique ID가 잘못된 경우)",
+                    content = @Content(schema = @Schema(example = "User with provided unique ID doesn't present")))
     })
     @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
     public ResponseEntity signInWithProviderUserId(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
