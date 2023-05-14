@@ -9,7 +9,6 @@ import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.token.TokenInfoDto;
-import exception.NoSuchException;
 import exception.customer.AlreadySignUppedException;
 import exception.customer.NoUserPresentsException;
 import jakarta.transaction.Transactional;
