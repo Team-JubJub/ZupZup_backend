@@ -7,10 +7,6 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
-      ddl-auto: create
   output:
     ansi:
       enabled: ALWAYS
