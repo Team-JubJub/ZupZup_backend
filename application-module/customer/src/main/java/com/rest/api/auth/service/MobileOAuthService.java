@@ -65,7 +65,7 @@ public class MobileOAuthService {
         UserResponseDto.DeleteUserDto deleteUserDto = new UserResponseDto.DeleteUserDto(null, null);
         if (remainExpiration >= 1) {   // 만료 직전 혹은 만료된 토큰이 아니라면
             deleteUserDto.setMessage(jwtTokenProvider.SUCCESS_STRING);
-            if (provider.equals(Provider.APPLE.getProvider())) {
+            if (provider.toUpperCase().equals(Provider.APPLE.getProvider())) {
                 deleteUserDto.setClientSecret(jwtTokenProvider.generateAppleClientSecret());
             }
             String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);
