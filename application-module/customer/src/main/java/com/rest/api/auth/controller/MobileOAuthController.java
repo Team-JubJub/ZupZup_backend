@@ -91,9 +91,10 @@ public class MobileOAuthController {
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
                                      @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        String result = mobileOAuthService.deleteUser(provider, accessToken, refreshToken);
-        if (result.equals(jwtTokenProvider.SUCCESS_STRING)) {
-            return new ResponseEntity(new UserResponseDto.MessageDto("Delete user successful"), HttpStatus.OK);
+        UserResponseDto.DeleteUserDto deleteUserDto = mobileOAuthService.deleteUser(provider, accessToken, refreshToken);
+        if (deleteUserDto.getMessage().equals(jwtTokenProvider.SUCCESS_STRING)) {
+            deleteUserDto.setMessage("Delete user successful");
+            return new ResponseEntity(deleteUserDto, HttpStatus.OK);
         }
 
         return new ResponseEntity("redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)", HttpStatus.UNAUTHORIZED);
