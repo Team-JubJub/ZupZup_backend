@@ -86,10 +86,12 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "403", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits")))
     })
-    @DeleteMapping("/account")   // 회원탈퇴 요청
-    public ResponseEntity deleteUser(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    @DeleteMapping("/account/{provider}")   // 회원탈퇴 요청
+    public ResponseEntity deleteUser(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
+            content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
+                                     @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        String result = mobileOAuthService.deleteUser(accessToken, refreshToken);
+        String result = mobileOAuthService.deleteUser(provider, accessToken, refreshToken);
         if (result.equals(jwtTokenProvider.SUCCESS_STRING)) {
             return new ResponseEntity(new UserResponseDto.MessageDto("Delete user successful"), HttpStatus.OK);
         }

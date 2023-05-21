@@ -59,7 +59,7 @@ public class MobileOAuthService {
         return tokenInfoDto;
     }
 
-    public String deleteUser(String accessToken, String refreshToken) {
+    public String deleteUser(String provider, String accessToken, String refreshToken) {
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
         if (remainExpiration >= 1) {   // 만료 직전 혹은 만료된 토큰이 아니라면
             String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);
