@@ -34,7 +34,7 @@ public class MobileOAuthController {
         /sign-up : 회원가입(가입 완료 시 토큰 발급)
         /sign-in/refresh : refresh token 이용, access token 갱신
         /sign-in/{provider} : 모든 토큰 만료 시, 소셜 로그인을 통한 토큰 발급
-        /sign-out : 로그아웃(액세스토큰 유효 시 가능)
+        /sign-out/{provider} : 로그아웃(액세스토큰 유효 시 가능)
         /account-recovery : 계정 찾기(가입한 플랫폼 리턴)
      */
     private final MobileOAuthService mobileOAuthService;
