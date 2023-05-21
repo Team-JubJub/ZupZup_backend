@@ -30,8 +30,12 @@ public class JwtTokenProvider {
     private String secretKey;
     public static final long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*30; // 30분
     public static final long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
+    public static final long APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*30;  // 한 달(애플 기준은 6개월 미만)
     final static public String ACCESS_TOKEN_NAME = "accessToken";
     final static public String REFRESH_TOKEN_NAME = "refreshToken";
+    final static public String APPLE_KEY_ID = "CFGTY8R4TG";
+    final static public String APPLE_TEAM_ID = "2S73QX9MMY";
+    final static public String APPLE_BUNDLE_ID = "ZupZup.ZupZup";
     final static public String SUCCESS_STRING = "SUCCESS";
     final static public String FAIL_STRING = "FAILED";
     final static public String INVALID_ACCESS_TOKEN = "Invalid access token";
@@ -87,6 +91,25 @@ public class JwtTokenProvider {
                 .compact();
 
         return refreshToken;
+    }
+
+    public String generateAppleClientSecret() {
+        Map<String, Object> jwtHeader = new HashMap<>();
+        jwtHeader.put("kid", APPLE_KEY_ID);
+        jwtHeader.put("alg", "ES256");
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS);
+        String appleClientSecret = Jwts.builder()   // Refresh token 생성
+                .setHeaderParams(jwtHeader)
+                .setIssuer(APPLE_TEAM_ID)
+                .setIssuedAt(now) // 발행 시간 - UNIX 시간
+                .setExpiration(validity) // 만료 시간
+                .setAudience("https://appleid.apple.com")
+                .setSubject(APPLE_BUNDLE_ID)
+                .signWith(SignatureAlgorithm.ES256, secretKey)
+                .compact();
+
+        return appleClientSecret;
     }
 
     public Authentication getAuthentication(String token) { // Jwt 토큰으로 인증 정보를 조회
