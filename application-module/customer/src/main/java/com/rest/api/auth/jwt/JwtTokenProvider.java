@@ -11,11 +11,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,14 +38,15 @@ public class JwtTokenProvider {
     private final CustomUserDetailsService customUserDetailsService;
     @Value("${spring.security.jwt.secret}")
     private String secretKey;
-    public static final long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*30; // 30분
-    public static final long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
-    public static final long APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*30;  // 한 달(애플 기준은 6개월 미만)
+    final static public long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*30; // 30분
+    final static public long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
+    final static public long APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*30;  // 한 달(애플 기준은 6개월 미만)
+    final static private String APPLE_KEY_ID = "CFGTY8R4TG";
+    final static private String APPLE_TEAM_ID = "2S73QX9MMY";
+    final static private String APPLE_BUNDLE_ID = "ZupZup.ZupZup";
+    final static private String APPLE_P8_KEY_NAME = ""; // apple에서 다운받은 p8 인증서(resources에 위치)
     final static public String ACCESS_TOKEN_NAME = "accessToken";
     final static public String REFRESH_TOKEN_NAME = "refreshToken";
-    final static public String APPLE_KEY_ID = "CFGTY8R4TG";
-    final static public String APPLE_TEAM_ID = "2S73QX9MMY";
-    final static public String APPLE_BUNDLE_ID = "ZupZup.ZupZup";
     final static public String SUCCESS_STRING = "SUCCESS";
     final static public String FAIL_STRING = "FAILED";
     final static public String INVALID_ACCESS_TOKEN = "Invalid access token";
@@ -98,18 +109,43 @@ public class JwtTokenProvider {
         jwtHeader.put("kid", APPLE_KEY_ID);
         jwtHeader.put("alg", "ES256");
         Date now = new Date();
+        String appleClientSecret = null;
         Date validity = new Date(now.getTime() + APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS);
-        String appleClientSecret = Jwts.builder()   // Refresh token 생성
-                .setHeaderParams(jwtHeader)
-                .setIssuer(APPLE_TEAM_ID)
-                .setIssuedAt(now) // 발행 시간 - UNIX 시간
-                .setExpiration(validity) // 만료 시간
-                .setAudience("https://appleid.apple.com")
-                .setSubject(APPLE_BUNDLE_ID)
-                .signWith(SignatureAlgorithm.ES256, secretKey)
-                .compact();
+        try {
+            appleClientSecret = Jwts.builder()   // Refresh token 생성
+                    .setHeaderParams(jwtHeader)
+                    .setIssuer(APPLE_TEAM_ID)
+                    .setIssuedAt(now) // 발행 시간 - UNIX 시간
+                    .setExpiration(validity) // 만료 시간
+                    .setAudience("https://appleid.apple.com")
+                    .setSubject(APPLE_BUNDLE_ID)
+                    .signWith(SignatureAlgorithm.ES256, getPrivateKey())
+                    .compact();
+        } catch(IOException e) {
+            return null;
+        } catch(NoSuchAlgorithmException e) {
+            return null;
+        } catch(InvalidKeySpecException e) {
+            return null;
+        }
 
         return appleClientSecret;
+    }
+
+    private static PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        InputStream privateKey = new ClassPathResource(APPLE_P8_KEY_NAME).getInputStream();
+
+        String result = new BufferedReader(new InputStreamReader(privateKey)).lines().collect(Collectors.joining("\n"));
+
+        String key = result.replace("-----BEGIN PRIVATE KEY-----\n", "")
+                .replace("-----END PRIVATE KEY-----", "");
+
+        byte[] encoded = Base64.getDecoder().decode(key);
+
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
+        KeyFactory keyFactory = KeyFactory.getInstance("EC");
+        return keyFactory.generatePrivate(keySpec);
+
     }
 
     public Authentication getAuthentication(String token) { // Jwt 토큰으로 인증 정보를 조회
