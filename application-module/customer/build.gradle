@@ -21,4 +21,9 @@ dependencies {
     // https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl
     implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.1'
 
+    // For apple ES256
+    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.72'
+    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.30.1'
+
 }
