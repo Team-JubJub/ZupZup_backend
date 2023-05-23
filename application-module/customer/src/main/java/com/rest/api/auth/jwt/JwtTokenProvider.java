@@ -38,13 +38,17 @@ public class JwtTokenProvider {
     private final CustomUserDetailsService customUserDetailsService;
     @Value("${spring.security.jwt.secret}")
     private String secretKey;
+    @Value("${apple.key_id}")
+    private String APPLE_KEY_ID;
+    @Value("${apple.team_id}")
+    private String APPLE_TEAM_ID;
+    @Value("${apple.bundle_id}")
+    private String APPLE_BUNDLE_ID;
+    @Value("${apple.p8_key_name}")
+    private String APPLE_P8_KEY_NAME; // apple에서 다운받은 p8 인증서(resources에 위치)
     final static public long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*30; // 30분
     final static public long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
     final static public long APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*30;  // 한 달(애플 기준은 6개월 미만)
-    final static private String APPLE_KEY_ID = "CFGTY8R4TG";
-    final static private String APPLE_TEAM_ID = "2S73QX9MMY";
-    final static private String APPLE_BUNDLE_ID = "ZupZup.ZupZup";
-    final static private String APPLE_P8_KEY_NAME = "AuthKey_CFGTY8R4TG.p8"; // apple에서 다운받은 p8 인증서(resources에 위치)
     final static public String ACCESS_TOKEN_NAME = "accessToken";
     final static public String REFRESH_TOKEN_NAME = "refreshToken";
     final static public String SUCCESS_STRING = "SUCCESS";
@@ -132,7 +136,7 @@ public class JwtTokenProvider {
         return appleClientSecret;
     }
 
-    private static PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    private PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         ClassPathResource resource = new ClassPathResource(APPLE_P8_KEY_NAME);
 
         String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));

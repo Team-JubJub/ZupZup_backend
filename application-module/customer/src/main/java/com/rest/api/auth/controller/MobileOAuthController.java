@@ -76,7 +76,7 @@ public class MobileOAuthController {
     @Operation(summary = "회원탈퇴", description = "회원탈퇴 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원탈퇴 성공",
-                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"Delete user successful\"\n}"))),
+                    content = @Content(schema = @Schema(implementation = UserResponseDto.DeleteUserDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
