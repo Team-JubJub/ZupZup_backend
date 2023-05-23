@@ -10,12 +10,22 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.openssl.PEMParser;
+import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,8 +38,17 @@ public class JwtTokenProvider {
     private final CustomUserDetailsService customUserDetailsService;
     @Value("${spring.security.jwt.secret}")
     private String secretKey;
-    public static final long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*30; // 30분
-    public static final long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
+    @Value("${apple.key_id}")
+    private String APPLE_KEY_ID;
+    @Value("${apple.team_id}")
+    private String APPLE_TEAM_ID;
+    @Value("${apple.bundle_id}")
+    private String APPLE_BUNDLE_ID;
+    @Value("${apple.p8_key_name}")
+    private String APPLE_P8_KEY_NAME; // apple에서 다운받은 p8 인증서(resources에 위치)
+    final static public long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*30; // 30분
+    final static public long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
+    final static public long APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*30;  // 한 달(애플 기준은 6개월 미만)
     final static public String ACCESS_TOKEN_NAME = "accessToken";
     final static public String REFRESH_TOKEN_NAME = "refreshToken";
     final static public String SUCCESS_STRING = "SUCCESS";
@@ -87,6 +106,46 @@ public class JwtTokenProvider {
                 .compact();
 
         return refreshToken;
+    }
+
+    public String generateAppleClientSecret() {
+        Map<String, Object> jwtHeader = new HashMap<>();
+        jwtHeader.put("kid", APPLE_KEY_ID);
+        jwtHeader.put("alg", "ES256");
+        Date now = new Date();
+        String appleClientSecret = null;
+        Date validity = new Date(now.getTime() + APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS);
+        try {
+            appleClientSecret = Jwts.builder()   // Refresh token 생성
+                    .setHeaderParams(jwtHeader)
+                    .setIssuer(APPLE_TEAM_ID)
+                    .setIssuedAt(now) // 발행 시간 - UNIX 시간
+                    .setExpiration(validity) // 만료 시간
+                    .setAudience("https://appleid.apple.com")
+                    .setSubject(APPLE_BUNDLE_ID)
+                    .signWith(SignatureAlgorithm.ES256, getPrivateKey())
+                    .compact();
+        } catch(IOException e) {
+            return null;
+        } catch(NoSuchAlgorithmException e) {
+            return null;
+        } catch(InvalidKeySpecException e) {
+            return null;
+        }
+
+        return appleClientSecret;
+    }
+
+    private PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        ClassPathResource resource = new ClassPathResource(APPLE_P8_KEY_NAME);
+
+        String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
+        Reader pemReader = new StringReader(privateKey);
+        PEMParser pemParser = new PEMParser(pemReader);
+        JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
+        PrivateKeyInfo object = (PrivateKeyInfo) pemParser.readObject();
+
+        return converter.getPrivateKey(object);
     }
 
     public Authentication getAuthentication(String token) { // Jwt 토큰으로 인증 정보를 조회

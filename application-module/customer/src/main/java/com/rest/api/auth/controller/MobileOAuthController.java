@@ -34,7 +34,7 @@ public class MobileOAuthController {
         /sign-up : 회원가입(가입 완료 시 토큰 발급)
         /sign-in/refresh : refresh token 이용, access token 갱신
         /sign-in/{provider} : 모든 토큰 만료 시, 소셜 로그인을 통한 토큰 발급
-        /sign-out : 로그아웃(액세스토큰 유효 시 가능)
+        /sign-out/{provider} : 로그아웃(액세스토큰 유효 시 가능)
         /account-recovery : 계정 찾기(가입한 플랫폼 리턴)
      */
     private final MobileOAuthService mobileOAuthService;
@@ -76,7 +76,7 @@ public class MobileOAuthController {
     @Operation(summary = "회원탈퇴", description = "회원탈퇴 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원탈퇴 성공",
-                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"Delete user successful\"\n}"))),
+                    content = @Content(schema = @Schema(implementation = UserResponseDto.DeleteUserDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
@@ -86,12 +86,15 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "403", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits")))
     })
-    @DeleteMapping("/account")   // 회원탈퇴 요청
-    public ResponseEntity deleteUser(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    @DeleteMapping("/account/{provider}")   // 회원탈퇴 요청
+    public ResponseEntity deleteUser(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
+            content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
+                                     @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        String result = mobileOAuthService.deleteUser(accessToken, refreshToken);
-        if (result.equals(jwtTokenProvider.SUCCESS_STRING)) {
-            return new ResponseEntity(new UserResponseDto.MessageDto("Delete user successful"), HttpStatus.OK);
+        UserResponseDto.DeleteUserDto deleteUserDto = mobileOAuthService.deleteUser(provider, accessToken, refreshToken);
+        if (deleteUserDto.getMessage().equals(jwtTokenProvider.SUCCESS_STRING)) {
+            deleteUserDto.setMessage("Delete user successful");
+            return new ResponseEntity(deleteUserDto, HttpStatus.OK);
         }
 
         return new ResponseEntity("redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)", HttpStatus.UNAUTHORIZED);
