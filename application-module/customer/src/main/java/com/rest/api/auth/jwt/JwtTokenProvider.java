@@ -126,13 +126,10 @@ public class JwtTokenProvider {
                     .signWith(SignatureAlgorithm.ES256, getPrivateKey())
                     .compact();
         } catch(IOException e) {
-            System.out.println("IOException" + e);
             return null;
         } catch(NoSuchAlgorithmException e) {
-            System.out.println("NoSuch" + e);
             return null;
         } catch(InvalidKeySpecException e) {
-            System.out.println("Invalid" + e);
             return null;
         }
 
