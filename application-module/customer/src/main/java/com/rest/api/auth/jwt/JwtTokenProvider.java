@@ -19,10 +19,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileCopyUtils;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
@@ -138,8 +138,9 @@ public class JwtTokenProvider {
 
     private PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         ClassPathResource resource = new ClassPathResource(APPLE_P8_KEY_NAME);
-
-        String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
+        InputStream inputStream = resource.getInputStream();    // 배포 환경에서 jar로 실행 시, 압축 과정에서 uri에 jar~이 붙어 getURI()를 통한 파일 읽기가 안됨.
+        byte[] bdata = FileCopyUtils.copyToByteArray(inputStream);
+        String privateKey = new String(bdata, StandardCharsets.UTF_8);
         Reader pemReader = new StringReader(privateKey);
         PEMParser pemParser = new PEMParser(pemReader);
         JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
