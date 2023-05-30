@@ -19,10 +19,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.util.FileCopyUtils;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.spec.InvalidKeySpecException;
@@ -126,10 +126,13 @@ public class JwtTokenProvider {
                     .signWith(SignatureAlgorithm.ES256, getPrivateKey())
                     .compact();
         } catch(IOException e) {
+            System.out.println("IOException" + e);
             return null;
         } catch(NoSuchAlgorithmException e) {
+            System.out.println("NoSuch" + e);
             return null;
         } catch(InvalidKeySpecException e) {
+            System.out.println("Invalid" + e);
             return null;
         }
 
@@ -139,7 +142,12 @@ public class JwtTokenProvider {
     private PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         ClassPathResource resource = new ClassPathResource(APPLE_P8_KEY_NAME);
 
-        String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
+//        String privateKey = new String(Files.readAllBytes(Paths.get(resource.getURI())));
+        InputStream inputStream = resource.getInputStream();
+        byte[] bdata = FileCopyUtils.copyToByteArray(inputStream);
+        String privateKey = new String(bdata, StandardCharsets.UTF_8);
+
+        System.out.println(privateKey);
         Reader pemReader = new StringReader(privateKey);
         PEMParser pemParser = new PEMParser(pemReader);
         JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
