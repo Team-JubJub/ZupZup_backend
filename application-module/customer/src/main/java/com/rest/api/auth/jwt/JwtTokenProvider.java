@@ -46,6 +46,7 @@ public class JwtTokenProvider {
     private String APPLE_BUNDLE_ID;
     @Value("${apple.p8_key_name}")
     private String APPLE_P8_KEY_NAME; // apple에서 다운받은 p8 인증서(resources에 위치)
+    final static public long GMT_TIME_FORMATTER_IN_MILLISECONDS = 1000L*60*60*9;   // 9시간(우리나라 표준시와 GMT의 시간 차이)
     final static public long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*30; // 30분
     final static public long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
     final static public long APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*30;  // 한 달(애플 기준은 6개월 미만)
@@ -112,14 +113,15 @@ public class JwtTokenProvider {
         Map<String, Object> jwtHeader = new HashMap<>();
         jwtHeader.put("kid", APPLE_KEY_ID);
         jwtHeader.put("alg", "ES256");
-        Date now = new Date();
+        Date localTime = new Date();    // 한국기준 현재 시간
+        Date nowInGMT = new Date(localTime.getTime() - GMT_TIME_FORMATTER_IN_MILLISECONDS); // 한국 시간(사용하는 머신의 리전마다 다를 것임, 우리는 서울 리전의 머신을 쓰는 중) - 9시간 = GMT
         String appleClientSecret = null;
-        Date validity = new Date(now.getTime() + APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS);
+        Date validity = new Date(nowInGMT.getTime() + APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS);
         try {
             appleClientSecret = Jwts.builder()   // Refresh token 생성
                     .setHeaderParams(jwtHeader)
                     .setIssuer(APPLE_TEAM_ID)
-                    .setIssuedAt(now) // 발행 시간 - UNIX 시간
+                    .setIssuedAt(nowInGMT) // 발행 시간 - UNIX 시간
                     .setExpiration(validity) // 만료 시간
                     .setAudience("https://appleid.apple.com")
                     .setSubject(APPLE_BUNDLE_ID)
