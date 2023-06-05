@@ -9,7 +9,6 @@ permissions:
 
 jobs:
   build:
-    needs: setup
     runs-on: ubuntu-20.04
     steps:  # 실행할 일들
     - uses: actions/checkout@v3 # action이라는 저장소의 checkout version 3을 이용(쉽게 말해 만들어진 템플릿). checkout은 깡통 컴퓨터에 내 git 저장소를 clone, checkout해주는 등 기본 설정을 해주는 action임.
