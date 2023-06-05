@@ -8,8 +8,6 @@ permissions:
   contents: read
 
 jobs:
-  setup:
-    runs-on: ubuntu-20.04 # Action이 실행될 때, ubuntu 20.04로 실행.(우리 서버 OS가 ubuntu 20.04임)
   build:
     needs: setup
     runs-on: ubuntu-20.04
