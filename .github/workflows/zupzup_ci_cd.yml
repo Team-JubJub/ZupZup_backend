@@ -1,0 +1,26 @@
+name: ZupZup CI
+
+on:
+  pull_request: # main을 베이스 브랜치로 한 pr에 대하여 작동
+    branches: "main"
+
+permissions:
+  contents: read
+
+jobs:
+  setup:
+    runs-on: ubuntu-20.04 # Action이 실행될 때, ubuntu 20.04로 실행.(우리 서버 OS가 ubuntu 20.04임)
+  build:
+    needs: setup
+    runs-on: ubuntu-20.04
+    steps:  # 실행할 일들
+    - uses: actions/checkout@v3 # action이라는 저장소의 checkout version 3을 이용(쉽게 말해 만들어진 템플릿). checkout은 깡통 컴퓨터에 내 git 저장소를 clone, checkout해주는 등 기본 설정을 해주는 action임.
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - name: Build with Gradle
+      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+      with:
+        arguments: build
