@@ -65,7 +65,9 @@ public class JwtTokenProvider {
     public RefreshResultDto validateRefreshToken(String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
     {
         List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = providerUserId, 1 = refreshToken
-        if (findInfo.get(0).equals(null)) { // 유저 정보가 없으면 FAILED 반환
+        System.out.println("Find info is: " + findInfo);
+        System.out.println("Find info 0 is: " + findInfo.get(0));
+        if (findInfo.get(0) == null) { // 유저 정보가 없으면 FAILED 반환
             return new RefreshResultDto(FAIL_STRING, "No user found", null, null);
         }
         if (validateToken(refreshToken))  // refresh Token 유효성 검증 완료 시
