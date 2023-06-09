@@ -6,6 +6,7 @@ build/
 !**/src/test/**/build/
 application-local.yml
 application-prod.yml
+*.log
 
 ### STS ###
 .apt_generated

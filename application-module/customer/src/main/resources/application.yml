@@ -11,6 +11,14 @@ spring:
     ansi:
       enabled: ALWAYS
 
+#logging
+logging:
+  level: # 적용할 곳과 레벨을 지정합니다.
+    root: warn
+    org.hibernate.type: trace # 실제 들어가는 파라미터값 찍어주는 설정
+  pattern:
+    file: "%d %-5level [%thread] %logger : %msg%n" # 로그 파일에 사용될 로그 패턴
+
 #springdoc swagger
 springdoc:
   api-docs:
