@@ -73,4 +73,5 @@ public class LoginInfoDto implements UserDetails { // Token validation에 사용
     public boolean isEnabled() {
         return false;
     }
+
 }
