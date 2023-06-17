@@ -31,6 +31,7 @@ public class User {
 
     @Column(nullable = false) private Boolean essentialTerms;
     @Column(nullable = false) private Boolean optionalTerm1;
+    @Column(nullable = false) private String registerTime;
 
     public static UserBuilder builder(String providerUserId) {  // 현재 필수 파라미터는 임시
         if(providerUserId.equals(null)) {
