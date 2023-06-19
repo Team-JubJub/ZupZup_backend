@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -129,10 +131,9 @@ public class MobileOAuthService {
 
     // <--- Methods for readability --->
     private String registerTimeSetter() {
-        LocalDateTime nowDateTime = LocalDateTime.now();    // 주문한 시간
+        ZonedDateTime nowDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm a").withLocale(Locale.ENGLISH);   // 09:43 AM, 04:57 PM
         String formattedRegisterTime = nowDateTime.format(formatter);
-        System.out.println(formattedRegisterTime);
 
         return formattedRegisterTime;
     }
