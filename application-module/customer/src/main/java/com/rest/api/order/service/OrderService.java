@@ -19,6 +19,8 @@ import repository.OrderRepository;
 import repository.StoreRepository;
 
 import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -98,7 +100,7 @@ public class OrderService {
 
     // <--- Methods for readability --->
     private String orderTimeSetter() {
-        LocalTime nowTime = LocalTime.now();    // 주문한 시간
+        ZonedDateTime nowTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));    // 주문한 시간
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a").withLocale(Locale.ENGLISH);   // 09:43 AM, 04:57 PM
         String formattedOrderTime = nowTime.format(formatter);
 
