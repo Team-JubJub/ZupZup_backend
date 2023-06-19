@@ -23,7 +23,7 @@ public class Order {
     @Id
     @Column(name = "orderId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+    private Long orderId;   // auto increment id
     @ManyToOne(optional = false) @JoinColumn(name = "storeId")
     private Store store;    // store (relation with store table)
 
@@ -32,12 +32,12 @@ public class Order {
     @NotNull private String userName; // 예약자명
     @NotNull private String phoneNumber; // 예약자 전화번호
     @NotNull private String orderTitle; // ex) 크로플 3개 외 3
-    @NotNull private String orderTime; // 주문 시간
-    @NotNull private String visitTime; // 방문예정 시간
+    @NotNull private String orderTime; // 주문 시간(LocalDateTime, 현재는 KST 기준)
+    @NotNull private String visitTime; // 방문예정 시간(LocalDateTime, 현재는 KST 기준)
     @NotNull @ElementCollection
     @CollectionTable(name = "orderSpecific", joinColumns = @JoinColumn(name="orderId", referencedColumnName="orderId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL) @Valid
-    private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img)
+    private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img))
 
     public static OrderBuilder builder(Store store) {   // 필수 파라미터 고려해볼 것
         if(store == null) {

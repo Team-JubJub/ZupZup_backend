@@ -15,7 +15,7 @@ public class Item {
         @Id
         @Column(name = "itemId")
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long itemId;
+        private Long itemId;    // auto increment id
         @Column(nullable = false, length = 20)
         private String itemName; // 상품명
         private String imageURL; // 상품 이미지
@@ -24,7 +24,7 @@ public class Item {
         private int salePrice; // 할인된 가격
         private int itemCount; // 제품 개수
         @ManyToOne(optional = false) @JoinColumn(name = "storeId")
-        private Store store; // 스토어 정보 ID
+        private Store store; // store (relation with store)
 
     // 상품 데이터를 업데이트 하는 로직
         public void updateItem(UpdateRequestDto itemDto) {
