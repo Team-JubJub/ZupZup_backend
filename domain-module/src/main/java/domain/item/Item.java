@@ -20,9 +20,9 @@ public class Item {
         private String itemName; // 상품명
         private String imageURL; // 상품 이미지
         @Column(nullable = false)
-        private int itemPrice; // 상품 가격
-        private int salePrice; // 할인된 가격
-        private int itemCount; // 제품 개수
+        private int itemPrice; // 상품 가격 -> 변경(사칙연산을 통한)이 가능할 수도 있어서 primitive type
+        private int salePrice; // 할인된 가격 -> 변경(사칙연산을 통한)이 가능할 수도 있어서 primitive type
+        private int itemCount; // 제품 개수 -> 변경(사칙연산을 통한)이 있울 거라 primitive type
         @ManyToOne(optional = false) @JoinColumn(name = "storeId")
         private Store store; // store (relation with store)
 
@@ -50,4 +50,5 @@ public class Item {
         public void updateItemCount(ItemDto itemDto) {
             this.itemCount = itemDto.getItemCount();
         }
+
 }
