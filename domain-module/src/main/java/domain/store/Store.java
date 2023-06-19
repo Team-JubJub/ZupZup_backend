@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "store")
+@Table(name = "stores")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "StoreBuilder")
@@ -28,36 +28,36 @@ public class Store {
     private Long storeId;
     private Long fireBaseStoreId;
 
-    private String loginId;
-    private String loginPwd;
+    private String loginId; // 분리할 예정. 의논 후 여부 결정.
+    private String loginPwd;    // 상동
 
     @Column(nullable = false)
-    private String storeName; //가게이름
+    private String storeName;   //가게이름
     @Column(nullable = false)
-    private String category;
+    private String category;    // 가게 카테고리
     @Column(nullable = false, length = 1000)
-    private String storeAddress; //가게 주소
+    private String storeAddress;    //가게 주소
     @Column(nullable = false)
-    private String openTime;
+    private String openTime;    // 시작 시간
     @Column(nullable = false)
-    private String endTime;
+    private String endTime; // 마감 시간
     @Column
-    private String saleMatters;
+    private String saleMatters; // 공지사항?
     @Column(nullable = false)
-    private String saleTimeStart;
+    private String saleTimeStart;   // 할인 시작 시간
     @Column(nullable = false)
-    private String saleTimeEnd;
+    private String saleTimeEnd; // 할인 마감 시간
     @Column // nullable true
-    private String salePercent;
+    private String salePercent; // 할인률? 이건 삭제될 듯.
     @Column(nullable = false)
-    private Double longitude;
+    private Double longitude;   // 경도
     @Column(nullable = false)
-    private Double latitude;
+    private Double latitude;    // 위도
     @Convert(converter = StringListConverter.class)
-    @Column private List<String> eventList;
+    @Column private List<String> eventList; // 이벤트 리스트? 스트링? 뭐가 될지 의논해볼 것.
 
     @OneToMany(
-            mappedBy = "store",
+            mappedBy = "store", // item 객체의 store와 연결
             //cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
             orphanRemoval = true,
             fetch = FetchType.EAGER

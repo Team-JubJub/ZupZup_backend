@@ -20,10 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +52,7 @@ public class MobileOAuthService {
                 .provider(userDto.getProvider())
                 .essentialTerms(userDto.getEssentialTerms())
                 .optionalTerm1(userDto.getOptionalTerm1())
+                .registerTime(registerTimeSetter())
                 .build();
         userRepository.save(userEntity);
         TokenInfoDto tokenInfoDto = generateTokens(userDto, "Create user success");
@@ -128,6 +128,15 @@ public class MobileOAuthService {
     }
 
     // <--- Methods for readability --->
+    private String registerTimeSetter() {
+        LocalDateTime nowDateTime = LocalDateTime.now();    // 주문한 시간
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm a").withLocale(Locale.ENGLISH);   // 09:43 AM, 04:57 PM
+        String formattedRegisterTime = nowDateTime.format(formatter);
+        System.out.println(formattedRegisterTime);
+
+        return formattedRegisterTime;
+    }
+
     private UserDto userSignUpDtoToUserDto(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         UserDto userDto = new UserDto();
         if((provider.toUpperCase()).equals(Provider.NAVER.getProvider())) {
