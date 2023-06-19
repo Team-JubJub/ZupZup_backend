@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 public class OrderDto {
     private Store store;
-    private Long id;    // Order ID
+    private Long orderId;    // Order ID
     
     private OrderStatus orderStatus; // 주문 상태
     private String userName; // 닉네임

@@ -23,7 +23,7 @@ public class Order {
     @Id
     @Column(name = "orderId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long orderId;
     @ManyToOne(optional = false) @JoinColumn(name = "storeId")
     private Store store;    // store (relation with store table)
 
@@ -32,7 +32,7 @@ public class Order {
     @NotNull private String userName; // 예약자명
     @NotNull private String phoneNumber; // 예약자 전화번호
     @NotNull private String orderTitle; // ex) 크로플 3개 외 3
-    @NotNull private String orderTime; // 주문 시간 -> ERD에 추가
+    @NotNull private String orderTime; // 주문 시간
     @NotNull private String visitTime; // 방문예정 시간
     @NotNull @ElementCollection
     @CollectionTable(name = "orderSpecific", joinColumns = @JoinColumn(name="orderId", referencedColumnName="orderId"))
