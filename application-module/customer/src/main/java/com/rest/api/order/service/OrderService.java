@@ -44,24 +44,21 @@ public class OrderService {
         String formattedOrderTime = orderTimeSetter();
         OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderDto, formattedOrderTime);
 
-        Order orderEntity = Order.builder(orderDto.getStore())
+        Order orderEntity = Order.builder(orderDto.getStoreId())
                 .orderStatus(OrderStatus.NEW)
                 .userName(orderDto.getUserName())
                 .phoneNumber(orderDto.getPhoneNumber())
                 .orderTitle(orderDto.getOrderTitle())
                 .orderTime(orderDto.getOrderTime())
                 .visitTime(orderDto.getVisitTime())
+                .storeName(orderDto.getStoreName())
+                .storeAddress(orderDto.getStoreAddress())
+                .category(orderDto.getCategory())
                 .orderList(orderDto.getOrderList())
                 .build();
         orderRepository.save(orderEntity);
         OrderResponseDto.GetOrderDetailsDto madeOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
-//        Order orderEntity = new Order(orderDto);  개수 수정 로직 -> 일단 주석처리
-//        orderRepository.save(orderEntity);
 
-//        List<OrderSpecific> customerRequestedOrderList = postOrderDto.getOrderList();  // 개수 수정
-//        for(int i=0; i < customerRequestedOrderList.size(); i++) { //
-//            updateItemStock(customerRequestedOrderList.get(i).getItemId(), customerRequestedOrderList.get(i).getItemCount()); //재고 수정
-//        }
         OrderResponseDto.PostOrderResponseDto postOrderResponseDto = new OrderResponseDto.PostOrderResponseDto();
         postOrderResponseDto.setData(madeOrderDetailsDto);
         postOrderResponseDto.setHref("http://localhost:8090/customer/order/"+madeOrderDetailsDto.getOrderId());
@@ -109,19 +106,25 @@ public class OrderService {
 
     private OrderDto postOrderDTOtoOrderDTO(Long storeId, OrderRequestDto.PostOrderDto postOrderDto, String formattedNowTime) {
         Store store = storeRepository.findById(storeId).get();
+        String storeName = store.getStoreName();
+        String storeAddress = store.getStoreAddress();
+        String category = store.getCategory();
         OrderSpecific firstAtOrderSpecific = postOrderDto.getOrderList().get(0);
         String firstAtOrderList = firstAtOrderSpecific.getItemName();
         int firstAtOrderListCount = firstAtOrderSpecific.getItemCount();    // 어차피 String이랑 concat 될 때 int로 unboxing된다고 함. 미리 unboxing.
         int orderListCount = postOrderDto.getOrderList().size() - 1;    // -1이 붙어서 어차피 unboxing 거치니까 int로
 
         OrderDto orderDto = new OrderDto();
-        orderDto.setStore(store);
+        orderDto.setStoreId(storeId);
         orderDto.setOrderStatus(OrderStatus.NEW);
         orderDto.setUserName(postOrderDto.getUserName());
         orderDto.setPhoneNumber(postOrderDto.getPhoneNumber());
         orderDto.setOrderTitle(firstAtOrderList + " " + firstAtOrderListCount + "개 외 " + orderListCount + "건");    // 크로플 3개 외 4건
         orderDto.setOrderTime(formattedNowTime);
         orderDto.setVisitTime(postOrderDto.getVisitTime());
+        orderDto.setStoreName(storeName);
+        orderDto.setStoreAddress(storeAddress);
+        orderDto.setCategory(category);
         orderDto.setOrderList(postOrderDto.getOrderList());
 
         return orderDto;

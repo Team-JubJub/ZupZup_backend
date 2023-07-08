@@ -24,39 +24,31 @@ public class Order {
     @Column(name = "orderId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;   // auto increment id
-    @ManyToOne(optional = false) @JoinColumn(name = "storeId")
-    private Store store;    // store (relation with store table)
+    @Column(nullable = false) private Long storeId;
+    @Column(nullable = false) private Long userId;
 
     @Enumerated(EnumType.STRING) @NotNull
     private OrderStatus orderStatus;    // 주문 상태
-    @NotNull private String userName; // 예약자명
-    @NotNull private String phoneNumber; // 예약자 전화번호
-    @NotNull private String orderTitle; // ex) 크로플 3개 외 3
-    @NotNull private String orderTime; // 주문 시간(LocalDateTime, 현재는 KST 기준)
-    @NotNull private String visitTime; // 방문예정 시간(LocalDateTime, 현재는 KST 기준)
+    @Column(nullable = false) private String userName; // 예약자명
+    @Column(nullable = false) private String phoneNumber; // 예약자 전화번호
+    @Column(nullable = false) private String orderTitle; // ex) 크로플 3개 외 3
+    @Column(nullable = false) private String orderTime; // 주문 시간(LocalDateTime, 현재는 KST 기준)
+    @Column(nullable = false) private String visitTime; // 방문예정 시간(LocalDateTime, 현재는 KST 기준)
+    @Column(nullable = false) private String storeName; // 가게 이름
+    @Column(nullable = false) private String storeAddress;  // 가게 주소
+    @Column(nullable = false) private String category;  // 가게 카테고리
+
     @NotNull @ElementCollection
     @CollectionTable(name = "orderSpecific", joinColumns = @JoinColumn(name="orderId", referencedColumnName="orderId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL) @Valid
     private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img))
 
-    public static OrderBuilder builder(Store store) {   // 필수 파라미터 고려해볼 것
-        if(store == null) {
+    public static OrderBuilder builder(Long storeId) {   // 필수 파라미터 고려해볼 것
+        if(storeId == null) {
             throw new IllegalArgumentException("필수 파라미터(store) 누락");
         }
-        return OrderBuilder().store(store);
+        return OrderBuilder().storeId(storeId);
     }
-
-//    @Builder
-//    public Order(OrderDto orderDto) {   // customer - service - post에서 쓰이는 생성자
-//        this.orderStatus = OrderStatus.NEW;
-//        this.store = orderDto.getStore();
-//        this.userName = orderDto.getUserName();
-//        this.phoneNumber = orderDto.getPhoneNumber();
-//        this.orderTitle = orderDto.getOrderTitle();
-//        this.orderTime = orderDto.getOrderTime();
-//        this.visitTime = orderDto.getVisitTime();
-//        this.orderList = orderDto.getOrderList();
-//    }
 
     public void updateOrder(OrderDto orderDto) {
         this.orderStatus = orderDto.getOrderStatus();

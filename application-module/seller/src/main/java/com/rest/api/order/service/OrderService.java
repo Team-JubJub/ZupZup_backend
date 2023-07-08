@@ -10,7 +10,6 @@ import domain.order.Order;
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
 import domain.store.Store;
-import dto.item.ItemDto;
 import dto.order.OrderDto;
 import dto.order.seller.request.OrderRequestDto;
 import dto.order.seller.response.OrderResponseDto;
@@ -43,7 +42,7 @@ public class OrderService {
     // <-------------------- GET part -------------------->
     public List<OrderResponseDto.GetOrderDto> orderList(Long storeId) {
         isStorePresent(storeId);    // Check presence of store
-        List<Order> allOrderListEntity = orderRepository.findByStore_StoreId(storeId);
+        List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId);
         List<OrderResponseDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
                 .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDto.class))
                 .collect(Collectors.toList());
@@ -117,7 +116,7 @@ public class OrderService {
     }
 
     private void isOrderInStore(Long storeId, Order orderEntity) {
-        if(!orderEntity.getStore().getStoreId().equals(storeId)) {
+        if(!orderEntity.getStoreId().equals(storeId)) {
             throw new OrderNotInStoreException();
         }
     }
