@@ -39,8 +39,8 @@ public class StoreService {
         responseDto.setStoreId(store.getStoreId());
         responseDto.setStoreName(store.getStoreName());
         responseDto.setOpenTime(store.getOpenTime());
-        responseDto.setEndTime(store.getEndTime());
-        responseDto.setEventList(store.getEventList());
+        responseDto.setEndTime(store.getCloseTime());
+        responseDto.setSaleMatters(store.getSaleMatters());
         responseDto.setSaleTimeStart(store.getSaleTimeStart());
         responseDto.setSaleTimeEnd(store.getSaleTimeEnd());
 

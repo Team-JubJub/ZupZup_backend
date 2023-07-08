@@ -16,7 +16,7 @@ public class StoreResponseDto {
     private String openTime;
     private String endTime;
 
-    private List<String> eventList;
+    private String saleMatters;
 
     private String saleTimeStart;
     private String saleTimeEnd;
