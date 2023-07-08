@@ -39,11 +39,11 @@ public class Order {
     @Cascade(org.hibernate.annotations.CascadeType.ALL) @Valid
     private List<OrderSpecific> orderList;  // 주문 품목(이름, 가격, 개수, (img))
 
-    public static OrderBuilder builder(Store store) {   // 필수 파라미터 고려해볼 것
-        if(store == null) {
+    public static OrderBuilder builder(Long storeId) {   // 필수 파라미터 고려해볼 것
+        if(storeId == null) {
             throw new IllegalArgumentException("필수 파라미터(store) 누락");
         }
-        return OrderBuilder().store(store);
+        return OrderBuilder().storeId(storeId);
     }
 
 //    @Builder
