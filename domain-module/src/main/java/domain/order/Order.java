@@ -29,11 +29,15 @@ public class Order {
 
     @Enumerated(EnumType.STRING) @NotNull
     private OrderStatus orderStatus;    // 주문 상태
-    @NotNull private String userName; // 예약자명
-    @NotNull private String phoneNumber; // 예약자 전화번호
-    @NotNull private String orderTitle; // ex) 크로플 3개 외 3
-    @NotNull private String orderTime; // 주문 시간(LocalDateTime, 현재는 KST 기준)
-    @NotNull private String visitTime; // 방문예정 시간(LocalDateTime, 현재는 KST 기준)
+    @Column(nullable = false) private String userName; // 예약자명
+    @Column(nullable = false) private String phoneNumber; // 예약자 전화번호
+    @Column(nullable = false) private String orderTitle; // ex) 크로플 3개 외 3
+    @Column(nullable = false) private String orderTime; // 주문 시간(LocalDateTime, 현재는 KST 기준)
+    @Column(nullable = false) private String visitTime; // 방문예정 시간(LocalDateTime, 현재는 KST 기준)
+    @Column(nullable = false) private String storeName; // 가게 이름
+    @Column(nullable = false) private String storeAddress;  // 가게 주소
+    @Column(nullable = false) private String category;  // 가게 카테고리
+
     @NotNull @ElementCollection
     @CollectionTable(name = "orderSpecific", joinColumns = @JoinColumn(name="orderId", referencedColumnName="orderId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL) @Valid

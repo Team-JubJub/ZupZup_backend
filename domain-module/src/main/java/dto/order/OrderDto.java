@@ -11,8 +11,9 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderDto {
-    private Store store;
     private Long orderId;    // Order ID
+    private Long storeId;
+    private Long userId;
     
     private OrderStatus orderStatus; // 주문 상태
     private String userName; // 닉네임
