@@ -24,8 +24,8 @@ public class Order {
     @Column(name = "orderId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;   // auto increment id
-    @ManyToOne(optional = false) @JoinColumn(name = "storeId")
-    private Store store;    // store (relation with store table)
+    @Column(nullable = false) private Long storeId;
+    @Column(nullable = false) private Long userId;
 
     @Enumerated(EnumType.STRING) @NotNull
     private OrderStatus orderStatus;    // 주문 상태
