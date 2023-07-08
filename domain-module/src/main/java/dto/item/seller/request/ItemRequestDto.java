@@ -10,5 +10,4 @@ public class ItemRequestDto {
     private int itemPrice;
     private int salePrice;
     private int itemCount;
-    private Long storeId;
 }
