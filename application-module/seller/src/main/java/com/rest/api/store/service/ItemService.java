@@ -1,5 +1,6 @@
 package com.rest.api.store.service;
 
+import dto.item.seller.response.ItemResponseDto;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import domain.item.Item;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -31,7 +33,7 @@ public class ItemService {
     ModelMapper modelMapper;
 
     @Transactional
-    public String saveItem(ItemRequestDto requestDto, MultipartFile itemImgFile) throws Exception {
+    public String saveItem(ItemRequestDto.postDto requestDto, MultipartFile itemImgFile, Long storeId) throws Exception {
         /**
          * 상품 등록
          * param: itemDto & multipartFile
@@ -39,13 +41,15 @@ public class ItemService {
          */
 
         //1. requestDto -> itemDto로 전환
-        ItemDto itemDto = new ItemDto();
+        ItemDto.getDtoWithStore itemDto = new ItemDto.getDtoWithStore();
         itemDto.setItemName(requestDto.getItemName());
         itemDto.setItemPrice(requestDto.getItemPrice());
         itemDto.setSalePrice(requestDto.getSalePrice());
         itemDto.setItemCount(requestDto.getItemCount());
 
-        Store store = isStorePresent(requestDto.getStoreId());
+        System.out.println(storeRepository.findById(storeId));
+
+        Store store = isStorePresent(storeId);
         itemDto.setStore(store);
 
         String imageURL = s3Uploader.upload(itemImgFile, store.getStoreName());
@@ -77,37 +81,10 @@ public class ItemService {
     }
 
     @Transactional
-    public String clearCount(Long storeId) {
-        /**
-         * 상품 개수 초기화
-         * param : storeId
-         * return : String
-         */
-
-        // 1. 가게가 존재하는지
-        Store store = isStorePresent(storeId);
-
-        // 2. 가게에 존재하는 상품 다 가져오기
-        List<Item> itemList = itemRepository.findAllByStore(store);
-
-        // 3. 상품 개수 초기화 (DTO - 상품 0개로 변경 -> Entity 에 저장)
-        for(Item item : itemList) {
-
-            ItemDto itemDto = new ItemDto();
-            itemDto.toItemDto(item);
-            itemDto.setItemCount(0);
-
-            item.saveItem(itemDto);
-        }
-
-        return "상품 초기화에 성공했습니다.";
-    }
-
-    @Transactional
-    public String updateItem(Long itemId, UpdateRequestDto updateDto, MultipartFile itemImg) throws IOException {
+    public String updateItem(Long itemId, Long storeId, UpdateRequestDto updateDto, MultipartFile itemImg) throws IOException {
         // 1. 상품과 가게가 존재하는지
         Item itemEntity = isItemPresent(itemId);
-        Store store = isStorePresent(updateDto.getStoreId());
+        Store store = isStorePresent(storeId);
 
         // 2. 바뀐 이미지 체크해서 저장 (이미지가 없으면 빈 이미지로 저장)
         if(itemImg != null) {
@@ -120,6 +97,33 @@ public class ItemService {
         // 3. 엔티티 업데이트
         itemEntity.updateItem(updateDto);
         return "상품 업데이트에 성공했습니다.";
+    }
+
+    public List<ItemDto.getDto> readItems(Long storeId) {
+
+        Store store = storeRepository.findById(storeId).get();
+        List<Item> itemList = itemRepository.findAllByStore(store);
+        List<ItemDto.getDto> dtoList = new ArrayList<>();
+
+        for(Item item : itemList) {
+
+            ItemDto.getDto itemDto = modelMapper.map(item, ItemDto.getDto.class);
+            dtoList.add(itemDto);
+        }
+
+        return dtoList;
+    }
+
+    public String modifyQuantity(Long storeId, List<ItemRequestDto.patchDto> quantityList) {
+
+        for (ItemRequestDto.patchDto patchDto : quantityList) {
+
+            Item item = itemRepository.findById(patchDto.getItemId()).get();
+            item.setItemCount(patchDto.getItemCount());
+            itemRepository.save(item);
+        }
+
+        return "수정이 완료되었습니다.";
     }
 
     // <-------------------- Common methods part -------------------->

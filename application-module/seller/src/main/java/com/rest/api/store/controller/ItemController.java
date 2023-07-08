@@ -1,5 +1,6 @@
 package com.rest.api.store.controller;
 
+import dto.item.ItemDto;
 import dto.item.seller.request.ItemRequestDto;
 import dto.item.seller.request.UpdateRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.rest.api.store.service.ItemService;
+
+import java.util.List;
 
 @RestController
 @Log
@@ -21,22 +24,24 @@ public class ItemController {
     /**
      * 아이템 컨트롤러
      */
-    @PostMapping("/{storeId}") // 사장님 메인 화면에서 상품 저장
-    public ResponseEntity saveItem(@RequestPart(value = "item") ItemRequestDto requestDto,
-                                   @RequestPart(value = "image", required = false) MultipartFile itemImg) throws Exception {
+    @PostMapping("/{storeId}") // 상품 저장
+    public ResponseEntity saveItem(@RequestPart(value = "item") ItemRequestDto.postDto requestDto,
+                                   @RequestPart(value = "image", required = false) MultipartFile itemImg,
+                                   @PathVariable Long storeId) throws Exception {
 
-        String itemName = itemService.saveItem(requestDto, itemImg);
+        String itemName = itemService.saveItem(requestDto, itemImg, storeId);
         String format = String.format("상품 %s(이)가 저장되었습니다.", itemName);
         return new ResponseEntity(format, HttpStatus.CREATED); // 상품의 이름 반환
     }
 
-    @PutMapping("/{storeId}/{itemId}")
+    @PatchMapping("/{storeId}/{itemId}")
     public ResponseEntity updateItem(@PathVariable Long itemId,
+                                     @PathVariable Long storeId,
                                      @RequestPart(value = "item") UpdateRequestDto updateDto,
                                      @RequestPart(value = "image", required = false) MultipartFile itemImg) throws Exception {
 
 
-        String response = itemService.updateItem(itemId, updateDto, itemImg);
+        String response = itemService.updateItem(itemId, storeId, updateDto, itemImg);
 
         return new ResponseEntity(response, HttpStatus.OK); //완료 여부 반환
     }
@@ -48,11 +53,21 @@ public class ItemController {
         return new ResponseEntity(response, HttpStatus.OK); //삭제 여부 반환
     }
 
-    @PutMapping("/{storeId}/clear")
-    public ResponseEntity clearCount(@PathVariable Long storeId) {
 
+    // 전체 제품 불러오기
+    @GetMapping("/{storeId}/management")
+    public ResponseEntity readItems(@PathVariable Long storeId) {
 
-        String response = itemService.clearCount(storeId);
-        return new ResponseEntity(response, HttpStatus.OK); //초기화 여부 반환
+        List<ItemDto.getDto> dtoList = itemService.readItems(storeId);
+        return new ResponseEntity(dtoList, HttpStatus.OK);
+    }
+
+    // 제품 개수 수정하기
+    @PatchMapping("/{storeId}/quantity")
+    public ResponseEntity modifyQuantity(@PathVariable Long storeId,
+                                         @RequestPart(name = "quantity") List<ItemRequestDto.patchDto> quantityList) {
+
+        String result = itemService.modifyQuantity(storeId, quantityList);
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 }

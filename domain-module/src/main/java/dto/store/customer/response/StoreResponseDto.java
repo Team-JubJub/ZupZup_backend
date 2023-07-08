@@ -1,7 +1,5 @@
 package dto.store.customer.response;
 
-import domain.item.Item;
-import dto.item.ItemDto;
 import dto.item.seller.response.ItemResponseDto;
 import lombok.Getter;
 import lombok.Setter;

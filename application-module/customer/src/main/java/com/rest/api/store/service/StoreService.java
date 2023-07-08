@@ -2,7 +2,6 @@ package com.rest.api.store.service;
 
 import domain.item.Item;
 import domain.store.Store;
-import dto.item.ItemDto;
 import dto.item.seller.response.ItemResponseDto;
 import dto.store.customer.response.StoreResponseDto;
 import jakarta.transaction.Transactional;
