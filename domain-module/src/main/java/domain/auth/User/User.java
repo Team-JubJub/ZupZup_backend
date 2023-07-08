@@ -20,7 +20,6 @@ public class User {
     private String providerUserId;  // ex) KAKAO_user123
     @Column(nullable = false)
     private String userName;    // 유저의 실명
-
     @Column(nullable = false) private String nickName;  // 닉네임
     @Column(nullable = false) private String gender;    // 성별
     @Column(nullable = false) private String phoneNumber;   // 유저의 연락처
