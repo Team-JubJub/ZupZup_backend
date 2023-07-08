@@ -46,18 +46,6 @@ public class Order {
         return OrderBuilder().storeId(storeId);
     }
 
-//    @Builder
-//    public Order(OrderDto orderDto) {   // customer - service - post에서 쓰이는 생성자
-//        this.orderStatus = OrderStatus.NEW;
-//        this.store = orderDto.getStore();
-//        this.userName = orderDto.getUserName();
-//        this.phoneNumber = orderDto.getPhoneNumber();
-//        this.orderTitle = orderDto.getOrderTitle();
-//        this.orderTime = orderDto.getOrderTime();
-//        this.visitTime = orderDto.getVisitTime();
-//        this.orderList = orderDto.getOrderList();
-//    }
-
     public void updateOrder(OrderDto orderDto) {
         this.orderStatus = orderDto.getOrderStatus();
         this.orderList = orderDto.getOrderList();
