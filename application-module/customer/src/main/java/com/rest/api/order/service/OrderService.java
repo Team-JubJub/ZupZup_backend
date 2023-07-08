@@ -44,24 +44,21 @@ public class OrderService {
         String formattedOrderTime = orderTimeSetter();
         OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderDto, formattedOrderTime);
 
-        Order orderEntity = Order.builder(orderDto.getStore())
+        Order orderEntity = Order.builder(orderDto.getStoreId())
                 .orderStatus(OrderStatus.NEW)
                 .userName(orderDto.getUserName())
                 .phoneNumber(orderDto.getPhoneNumber())
                 .orderTitle(orderDto.getOrderTitle())
                 .orderTime(orderDto.getOrderTime())
                 .visitTime(orderDto.getVisitTime())
+                .storeName(orderDto.getStoreName())
+                .storeAddress(orderDto.getStoreAddress())
+                .category(orderDto.getCategory())
                 .orderList(orderDto.getOrderList())
                 .build();
         orderRepository.save(orderEntity);
         OrderResponseDto.GetOrderDetailsDto madeOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
-//        Order orderEntity = new Order(orderDto);  개수 수정 로직 -> 일단 주석처리
-//        orderRepository.save(orderEntity);
 
-//        List<OrderSpecific> customerRequestedOrderList = postOrderDto.getOrderList();  // 개수 수정
-//        for(int i=0; i < customerRequestedOrderList.size(); i++) { //
-//            updateItemStock(customerRequestedOrderList.get(i).getItemId(), customerRequestedOrderList.get(i).getItemCount()); //재고 수정
-//        }
         OrderResponseDto.PostOrderResponseDto postOrderResponseDto = new OrderResponseDto.PostOrderResponseDto();
         postOrderResponseDto.setData(madeOrderDetailsDto);
         postOrderResponseDto.setHref("http://localhost:8090/customer/order/"+madeOrderDetailsDto.getOrderId());
