@@ -16,9 +16,14 @@ public class OrderResponseDto {
         private Long id;    // order ID
         private OrderStatus orderStatus;
         private String userName; // 닉네임
+        private String phoneNumber;
         private String orderTitle; // ex) 크로플 3개 외 3
         private String orderTime; // 주문 시간
         private String visitTime; // 방문예정 시간
+        private String storeName;
+        private String storeAddress;
+        private String category;
+        private String orderList;
     }
 
     @Getter
