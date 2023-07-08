@@ -33,7 +33,7 @@ public class ItemService {
     ModelMapper modelMapper;
 
     @Transactional
-    public String saveItem(ItemRequestDto requestDto, MultipartFile itemImgFile, Long storeId) throws Exception {
+    public String saveItem(ItemRequestDto.postDto requestDto, MultipartFile itemImgFile, Long storeId) throws Exception {
         /**
          * 상품 등록
          * param: itemDto & multipartFile
@@ -112,6 +112,18 @@ public class ItemService {
         }
 
         return dtoList;
+    }
+
+    public String modifyQuantity(Long storeId, List<ItemRequestDto.patchDto> quantityList) {
+
+        for (ItemRequestDto.patchDto patchDto : quantityList) {
+
+            Item item = itemRepository.findById(patchDto.getItemId()).get();
+            item.setItemCount(patchDto.getItemCount());
+            itemRepository.save(item);
+        }
+
+        return "수정이 완료되었습니다.";
     }
 
     // <-------------------- Common methods part -------------------->

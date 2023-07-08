@@ -3,11 +3,20 @@ package dto.item.seller.request;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter @Setter
-public class ItemRequestDto {
 
-    private String itemName;
-    private int itemPrice;
-    private int salePrice;
-    private int itemCount;
+public class ItemRequestDto {
+    @Getter @Setter
+    public static class postDto {
+        private String itemName;
+        private int itemPrice;
+        private int salePrice;
+        private int itemCount;
+    }
+
+    @Getter @Setter
+    public static class patchDto {
+
+        private Long itemId;
+        private int itemCount;
+    }
 }

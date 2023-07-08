@@ -25,7 +25,7 @@ public class ItemController {
      * 아이템 컨트롤러
      */
     @PostMapping("/{storeId}") // 상품 저장
-    public ResponseEntity saveItem(@RequestPart(value = "item") ItemRequestDto requestDto,
+    public ResponseEntity saveItem(@RequestPart(value = "item") ItemRequestDto.postDto requestDto,
                                    @RequestPart(value = "image", required = false) MultipartFile itemImg,
                                    @PathVariable Long storeId) throws Exception {
 
@@ -53,10 +53,21 @@ public class ItemController {
         return new ResponseEntity(response, HttpStatus.OK); //삭제 여부 반환
     }
 
+
+    // 전체 제품 불러오기
     @GetMapping("/{storeId}/management")
     public ResponseEntity readItems(@PathVariable Long storeId) {
 
         List<ItemDto.getDto> dtoList = itemService.readItems(storeId);
         return new ResponseEntity(dtoList, HttpStatus.OK);
+    }
+
+    // 제품 개수 수정하기
+    @PatchMapping("/{storeId}/quantity")
+    public ResponseEntity modifyQuantity(@PathVariable Long storeId,
+                                         @RequestPart(name = "quantity") List<ItemRequestDto.patchDto> quantityList) {
+
+        String result = itemService.modifyQuantity(storeId, quantityList);
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 }

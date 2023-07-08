@@ -6,8 +6,9 @@ import dto.item.seller.request.UpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Entity @Getter
+@Entity @Getter @Setter
 @NoArgsConstructor
 @Table(name = "items")
 public class Item {
