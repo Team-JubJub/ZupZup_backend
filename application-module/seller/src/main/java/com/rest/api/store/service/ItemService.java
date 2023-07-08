@@ -1,5 +1,6 @@
 package com.rest.api.store.service;
 
+import dto.item.seller.response.ItemResponseDto;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import domain.item.Item;
@@ -16,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
@@ -38,7 +41,7 @@ public class ItemService {
          */
 
         //1. requestDto -> itemDto로 전환
-        ItemDto itemDto = new ItemDto();
+        ItemDto.getDtoWithStore itemDto = new ItemDto.getDtoWithStore();
         itemDto.setItemName(requestDto.getItemName());
         itemDto.setItemPrice(requestDto.getItemPrice());
         itemDto.setSalePrice(requestDto.getSalePrice());
@@ -94,6 +97,21 @@ public class ItemService {
         // 3. 엔티티 업데이트
         itemEntity.updateItem(updateDto);
         return "상품 업데이트에 성공했습니다.";
+    }
+
+    public List<ItemDto.getDto> readItems(Long storeId) {
+
+        Store store = storeRepository.findById(storeId).get();
+        List<Item> itemList = itemRepository.findAllByStore(store);
+        List<ItemDto.getDto> dtoList = new ArrayList<>();
+
+        for(Item item : itemList) {
+
+            ItemDto.getDto itemDto = modelMapper.map(item, ItemDto.getDto.class);
+            dtoList.add(itemDto);
+        }
+
+        return dtoList;
     }
 
     // <-------------------- Common methods part -------------------->

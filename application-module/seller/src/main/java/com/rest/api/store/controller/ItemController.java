@@ -1,5 +1,6 @@
 package com.rest.api.store.controller;
 
+import dto.item.ItemDto;
 import dto.item.seller.request.ItemRequestDto;
 import dto.item.seller.request.UpdateRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.rest.api.store.service.ItemService;
+
+import java.util.List;
 
 @RestController
 @Log
@@ -48,5 +51,12 @@ public class ItemController {
 
         String response = itemService.deleteItem(itemId);
         return new ResponseEntity(response, HttpStatus.OK); //삭제 여부 반환
+    }
+
+    @GetMapping("/{storeId}/management")
+    public ResponseEntity readItems(@PathVariable Long storeId) {
+
+        List<ItemDto.getDto> dtoList = itemService.readItems(storeId);
+        return new ResponseEntity(dtoList, HttpStatus.OK);
     }
 }

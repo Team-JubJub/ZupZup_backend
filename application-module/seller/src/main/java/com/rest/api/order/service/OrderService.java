@@ -10,7 +10,6 @@ import domain.order.Order;
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
 import domain.store.Store;
-import dto.item.ItemDto;
 import dto.order.OrderDto;
 import dto.order.seller.request.OrderRequestDto;
 import dto.order.seller.response.OrderResponseDto;
