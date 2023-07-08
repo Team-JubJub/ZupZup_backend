@@ -18,6 +18,8 @@ subprojects {   // Applied to application-common, seller, customer
         //spring security
         implementation("org.springframework.boot:spring-boot-starter-security")
         implementation("org.springframework.security:spring-security-test")
+        //cache
+        implementation("org.springframework.boot:spring-boot-starter-cache")
     }
 }
 project(':application-module:application-common') {
