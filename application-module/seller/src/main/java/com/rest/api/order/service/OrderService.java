@@ -2,6 +2,9 @@ package com.rest.api.order.service;
 
 
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import repository.OrderRepository;
@@ -40,8 +43,10 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     // <-------------------- GET part -------------------->
+    @Cacheable(cacheNames = "sellers", key = "#storeId")    // 리스트 캐시(sellers::storeId 형식)
     public List<OrderResponseDto.GetOrderDto> orderList(Long storeId) {
         isStorePresent(storeId);    // Check presence of store
+        System.out.println("Order list service 호출");
         List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId);
         List<OrderResponseDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
                 .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDto.class))
@@ -58,6 +63,7 @@ public class OrderService {
     }
 
     // <-------------------- PATCH part -------------------->
+    @CacheEvict(cacheNames = "sellers", key = "#storeId") // 주문 정보 수정 시 orderList 이전 캐시 삭제.
     public OrderResponseDto.PatchOrderResponseDto updateOrder(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
         Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);
         OrderStatus sellerRequestedOrderStatus = patchOrderDto.getOrderStatus(); // 반려, 확정, 취소, 완료
@@ -154,7 +160,7 @@ public class OrderService {
         OrderResponseDto.GetOrderDetailsDto patchedOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
         OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = new OrderResponseDto.PatchOrderResponseDto();
         patchOrderResponseDto.setData(patchedOrderDetailsDto);
-        patchOrderResponseDto.setHref("http://localhost:8080/seller/" + storeId + "/order/" + patchedOrderDetailsDto.getId());
+        patchOrderResponseDto.setHref("http://localhost:8080/seller/" + storeId + "/order/" + patchedOrderDetailsDto.getOrderId());
 
         if(orderEntity.getOrderStatus().equals(OrderStatus.CANCEL)) patchOrderResponseDto.setMessage("주문이 취소되었습니다.");
         else if(orderEntity.getOrderStatus().equals(OrderStatus.CONFIRM)) patchOrderResponseDto.setMessage("주문이 확정되었습니다.");

@@ -25,9 +25,9 @@ public class OrderController {
     private final OrderService orderService;
 
     // <-------------------- GET part -------------------->
-    @Cacheable(cacheNames = "orderList")    // 리스트 캐시
     @GetMapping("")  // order에 대한 GET(주문 항목 모두)
     public ResponseEntity orderList(@PathVariable Long storeId) { // ResponseEntity의 type이 뭐가될지 몰라서 우선 Type 지정 없이 둠.
+        System.out.println("controller 호출");
         List<OrderResponseDto.GetOrderDto> allOrderListDto = orderService.orderList(storeId);
         if(allOrderListDto.size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT); // NO_CONTENT 시 body가 빈 상태로 감. 204
@@ -44,7 +44,6 @@ public class OrderController {
     }
 
     // <-------------------- PATCH part -------------------->
-    @CachePut(cacheNames = "orderList") // 주문 정보 수정 시 orderList 이전 캐시 삭제 후 다시 저장.
     @PatchMapping("/{orderId}")  // 각 order에 대해 사장님이 주문 확정시 사용할 request
     public ResponseEntity updateOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
         OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.updateOrder(storeId, orderId, patchOrderDto);
