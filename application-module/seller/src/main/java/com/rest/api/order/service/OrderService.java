@@ -48,9 +48,10 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     // <-------------------- GET part -------------------->
-    @Cacheable(cacheNames = "sellers", key = "#storeId + #page")    // 리스트 캐시(sellers::storeId+pageNo 형식)
+    @Cacheable(cacheNames = "sellerOrders", key = "#storeId + #page")    // 리스트 캐시(sellers::storeId+pageNo 형식)
     public List<OrderResponseDto.GetOrderDto> orderList(Long storeId, int page, Pageable pageable) {
         isStorePresent(storeId);    // Check presence of store
+
         System.out.println("Order list service 호출");
         System.out.println(pageable);
         List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId, pageable);
@@ -69,8 +70,8 @@ public class OrderService {
     }
 
     // <-------------------- PATCH part -------------------->
-    @CacheEvict(cacheNames = "sellers", key = "#storeId + #page") // 주문 정보 수정 시 orderList 이전 캐시 삭제.
-    public OrderResponseDto.PatchOrderResponseDto updateOrder(Long storeId, Long orderId, int page, OrderRequestDto.PatchOrderDto patchOrderDto) {
+    @CacheEvict(cacheNames = "sellerOrders", allEntries = true) // 주문 정보 수정 시 orderList 이전 캐시 삭제.
+    public OrderResponseDto.PatchOrderResponseDto updateOrder(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
         Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);
         OrderStatus sellerRequestedOrderStatus = patchOrderDto.getOrderStatus(); // 반려, 확정, 취소, 완료
         OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);

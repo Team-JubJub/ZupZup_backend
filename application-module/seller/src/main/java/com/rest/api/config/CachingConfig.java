@@ -16,7 +16,7 @@ public class CachingConfig {
     public CacheManager cacheManager() {
         ConcurrentMapCacheManager cacheManager = new ConcurrentMapCacheManager();
         cacheManager.setAllowNullValues(false);
-        cacheManager.setCacheNames(List.of("sellers")); // 현재는 seller의 주문 목록만을 캐싱할 것이므로 sellers만.
+        cacheManager.setCacheNames(List.of("sellerOrders")); // 현재는 seller의 주문 목록만을 캐싱할 것이므로 sellers만.
 
         return cacheManager;
     }
