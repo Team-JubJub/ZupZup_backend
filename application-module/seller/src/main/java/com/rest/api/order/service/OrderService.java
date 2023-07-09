@@ -48,7 +48,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     // <-------------------- GET part -------------------->
-    @Cacheable(cacheNames = "sellerOrders", key = "#storeId + #page")    // 리스트 캐시(sellers::storeId+pageNo 형식)
+    @Cacheable(cacheNames = "sellerOrders", key = "#storeId + #page")    // 리스트 캐시(sellerOrders::storeId+pageNo 형식, 페이지 별로 캐시함.)
     public List<OrderResponseDto.GetOrderDto> orderList(Long storeId, int page, Pageable pageable) {
         isStorePresent(storeId);    // Check presence of store
 
@@ -70,7 +70,7 @@ public class OrderService {
     }
 
     // <-------------------- PATCH part -------------------->
-    @CacheEvict(cacheNames = "sellerOrders", allEntries = true) // 주문 정보 수정 시 orderList 이전 캐시 삭제.
+    @CacheEvict(cacheNames = "sellerOrders", allEntries = true) // 주문 정보 수정 시 모든 orderList 페이지의 캐시 삭제.
     public OrderResponseDto.PatchOrderResponseDto updateOrder(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
         Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);
         OrderStatus sellerRequestedOrderStatus = patchOrderDto.getOrderStatus(); // 반려, 확정, 취소, 완료
