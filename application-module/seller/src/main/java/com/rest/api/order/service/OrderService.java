@@ -3,12 +3,8 @@ package com.rest.api.order.service;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.RequestParam;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import repository.OrderRepository;
@@ -51,6 +47,7 @@ public class OrderService {
     @Cacheable(cacheNames = "sellerOrders", key = "#storeId + #page")    // 리스트 캐시(sellerOrders::storeId+pageNo 형식, 페이지 별로 캐시함.)
     public List<OrderResponseDto.GetOrderDto> orderList(Long storeId, int page, Pageable pageable) {
         isStorePresent(storeId);    // Check presence of store
+        Boolean hasNext = true; // 다음 페이지가 있는지 여부를 판단하는 변수
 
         System.out.println("Order list service 호출");
         System.out.println(pageable);
@@ -58,6 +55,9 @@ public class OrderService {
         List<OrderResponseDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
                 .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDto.class))
                 .collect(Collectors.toList());
+        if (allOrderListDto.get(allOrderListDto.size() - 1).getOrderId() == 1) {    // 해당 페이지의 마지막 주문의 id가 1이면
+            hasNext = false;
+        }
 
         return allOrderListDto;
     }
