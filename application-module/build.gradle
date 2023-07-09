@@ -20,6 +20,8 @@ subprojects {   // Applied to application-common, seller, customer
         implementation("org.springframework.security:spring-security-test")
         //cache
         implementation("org.springframework.boot:spring-boot-starter-cache")
+        //pageable
+        implementation("org.springframework.boot:spring-boot-starter-web");
     }
 }
 project(':application-module:application-common') {

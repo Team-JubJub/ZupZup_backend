@@ -5,6 +5,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.RequestParam;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import repository.OrderRepository;
@@ -26,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -43,11 +48,12 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     // <-------------------- GET part -------------------->
-    @Cacheable(cacheNames = "sellers", key = "#storeId")    // 리스트 캐시(sellers::storeId 형식)
-    public List<OrderResponseDto.GetOrderDto> orderList(Long storeId) {
+    @Cacheable(cacheNames = "sellers", key = "#storeId + #page")    // 리스트 캐시(sellers::storeId+pageNo 형식)
+    public List<OrderResponseDto.GetOrderDto> orderList(Long storeId, int page, Pageable pageable) {
         isStorePresent(storeId);    // Check presence of store
         System.out.println("Order list service 호출");
-        List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId);
+        System.out.println(pageable);
+        List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId, pageable);
         List<OrderResponseDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
                 .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDto.class))
                 .collect(Collectors.toList());
@@ -63,8 +69,8 @@ public class OrderService {
     }
 
     // <-------------------- PATCH part -------------------->
-    @CacheEvict(cacheNames = "sellers", key = "#storeId") // 주문 정보 수정 시 orderList 이전 캐시 삭제.
-    public OrderResponseDto.PatchOrderResponseDto updateOrder(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
+    @CacheEvict(cacheNames = "sellers", key = "#storeId + #page") // 주문 정보 수정 시 orderList 이전 캐시 삭제.
+    public OrderResponseDto.PatchOrderResponseDto updateOrder(Long storeId, Long orderId, int page, OrderRequestDto.PatchOrderDto patchOrderDto) {
         Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);
         OrderStatus sellerRequestedOrderStatus = patchOrderDto.getOrderStatus(); // 반려, 확정, 취소, 완료
         OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);
