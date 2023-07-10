@@ -31,7 +31,7 @@ public class OrderController {
     public ResponseEntity orderList(@PathVariable Long storeId, @PageableDefault(size=10, sort="orderId", direction=Sort.Direction.DESC) Pageable pageable) { // ResponseEntity의 type이 뭐가될지 몰라서 우선 Type 지정 없이 둠.
         System.out.println("controller 호출");
         int page = pageable.getPageNumber();
-        List<OrderResponseDto.GetOrderDto> allOrderListDto = orderService.orderList(storeId, page, pageable);
+        List<OrderResponseDto.GetOrderDetailsDto> allOrderListDto = orderService.orderList(storeId, page, pageable);
         if(allOrderListDto.size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT); // NO_CONTENT 시 body가 빈 상태로 감. 204
         }

@@ -10,22 +10,30 @@ import java.util.List;
 public class OrderResponseDto {
 
     // <-------------------- GET part -------------------->
+//    @Getter
+//    @Setter
+//    public static class AllOrderListDto { // GET에 mapping할 DTO
+//        private Long orderId;    // order ID
+//        private Long storeId;
+//        private Long userId;
+//        private OrderStatus orderStatus;
+//        private String userName; // 닉네임
+//        private String phoneNumber;
+//        private String orderTitle; // ex) 크로플 3개 외 3
+//        private String orderTime; // 주문 시간
+//        private String visitTime; // 방문예정 시간
+//        private String storeName;
+//        private String storeAddress;
+//        private String category;
+//        private List<OrderSpecific> orderList;
+//    }
+
     @Getter
     @Setter
-    public static class GetOrderDto { // GET에 mapping할 DTO
-        private Long orderId;    // order ID
-        private Long storeId;
-        private Long userId;
-        private OrderStatus orderStatus;
-        private String userName; // 닉네임
-        private String phoneNumber;
-        private String orderTitle; // ex) 크로플 3개 외 3
-        private String orderTime; // 주문 시간
-        private String visitTime; // 방문예정 시간
-        private String storeName;
-        private String storeAddress;
-        private String category;
-        private List<OrderSpecific> orderList;
+    public static class GetOrderDto {
+        private List<GetOrderDetailsDto> allOrderList;
+        private int pageNo;
+        private Boolean hasNext;
     }
 
     @Getter
