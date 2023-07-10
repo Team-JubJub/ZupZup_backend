@@ -45,6 +45,7 @@ public class OrderService {
         OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderDto, formattedOrderTime);
 
         Order orderEntity = Order.builder(orderDto.getStoreId())
+                .userId(123L) // user id 테스트 값임
                 .orderStatus(OrderStatus.NEW)
                 .userName(orderDto.getUserName())
                 .phoneNumber(orderDto.getPhoneNumber())

@@ -2,6 +2,7 @@ package com.rest.api.order.service;
 
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import repository.OrderRepository;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -40,14 +42,24 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     // <-------------------- GET part -------------------->
-    public List<OrderResponseDto.GetOrderDto> orderList(Long storeId) {
+//    @Cacheable(cacheNames = "sellerOrders", key = "#storeId + #page")    // 리스트 캐시(sellerOrders::storeId+pageNo 형식, 페이지 별로 캐시함.) -> 캐시 관련한 것 일단 사용자 앱 만들어지기 전까지 주석처리
+    public OrderResponseDto.GetOrderListDto orderList(Long storeId, int page, Pageable pageable) {
         isStorePresent(storeId);    // Check presence of store
-        List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId);
-        List<OrderResponseDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()   // Entity -> Dto
-                .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDto.class))
-                .collect(Collectors.toList());
+        Boolean hasNext = true; // 다음 페이지가 있는지 여부를 판단하는 변수
 
-        return allOrderListDto;
+        List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId, pageable);
+        List<OrderResponseDto.GetOrderDetailsDto> orderList = allOrderListEntity.stream()   // Entity -> Dto
+                .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDetailsDto.class))
+                .collect(Collectors.toList());
+        if (orderList.get(orderList.size() - 1).getOrderId() == 1) {    // 해당 페이지의 마지막 주문의 id가 1이면
+            hasNext = false;
+        }
+        OrderResponseDto.GetOrderListDto getOrderListDto = new OrderResponseDto.GetOrderListDto();
+        getOrderListDto.setOrderList(orderList);
+        getOrderListDto.setPageNo(page);
+        getOrderListDto.setHasNext(hasNext);
+
+        return getOrderListDto;
     }
 
     public OrderResponseDto.GetOrderDetailsDto orderDetails(Long storeId, Long orderId) {
@@ -58,6 +70,7 @@ public class OrderService {
     }
 
     // <-------------------- PATCH part -------------------->
+//    @CacheEvict(cacheNames = "sellerOrders", allEntries = true) // 주문 정보 수정 시 모든 orderList 페이지의 캐시 삭제. -> 캐시 관련한 것 일단 사용자 앱 만들어지기 전까지 주석처리
     public OrderResponseDto.PatchOrderResponseDto updateOrder(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
         Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);
         OrderStatus sellerRequestedOrderStatus = patchOrderDto.getOrderStatus(); // 반려, 확정, 취소, 완료
@@ -154,7 +167,7 @@ public class OrderService {
         OrderResponseDto.GetOrderDetailsDto patchedOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
         OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = new OrderResponseDto.PatchOrderResponseDto();
         patchOrderResponseDto.setData(patchedOrderDetailsDto);
-        patchOrderResponseDto.setHref("http://localhost:8080/seller/" + storeId + "/order/" + patchedOrderDetailsDto.getId());
+        patchOrderResponseDto.setHref("http://localhost:8080/seller/" + storeId + "/order/" + patchedOrderDetailsDto.getOrderId());
 
         if(orderEntity.getOrderStatus().equals(OrderStatus.CANCEL)) patchOrderResponseDto.setMessage("주문이 취소되었습니다.");
         else if(orderEntity.getOrderStatus().equals(OrderStatus.CONFIRM)) patchOrderResponseDto.setMessage("주문이 확정되었습니다.");
