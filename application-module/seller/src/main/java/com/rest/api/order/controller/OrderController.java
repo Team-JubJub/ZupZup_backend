@@ -14,9 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import com.rest.api.order.service.OrderService;
 
-
-import java.util.List;
-
 @RestController
 @Validated
 @Log
@@ -31,12 +28,12 @@ public class OrderController {
     public ResponseEntity orderList(@PathVariable Long storeId, @PageableDefault(size=10, sort="orderId", direction=Sort.Direction.DESC) Pageable pageable) { // ResponseEntity의 type이 뭐가될지 몰라서 우선 Type 지정 없이 둠.
         System.out.println("controller 호출");
         int page = pageable.getPageNumber();
-        List<OrderResponseDto.GetOrderDetailsDto> allOrderListDto = orderService.orderList(storeId, page, pageable);
-        if(allOrderListDto.size() == 0) {
+        OrderResponseDto.GetOrderListDto getOrderListDto = orderService.orderList(storeId, page, pageable);
+        if(getOrderListDto.getOrderList().size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT); // NO_CONTENT 시 body가 빈 상태로 감. 204
         }
 
-        return new ResponseEntity(allOrderListDto, HttpStatus.OK); // order들의 dto list 반환, 200
+        return new ResponseEntity(getOrderListDto, HttpStatus.OK); // order들의 dto list 반환, 200
     }
 
     @GetMapping("/{orderId}")  // 각 order에 대한 단건 GET
