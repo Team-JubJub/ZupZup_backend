@@ -47,7 +47,7 @@ public class Item {
             this.store = itemDto.getStore();
         }
 
-    // 상품 개수 변경(사장님이 예약 확정 시) -> setter로 갈지 이 함수로 갈지는 나중에 결정.
+    // 상품 개수 변경(사장님이 예약 확정, 완료 시)
         public void updateItemCount(ItemDto.getDtoWithStore itemDto) {
             this.itemCount = itemDto.getItemCount();
         }
