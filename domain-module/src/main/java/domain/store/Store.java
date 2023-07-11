@@ -7,6 +7,7 @@ import converter.StringListConverter;
 import domain.item.Item;
 import domain.order.Order;
 import dto.store.StoreDto;
+import dto.store.seller.request.StoreRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,7 +19,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(builderMethodName = "StoreBuilder")
-@Getter
+@Getter @Setter
 public class Store {
 
     @Id
@@ -64,15 +65,12 @@ public class Store {
     }
 
     // 가게 데이터를 업데이트 하는 로직
-    public void updateStore(StoreDto storeDto) {
-        this.storeName = storeDto.getStoreName();
-        this.storeAddress = storeDto.getStoreAddress();
-        this.openTime = storeDto.getOpenTime();
-        this.saleMatters = storeDto.getSaleMatters();
-        this.saleTimeStart = storeDto.getSaleTimeStart();
-        this.saleTimeEnd = storeDto.getSaleTimeEnd();
-        this.longitude = storeDto.getLongitude();
-        this.latitude = storeDto.getLatitude();
+    public void modifyStore(StoreRequestDto.patchDto patchDto) {
+        this.storeImageUrl = patchDto.getStoreImageUrl();
+        this.openTime = patchDto.getOpenTime();
+        this.closeTime = patchDto.getCloseTime();
+        this.saleTimeStart = patchDto.getSaleTimeStart();
+        this.saleTimeEnd = patchDto.getSaleTimeEnd();
     }
 
 }

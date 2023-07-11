@@ -47,13 +47,18 @@ public class ItemService {
         itemDto.setSalePrice(requestDto.getSalePrice());
         itemDto.setItemCount(requestDto.getItemCount());
 
-        System.out.println(storeRepository.findById(storeId));
+        //System.out.println(storeRepository.findById(storeId));
 
         Store store = isStorePresent(storeId);
         itemDto.setStore(store);
 
-        String imageURL = s3Uploader.upload(itemImgFile, store.getStoreName());
-        itemDto.setImageURL(imageURL);
+        System.out.println(itemImgFile);
+        if(itemImgFile != null) {
+            String imageURL = s3Uploader.upload(itemImgFile, store.getStoreName());
+            itemDto.setImageURL(imageURL);
+        } else {
+            itemDto.setImageURL("");
+        }
 
         // 2. DTO -> Entity
         Item item = new Item();

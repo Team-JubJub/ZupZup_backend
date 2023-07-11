@@ -1,13 +1,18 @@
 package com.rest.api.store.controller;
 
+import dto.store.seller.request.StoreRequestDto;
 import dto.store.seller.response.StoreResponseDto;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
+import org.springframework.web.bind.annotation.*;
 import com.rest.api.store.service.StoreService;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @Log
@@ -28,4 +33,29 @@ public class StoreController {
         // Store 관련 DTO 전체 넘김
         return storeService.mainPage(storeId);
     }*/
+
+    @PatchMapping("/open/{storeId}")
+    public ResponseEntity changeIsOpened(@PathVariable Long storeId,
+                                         Boolean isOpened) {
+
+        String isClosed = storeService.changeIsOpened(storeId, isOpened);
+        return new ResponseEntity(isClosed, HttpStatus.OK);
+    }
+
+    @PatchMapping("/modification/{storeId}")
+    public ResponseEntity modifyStore(@PathVariable Long storeId,
+                                      @RequestPart(name = "data") StoreRequestDto.patchDto patchDto,
+                                      @RequestPart(name = "image") @Nullable MultipartFile storeImg) throws IOException {
+
+        StoreResponseDto.response response = storeService.modifyStore(storeId, patchDto, storeImg);
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/notice/{storeId}")
+    public ResponseEntity changeNotification(@PathVariable Long storeId,
+                                             String storeMatters) {
+
+        String isChanged = storeService.changeNotification(storeId, storeMatters);
+        return new ResponseEntity(isChanged, HttpStatus.OK);
+    }
 }
