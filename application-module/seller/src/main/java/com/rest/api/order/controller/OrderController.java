@@ -50,4 +50,10 @@ public class OrderController {
         return new ResponseEntity(patchOrderResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
     }
 
+    @PatchMapping("/{orderId}/complete")
+    public ResponseEntity completeOrder() {
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }
