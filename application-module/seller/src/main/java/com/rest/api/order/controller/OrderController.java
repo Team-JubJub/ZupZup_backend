@@ -51,9 +51,10 @@ public class OrderController {
     }
 
     @PatchMapping("/{orderId}/complete")
-    public ResponseEntity completeOrder() {
+    public ResponseEntity completeOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
+        OrderResponseDto.PatchOrderResponseDto completeOrderDto = orderService.completeOrder(storeId, orderId, patchOrderDto);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(completeOrderDto, HttpStatus.OK);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.rest.api.order.service;
 
 
+import dto.item.ItemDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
 import repository.ItemRepository;
@@ -108,6 +109,27 @@ public class OrderService {
         return patchOrderResponseDto;
     }
 
+    public OrderResponseDto.PatchOrderResponseDto completeOrder(Long storeId, Long orderId, OrderRequestDto.PatchOrderDto patchOrderDto) {
+        Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);  // 원래 주문의 정보
+        OrderStatus sellerRequestedOrderStatus = patchOrderDto.getOrderStatus(); // 확정, 취소, 완료
+        OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);   // 원래 주문 정보의 dto
+
+        if (sellerRequestedOrderStatus.equals(OrderStatus.CANCEL)) { // 주문 취소 시
+            List<OrderSpecific> orderList = orderDto.getOrderList();
+            updateItemStock(sellerRequestedOrderStatus, orderList); // 이전에 빼줬던 개수만큼 다시 추가
+            orderDto.setOrderStatus(OrderStatus.CANCEL);
+            OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = patchSaveAndReturn(storeId, orderEntity, orderDto);
+
+            return patchOrderResponseDto;
+        }
+
+        orderDto.setOrderStatus(OrderStatus.COMPLETE);  // 주문 완료 시
+        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = patchSaveAndReturn(storeId, orderEntity, orderDto);
+
+        return patchOrderResponseDto;
+    }
+
+
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
     private void isStorePresent(Long storeId) {
@@ -153,13 +175,21 @@ public class OrderService {
         else return false;
     }
 
-//    private void updateItemStock(Long sellerRequestedItemId, int sellerRequestedItemCount) {
-//        ItemDto itemDto = new ItemDto();    // Entity의 개수 변경을 위한 dto
-//        Item itemEntity = itemRepository.findById(sellerRequestedItemId).get();
-//        itemDto.setItemCount(itemEntity.getItemCount() - sellerRequestedItemCount);     // 상품 재고에서 요청받은 개수 차감
-//        itemEntity.updateItemCount(itemDto);
-//        itemRepository.save(itemEntity);
-//    }
+    private void updateItemStock(OrderStatus orderStatus, List<OrderSpecific> orderList) {  // 주문 후 아이템 재고를 수정하는 함수
+        for (int i = 0; i < orderList.size(); i++) {
+            Long itemId = orderList.get(i).getItemId();
+            int orderedItemCount = orderList.get(i).getItemCount(); // 여기까지 클라에서 받아온 아이템 주문 정보
+
+            ItemDto.getDtoWithStore itemDto = new ItemDto.getDtoWithStore();    // Entity 수정에 쓰일 Dto.
+            Item itemEntity = itemRepository.findById(itemId).get();
+            int originalItemCount = itemEntity.getItemCount();
+
+            if (orderStatus.equals(OrderStatus.CONFIRM)) itemDto.setItemCount(originalItemCount - orderedItemCount);    // 주문 확정 시에는 뺴주고
+            else if (orderStatus.equals(OrderStatus.CANCEL)) itemDto.setItemCount(originalItemCount + orderedItemCount); // 주문 취소 시에는 더해줌.
+            itemEntity.updateItemCount(itemDto);
+            itemRepository.save(itemEntity);
+        }
+    }
 
     private OrderResponseDto.PatchOrderResponseDto patchSaveAndReturn(Long storeId, Order orderEntity, OrderDto orderDto) {
         orderEntity.updateOrder(orderDto);
@@ -171,7 +201,6 @@ public class OrderService {
 
         if(orderEntity.getOrderStatus().equals(OrderStatus.CANCEL)) patchOrderResponseDto.setMessage("주문이 취소되었습니다.");
         else if(orderEntity.getOrderStatus().equals(OrderStatus.CONFIRM)) patchOrderResponseDto.setMessage("주문이 확정되었습니다.");
-        else if(orderEntity.getOrderStatus().equals(OrderStatus.PARTIAL)) patchOrderResponseDto.setMessage("주문이 부분확정되었습니다.");
         else if(orderEntity.getOrderStatus().equals(OrderStatus.COMPLETE)) patchOrderResponseDto.setMessage("주문이 완료되었습니다.");
 
         return patchOrderResponseDto;
