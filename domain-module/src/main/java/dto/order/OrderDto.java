@@ -11,6 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderDto {
+
     private Long orderId;    // Order ID
     private Long storeId;
     private Long userId;
@@ -25,4 +26,5 @@ public class OrderDto {
     private String storeAddress;
     private String category;
     private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수
+
 }
