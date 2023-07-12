@@ -43,14 +43,14 @@ public class OrderController {
     }
 
     // <-------------------- PATCH part -------------------->
-    @PatchMapping("/{orderId}")  // 각 order에 대해 사장님이 주문 확정시 사용할 request
+    @PatchMapping("/{orderId}/confirm")  // 주문 확정 시
     public ResponseEntity updateOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.updateOrder(storeId, orderId, patchOrderDto);
+        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.confirmOrder(storeId, orderId, patchOrderDto);
 
         return new ResponseEntity(patchOrderResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
     }
 
-    @PatchMapping("/{orderId}/complete")
+    @PatchMapping("/{orderId}/complete")    // 주문 완료 시
     public ResponseEntity completeOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
         OrderResponseDto.PatchOrderResponseDto completeOrderDto = orderService.completeOrder(storeId, orderId, patchOrderDto);
 
