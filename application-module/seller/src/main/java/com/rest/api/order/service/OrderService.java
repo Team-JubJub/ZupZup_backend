@@ -153,7 +153,10 @@ public class OrderService {
             Item itemEntity = itemRepository.findById(itemId).get();
             int originalItemCount = itemEntity.getItemCount();
 
-            if (orderStatus.equals(OrderStatus.CONFIRM)) itemDto.setItemCount(originalItemCount - orderedItemCount);    // 주문 확정 시에는 뺴주고
+            if (orderStatus.equals(OrderStatus.CONFIRM)) {
+                isRequestedCountNotExceedStock(itemId, orderedItemCount);   // 재고보다 많은 양의 주문인지 체크
+                itemDto.setItemCount(originalItemCount - orderedItemCount);    // 주문 확정 시에는 뺴주고
+            }
             else if (orderStatus.equals(OrderStatus.CANCEL)) itemDto.setItemCount(originalItemCount + orderedItemCount); // 주문 취소 시에는 더해줌.
             itemEntity.updateItemCount(itemDto);
             itemRepository.save(itemEntity);

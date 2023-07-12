@@ -2,6 +2,11 @@ package com.rest.api.order.controller;
 
 import dto.order.seller.request.OrderRequestDto;
 import dto.order.seller.response.OrderResponseDto;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -24,6 +29,11 @@ public class OrderController {
     private final OrderService orderService;
 
     // <-------------------- GET part -------------------->
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "주문 조회 성공",
+                    content = @Content(schema = @Schema(implementation = OrderResponseDto.GetOrderListDto.class))),
+            @ApiResponse(responseCode = "204", description = "주문 목록 없음")
+    })
     @GetMapping("")  // order에 대한 GET(주문 항목 모두), ex) ~/seller/1/order?page=1 포맷
     public ResponseEntity orderList(@PathVariable Long storeId, @PageableDefault(size=10, sort="orderId", direction=Sort.Direction.DESC) Pageable pageable) { // ResponseEntity의 type이 뭐가될지 몰라서 우선 Type 지정 없이 둠.
         int page = pageable.getPageNumber();
@@ -35,7 +45,7 @@ public class OrderController {
         return new ResponseEntity(getOrderListDto, HttpStatus.OK); // order들의 dto list 반환, 200
     }
 
-    @GetMapping("/{orderId}")  // 각 order에 대한 단건 GET
+    @GetMapping("/{orderId}")  // 각 order에 대한 단건 GET    -> 일단 안쓰일 듯
     public ResponseEntity orderDetails(@PathVariable Long storeId, @PathVariable Long orderId) {
         OrderResponseDto.GetOrderDetailsDto getOrderDetailsDto = orderService.orderDetails(storeId, orderId);
 
@@ -43,6 +53,12 @@ public class OrderController {
     }
 
     // <-------------------- PATCH part -------------------->
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "주문 확정 성공",
+                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "주문 확정 시점에 DB상 재고보다 많은 양의 주문일 경우",
+                    content = @Content(schema = @Schema(example = "주문 중 상품의 재고가 주문 확정한 개수보다 부족합니다. 상품 명(ID): ")))
+    })
     @PatchMapping("/{orderId}/confirm")  // 주문 확정 시
     public ResponseEntity updateOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
         OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.confirmOrder(storeId, orderId, patchOrderDto);
@@ -50,6 +66,10 @@ public class OrderController {
         return new ResponseEntity(patchOrderResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
     }
 
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "주문 완료 성공",
+                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class)))
+    })
     @PatchMapping("/{orderId}/complete")    // 주문 완료 시
     public ResponseEntity completeOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
         OrderResponseDto.PatchOrderResponseDto completeOrderDto = orderService.completeOrder(storeId, orderId, patchOrderDto);
