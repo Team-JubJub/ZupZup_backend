@@ -109,6 +109,9 @@ public class StoreService {
         String loginId = sellerSignInDto.getLoginId();
         String loginPwd = sellerSignInDto.getLoginPwd();
         Seller seller = sellerRepository.findSellerByLoginId(loginId);
+        System.out.println(loginId);
+        System.out.println(loginPwd);
+        System.out.println(seller.getSellerId());
         if (loginPwd.equals(seller.getLoginPwd())) {
             return "success";
         }

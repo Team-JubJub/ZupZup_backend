@@ -62,7 +62,7 @@ public class StoreController {
 
     // For Test
     @PostMapping("/test/sign-in")
-    public ResponseEntity testSignIn(AuthRequestDto.SellerSignInDto sellerSignInDto) {
+    public ResponseEntity testSignIn(@RequestBody AuthRequestDto.SellerSignInDto sellerSignInDto) {
         String result = storeService.testSignIn(sellerSignInDto);
 
         return new ResponseEntity(result, HttpStatus.OK);

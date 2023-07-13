@@ -53,7 +53,9 @@ public class OrderService {
         List<OrderResponseDto.GetOrderDetailsDto> orderList = allOrderListEntity.stream()   // Entity -> Dto
                 .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDetailsDto.class))
                 .collect(Collectors.toList());
-        if (orderList.get(orderList.size() - 1).getOrderId() == 1) {    // 해당 페이지의 마지막 주문의 id가 1이면
+        if (orderList.size() == 0) {    // 없는 페이지를 조회했을 경우
+            hasNext = false;
+        } else if (orderList.get(orderList.size() - 1).getOrderId() == 1) {    // 해당 페이지의 마지막 주문의 id가 1이면
             hasNext = false;
         }
         OrderResponseDto.GetOrderListDto getOrderListDto = new OrderResponseDto.GetOrderListDto();
