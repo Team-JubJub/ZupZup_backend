@@ -18,4 +18,5 @@ public class Seller {
     private String loginId;
     @Column(nullable = false)
     private String loginPwd;
+    
 }

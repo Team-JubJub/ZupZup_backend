@@ -1,5 +1,6 @@
 package com.rest.api.store.controller;
 
+import dto.auth.seller.request.AuthRequestDto;
 import dto.store.seller.request.StoreRequestDto;
 import dto.store.seller.response.StoreResponseDto;
 import jakarta.validation.constraints.Null;
@@ -58,4 +59,13 @@ public class StoreController {
         String isChanged = storeService.changeNotification(storeId, storeMatters);
         return new ResponseEntity(isChanged, HttpStatus.OK);
     }
+
+    // For Test
+    @PostMapping("/test/sign-in")
+    public ResponseEntity testSignIn(AuthRequestDto.SellerSignInDto sellerSignInDto) {
+        String result = storeService.testSignIn(sellerSignInDto);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }

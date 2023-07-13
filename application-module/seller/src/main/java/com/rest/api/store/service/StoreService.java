@@ -1,6 +1,8 @@
 package com.rest.api.store.service;
 
+import domain.auth.Seller.Seller;
 import domain.store.Store;
+import dto.auth.seller.request.AuthRequestDto;
 import dto.store.seller.request.StoreRequestDto;
 import dto.store.seller.response.StoreResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import repository.SellerRepository;
 import repository.StoreRepository;
 
 import java.io.IOException;
@@ -21,6 +24,7 @@ import java.io.IOException;
 public class StoreService {
 
     private final S3Uploader s3Uploader;
+    private final SellerRepository sellerRepository;
     private final StoreRepository storeRepository;
     @Autowired
     ModelMapper modelMapper;
@@ -99,4 +103,17 @@ public class StoreService {
 
         return "공지사항이 수정되었습니다.";
     }
+
+    //For Test
+    public String testSignIn(AuthRequestDto.SellerSignInDto sellerSignInDto) {
+        String loginId = sellerSignInDto.getLoginId();
+        String loginPwd = sellerSignInDto.getLoginPwd();
+        Seller seller = sellerRepository.findSellerByLoginId(loginId);
+        if (loginPwd.equals(seller.getLoginPwd())) {
+            return "success";
+        }
+
+        return "fail";
+    }
+
 }
