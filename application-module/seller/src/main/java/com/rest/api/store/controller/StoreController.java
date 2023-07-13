@@ -65,7 +65,7 @@ public class StoreController {
     public ResponseEntity testSignIn(AuthRequestDto.SellerSignInDto sellerSignInDto) {
         String result = storeService.testSignIn(sellerSignInDto);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 
 }
