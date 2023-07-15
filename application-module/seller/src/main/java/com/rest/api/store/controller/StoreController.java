@@ -1,6 +1,7 @@
 package com.rest.api.store.controller;
 
 import dto.auth.seller.request.AuthRequestDto;
+import dto.auth.seller.response.AuthResponseDto;
 import dto.store.seller.request.StoreRequestDto;
 import dto.store.seller.response.StoreResponseDto;
 import jakarta.validation.constraints.Null;
@@ -63,9 +64,9 @@ public class StoreController {
     // For Test
     @PostMapping("/test/sign-in")
     public ResponseEntity testSignIn(@RequestBody AuthRequestDto.SellerSignInDto sellerSignInDto) {
-        String result = storeService.testSignIn(sellerSignInDto);
+        AuthResponseDto.TestSignInResponseDto testSignInResponseDto = storeService.testSignIn(sellerSignInDto);
 
-        return new ResponseEntity(result, HttpStatus.OK);
+        return new ResponseEntity(testSignInResponseDto, HttpStatus.OK);
     }
 
 }
