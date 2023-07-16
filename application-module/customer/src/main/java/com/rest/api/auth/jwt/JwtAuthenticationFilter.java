@@ -1,8 +1,8 @@
 package com.rest.api.auth.jwt;
 
-import exception.RefreshRequiredException;
-import exception.RequiredHeaderNotExistException;
-import exception.BlackListTokenException;
+import exception.auth.RefreshRequiredException;
+import exception.auth.RequiredHeaderNotExistException;
+import exception.auth.BlackListTokenException;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
