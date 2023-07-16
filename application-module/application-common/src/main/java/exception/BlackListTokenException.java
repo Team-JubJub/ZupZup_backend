@@ -1,5 +1,6 @@
-package exception.customer;
+package exception;
 
+import exception.customer.AuthRuntimeException;
 import org.springframework.http.HttpStatus;
 
 public class BlackListTokenException extends AuthRuntimeException {
