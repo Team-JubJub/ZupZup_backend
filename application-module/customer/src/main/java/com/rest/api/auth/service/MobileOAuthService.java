@@ -4,7 +4,7 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 
 import com.rest.api.auth.redis.RedisService;
 import domain.auth.User.Provider;
-import domain.auth.User.Role;
+import domain.auth.Role;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
