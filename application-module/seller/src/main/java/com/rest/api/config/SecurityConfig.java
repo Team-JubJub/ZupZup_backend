@@ -24,7 +24,8 @@ public class SecurityConfig {
         return web -> {
             web.ignoring()
                     .requestMatchers( "", "/", "/error/**", "http://localhost:8082/**", "/swagger-ui/**", "/v3/api-docs/**") // H2, swagger permit all
-                    .requestMatchers("/seller/**")
+//                    .requestMatchers("/seller/**")
+                    .requestMatchers("/seller/test/sign-in")    // test login 헤더 없이도 되게
                     .requestMatchers("/mobile/sign-in/**")
                     .requestMatchers("/mobile/test/sign-up");
         };
@@ -54,7 +55,8 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeHttpRequests()    // authorizeRequests() -> authorizeHttpRequests()
                 .requestMatchers( "/", "http://localhost:8082/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // H2, swagger permit all
-                .requestMatchers("/seller/**").permitAll() // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리)
+                .requestMatchers("/seller/test/sign-in").permitAll()    // test login 헤더 없이도 되게
+//                .requestMatchers("/seller/**").permitAll() // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리)
                 .requestMatchers("/mobile/sign-in/**").permitAll()    // 회원가입, 로그인, 계정 찾기 permit all
                 .anyRequest().authenticated();   // permitAll() 이외의 모든 request authenticated 처리
 
