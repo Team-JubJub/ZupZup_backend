@@ -2,7 +2,7 @@ package com.rest.api.auth.Controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
-import com.rest.api.auth.service.AuthService;
+import com.rest.api.auth.service.MobileAuthService;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.customer.response.UserResponseDto;
 import dto.auth.token.RefreshResultDto;
@@ -25,13 +25,13 @@ import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth", description = "인증과 관련된 API")
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/mobile")
 @RequiredArgsConstructor
-public class AuthController {
+public class MobileAuthController {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
-    private final AuthService authService;
+    private final MobileAuthService mobileAuthService;
 
     // < -------------- Sign-in part -------------- >
     @Operation(summary = "로그인(리프레시 토큰 유효 시)", description = "리프레시 토큰을 이용한 액세스 토큰 갱신")
@@ -76,7 +76,7 @@ public class AuthController {
     public ResponseEntity signInWithProviderUserId(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
                                                    @Valid @RequestBody UserRequestDto.UserSignInDto userSignInDto) {
-        TokenInfoDto reSignInResult = authService.signInWithSellerUserId(provider, userSignInDto);
+        TokenInfoDto reSignInResult = mobileAuthService.signInWithSellerUserId(provider, userSignInDto);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());
         responseHeaders.set(jwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());
@@ -126,8 +126,8 @@ public class AuthController {
     })
     @PostMapping("/account-recovery")
     public ResponseEntity accountRecovery(@Valid @RequestBody UserRequestDto.AccountRecoveryDto accountRecoveryDto) {
-        String result = authService.accountRecovery(accountRecoveryDto);
-        if(result.equals(authService.NO_USER_FOUND)) {
+        String result = mobileAuthService.accountRecovery(accountRecoveryDto);
+        if(result.equals(mobileAuthService.NO_USER_FOUND)) {
             return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.NOT_FOUND);
         }
 

@@ -24,7 +24,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Log
 @Transactional
-public class AuthService {
+public class MobileAuthService {
 
     @Autowired
     ModelMapper modelMapper;
