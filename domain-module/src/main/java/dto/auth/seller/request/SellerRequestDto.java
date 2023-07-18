@@ -11,6 +11,9 @@ public class SellerRequestDto {
         @Schema(description = "사장님의 로그인 ID", example = "test123")
         @NotBlank(message = "ID cannot be null or empty or space")
         private String loginId;    // 클라이언트에서 제공한 소셜 플랫폼의 user unique ID
+        @Schema(description = "사장님의 로그인 PW", example = "test123")
+        @NotBlank(message = "PW cannot be null or empty or space")
+        private String loginPwd;    // 클라이언트에서 제공한 소셜 플랫폼의 user unique ID
     }
 
 //    @Schema(description = "계정 찾기 시 사용되는 DTO")   // 아직 어떤 식으로 찾을지 몰라서 놔둠
