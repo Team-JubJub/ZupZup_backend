@@ -3,9 +3,6 @@ package com.rest.api.auth.service;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import domain.auth.Seller.Seller;
-import domain.auth.User.User;
-import dto.auth.customer.UserDto;
-import dto.auth.customer.request.UserRequestDto;
 import dto.auth.seller.SellerDto;
 import dto.auth.seller.request.SellerRequestDto;
 import dto.auth.token.TokenInfoDto;
@@ -17,12 +14,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.SellerRepository;
-import repository.UserRepository;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +33,7 @@ public class MobileAuthService {
 
     final static public String NO_USER_FOUND = "No user found";
     // <-------------------- Sign-in part -------------------->
-    public TokenInfoDto signInWithSellerUserId(SellerRequestDto.SellerSignInDto sellerSignInDto) {
+    public TokenInfoDto signInWithSellerLoginId(SellerRequestDto.SellerSignInDto sellerSignInDto) {
         String sellerLoginId = sellerSignInDto.getLoginId();
         TokenInfoDto tokenInfoDto = new TokenInfoDto();
         try {
