@@ -110,27 +110,27 @@ public class MobileAuthController {
     }
 
     // < -------------- Account recovery part -------------- >
-    @Operation(summary = "계정 찾기", description = "휴대폰 번호 인증을 통해 가입시 이용한 플랫폼 리턴")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "가입시 이용한 플랫폼 리턴",
-                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"NAVER\"\n}"))),
-            @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우",
-                    content = @Content(schema = @Schema(example = "Required request body is missing"))),
-            @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
-                    content = @Content(schema = @Schema(example = "{\n" +
-                            "\t\"phoneNumber\": \"Phone number pattern should be like 010-xxxx-xxxx\"\n" +
-                            "}"))),
-            @ApiResponse(responseCode = "404", description = "해당 유저는 가입한 적이 없음(자원 없음)",
-                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"No user found\"\n}")))
-    })
-    @PostMapping("/account-recovery")
-    public ResponseEntity accountRecovery(@Valid @RequestBody UserRequestDto.AccountRecoveryDto accountRecoveryDto) {
-        String result = mobileAuthService.accountRecovery(accountRecoveryDto);
-        if(result.equals(mobileAuthService.NO_USER_FOUND)) {
-            return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.OK);
-    }
+//    @Operation(summary = "계정 찾기", description = "휴대폰 번호 인증을 통해 가입시 이용한 플랫폼 리턴")
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "200", description = "가입시 이용한 플랫폼 리턴",
+//                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"NAVER\"\n}"))),
+//            @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우",
+//                    content = @Content(schema = @Schema(example = "Required request body is missing"))),
+//            @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
+//                    content = @Content(schema = @Schema(example = "{\n" +
+//                            "\t\"phoneNumber\": \"Phone number pattern should be like 010-xxxx-xxxx\"\n" +
+//                            "}"))),
+//            @ApiResponse(responseCode = "404", description = "해당 유저는 가입한 적이 없음(자원 없음)",
+//                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"No user found\"\n}")))
+//    })
+//    @PostMapping("/account-recovery")
+//    public ResponseEntity accountRecovery(@Valid @RequestBody UserRequestDto.AccountRecoveryDto accountRecoveryDto) {
+//        String result = mobileAuthService.accountRecovery(accountRecoveryDto);
+//        if(result.equals(mobileAuthService.NO_USER_FOUND)) {
+//            return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.NOT_FOUND);
+//        }
+//
+//        return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.OK);
+//    }
 
 }
