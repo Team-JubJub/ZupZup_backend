@@ -56,6 +56,8 @@ public class Store {
     private String saleMatters; // 공지사항
     @Column
     private Boolean isOpen; // 가게 운영 여부
+    @Column(nullable = false)
+    private String closedDay; // 휴무일
 
     public static StoreBuilder builder(String storeName) {   // 필수 파라미터 고려해볼 것
         if(storeName == null) {
@@ -71,6 +73,7 @@ public class Store {
         this.closeTime = patchDto.getCloseTime();
         this.saleTimeStart = patchDto.getSaleTimeStart();
         this.saleTimeEnd = patchDto.getSaleTimeEnd();
+        this.closedDay = patchDto.getClosedDay();
     }
 
 }

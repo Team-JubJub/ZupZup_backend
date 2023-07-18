@@ -14,6 +14,7 @@ public class StoreRequestDto {
         private String closeTime; // 운영 마감 시간
         private String saleTimeStart;   // 할인 시작 시간
         private String saleTimeEnd; // 할인 마감 시간
+        private String closedDay; // 휴무일
     }
 
     @Getter @Setter

@@ -77,7 +77,7 @@ public class StoreService {
         return "휴무일입니다.";
     }
 
-    // 가게 영업시간, 할인시간, 이미지 변경
+    // 가게 영업시간, 할인시간, 휴무일, 이미지 변경
     public StoreResponseDto.response modifyStore(Long storeId, StoreRequestDto.patchDto patchDto, MultipartFile storeImg) throws IOException {
 
         Store store = storeRepository.findById(storeId).get();
