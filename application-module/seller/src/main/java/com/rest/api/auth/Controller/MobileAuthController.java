@@ -3,7 +3,6 @@ package com.rest.api.auth.Controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileAuthService;
-import dto.auth.customer.response.UserResponseDto;
 import dto.auth.seller.request.SellerRequestDto;
 import dto.auth.seller.response.SellerResponseDto;
 import dto.auth.token.RefreshResultDto;
