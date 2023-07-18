@@ -1,10 +1,9 @@
 package com.rest.api.store.controller;
 
-import dto.auth.seller.request.AuthRequestDto;
-import dto.auth.seller.response.AuthResponseDto;
+import dto.auth.seller.request.SellerRequestDto;
+import dto.auth.seller.response.SellerResponseDto;
 import dto.store.seller.request.StoreRequestDto;
 import dto.store.seller.response.StoreResponseDto;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
@@ -63,8 +62,8 @@ public class StoreController {
 
     // For Test
     @PostMapping("/test/sign-in")
-    public ResponseEntity testSignIn(@RequestBody AuthRequestDto.SellerSignInDto sellerSignInDto) {
-        AuthResponseDto.TestSignInResponseDto testSignInResponseDto = storeService.testSignIn(sellerSignInDto);
+    public ResponseEntity testSignIn(@RequestBody SellerRequestDto.SellerTestSignInDto sellerTestSignInDto) {
+        SellerResponseDto.TestSignInResponseDto testSignInResponseDto = storeService.testSignIn(sellerTestSignInDto);
 
         return new ResponseEntity(testSignInResponseDto, HttpStatus.OK);
     }

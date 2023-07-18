@@ -28,7 +28,6 @@ public class JwtTokenProvider {
     private final CustomSellerDetailsService customSellerDetailsService;
     @Value("${spring.security.jwt.secret}")
     private String secretKey;
-    final static public long GMT_TIME_FORMATTER_IN_MILLISECONDS = 1000L*60*60*9;   // 9시간(우리나라 표준시와 GMT의 시간 차이)
     final static public long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*30; // 30분
     final static public long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
     final static public long APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*30;  // 한 달(애플 기준은 6개월 미만)

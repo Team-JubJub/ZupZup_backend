@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-public class AuthResponseDto {
+public class SellerResponseDto {
 
     @Schema(description = "사장님 앱 로그인의 response")
     @Getter

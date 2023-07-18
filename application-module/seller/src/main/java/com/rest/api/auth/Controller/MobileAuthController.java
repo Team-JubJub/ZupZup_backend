@@ -5,6 +5,7 @@ import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileAuthService;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.customer.response.UserResponseDto;
+import dto.auth.seller.request.SellerRequestDto;
 import dto.auth.token.RefreshResultDto;
 import dto.auth.token.TokenInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,11 +73,9 @@ public class MobileAuthController {
             @ApiResponse(responseCode = "401", description = "제공된 user unique ID를 가진 회원 조회가 불가능한 경우(unique ID가 잘못된 경우)",
                     content = @Content(schema = @Schema(example = "User with provided unique ID doesn't present")))
     })
-    @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
-    public ResponseEntity signInWithProviderUserId(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
-            content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
-                                                   @Valid @RequestBody UserRequestDto.UserSignInDto userSignInDto) {
-        TokenInfoDto reSignInResult = mobileAuthService.signInWithSellerUserId(provider, userSignInDto);
+    @PostMapping("/sign-in")  // 로그인 요청(access, refresh token 모두 만료일 경우)
+    public ResponseEntity signInWithProviderUserId(@Valid @RequestBody SellerRequestDto.SellerSignInDto sellerSignInDto) {
+        TokenInfoDto reSignInResult = mobileAuthService.signInWithSellerUserId(sellerSignInDto);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());
         responseHeaders.set(jwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());
