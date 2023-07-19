@@ -2,7 +2,6 @@ package com.rest.api.order.controller;
 
 import dto.order.seller.request.OrderRequestDto;
 import dto.order.seller.response.OrderResponseDto;
-import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -55,15 +54,13 @@ public class OrderController {
     // <-------------------- PATCH part -------------------->
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "주문 취소 성공",
-                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class))),
-            @ApiResponse(responseCode = "400", description = "주문 확정 시점에 DB상 재고보다 많은 양의 주문일 경우",
-                    content = @Content(schema = @Schema(example = "주문 중 상품의 재고가 주문 확정한 개수보다 부족합니다. 상품 명(ID): ")))
+                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderStatusResponseDto.class)))
     })
     @PatchMapping("/new-order/{orderId}/cancel")  // 신규 주문 취소 시
     public ResponseEntity updateOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.confirmOrder(storeId, orderId, patchOrderDto);
+        OrderResponseDto.PatchOrderStatusResponseDto patchOrderStatusResponseDto = orderService.cancelNewOrder(storeId, orderId/*, patchOrderDto*/);
 
-        return new ResponseEntity(patchOrderResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
+        return new ResponseEntity(patchOrderStatusResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
     }
 
 //    @ApiResponses({
@@ -79,11 +76,11 @@ public class OrderController {
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "주문 취소 성공",
-                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderDataResponseDto.class)))
     })
     @PatchMapping("/confirmed-order/{orderId}/cancel")    // 확정 주문 취소 시
     public ResponseEntity completeOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
-        OrderResponseDto.PatchOrderResponseDto completeOrderDto = orderService.completeOrder(storeId, orderId, patchOrderDto);
+        OrderResponseDto.PatchOrderDataResponseDto completeOrderDto = orderService.completeOrder(storeId, orderId, patchOrderDto);
 
         return new ResponseEntity(completeOrderDto, HttpStatus.OK);
     }
