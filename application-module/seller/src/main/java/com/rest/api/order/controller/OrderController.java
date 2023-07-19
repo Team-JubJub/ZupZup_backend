@@ -1,5 +1,6 @@
 package com.rest.api.order.controller;
 
+import domain.order.type.OrderStatus;
 import dto.order.seller.request.OrderRequestDto;
 import dto.order.seller.response.OrderResponseDto;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -54,46 +55,46 @@ public class OrderController {
     // <-------------------- PATCH part -------------------->
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "주문 취소 성공",
-                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderStatusResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class)))
     })
     @PatchMapping("/new-order/{orderId}/cancel")  // 신규 주문 취소 시
-    public ResponseEntity updateOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
-        OrderResponseDto.PatchOrderStatusResponseDto patchOrderStatusResponseDto = orderService.cancelNewOrder(storeId, orderId/*, patchOrderDto*/);
+    public ResponseEntity cancelNewOrder(@PathVariable Long storeId, @PathVariable Long orderId) {
+        OrderResponseDto.PatchOrderResponseDto patchOrderStatusResponseDto = orderService.updateOrderStatus(storeId, orderId, OrderStatus.CANCEL);
 
         return new ResponseEntity(patchOrderStatusResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
     }
 
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "주문 확정 성공",
-//                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class)))
-//    })
-//    @PatchMapping("/new-order/{orderId}/confirm")  // 신규 주문 확정 시
-//    public ResponseEntity updateOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
-//        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.confirmOrder(storeId, orderId, patchOrderDto);
-//
-//        return new ResponseEntity(patchOrderResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
-//    }
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "주문 확정 성공",
+                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class)))
+    })
+    @PatchMapping("/new-order/{orderId}/confirm")  // 신규 주문 확정 시
+    public ResponseEntity confirmNewOrder(@PathVariable Long storeId, @PathVariable Long orderId) {
+        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.updateOrderData(storeId, orderId, OrderStatus.CONFIRM);
+
+        return new ResponseEntity(patchOrderResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
+    }
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "주문 취소 성공",
-                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderDataResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class)))
     })
     @PatchMapping("/confirmed-order/{orderId}/cancel")    // 확정 주문 취소 시
-    public ResponseEntity completeOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
-        OrderResponseDto.PatchOrderDataResponseDto completeOrderDto = orderService.completeOrder(storeId, orderId, patchOrderDto);
+    public ResponseEntity cancelConfirmedOrder(@PathVariable Long storeId, @PathVariable Long orderId) {
+        OrderResponseDto.PatchOrderResponseDto completeOrderDto = orderService.updateOrderData(storeId, orderId, OrderStatus.CANCEL);
 
         return new ResponseEntity(completeOrderDto, HttpStatus.OK);
     }
 
-//    @ApiResponses({
-//            @ApiResponse(responseCode = "200", description = "주문 완료 성공",
-//                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class)))
-//    })
-//    @PatchMapping("/confirmed-order/{orderId}/complete")  // 확정 주문 완료 시
-//    public ResponseEntity updateOrder(@PathVariable Long storeId, @PathVariable Long orderId, @RequestBody @Valid OrderRequestDto.PatchOrderDto patchOrderDto) {
-//        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.confirmOrder(storeId, orderId, patchOrderDto);
-//
-//        return new ResponseEntity(patchOrderResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
-//    }
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "주문 완료 성공",
+                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class)))
+    })
+    @PatchMapping("/confirmed-order/{orderId}/complete")  // 확정 주문 완료 시
+    public ResponseEntity completeConfirmedOrder(@PathVariable Long storeId, @PathVariable Long orderId) {
+        OrderResponseDto.PatchOrderResponseDto patchOrderStatusResponseDto = orderService.updateOrderStatus(storeId, orderId, OrderStatus.COMPLETE);
+
+        return new ResponseEntity(patchOrderStatusResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
+    }
 
 }
