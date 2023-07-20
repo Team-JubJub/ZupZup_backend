@@ -7,6 +7,7 @@ import dto.auth.seller.SellerDto;
 import dto.auth.seller.request.SellerRequestDto;
 import dto.auth.token.TokenInfoDto;
 import exception.auth.customer.NoUserPresentsException;
+import exception.auth.seller.NoSellerPresentsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -42,7 +43,7 @@ public class MobileAuthService {
             SellerDto sellerDto = modelMapper.map(sellerEntity, SellerDto.class);
             tokenInfoDto = generateTokens(sellerDto, "Token refreshed");
         } catch (NoSuchElementException e) {
-            throw new NoUserPresentsException();
+            throw new NoSellerPresentsException();
         }
 
         return tokenInfoDto;

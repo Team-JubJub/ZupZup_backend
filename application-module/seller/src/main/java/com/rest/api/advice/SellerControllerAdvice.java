@@ -3,6 +3,8 @@ package com.rest.api.advice;
 import exception.NoSuchException;
 import exception.OrderNotInStoreException;
 import exception.RequestedCountExceedStockException;
+import exception.auth.customer.NoUserPresentsException;
+import exception.auth.seller.NoSellerPresentsException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import org.springframework.http.HttpStatus;
@@ -36,6 +38,11 @@ public class SellerControllerAdvice {
         });
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(constraintViolations);
+    }
+
+    @ExceptionHandler(value = NoSellerPresentsException.class)
+    public ResponseEntity noUserPresents(NoSellerPresentsException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)   // 가게, 주문이 존재하지 않는 경우
