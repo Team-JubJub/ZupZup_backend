@@ -20,6 +20,7 @@ public class ItemDto {
 
     @Getter @Setter
     public static class getDto {
+        private Long itemId;
         private String itemName;
         private String imageURL;
         private int itemPrice;
