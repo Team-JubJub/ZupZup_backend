@@ -1,8 +1,8 @@
 package com.rest.api.advice;
 
 import exception.NoSuchException;
-import exception.customer.AlreadySignUppedException;
-import exception.customer.NoUserPresentsException;
+import exception.auth.customer.AlreadySignUppedException;
+import exception.auth.customer.NoUserPresentsException;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import org.springframework.http.HttpStatus;

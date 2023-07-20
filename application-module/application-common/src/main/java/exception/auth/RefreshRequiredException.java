@@ -1,4 +1,4 @@
-package exception.customer;
+package exception.auth;
 
 import org.springframework.http.HttpStatus;
 

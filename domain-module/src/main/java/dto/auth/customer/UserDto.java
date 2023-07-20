@@ -2,7 +2,7 @@ package dto.auth.customer;
 
 
 import domain.auth.User.Provider;
-import domain.auth.User.Role;
+import domain.auth.Role;
 import lombok.Getter;
 import lombok.Setter;
 

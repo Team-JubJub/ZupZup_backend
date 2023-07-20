@@ -7,23 +7,4 @@ plugins {
 dependencies {
     //spring security oauth2 client
     implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
-
-    //jwt
-    implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
-    runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
-
-    //javax
-    // https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
-    implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-    // https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-core
-    implementation group: 'com.sun.xml.bind', name: 'jaxb-core', version: '2.3.0.1'
-    // https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl
-    implementation group: 'com.sun.xml.bind', name: 'jaxb-impl', version: '2.3.1'
-
-    // For apple ES256
-    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk18on', version: '1.72'
-    implementation group: 'com.nimbusds', name: 'nimbus-jose-jwt', version: '9.30.1'
-
 }

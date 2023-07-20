@@ -4,14 +4,14 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 
 import com.rest.api.auth.redis.RedisService;
 import domain.auth.User.Provider;
-import domain.auth.User.Role;
+import domain.auth.Role;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.customer.response.UserResponseDto;
 import dto.auth.token.TokenInfoDto;
-import exception.customer.AlreadySignUppedException;
-import exception.customer.NoUserPresentsException;
+import exception.auth.customer.AlreadySignUppedException;
+import exception.auth.customer.NoUserPresentsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
