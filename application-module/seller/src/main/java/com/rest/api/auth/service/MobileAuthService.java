@@ -6,7 +6,7 @@ import domain.auth.Seller.Seller;
 import dto.auth.seller.SellerDto;
 import dto.auth.seller.request.SellerRequestDto;
 import dto.auth.token.TokenInfoDto;
-import exception.customer.NoUserPresentsException;
+import exception.auth.customer.NoUserPresentsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -35,7 +35,8 @@ public class MobileAuthService {
     // <-------------------- Sign-in part -------------------->
     public TokenInfoDto signInWithSellerLoginId(SellerRequestDto.SellerSignInDto sellerSignInDto) {
         String sellerLoginId = sellerSignInDto.getLoginId();
-        TokenInfoDto tokenInfoDto = new TokenInfoDto();
+
+        TokenInfoDto tokenInfoDto;
         try {
             Seller sellerEntity = sellerRepository.findSellerByLoginId(sellerLoginId);
             SellerDto sellerDto = modelMapper.map(sellerEntity, SellerDto.class);

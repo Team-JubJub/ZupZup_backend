@@ -1,6 +1,5 @@
 package exception.auth;
 
-import exception.customer.AuthRuntimeException;
 import org.springframework.http.HttpStatus;
 
 public class RequiredHeaderNotExistException extends AuthRuntimeException {
