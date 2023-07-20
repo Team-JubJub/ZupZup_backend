@@ -16,5 +16,7 @@ public class StoreResponseDto {
 
         private String saleTimeStart;
         private String saleTimeEnd;
+
+        public String closedDay;
     }
 }
