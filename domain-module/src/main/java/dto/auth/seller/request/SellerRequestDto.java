@@ -35,4 +35,10 @@ public class SellerRequestDto {
         private String loginPwd;
     }
 
+    @Getter
+    public static class SellerTestSignUpDto {
+        private String loginId;
+        private String loginPwd;
+    }
+
 }

@@ -3,6 +3,8 @@ package com.rest.api.auth.Controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileAuthService;
+import domain.auth.Role;
+import domain.auth.Seller.Seller;
 import dto.auth.seller.request.SellerRequestDto;
 import dto.auth.seller.response.SellerResponseDto;
 import dto.auth.token.RefreshResultDto;
@@ -22,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import repository.SellerRepository;
 
 @Tag(name = "Auth", description = "인증과 관련된 API")
 @RestController
@@ -57,7 +60,7 @@ public class MobileAuthController {
         return new ResponseEntity("Refresh token validation failed. Login required", HttpStatus.UNAUTHORIZED); // Refresh token 유효성 인증 실패
     }
 
-    @Operation(summary = "로그인(모든 토큰 만료 시)", description = "소셜 플랫폼에 재로그인을 통해 받아온 user unique ID를 이용, 액세스와 리프레시 토큰 재발급")
+    @Operation(summary = "로그인(모든 토큰 만료 시)", description = "Login ID를 이용, 액세스와 리프레시 토큰 재발급")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스, 리프레시 토큰 재발급(로그인) 성공",
                     headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
@@ -69,12 +72,14 @@ public class MobileAuthController {
                     content = @Content(schema = @Schema(example = "{\n" +
                             "\t\"userUniqueId\": \"User unique id cannot be null or empty or space\"\n" +
                             "}"))),
-            @ApiResponse(responseCode = "401", description = "제공된 user unique ID를 가진 회원 조회가 불가능한 경우(unique ID가 잘못된 경우)",
-                    content = @Content(schema = @Schema(example = "User with provided unique ID doesn't present")))
+            @ApiResponse(responseCode = "401", description = "제공된 login ID를 가진 사장님 조회가 불가능한 경우(login ID가 잘못된 경우)",
+                    content = @Content(schema = @Schema(example = "Seller with ID doesn't present")))
     })
     @PostMapping("/sign-in")  // 로그인 요청(access, refresh token 모두 만료일 경우)
     public ResponseEntity signInWithProviderUserId(@Valid @RequestBody SellerRequestDto.SellerSignInDto sellerSignInDto) {
         TokenInfoDto reSignInResult = mobileAuthService.signInWithSellerLoginId(sellerSignInDto);
+        if (reSignInResult.getResult().equals(mobileAuthService.LOGIN_FAILS)) return new ResponseEntity(reSignInResult, HttpStatus.UNAUTHORIZED);   // 비밀번호 틀렸을 경우
+
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());
         responseHeaders.set(jwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());
@@ -131,5 +136,14 @@ public class MobileAuthController {
 //
 //        return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.OK);
 //    }
+
+    // < -------------- Test Part -------------- >
+    @PostMapping("/test/sign-up")
+    public ResponseEntity testSignUp(@RequestBody SellerRequestDto.SellerTestSignUpDto sellerTestSignUpDto) {
+        Seller sellerEntity = mobileAuthService.testSignUp(sellerTestSignUpDto);
+
+        return new ResponseEntity(sellerEntity, HttpStatus.OK);
+    }
+
 
 }
