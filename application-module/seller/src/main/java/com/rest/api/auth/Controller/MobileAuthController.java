@@ -3,7 +3,6 @@ package com.rest.api.auth.Controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileAuthService;
-import domain.auth.Role;
 import domain.auth.Seller.Seller;
 import dto.auth.seller.request.SellerRequestDto;
 import dto.auth.seller.response.SellerResponseDto;
@@ -24,7 +23,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import repository.SellerRepository;
 
 @Tag(name = "Auth", description = "인증과 관련된 API")
 @RestController
@@ -76,7 +74,7 @@ public class MobileAuthController {
                     content = @Content(schema = @Schema(example = "Seller with ID doesn't present")))
     })
     @PostMapping("/sign-in")  // 로그인 요청(access, refresh token 모두 만료일 경우)
-    public ResponseEntity signInWithProviderUserId(@Valid @RequestBody SellerRequestDto.SellerSignInDto sellerSignInDto) {
+    public ResponseEntity signInWithSellerLoginId(@Valid @RequestBody SellerRequestDto.SellerSignInDto sellerSignInDto) {
         TokenInfoDto reSignInResult = mobileAuthService.signInWithSellerLoginId(sellerSignInDto);
         if (reSignInResult.getResult().equals(mobileAuthService.LOGIN_FAILS)) return new ResponseEntity(reSignInResult, HttpStatus.UNAUTHORIZED);   // 비밀번호 틀렸을 경우
 
