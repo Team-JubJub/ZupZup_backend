@@ -37,7 +37,6 @@ public class OrderController {
     })
     @GetMapping("")  // order에 대한 GET(주문 항목 모두), ex) ~/seller/1/order?page=1 포맷
     public ResponseEntity orderList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                    @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
                                     @PathVariable Long storeId, @PageableDefault(size=10, sort="orderId", direction=Sort.Direction.DESC) Pageable pageable) { // ResponseEntity의 type이 뭐가될지 몰라서 우선 Type 지정 없이 둠.
         int page = pageable.getPageNumber();
         OrderResponseDto.GetOrderListDto getOrderListDto = orderService.orderList(storeId, page, pageable);
@@ -50,7 +49,6 @@ public class OrderController {
 
     @GetMapping("/{orderId}")  // 각 order에 대한 단건 GET    -> 일단 안쓰일 듯
     public ResponseEntity orderDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                       @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
                                        @PathVariable Long storeId, @PathVariable Long orderId) {
         OrderResponseDto.GetOrderDetailsDto getOrderDetailsDto = orderService.orderDetails(storeId, orderId);
 
@@ -64,7 +62,6 @@ public class OrderController {
     })
     @PatchMapping("/new-order/{orderId}/cancel")  // 신규 주문 취소 시
     public ResponseEntity cancelNewOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                         @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
                                          @PathVariable Long storeId, @PathVariable Long orderId) {
         OrderResponseDto.PatchOrderResponseDto patchOrderStatusResponseDto = orderService.updateOrderStatus(storeId, orderId, OrderStatus.CANCEL);
 
@@ -77,7 +74,6 @@ public class OrderController {
     })
     @PatchMapping("/new-order/{orderId}/confirm")  // 신규 주문 확정 시
     public ResponseEntity confirmNewOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                          @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
                                           @PathVariable Long storeId, @PathVariable Long orderId) {
         OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.updateOrderData(storeId, orderId, OrderStatus.CONFIRM);
 
@@ -90,7 +86,6 @@ public class OrderController {
     })
     @PatchMapping("/confirmed-order/{orderId}/cancel")    // 확정 주문 취소 시
     public ResponseEntity cancelConfirmedOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                               @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
                                                @PathVariable Long storeId, @PathVariable Long orderId) {
         OrderResponseDto.PatchOrderResponseDto completeOrderDto = orderService.updateOrderData(storeId, orderId, OrderStatus.CANCEL);
 
@@ -103,7 +98,6 @@ public class OrderController {
     })
     @PatchMapping("/confirmed-order/{orderId}/complete")  // 확정 주문 완료 시
     public ResponseEntity completeConfirmedOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                                 @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
                                                  @PathVariable Long storeId, @PathVariable Long orderId) {
         OrderResponseDto.PatchOrderResponseDto patchOrderStatusResponseDto = orderService.updateOrderStatus(storeId, orderId, OrderStatus.COMPLETE);
 

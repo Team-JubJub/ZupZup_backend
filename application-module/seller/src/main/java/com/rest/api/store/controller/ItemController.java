@@ -30,7 +30,6 @@ public class ItemController {
      */
     @PostMapping("/{storeId}") // 상품 저장
     public ResponseEntity saveItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                   @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
                                    @RequestPart(value = "item") ItemRequestDto.postDto requestDto,
                                    @RequestPart(value = "image") @Nullable MultipartFile itemImg,
                                    @PathVariable Long storeId) throws Exception {
@@ -42,7 +41,6 @@ public class ItemController {
 
     @PatchMapping("/{storeId}/{itemId}")
     public ResponseEntity updateItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                     @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
                                      @PathVariable Long itemId,
                                      @PathVariable Long storeId,
                                      @RequestPart(value = "item") UpdateRequestDto updateDto,
@@ -56,7 +54,6 @@ public class ItemController {
 
     @DeleteMapping("/{storeId}/{itemId}")
     public ResponseEntity deleteItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                     @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
                                      @PathVariable Long itemId, @PathVariable String storeId) {
 
         String response = itemService.deleteItem(itemId);
@@ -67,7 +64,6 @@ public class ItemController {
     // 전체 제품 불러오기
     @GetMapping("/{storeId}/management")
     public ResponseEntity readItems(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                    @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
                                     @PathVariable Long storeId) {
 
         List<ItemDto.getDto> dtoList = itemService.readItems(storeId);
@@ -77,11 +73,11 @@ public class ItemController {
     // 제품 개수 수정하기
     @PatchMapping("/{storeId}/quantity")
     public ResponseEntity modifyQuantity(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                         @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
                                          @PathVariable Long storeId,
                                          @RequestPart(name = "quantity") List<ItemRequestDto.patchDto> quantityList) {
 
         String result = itemService.modifyQuantity(storeId, quantityList);
         return new ResponseEntity(result, HttpStatus.OK);
     }
+
 }
