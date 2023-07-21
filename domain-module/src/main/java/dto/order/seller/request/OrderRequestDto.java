@@ -12,7 +12,7 @@ public class OrderRequestDto {
     // <-------------------- PATCH part -------------------->
     @Getter
     @Setter
-    public static class ConfirmOrderDto {
+    public static class PatchOrderDataDto {
         private OrderStatus orderStatus;
         private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수
     }

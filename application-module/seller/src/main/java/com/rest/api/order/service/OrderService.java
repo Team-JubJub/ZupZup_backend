@@ -2,6 +2,7 @@ package com.rest.api.order.service;
 
 
 import dto.item.ItemDto;
+import dto.order.seller.request.OrderRequestDto;
 import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Pageable;
@@ -83,10 +84,9 @@ public class OrderService {
         return patchOrderResponseDto;
     }
 
-    public OrderResponseDto.PatchOrderResponseDto updateOrderData(Long storeId, Long orderId, OrderStatus requestedOrderStatus) { // 신규 주문 확정 시, 확정 주문 취소 시
+    public OrderResponseDto.PatchOrderResponseDto updateOrderData(Long storeId, Long orderId, OrderRequestDto.PatchOrderDataDto patchOrderDataDto, OrderStatus requestedOrderStatus) { // 신규 주문 확정 시, 확정 주문 취소 시
         Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);
-        OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = updateOrderDataAndReturn(orderEntity, requestedOrderStatus, orderDto);
+        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = updateOrderDataAndReturn(orderEntity, patchOrderDataDto, requestedOrderStatus);
 
         return patchOrderResponseDto;
     }
@@ -170,10 +170,13 @@ public class OrderService {
         return patchOrderResponseDto;
     }
 
-    private OrderResponseDto.PatchOrderResponseDto updateOrderDataAndReturn(Order orderEntity, OrderStatus sellerRequestedOrderStatus, OrderDto orderDto) {  // 신규 주문 확정, 확정 주문 취소에 대해 처리하는 함수
+    private OrderResponseDto.PatchOrderResponseDto updateOrderDataAndReturn(Order orderEntity, OrderRequestDto.PatchOrderDataDto patchOrderDataDto, OrderStatus sellerRequestedOrderStatus) {  // 신규 주문 확정, 확정 주문 취소에 대해 처리하는 함수
+        OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);
+        orderDto.setOrderList(patchOrderDataDto.getOrderList());
+        orderDto.setOrderStatus(sellerRequestedOrderStatus);    // CONFIRM or CANCEL
+
         List<OrderSpecific> orderList = orderDto.getOrderList();
         updateItemStock(sellerRequestedOrderStatus, orderList); // 주문한 개수만큼 재고에서 차감, 더하기
-        orderDto.setOrderStatus(sellerRequestedOrderStatus);
         OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = updateOrderAndReturn(orderEntity, orderDto);
 
         return patchOrderResponseDto;

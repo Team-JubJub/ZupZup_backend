@@ -2,6 +2,7 @@ package com.rest.api.order.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import domain.order.type.OrderStatus;
+import dto.order.seller.request.OrderRequestDto;
 import dto.order.seller.response.OrderResponseDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -74,8 +75,8 @@ public class OrderController {
     })
     @PatchMapping("/new-order/{orderId}/confirm")  // 신규 주문 확정 시
     public ResponseEntity confirmNewOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                          @PathVariable Long storeId, @PathVariable Long orderId) {
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.updateOrderData(storeId, orderId, OrderStatus.CONFIRM);
+                                          @PathVariable Long storeId, @PathVariable Long orderId, @RequestBody OrderRequestDto.PatchOrderDataDto patchOrderDataDto) {
+        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.updateOrderData(storeId, orderId, patchOrderDataDto, OrderStatus.CONFIRM);
 
         return new ResponseEntity(patchOrderResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
     }
@@ -86,8 +87,8 @@ public class OrderController {
     })
     @PatchMapping("/confirmed-order/{orderId}/cancel")    // 확정 주문 취소 시
     public ResponseEntity cancelConfirmedOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                               @PathVariable Long storeId, @PathVariable Long orderId) {
-        OrderResponseDto.PatchOrderResponseDto completeOrderDto = orderService.updateOrderData(storeId, orderId, OrderStatus.CANCEL);
+                                               @PathVariable Long storeId, @PathVariable Long orderId, @RequestBody OrderRequestDto.PatchOrderDataDto patchOrderDataDto) {
+        OrderResponseDto.PatchOrderResponseDto completeOrderDto = orderService.updateOrderData(storeId, orderId, patchOrderDataDto, OrderStatus.CANCEL);
 
         return new ResponseEntity(completeOrderDto, HttpStatus.OK);
     }
