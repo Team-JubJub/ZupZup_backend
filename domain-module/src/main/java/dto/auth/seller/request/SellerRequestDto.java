@@ -31,7 +31,7 @@ public class SellerRequestDto {
     public static class SellerTestSignInDto {
         @Schema(description = "사장님 앱 로그인에 사용되는 ID", example = "test123")
         private String loginId;
-        @Schema(description = "사장님 앱 로그인에 사용되는 비밀번호", example = "test123")
+        @Schema(description = "사장님 앱 로그인에 사용되는 비밀번호", example = "test1234")
         private String loginPwd;
     }
 

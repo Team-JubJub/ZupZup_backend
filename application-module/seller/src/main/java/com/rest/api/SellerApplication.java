@@ -13,7 +13,7 @@ import org.springframework.web.filter.HiddenHttpMethodFilter;
 @SpringBootApplication
 @EntityScan(basePackages = {"domain"})
 @EnableJpaRepositories(basePackages = {"repository"})
-@OpenAPIDefinition(servers = {@Server(url = "https://zupzuptes.com:8080/", description = "Default Server URL")})
+@OpenAPIDefinition(servers = {@Server(url = "https://zupzuptest.com:8080", description = "Default Server URL")})
 public class SellerApplication {
 
 	public static void main(String[] args) {
