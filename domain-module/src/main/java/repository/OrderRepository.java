@@ -9,6 +9,6 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    List<Order> findByStoreId(Long storeId, Pageable pageable);  //해당 store Id를 참조하는 Order의 list -> 수정하기(Join column 설정해줬으니 findByStoreId로)
+    List<Order> findByStoreId(Long storeId);  //해당 store Id를 참조하는 Order의 list -> 수정하기(Join column 설정해줬으니 findByStoreId로)
 
 }

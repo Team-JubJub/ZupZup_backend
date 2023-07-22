@@ -4,14 +4,14 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 
 import com.rest.api.auth.redis.RedisService;
 import domain.auth.User.Provider;
-import domain.auth.User.Role;
+import domain.auth.Role;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.customer.response.UserResponseDto;
-import dto.auth.token.TokenInfoDto;
-import exception.customer.AlreadySignUppedException;
-import exception.customer.NoUserPresentsException;
+import dto.auth.token.customer.CustomerTokenInfoDto;
+import exception.auth.customer.AlreadySignUppedException;
+import exception.auth.customer.NoUserPresentsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -20,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,7 +40,7 @@ public class MobileOAuthService {
     final static public String NO_USER_FOUND = "No user found";
 
     // <-------------------- Sign-up part -------------------->
-    public TokenInfoDto signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
+    public CustomerTokenInfoDto signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
         checkIsSignUpped(userSignUpDto.getPhoneNumber());
         UserDto userDto = userSignUpDtoToUserDto(provider, userSignUpDto);
 
@@ -57,9 +56,9 @@ public class MobileOAuthService {
                 .registerTime(registerTimeSetter())
                 .build();
         userRepository.save(userEntity);
-        TokenInfoDto tokenInfoDto = generateTokens(userDto, "Create user success");
+        CustomerTokenInfoDto customerTokenInfoDto = generateTokens(userDto, "Create user success");
 
-        return tokenInfoDto;
+        return customerTokenInfoDto;
     }
 
     public UserResponseDto.DeleteUserDto deleteUser(String provider, String accessToken, String refreshToken) {
@@ -93,18 +92,18 @@ public class MobileOAuthService {
     }
 
     // <-------------------- Sign-in part -------------------->
-    public TokenInfoDto signInWithProviderUserId(String provider, UserRequestDto.UserSignInDto userSignInDto) {
+    public CustomerTokenInfoDto signInWithProviderUserId(String provider, UserRequestDto.UserSignInDto userSignInDto) {
         String userUniqueId = userSignInDto.getUserUniqueId();
-        TokenInfoDto tokenInfoDto = new TokenInfoDto();
+        CustomerTokenInfoDto customerTokenInfoDto = new CustomerTokenInfoDto();
         try {
             User userEntity = userRepository.findByProviderUserId(provider.toUpperCase() + "_" + userUniqueId).get();
             UserDto userDto = modelMapper.map(userEntity, UserDto.class);
-            tokenInfoDto = generateTokens(userDto, "Token refreshed");
+            customerTokenInfoDto = generateTokens(userDto, "Token refreshed");
         } catch (NoSuchElementException e) {
             throw new NoUserPresentsException();
         }
 
-        return tokenInfoDto;
+        return customerTokenInfoDto;
     }
 
     // <-------------------- Account recovery part -------------------->
@@ -164,14 +163,14 @@ public class MobileOAuthService {
         return userDto;
     }
 
-    private TokenInfoDto generateTokens(UserDto userDto, String message) {
+    private CustomerTokenInfoDto generateTokens(UserDto userDto, String message) {
         List<String> roles = Arrays.asList(userDto.getRole().getRole());
         String accessToken = jwtTokenProvider.generateAccessToken(userDto.getProviderUserId(), roles);
         String refreshToken = jwtTokenProvider.generateRefreshToken();
         redisService.setStringValue(refreshToken, userDto.getProviderUserId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
-        TokenInfoDto tokenInfoDto = new TokenInfoDto("success", message, accessToken, refreshToken);
+        CustomerTokenInfoDto customerTokenInfoDto = new CustomerTokenInfoDto("success", message, accessToken, refreshToken);
 
-        return tokenInfoDto;
+        return customerTokenInfoDto;
     }
 
 

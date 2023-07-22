@@ -2,8 +2,8 @@ package com.rest.api.store.service;
 
 import domain.auth.Seller.Seller;
 import domain.store.Store;
-import dto.auth.seller.request.AuthRequestDto;
-import dto.auth.seller.response.AuthResponseDto;
+import dto.auth.seller.request.SellerRequestDto;
+import dto.auth.seller.response.SellerResponseDto;
 import dto.store.seller.request.StoreRequestDto;
 import dto.store.seller.response.StoreResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -106,13 +106,13 @@ public class StoreService {
     }
 
     //For Test
-    public AuthResponseDto.TestSignInResponseDto testSignIn(AuthRequestDto.SellerSignInDto sellerSignInDto) {
-        String loginId = sellerSignInDto.getLoginId();
-        String loginPwd = sellerSignInDto.getLoginPwd();
+    public SellerResponseDto.TestSignInResponseDto testSignIn(SellerRequestDto.SellerTestSignInDto sellerTestSignInDto) {
+        String loginId = sellerTestSignInDto.getLoginId();
+        String loginPwd = sellerTestSignInDto.getLoginPwd();
         Seller seller = sellerRepository.findSellerByLoginId(loginId);
         Long sellerId = seller.getSellerId();
         Store store = storeRepository.findBySellerId(sellerId);
-        AuthResponseDto.TestSignInResponseDto testSignInResponseDto = new AuthResponseDto.TestSignInResponseDto();
+        SellerResponseDto.TestSignInResponseDto testSignInResponseDto = new SellerResponseDto.TestSignInResponseDto();
         testSignInResponseDto.setMessage("success");
         testSignInResponseDto.setStoreId(store.getStoreId());
 
@@ -120,7 +120,7 @@ public class StoreService {
             return testSignInResponseDto;
         }
 
-        return new AuthResponseDto.TestSignInResponseDto();
+        return new SellerResponseDto.TestSignInResponseDto();
     }
 
 }

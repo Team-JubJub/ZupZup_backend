@@ -6,8 +6,8 @@ import com.rest.api.auth.service.MobileOAuthService;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.customer.response.UserResponseDto;
-import dto.auth.token.TokenInfoDto;
-import dto.auth.token.RefreshResultDto;
+import dto.auth.token.customer.CustomerTokenInfoDto;
+import dto.auth.token.customer.SellerRefreshResultDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -47,7 +47,7 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "201", description = "회원가입 성공",
                     headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
                             @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
-                    content = @Content(schema = @Schema(implementation = TokenInfoDto.class))),
+                    content = @Content(schema = @Schema(implementation = CustomerTokenInfoDto.class))),
             @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우",
                     content = @Content(schema = @Schema(example = "Required request body is missing"))),
             @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
@@ -65,7 +65,7 @@ public class MobileOAuthController {
     public ResponseEntity signUp(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
                                  @Valid @RequestBody UserRequestDto.UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
-        TokenInfoDto signUpResult = mobileOAuthService.signUp(provider, userSignUpDto); // service layer에서 user 정보 저장, refresh token redis에 저장까지
+        CustomerTokenInfoDto signUpResult = mobileOAuthService.signUp(provider, userSignUpDto); // service layer에서 user 정보 저장, refresh token redis에 저장까지
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, signUpResult.getAccessToken());
         responseHeaders.set(jwtTokenProvider.REFRESH_TOKEN_NAME, signUpResult.getRefreshToken());
@@ -125,7 +125,7 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
                     headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰")},
-                    content = @Content(schema = @Schema(implementation = RefreshResultDto.class))),
+                    content = @Content(schema = @Schema(implementation = SellerRefreshResultDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
             @ApiResponse(responseCode = "401", description = "리프레시 토큰의 유효성 인증이 실패한 경우",
@@ -133,7 +133,7 @@ public class MobileOAuthController {
     })
     @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우), refresh token만 받아옴
     public ResponseEntity signInWithRefreshToken(@Parameter(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        RefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
+        SellerRefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
         if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, refreshResult.getAccessToken());
@@ -149,7 +149,7 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "200", description = "액세스, 리프레시 토큰 재발급(로그인) 성공",
                     headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
                             @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
-                    content = @Content(schema = @Schema(implementation = TokenInfoDto.class))),
+                    content = @Content(schema = @Schema(implementation = CustomerTokenInfoDto.class))),
             @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우",
                     content = @Content(schema = @Schema(example = "Required request body is missing"))),
             @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
@@ -163,7 +163,7 @@ public class MobileOAuthController {
     public ResponseEntity signInWithProviderUserId(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
             @Valid @RequestBody UserRequestDto.UserSignInDto userSignInDto) {
-        TokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderUserId(provider, userSignInDto);
+        CustomerTokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderUserId(provider, userSignInDto);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());
         responseHeaders.set(jwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());

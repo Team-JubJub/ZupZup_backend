@@ -1,5 +1,6 @@
 package domain.auth.User;
 
+import domain.auth.Role;
 import jakarta.persistence.*;
 import lombok.*;
 

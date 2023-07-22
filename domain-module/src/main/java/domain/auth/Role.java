@@ -1,9 +1,10 @@
-package domain.auth.User;
+package domain.auth;
 
 public enum Role {
 
     ROLE_ADMIN("ROLE_ADMIN"),
-    ROLE_USER("ROLE_USER");
+    ROLE_USER("ROLE_USER"),
+    ROLE_SELLER("ROLE_SELLER");
 
     private final String role;
 

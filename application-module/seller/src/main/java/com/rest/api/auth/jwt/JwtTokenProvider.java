@@ -1,7 +1,7 @@
 package com.rest.api.auth.jwt;
 
 import com.rest.api.auth.redis.RedisService;
-import com.rest.api.auth.service.CustomUserDetailsService;
+import com.rest.api.auth.service.CustomSellerDetailsService;
 import com.rest.api.auth.dto.LoginInfoDto;
 import dto.auth.token.customer.SellerRefreshResultDto;
 import io.jsonwebtoken.*;
@@ -10,22 +10,12 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
-import org.bouncycastle.openssl.PEMParser;
-import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.util.FileCopyUtils;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.spec.InvalidKeySpecException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,21 +25,11 @@ import java.util.stream.Collectors;
 public class JwtTokenProvider {
 
     private final RedisService redisService;
-    private final CustomUserDetailsService customUserDetailsService;
+    private final CustomSellerDetailsService customSellerDetailsService;
     @Value("${spring.security.jwt.secret}")
     private String secretKey;
-    @Value("${apple.key_id}")
-    private String APPLE_KEY_ID;
-    @Value("${apple.team_id}")
-    private String APPLE_TEAM_ID;
-    @Value("${apple.bundle_id}")
-    private String APPLE_BUNDLE_ID;
-    @Value("${apple.p8_key_name}")
-    private String APPLE_P8_KEY_NAME; // apple에서 다운받은 p8 인증서(resources에 위치)
-    final static public long GMT_TIME_FORMATTER_IN_MILLISECONDS = 1000L*60*60*9;   // 9시간(우리나라 표준시와 GMT의 시간 차이)
-    final static public long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24; // 30분 -> 테스트용으로 하루로 변경
+    final static public long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24; // 30분 -> 테스트 용으로 하루로 변경
     final static public long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
-    final static public long APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*30;  // 한 달(애플 기준은 6개월 미만)
     final static public String ACCESS_TOKEN_NAME = "accessToken";
     final static public String REFRESH_TOKEN_NAME = "refreshToken";
     final static public String SUCCESS_STRING = "SUCCESS";
@@ -64,16 +44,16 @@ public class JwtTokenProvider {
 
     public SellerRefreshResultDto validateRefreshToken(String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
     {
-        List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = providerUserId, 1 = refreshToken
+        List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = loginId, 1 = refreshToken
         if (findInfo.get(0) == null) { // 유저 정보가 없으면 FAILED 반환
             return new SellerRefreshResultDto(FAIL_STRING, "No user found", null, null);
         }
         if (validateToken(refreshToken))  // refresh Token 유효성 검증 완료 시
         {
-            UserDetails findUser = customUserDetailsService.loadUserByProviderUserId((String)findInfo.get(0));
-            List<String> roles = findUser.getAuthorities().stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
+            UserDetails findSeller = customSellerDetailsService.loadSellerByLoginId((String)findInfo.get(0));
+            List<String> roles = findSeller.getAuthorities().stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
             String newAccessToken = generateAccessToken((String)findInfo.get(0), roles);
-            return new SellerRefreshResultDto(SUCCESS_STRING, "Access token refreshed", findInfo.get(0), newAccessToken);
+            return new SellerRefreshResultDto(SUCCESS_STRING, "Access token refreshed", newAccessToken, findInfo.get(0));
         }
         return new SellerRefreshResultDto(FAIL_STRING, "Refresh token expired", null, null);  // refresh Token 만료 시
     }
@@ -83,8 +63,8 @@ public class JwtTokenProvider {
         return !claims.getBody().getExpiration().before(new Date());    // expire 된 게 아니라면 false + ! => true
     }
 
-    public String generateAccessToken(String providerUserId, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(providerUserId);
+    public String generateAccessToken(String loginId, List<String> roles) {
+        Claims claims = Jwts.claims().setSubject(loginId);
         claims.put("roles", roles);
         Date now = new Date();
         String accessToken = Jwts.builder()
@@ -109,54 +89,12 @@ public class JwtTokenProvider {
         return refreshToken;
     }
 
-    public String generateAppleClientSecret() {
-        Map<String, Object> jwtHeader = new HashMap<>();
-        jwtHeader.put("kid", APPLE_KEY_ID);
-        jwtHeader.put("alg", "ES256");
-        Date localTime = new Date();    // 한국기준 현재 시간
-        Date nowInGMT = new Date(localTime.getTime() - GMT_TIME_FORMATTER_IN_MILLISECONDS); // 한국 시간(사용하는 머신의 리전마다 다를 것임, 우리는 서울 리전의 머신을 쓰는 중) - 9시간 = GMT
-        String appleClientSecret = null;
-        Date validity = new Date(nowInGMT.getTime() + APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS);
-        try {
-            appleClientSecret = Jwts.builder()   // Refresh token 생성
-                    .setHeaderParams(jwtHeader)
-                    .setIssuer(APPLE_TEAM_ID)
-                    .setIssuedAt(nowInGMT) // 발행 시간 - UNIX 시간
-                    .setExpiration(validity) // 만료 시간
-                    .setAudience("https://appleid.apple.com")
-                    .setSubject(APPLE_BUNDLE_ID)
-                    .signWith(SignatureAlgorithm.ES256, getPrivateKey())
-                    .compact();
-        } catch(IOException e) {
-            return null;
-        } catch(NoSuchAlgorithmException e) {
-            return null;
-        } catch(InvalidKeySpecException e) {
-            return null;
-        }
-
-        return appleClientSecret;
-    }
-
-    private PrivateKey getPrivateKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-        ClassPathResource resource = new ClassPathResource(APPLE_P8_KEY_NAME);
-        InputStream inputStream = resource.getInputStream();    // 배포 환경에서 jar로 실행 시, 압축 과정에서 uri에 jar~이 붙어 getURI()를 통한 파일 읽기가 안됨.
-        byte[] bdata = FileCopyUtils.copyToByteArray(inputStream);
-        String privateKey = new String(bdata, StandardCharsets.UTF_8);
-        Reader pemReader = new StringReader(privateKey);
-        PEMParser pemParser = new PEMParser(pemReader);
-        JcaPEMKeyConverter converter = new JcaPEMKeyConverter();
-        PrivateKeyInfo object = (PrivateKeyInfo) pemParser.readObject();
-
-        return converter.getPrivateKey(object);
-    }
-
     public Authentication getAuthentication(String token) { // Jwt 토큰으로 인증 정보를 조회
-        LoginInfoDto userDetails = ((LoginInfoDto) customUserDetailsService.loadUserByProviderUserId(this.getProviderUserId(token)));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());  // password(credentials)는 비우고 사용
+        LoginInfoDto sellerDetails = ((LoginInfoDto) customSellerDetailsService.loadSellerByLoginId(this.getLoginId(token)));
+        return new UsernamePasswordAuthenticationToken(sellerDetails, "", sellerDetails.getAuthorities());  // password(credentials)는 비우고 사용
     }
 
-    public String getProviderUserId(String token) { // Jwt 토큰에서 회원 구별 정보(providerUserId) 추출
+    public String getLoginId(String token) { // Jwt 토큰에서 회원 구별 정보(loginId) 추출
         try
         {
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
