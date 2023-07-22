@@ -52,7 +52,6 @@ public class ItemService {
         Store store = isStorePresent(storeId);
         itemDto.setStore(store);
 
-        System.out.println(itemImgFile);
         if(itemImgFile != null) {
             String imageURL = s3Uploader.upload(itemImgFile, store.getStoreName());
             itemDto.setImageURL(imageURL);
