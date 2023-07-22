@@ -13,16 +13,16 @@ public class SellerRefreshResultDto {
     private String result;
     @Schema(description = "요청 처리 결과에 대한 메세지", example = "Access token refreshed(액세스 토큰 갱신 성공)")
     private String message;
-    @Schema(description = "사장님의 로그인 ID", example = "test123")
-    private String loginId;
     @Schema(description = "갱신된 액세스 토큰")
     private String accessToken;
+    @Schema(description = "사장님의 로그인 ID", example = "test123")
+    private String loginId;
 
-    public SellerRefreshResultDto(String result, String message, String loginId, String accessToken) {
+    public SellerRefreshResultDto(String result, String message, String accessToken, String loginId) {
         this.result = result;
         this.message = message;
-        this.loginId = loginId;
         this.accessToken = accessToken;
+        this.loginId = loginId;
     }
 
 }

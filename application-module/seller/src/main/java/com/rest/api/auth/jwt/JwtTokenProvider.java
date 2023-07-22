@@ -3,7 +3,7 @@ package com.rest.api.auth.jwt;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.CustomSellerDetailsService;
 import com.rest.api.auth.dto.LoginInfoDto;
-import dto.auth.token.customer.CustomerRefreshResultDto;
+import dto.auth.token.customer.SellerRefreshResultDto;
 import io.jsonwebtoken.*;
 
 import jakarta.annotation.PostConstruct;
@@ -30,7 +30,6 @@ public class JwtTokenProvider {
     private String secretKey;
     final static public long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*30; // 30분
     final static public long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
-    final static public long APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*30;  // 한 달(애플 기준은 6개월 미만)
     final static public String ACCESS_TOKEN_NAME = "accessToken";
     final static public String REFRESH_TOKEN_NAME = "refreshToken";
     final static public String SUCCESS_STRING = "SUCCESS";
@@ -43,20 +42,20 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public CustomerRefreshResultDto validateRefreshToken(String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
+    public SellerRefreshResultDto validateRefreshToken(String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
     {
         List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = loginId, 1 = refreshToken
         if (findInfo.get(0) == null) { // 유저 정보가 없으면 FAILED 반환
-            return new CustomerRefreshResultDto(FAIL_STRING, "No user found", null, null);
+            return new SellerRefreshResultDto(FAIL_STRING, "No user found", null, null);
         }
         if (validateToken(refreshToken))  // refresh Token 유효성 검증 완료 시
         {
             UserDetails findSeller = customSellerDetailsService.loadSellerByLoginId((String)findInfo.get(0));
             List<String> roles = findSeller.getAuthorities().stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
             String newAccessToken = generateAccessToken((String)findInfo.get(0), roles);
-            return new CustomerRefreshResultDto(SUCCESS_STRING, "Access token refreshed", findInfo.get(0), newAccessToken);
+            return new SellerRefreshResultDto(SUCCESS_STRING, "Access token refreshed", newAccessToken, findInfo.get(0));
         }
-        return new CustomerRefreshResultDto(FAIL_STRING, "Refresh token expired", null, null);  // refresh Token 만료 시
+        return new SellerRefreshResultDto(FAIL_STRING, "Refresh token expired", null, null);  // refresh Token 만료 시
     }
 
     public boolean validateToken(String jwtToken) { // Jwt 토큰의 유효성 + 만료일자 확인

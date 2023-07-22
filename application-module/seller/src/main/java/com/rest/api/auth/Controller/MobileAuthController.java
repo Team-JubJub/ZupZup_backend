@@ -6,7 +6,7 @@ import com.rest.api.auth.service.MobileAuthService;
 import domain.auth.Seller.Seller;
 import dto.auth.seller.request.SellerRequestDto;
 import dto.auth.seller.response.SellerResponseDto;
-import dto.auth.token.customer.CustomerRefreshResultDto;
+import dto.auth.token.customer.SellerRefreshResultDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
 import dto.auth.token.seller.SellerTokenInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,35 +36,12 @@ public class MobileAuthController {
     private final MobileAuthService mobileAuthService;
 
     // < -------------- Sign-in part -------------- >
-    @Operation(summary = "로그인(리프레시 토큰 유효 시)", description = "리프레시 토큰을 이용한 액세스 토큰 갱신")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
-                    headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰")},
-                    content = @Content(schema = @Schema(implementation = CustomerRefreshResultDto.class))),
-            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
-                    content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
-            @ApiResponse(responseCode = "401", description = "리프레시 토큰의 유효성 인증이 실패한 경우",
-                    content = @Content(schema = @Schema(example = "Refresh token validation failed. Login required")))
-    })
-    @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우), refresh token만 받아옴
-    public ResponseEntity signInWithRefreshToken(@Parameter(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        CustomerRefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
-        if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, refreshResult.getAccessToken());
-
-            return new ResponseEntity(refreshResult, responseHeaders, HttpStatus.OK);
-        }
-
-        return new ResponseEntity("Refresh token validation failed. Login required", HttpStatus.UNAUTHORIZED); // Refresh token 유효성 인증 실패
-    }
-
     @Operation(summary = "로그인(모든 토큰 만료 시)", description = "Login ID를 이용, 액세스와 리프레시 토큰 재발급")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스, 리프레시 토큰 재발급(로그인) 성공",
                     headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
                             @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
-                    content = @Content(schema = @Schema(implementation = CustomerTokenInfoDto.class))),
+                    content = @Content(schema = @Schema(implementation = SellerTokenInfoDto.class))),
             @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우",
                     content = @Content(schema = @Schema(example = "Required request body is missing"))),
             @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
@@ -84,6 +61,29 @@ public class MobileAuthController {
         responseHeaders.set(jwtTokenProvider.REFRESH_TOKEN_NAME, reSignInResult.getRefreshToken());
 
         return new ResponseEntity(reSignInResult, responseHeaders, HttpStatus.OK);
+    }
+
+    @Operation(summary = "로그인(리프레시 토큰 유효 시)", description = "리프레시 토큰을 이용한 액세스 토큰 갱신")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
+                    headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰")},
+                    content = @Content(schema = @Schema(implementation = SellerRefreshResultDto.class))),
+            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
+                    content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
+            @ApiResponse(responseCode = "401", description = "리프레시 토큰의 유효성 인증이 실패한 경우",
+                    content = @Content(schema = @Schema(example = "Refresh token validation failed. Login required")))
+    })
+    @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우), refresh token만 받아옴
+    public ResponseEntity signInWithRefreshToken(@Parameter(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+        SellerRefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
+        if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, refreshResult.getAccessToken());
+
+            return new ResponseEntity(refreshResult, responseHeaders, HttpStatus.OK);
+        }
+
+        return new ResponseEntity("Refresh token validation failed. Login required", HttpStatus.UNAUTHORIZED); // Refresh token 유효성 인증 실패
     }
 
     // < -------------- Sign-out part -------------- >

@@ -61,7 +61,7 @@ public class MobileAuthService {
                 return sellerTokenInfoDto;
             }
             SellerDto sellerDto = modelMapper.map(sellerEntity, SellerDto.class);
-            sellerTokenInfoDto = generateTokens(sellerDto, "Token refreshed");
+            sellerTokenInfoDto = generateTokens(sellerDto, "Token generated");
         } catch (NoSuchElementException e) {    // 로그인 id와 매칭되는 사장님 없으면 예외 처리
             throw new NoSellerPresentsException();
         }

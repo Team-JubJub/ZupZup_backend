@@ -7,7 +7,7 @@ import lombok.ToString;
 @Schema(description = "액세스 토큰 갱신 요청의 결과와 정보를 담은 DTO")
 @Getter
 @ToString
-public class CustomerRefreshResultDto {
+public class SellerRefreshResultDto {
 
     @Schema(description = "요청 처리 결과", example = "success")
     private String result;
@@ -18,7 +18,7 @@ public class CustomerRefreshResultDto {
     @Schema(description = "갱신된 액세스 토큰")
     private String accessToken;
 
-    public CustomerRefreshResultDto(String result, String message, String providerUserId, String accessToken) {
+    public SellerRefreshResultDto(String result, String message, String providerUserId, String accessToken) {
         this.result = result;
         this.message = message;
         this.providerUserId = providerUserId;
