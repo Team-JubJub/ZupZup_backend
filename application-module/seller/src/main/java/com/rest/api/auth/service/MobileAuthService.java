@@ -54,7 +54,7 @@ public class MobileAuthService {
             Seller sellerEntity = sellerRepository.findSellerByLoginId(sellerLoginId);
             if (!isValidPassword(sellerEntity, sellerLoginPwd)) {   // 비밀번호가 잘못됐을 경우
                 sellerTokenInfoDto.setResult(LOGIN_FAILS);
-                sellerTokenInfoDto.setResult("Wrong password");
+                sellerTokenInfoDto.setMessage("Wrong password");
                 sellerTokenInfoDto.setAccessToken(null);
                 sellerTokenInfoDto.setRefreshToken(null);
 
