@@ -45,23 +45,15 @@ public class OrderService {
 
     // <-------------------- GET part -------------------->
 //    @Cacheable(cacheNames = "sellerOrders", key = "#storeId + #page")    // 리스트 캐시(sellerOrders::storeId+pageNo 형식, 페이지 별로 캐시함.) -> 캐시 관련한 것 일단 사용자 앱 만들어지기 전까지 주석처리
-    public OrderResponseDto.GetOrderListDto orderList(Long storeId, int page, Pageable pageable) {
+    public OrderResponseDto.GetOrderListDto orderList(Long storeId) {
         isStorePresent(storeId);    // Check presence of store
-        Boolean hasNext = true; // 다음 페이지가 있는지 여부를 판단하는 변수
 
-        List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId, pageable);
+        List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId);
         List<OrderResponseDto.GetOrderDetailsDto> orderList = allOrderListEntity.stream()   // Entity -> Dto
                 .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDetailsDto.class))
                 .collect(Collectors.toList());
-        if (orderList.size() == 0) {    // 없는 페이지를 조회했을 경우
-            hasNext = false;
-        } else if (orderList.get(orderList.size() - 1).getOrderId() == 1) {    // 해당 페이지의 마지막 주문의 id가 1이면
-            hasNext = false;
-        }
         OrderResponseDto.GetOrderListDto getOrderListDto = new OrderResponseDto.GetOrderListDto();
         getOrderListDto.setOrderList(orderList);
-        getOrderListDto.setPageNo(page);
-        getOrderListDto.setHasNext(hasNext);
 
         return getOrderListDto;
     }
