@@ -28,7 +28,7 @@ public class JwtTokenProvider {
     private final CustomSellerDetailsService customSellerDetailsService;
     @Value("${spring.security.jwt.secret}")
     private String secretKey;
-    final static public long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*30; // 30분
+    final static public long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24; // 30분 -> 테스트 용으로 하루로 변경
     final static public long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
     final static public String ACCESS_TOKEN_NAME = "accessToken";
     final static public String REFRESH_TOKEN_NAME = "refreshToken";

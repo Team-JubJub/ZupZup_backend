@@ -47,7 +47,7 @@ public class JwtTokenProvider {
     @Value("${apple.p8_key_name}")
     private String APPLE_P8_KEY_NAME; // apple에서 다운받은 p8 인증서(resources에 위치)
     final static public long GMT_TIME_FORMATTER_IN_MILLISECONDS = 1000L*60*60*9;   // 9시간(우리나라 표준시와 GMT의 시간 차이)
-    final static public long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*30; // 30분
+    final static public long ACCESS_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24; // 30분 -> 테스트용으로 하루로 변경
     final static public long REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*14;  // 2주
     final static public long APPLE_CLIENT_SECRET_VALIDITY_IN_MILLISECONDS = 1000L*60*60*24*30;  // 한 달(애플 기준은 6개월 미만)
     final static public String ACCESS_TOKEN_NAME = "accessToken";
