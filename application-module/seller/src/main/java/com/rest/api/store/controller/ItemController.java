@@ -6,6 +6,9 @@ import dto.item.seller.request.ItemRequestDto;
 import dto.item.seller.request.UpdateRequestDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
@@ -28,10 +31,14 @@ public class ItemController {
     /**
      * 아이템 컨트롤러
      */
+    @Tag(name = "아이템 저장", description = "새로운 아이템 저장용")
+    @ApiResponses(
+            @ApiResponse(responseCode = "200", description = "상품 (상품명)(이)가 저장되었습니다.")
+    )
     @PostMapping("/{storeId}") // 상품 저장
     public ResponseEntity saveItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                    @RequestPart(value = "item") ItemRequestDto.postDto requestDto,
-                                   @RequestPart(value = "image") @Nullable MultipartFile itemImg,
+                                   @RequestPart(value = "image", required = false) MultipartFile itemImg,
                                    @PathVariable Long storeId) throws Exception {
 
         String itemName = itemService.saveItem(requestDto, itemImg, storeId);
@@ -39,12 +46,16 @@ public class ItemController {
         return new ResponseEntity(format, HttpStatus.CREATED); // 상품의 이름 반환
     }
 
+    @Tag(name = "아이템 업데이트", description = "기존 아이템 업데이트")
+    @ApiResponses(
+            @ApiResponse(responseCode = "200", description = "수정된 response(확인용)")
+    )
     @PatchMapping("/{storeId}/{itemId}")
     public ResponseEntity updateItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @PathVariable Long itemId,
                                      @PathVariable Long storeId,
                                      @RequestPart(value = "item") UpdateRequestDto updateDto,
-                                     @RequestPart(value = "image") @Nullable MultipartFile itemImg) throws Exception {
+                                     @RequestPart(value = "image", required = false) MultipartFile itemImg) throws Exception {
 
 
         String response = itemService.updateItem(itemId, storeId, updateDto, itemImg);
@@ -52,6 +63,10 @@ public class ItemController {
         return new ResponseEntity(response, HttpStatus.OK); //완료 여부 반환
     }
 
+    @Tag(name = "아이템 삭제", description = "아이템 삭제")
+    @ApiResponses(
+            @ApiResponse(responseCode = "200", description = "(아무것도 X)")
+    )
     @DeleteMapping("/{storeId}/{itemId}")
     public ResponseEntity deleteItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @PathVariable Long itemId, @PathVariable String storeId) {
@@ -60,7 +75,10 @@ public class ItemController {
         return new ResponseEntity(response, HttpStatus.OK); //삭제 여부 반환
     }
 
-
+    @Tag(name = "아이템 읽어오기", description = "전체 아이템 읽어오기")
+    @ApiResponses(
+            @ApiResponse(responseCode = "200", description = "전체 아이템 리스트 제공")
+    )
     // 전체 제품 불러오기
     @GetMapping("/{storeId}/management")
     public ResponseEntity readItems(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -70,6 +88,10 @@ public class ItemController {
         return new ResponseEntity(dtoList, HttpStatus.OK);
     }
 
+    @Tag(name = "갯수 수정", description = "아이템 갯수 수정")
+    @ApiResponses(
+            @ApiResponse(responseCode = "200", description = "수정이 완료되었습니다.")
+    )
     // 제품 개수 수정하기
     @PatchMapping("/{storeId}/quantity")
     public ResponseEntity modifyQuantity(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
