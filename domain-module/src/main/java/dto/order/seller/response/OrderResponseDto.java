@@ -14,8 +14,6 @@ public class OrderResponseDto {
     @Setter
     public static class GetOrderListDto {
         private List<GetOrderDetailsDto> orderList;
-        private int pageNo;
-        private Boolean hasNext;
     }
 
     @Getter
