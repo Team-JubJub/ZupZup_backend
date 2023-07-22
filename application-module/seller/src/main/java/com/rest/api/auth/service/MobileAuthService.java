@@ -4,10 +4,11 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import domain.auth.Role;
 import domain.auth.Seller.Seller;
+import domain.store.Store;
 import dto.auth.seller.SellerDto;
 import dto.auth.seller.request.SellerRequestDto;
-import dto.auth.token.TokenInfoDto;
-import exception.auth.customer.NoUserPresentsException;
+import dto.auth.token.customer.CustomerTokenInfoDto;
+import dto.auth.token.seller.SellerTokenInfoDto;
 import exception.auth.seller.NoSellerPresentsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import repository.SellerRepository;
+import repository.StoreRepository;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,6 +36,7 @@ public class MobileAuthService {
     private final PasswordEncoder passwordEncoder;
 
     private final SellerRepository sellerRepository;
+    private final StoreRepository storeRepository;
     private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -42,28 +45,28 @@ public class MobileAuthService {
     final static public String LOGIN_SUCCESS = "Login success";
 
     // <-------------------- Sign-in part -------------------->
-    public TokenInfoDto signInWithSellerLoginId(SellerRequestDto.SellerSignInDto sellerSignInDto) {
+    public SellerTokenInfoDto signInWithSellerLoginId(SellerRequestDto.SellerSignInDto sellerSignInDto) {
         String sellerLoginId = sellerSignInDto.getLoginId();
         String sellerLoginPwd = sellerSignInDto.getLoginPwd();
 
-        TokenInfoDto tokenInfoDto = new TokenInfoDto();
+        SellerTokenInfoDto sellerTokenInfoDto = new SellerTokenInfoDto();
         try {
             Seller sellerEntity = sellerRepository.findSellerByLoginId(sellerLoginId);
             if (!isValidPassword(sellerEntity, sellerLoginPwd)) {   // 비밀번호가 잘못됐을 경우
-                tokenInfoDto.setResult(LOGIN_FAILS);
-                tokenInfoDto.setResult("Wrong password");
-                tokenInfoDto.setAccessToken(null);
-                tokenInfoDto.setRefreshToken(null);
+                sellerTokenInfoDto.setResult(LOGIN_FAILS);
+                sellerTokenInfoDto.setResult("Wrong password");
+                sellerTokenInfoDto.setAccessToken(null);
+                sellerTokenInfoDto.setRefreshToken(null);
 
-                return tokenInfoDto;
+                return sellerTokenInfoDto;
             }
             SellerDto sellerDto = modelMapper.map(sellerEntity, SellerDto.class);
-            tokenInfoDto = generateTokens(sellerDto, "Token refreshed");
+            sellerTokenInfoDto = generateTokens(sellerDto, "Token generated");
         } catch (NoSuchElementException e) {    // 로그인 id와 매칭되는 사장님 없으면 예외 처리
             throw new NoSellerPresentsException();
         }
 
-        return tokenInfoDto;
+        return sellerTokenInfoDto;
     }
 
     // <-------------------- Account recovery part -------------------->
@@ -86,14 +89,16 @@ public class MobileAuthService {
         return true;
     }
 
-    private TokenInfoDto generateTokens(SellerDto sellerDto, String message) {
+    private SellerTokenInfoDto generateTokens(SellerDto sellerDto, String message) {
+        Store storeEntity = storeRepository.findBySellerId(sellerDto.getSellerId());
+        Long storeId = storeEntity.getStoreId();
         List<String> roles = Arrays.asList(sellerDto.getRole().getRole());
         String accessToken = jwtTokenProvider.generateAccessToken(sellerDto.getLoginId(), roles);
         String refreshToken = jwtTokenProvider.generateRefreshToken();
         redisService.setStringValue(refreshToken, sellerDto.getLoginId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
-        TokenInfoDto tokenInfoDto = new TokenInfoDto(LOGIN_SUCCESS, message, accessToken, refreshToken);
+        SellerTokenInfoDto sellerTokenInfoDto = new SellerTokenInfoDto(LOGIN_SUCCESS, message, accessToken, refreshToken, storeId);
 
-        return tokenInfoDto;
+        return sellerTokenInfoDto;
     }
 
 

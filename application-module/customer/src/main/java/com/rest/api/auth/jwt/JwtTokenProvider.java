@@ -3,7 +3,7 @@ package com.rest.api.auth.jwt;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.CustomUserDetailsService;
 import com.rest.api.auth.dto.LoginInfoDto;
-import dto.auth.token.RefreshResultDto;
+import dto.auth.token.customer.SellerRefreshResultDto;
 import io.jsonwebtoken.*;
 
 import jakarta.annotation.PostConstruct;
@@ -62,20 +62,20 @@ public class JwtTokenProvider {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 
-    public RefreshResultDto validateRefreshToken(String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
+    public SellerRefreshResultDto validateRefreshToken(String refreshToken)  // refresh token 유효성 검증, 새로운 access token 발급
     {
         List<String> findInfo = redisService.getListValue(refreshToken);    // 0 = providerUserId, 1 = refreshToken
         if (findInfo.get(0) == null) { // 유저 정보가 없으면 FAILED 반환
-            return new RefreshResultDto(FAIL_STRING, "No user found", null, null);
+            return new SellerRefreshResultDto(FAIL_STRING, "No user found", null, null);
         }
         if (validateToken(refreshToken))  // refresh Token 유효성 검증 완료 시
         {
             UserDetails findUser = customUserDetailsService.loadUserByProviderUserId((String)findInfo.get(0));
             List<String> roles = findUser.getAuthorities().stream().map(authority -> authority.getAuthority()).collect(Collectors.toList());
             String newAccessToken = generateAccessToken((String)findInfo.get(0), roles);
-            return new RefreshResultDto(SUCCESS_STRING, "Access token refreshed", findInfo.get(0), newAccessToken);
+            return new SellerRefreshResultDto(SUCCESS_STRING, "Access token refreshed", findInfo.get(0), newAccessToken);
         }
-        return new RefreshResultDto(FAIL_STRING, "Refresh token expired", null, null);  // refresh Token 만료 시
+        return new SellerRefreshResultDto(FAIL_STRING, "Refresh token expired", null, null);  // refresh Token 만료 시
     }
 
     public boolean validateToken(String jwtToken) { // Jwt 토큰의 유효성 + 만료일자 확인
