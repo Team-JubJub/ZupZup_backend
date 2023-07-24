@@ -28,10 +28,6 @@ public class StoreController {
 
     private final StoreService storeService;
 
-    /**
-     * 메인 페이지(관리 관련) 컨트롤러
-     */
-
     @GetMapping("/{storeId}")
     public StoreResponseDto.GetStoreDetailsDto storeDetails(@PathVariable Long storeId) {
         return storeService.storeDetails(storeId);
