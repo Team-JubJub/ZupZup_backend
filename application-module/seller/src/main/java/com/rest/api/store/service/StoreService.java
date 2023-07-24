@@ -33,37 +33,12 @@ public class StoreService {
     // 가게 저장
 
     // 가게 메인 페이지
-    /*public StoreResponseDto mainPage(Long storeId) {
-
-        // 가게 관련 내용 (가게 이름 및 운영 시간, 이벤트 내용, 오늘 할인 시간)
-        // 제품 관련 내용 ([제품 이미지, 제품 이름, 가격])
-
+    public StoreResponseDto.GetStoreDetailsDto storeDetails(Long storeId) {
         Store store = storeRepository.findById(storeId).get();
-        StoreResponseDto responseDto = new StoreResponseDto();
+        StoreResponseDto.GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(store, StoreResponseDto.GetStoreDetailsDto.class);
 
-        // 엔티티->Dto
-        responseDto.setStoreId(store.getStoreId());
-        responseDto.setStoreName(store.getStoreName());
-        responseDto.setOpenTime(store.getOpenTime());
-        responseDto.setEndTime(store.getCloseTime());
-        responseDto.setSaleMatters(store.getSaleMatters());
-        responseDto.setSaleTimeStart(store.getSaleTimeStart());
-        responseDto.setSaleTimeEnd(store.getSaleTimeEnd());
-
-        // 아이템 가져오기 및 저장
-        List<Item> itemList = itemRepository.findAllByStore(store);
-        List<ItemResponseDto> itemDtoList = new ArrayList<>();
-
-        for(Item item : itemList) {
-
-            ItemResponseDto itemDto = new ItemResponseDto();
-            itemDtoList.add(itemDto.toItemResponseDto(item));
-        }
-
-        responseDto.setStoreItems(itemDtoList);
-
-        return responseDto;
-    }*/
+        return getStoreDetailsDto;
+    }
 
     // 가게 영업중 여부 전환
     public String changeIsOpened(Long storeId, Boolean isOpened) {
