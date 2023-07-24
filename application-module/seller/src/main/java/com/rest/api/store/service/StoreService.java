@@ -30,8 +30,6 @@ public class StoreService {
     @Autowired
     ModelMapper modelMapper;
 
-    // 가게 저장
-
     // 가게 메인 페이지
     public StoreResponseDto.GetStoreDetailsDto storeDetails(Long storeId) {
         Store store = storeRepository.findById(storeId).get();

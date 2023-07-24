@@ -29,7 +29,8 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping("/{storeId}")
-    public StoreResponseDto.GetStoreDetailsDto storeDetails(@PathVariable Long storeId) {
+    public StoreResponseDto.GetStoreDetailsDto storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                                            @PathVariable Long storeId) {
         return storeService.storeDetails(storeId);
     }
 
