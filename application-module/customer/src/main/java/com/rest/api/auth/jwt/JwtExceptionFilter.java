@@ -3,6 +3,8 @@ package com.rest.api.auth.jwt;
 import exception.auth.RefreshRequiredException;
 import exception.auth.RequiredHeaderNotExistException;
 import exception.auth.BlackListTokenException;
+import exception.auth.SignFailedException;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,6 +29,12 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write(e.getMessage());
         } catch (BlackListTokenException e) {   // 로그아웃, 회원탈퇴 된 회원의 액세스토큰으로 요청한 경우
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write(e.getMessage());
+        } catch (SignFailedException e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.getWriter().write(e.getMessage());
+        } catch (MalformedJwtException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write(e.getMessage());
         }
