@@ -3,7 +3,10 @@ package com.rest.api.auth.jwt;
 import exception.auth.RefreshRequiredException;
 import exception.auth.RequiredHeaderNotExistException;
 import exception.auth.BlackListTokenException;
+import exception.auth.SignFailedException;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,6 +38,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             } catch (ExpiredJwtException e) {   // validateToken의 claims.getBody().getExpiration()에서 발생
                 System.out.println("Token expired");
                 throw new RefreshRequiredException();
+            } catch (SignatureException e) {
+                throw new SignFailedException();
+            } catch (MalformedJwtException e) {
+                throw new MalformedJwtException("Provided JWT token's format is not correct.");
             }
         }
         else {  // 로그아웃 혹은 회원탈퇴한 유저
