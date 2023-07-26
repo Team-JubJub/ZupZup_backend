@@ -99,7 +99,7 @@ public class OrderService {
     // <--- Methods for readability --->
     private String orderTimeSetter() {
         ZonedDateTime nowTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));    // 주문한 시간
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a").withLocale(Locale.ENGLISH);   // 09:43 AM, 04:57 PM
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");   // ex) 2023-07-26 21:54
         String formattedOrderTime = nowTime.format(formatter);
 
         return formattedOrderTime;
