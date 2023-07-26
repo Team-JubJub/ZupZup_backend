@@ -131,7 +131,7 @@ public class MobileOAuthService {
     // <--- Methods for readability --->
     private String registerTimeSetter() {
         ZonedDateTime nowDateTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm a").withLocale(Locale.ENGLISH);   // 09:43 AM, 04:57 PM
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").withLocale(Locale.ENGLISH);   // 09:43 AM, 04:57 PM
         String formattedRegisterTime = nowDateTime.format(formatter);
 
         return formattedRegisterTime;
