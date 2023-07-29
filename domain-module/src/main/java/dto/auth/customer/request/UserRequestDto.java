@@ -2,12 +2,17 @@ package dto.auth.customer.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.nio.charset.Charset;
 
 public class UserRequestDto {
 
     @Schema(description = "회원가입 요청 시 사용되는 DTO")
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Getter
     public class UserSignUpDto {
         @Schema(description = "소셜 플랫폼에서 받아온 유저의 unique ID", example = "im1from2naver3")
@@ -42,6 +47,8 @@ public class UserRequestDto {
     }
 
     @Schema(description = "재로그인 요청 시 사용되는 DTO")
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Getter
     public class UserSignInDto {
         @Schema(description = "소셜 플랫폼에서 받아온 유저의 unique ID", example = "im1from2naver3")
@@ -50,6 +57,8 @@ public class UserRequestDto {
     }
 
     @Schema(description = "계정 찾기 시 사용되는 DTO")
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Getter
     public class AccountRecoveryDto {
         @Schema(description = "계정을 찾고자 하는 유저의 전화번호", example = "010-2828-7449")

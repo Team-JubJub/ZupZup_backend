@@ -85,7 +85,7 @@ public class StoreService {
         Seller seller = sellerRepository.findSellerByLoginId(loginId);
         Long sellerId = seller.getSellerId();
         Store store = storeRepository.findBySellerId(sellerId);
-        SellerResponseDto.TestSignInResponseDto testSignInResponseDto = new SellerResponseDto.TestSignInResponseDto();
+        SellerResponseDto.TestSignInResponseDto testSignInResponseDto = new SellerResponseDto().new TestSignInResponseDto();
         testSignInResponseDto.setMessage("success");
         testSignInResponseDto.setStoreId(store.getStoreId());
 
@@ -93,7 +93,7 @@ public class StoreService {
             return testSignInResponseDto;
         }
 
-        return new SellerResponseDto.TestSignInResponseDto();
+        return new SellerResponseDto().new TestSignInResponseDto();
     }
 
 }

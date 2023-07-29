@@ -2,12 +2,16 @@ package dto.auth.seller.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class SellerRequestDto {
     @Schema(description = "재로그인 요청 시 사용되는 DTO")
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Getter
-    public static class SellerSignInDto {
+    public class SellerSignInDto {
         @Schema(description = "사장님의 로그인 ID", example = "test123")
         @NotBlank(message = "ID cannot be null or empty or space")
         private String loginId;    // 클라이언트에서 제공한 소셜 플랫폼의 user unique ID
@@ -27,16 +31,20 @@ public class SellerRequestDto {
 
     // < ------ Test ------ >
     @Schema(description = "사장님 앱 로그인에 사용되는 DTO")
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Getter
-    public static class SellerTestSignInDto {
+    public class SellerTestSignInDto {
         @Schema(description = "사장님 앱 로그인에 사용되는 ID", example = "test123")
         private String loginId;
         @Schema(description = "사장님 앱 로그인에 사용되는 비밀번호", example = "test1234")
         private String loginPwd;
     }
 
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Getter
-    public static class SellerTestSignUpDto {
+    public class SellerTestSignUpDto {
         private String loginId;
         private String loginPwd;
     }

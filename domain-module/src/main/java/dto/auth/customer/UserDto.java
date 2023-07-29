@@ -3,9 +3,13 @@ package dto.auth.customer;
 
 import domain.auth.User.Provider;
 import domain.auth.Role;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class UserDto {
