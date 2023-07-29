@@ -9,7 +9,7 @@ public class UserRequestDto {
 
     @Schema(description = "회원가입 요청 시 사용되는 DTO")
     @Getter
-    public static class UserSignUpDto {
+    public class UserSignUpDto {
         @Schema(description = "소셜 플랫폼에서 받아온 유저의 unique ID", example = "im1from2naver3")
         @NotBlank(message = "User unique id cannot be null or empty or space")
         private String userUniqueId;
@@ -43,7 +43,7 @@ public class UserRequestDto {
 
     @Schema(description = "재로그인 요청 시 사용되는 DTO")
     @Getter
-    public static class UserSignInDto {
+    public class UserSignInDto {
         @Schema(description = "소셜 플랫폼에서 받아온 유저의 unique ID", example = "im1from2naver3")
         @NotBlank(message = "User unique id cannot be null or empty or space")
         private String userUniqueId;    // 클라이언트에서 제공한 소셜 플랫폼의 user unique ID
@@ -51,7 +51,7 @@ public class UserRequestDto {
 
     @Schema(description = "계정 찾기 시 사용되는 DTO")
     @Getter
-    public static class AccountRecoveryDto {
+    public class AccountRecoveryDto {
         @Schema(description = "계정을 찾고자 하는 유저의 전화번호", example = "010-2828-7449")
         @NotBlank(message = "PhoneNumber cannot be null or empty or space")
         @Pattern(regexp = "^010-\\d{4}-\\d{4}$", message = "Phone number pattern should be like 010-xxxx-xxxx")
