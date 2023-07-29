@@ -41,7 +41,7 @@ public class ItemService {
          */
 
         //1. requestDto -> itemDto로 전환
-        ItemDto.getDtoWithStore itemDto = new ItemDto.getDtoWithStore();
+        ItemDto.getDtoWithStore itemDto = new ItemDto().new getDtoWithStore();
         itemDto.setItemName(requestDto.getItemName());
         itemDto.setItemPrice(requestDto.getItemPrice());
         itemDto.setSalePrice(requestDto.getSalePrice());

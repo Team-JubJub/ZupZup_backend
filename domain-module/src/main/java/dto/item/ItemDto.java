@@ -9,7 +9,7 @@ import lombok.Setter;
 public class ItemDto {
 
     @Getter @Setter
-    public static class getDtoWithStore {
+    public class getDtoWithStore {
         private String itemName;
         private String imageURL;
         private int itemPrice;
@@ -19,7 +19,7 @@ public class ItemDto {
     }
 
     @Getter @Setter
-    public static class getDto {
+    public class getDto {
         private Long itemId;
         private String itemName;
         private String imageURL;

@@ -129,7 +129,7 @@ public class OrderService {
             Long itemId = orderList.get(i).getItemId();
             int orderedItemCount = orderList.get(i).getItemCount(); // 여기까지 클라에서 받아온 아이템 주문 정보
 
-            ItemDto.getDtoWithStore itemDto = new ItemDto.getDtoWithStore();    // Entity 수정에 쓰일 Dto.
+            ItemDto.getDtoWithStore itemDto = new ItemDto().new getDtoWithStore();    // Entity 수정에 쓰일 Dto.
             Item itemEntity = itemRepository.findById(itemId).get();
             int originalItemCount = itemEntity.getItemCount();
 

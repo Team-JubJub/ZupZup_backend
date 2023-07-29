@@ -6,7 +6,7 @@ import lombok.Setter;
 
 public class ItemRequestDto {
     @Getter @Setter
-    public static class postDto {
+    public class postDto {
         private String itemName;
         private int itemPrice;
         private int salePrice;
@@ -14,7 +14,7 @@ public class ItemRequestDto {
     }
 
     @Getter @Setter
-    public static class patchDto {
+    public class patchDto {
 
         private Long itemId;
         private int itemCount;
