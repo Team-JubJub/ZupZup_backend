@@ -11,7 +11,7 @@ public class StoreResponseDto {
     // <-------------------- GET part -------------------->
     @Getter
     @Setter
-    public static class GetStoreDto {
+    public class GetStoreDto {
         private Long storeId;
 
         private String storeName;
@@ -23,7 +23,7 @@ public class StoreResponseDto {
 
     @Getter
     @Setter
-    public static class GetStoreDetailDto {
+    public class GetStoreDetailDto {
 
         private Long storeId;
 

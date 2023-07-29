@@ -7,7 +7,7 @@ public class StoreResponseDto {
 
     @Getter
     @Setter
-    public static class GetStoreDetailsDto {
+    public class GetStoreDetailsDto {
         private Long storeId;
         private Long sellerId;
         private String storeName; //가게이름
@@ -27,7 +27,7 @@ public class StoreResponseDto {
     }
 
     @Getter @Setter
-    public static class response {
+    public class response {
 
         private String storeName;
         private String openTime;
