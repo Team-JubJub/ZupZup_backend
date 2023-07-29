@@ -12,13 +12,13 @@ public class OrderResponseDto {
     // <-------------------- GET part -------------------->
     @Getter
     @Setter
-    public static class GetOrderListDto {
+    public class GetOrderListDto {
         private List<GetOrderDetailsDto> orderList;
     }
 
     @Getter
     @Setter
-    public static class GetOrderDetailsDto { // 단건 GET에 mapping할 DTO
+    public class GetOrderDetailsDto { // 단건 GET에 mapping할 DTO
         private Long orderId;    // order ID
         private Long storeId;
         private Long userId;
@@ -37,7 +37,7 @@ public class OrderResponseDto {
     // <-------------------- PATCH part -------------------->
     @Getter
     @Setter
-    public static class PatchOrderResponseDto { // PATCH 시 return 할 DTO(신규 주문 확정, 확정 주문 취소 시에만 사용)
+    public class PatchOrderResponseDto { // PATCH 시 return 할 DTO(신규 주문 확정, 확정 주문 취소 시에만 사용)
         private GetOrderDetailsDto data;
         private String message;
     }

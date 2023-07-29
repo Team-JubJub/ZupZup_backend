@@ -60,7 +60,7 @@ public class OrderService {
         orderRepository.save(orderEntity);
         OrderResponseDto.GetOrderDetailsDto madeOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
 
-        OrderResponseDto.PostOrderResponseDto postOrderResponseDto = new OrderResponseDto.PostOrderResponseDto();
+        OrderResponseDto.PostOrderResponseDto postOrderResponseDto = new OrderResponseDto().new PostOrderResponseDto();
         postOrderResponseDto.setData(madeOrderDetailsDto);
         postOrderResponseDto.setHref("http://localhost:8090/customer/order/"+madeOrderDetailsDto.getOrderId());
         postOrderResponseDto.setMessage("주문이 완료되었습니다.");

@@ -52,7 +52,7 @@ public class OrderService {
         List<OrderResponseDto.GetOrderDetailsDto> orderList = allOrderListEntity.stream()   // Entity -> Dto
                 .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDetailsDto.class))
                 .collect(Collectors.toList());
-        OrderResponseDto.GetOrderListDto getOrderListDto = new OrderResponseDto.GetOrderListDto();
+        OrderResponseDto.GetOrderListDto getOrderListDto = new OrderResponseDto().new GetOrderListDto();
         getOrderListDto.setOrderList(orderList);
 
         return getOrderListDto;
@@ -147,7 +147,7 @@ public class OrderService {
         orderEntity.updateOrder(orderDto);
         orderRepository.save(orderEntity);
         OrderResponseDto.GetOrderDetailsDto patchedOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = new OrderResponseDto.PatchOrderResponseDto();
+        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = new OrderResponseDto().new PatchOrderResponseDto();
         patchOrderResponseDto.setData(patchedOrderDetailsDto);
         return patchOrderResponseDto;
     }

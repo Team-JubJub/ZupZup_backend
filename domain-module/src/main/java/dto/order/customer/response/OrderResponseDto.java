@@ -11,7 +11,7 @@ public class OrderResponseDto {
     // <-------------------- POST part -------------------->
     @Getter
     @Setter
-    public static class PostOrderResponseDto {
+    public class PostOrderResponseDto {
         private GetOrderDetailsDto data;
         private String href;
         private String message;
@@ -20,7 +20,7 @@ public class OrderResponseDto {
     // <-------------------- GET part -------------------->
     @Getter
     @Setter
-    public static class GetOrderDto {
+    public class GetOrderDto {
         private Long orderId;
         private String storeName;   // entity에는 store 객체 저장, modelMapper가 알아서 name 빼내줌.
         private OrderStatus orderStatus;
@@ -32,7 +32,7 @@ public class OrderResponseDto {
 
     @Getter
     @Setter
-    public static class GetOrderDetailsDto {
+    public class GetOrderDetailsDto {
         private Long orderId;
         private String storeName;   // entity에는 store 객체 저장, modelMapper가 알아서 name 빼내줌.
         private String storeAddress; // 상동

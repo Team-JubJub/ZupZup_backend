@@ -11,7 +11,7 @@ public class OrderRequestDto {
     // <-------------------- POST part -------------------->
     @Getter
     @Setter
-    public static class PostOrderDto {
+    public class PostOrderDto {
         private String userName; // 닉네임
         private String phoneNumber; // 전화번호 -> 필요 없으면 삭제할 것
         private String visitTime;
