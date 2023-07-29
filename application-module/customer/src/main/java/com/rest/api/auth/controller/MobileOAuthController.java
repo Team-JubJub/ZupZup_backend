@@ -7,7 +7,7 @@ import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
 import dto.auth.customer.response.UserResponseDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
-import dto.auth.token.customer.SellerRefreshResultDto;
+import dto.auth.token.customer.CustomerRefreshResultDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -125,7 +125,7 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
                     headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰")},
-                    content = @Content(schema = @Schema(implementation = SellerRefreshResultDto.class))),
+                    content = @Content(schema = @Schema(implementation = CustomerRefreshResultDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
             @ApiResponse(responseCode = "401", description = "리프레시 토큰의 유효성 인증이 실패한 경우",
@@ -133,7 +133,7 @@ public class MobileOAuthController {
     })
     @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우), refresh token만 받아옴
     public ResponseEntity signInWithRefreshToken(@Parameter(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        SellerRefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
+        CustomerRefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
         if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, refreshResult.getAccessToken());

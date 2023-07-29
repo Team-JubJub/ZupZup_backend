@@ -6,8 +6,8 @@ import com.rest.api.auth.service.MobileAuthService;
 import domain.auth.Seller.Seller;
 import dto.auth.seller.request.SellerRequestDto;
 import dto.auth.seller.response.SellerResponseDto;
-import dto.auth.token.customer.SellerRefreshResultDto;
-import dto.auth.token.customer.CustomerTokenInfoDto;
+
+import dto.auth.token.seller.SellerRefreshResultDto;
 import dto.auth.token.seller.SellerTokenInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

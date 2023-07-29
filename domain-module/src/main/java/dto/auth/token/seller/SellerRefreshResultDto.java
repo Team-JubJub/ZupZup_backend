@@ -2,10 +2,14 @@ package dto.auth.token.seller;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 @Schema(description = "액세스 토큰 갱신 요청의 결과와 정보를 담은 DTO")
+@NoArgsConstructor
 @Getter
+@Setter
 @ToString
 public class SellerRefreshResultDto {
 
