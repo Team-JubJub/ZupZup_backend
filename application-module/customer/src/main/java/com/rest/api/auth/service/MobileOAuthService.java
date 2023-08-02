@@ -10,7 +10,7 @@ import dto.auth.customer.UserDto;
 import dto.auth.customer.request.AccountRecoveryDto;
 import dto.auth.customer.request.UserSignInDto;
 import dto.auth.customer.request.UserSignUpDto;
-import dto.auth.customer.response.UserResponseDto;
+import dto.auth.customer.response.DeleteUserDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
 import exception.auth.customer.AlreadySignUppedException;
 import exception.auth.customer.NoUserPresentsException;
@@ -63,9 +63,9 @@ public class MobileOAuthService {
         return customerTokenInfoDto;
     }
 
-    public UserResponseDto.DeleteUserDto deleteUser(String provider, String accessToken, String refreshToken) {
+    public DeleteUserDto deleteUser(String provider, String accessToken, String refreshToken) {
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
-        UserResponseDto.DeleteUserDto deleteUserDto = new UserResponseDto().new DeleteUserDto(null, null);
+        DeleteUserDto deleteUserDto = new DeleteUserDto(null, null);
         if (remainExpiration >= 1) {   // 만료 직전 혹은 만료된 토큰이 아니라면
             deleteUserDto.setMessage(jwtTokenProvider.SUCCESS_STRING);
             if (provider.toUpperCase().equals(Provider.APPLE.getProvider())) {

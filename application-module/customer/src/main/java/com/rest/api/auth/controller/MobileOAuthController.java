@@ -7,8 +7,8 @@ import dto.auth.customer.UserDto;
 import dto.auth.customer.request.AccountRecoveryDto;
 import dto.auth.customer.request.UserSignInDto;
 import dto.auth.customer.request.UserSignUpDto;
+import dto.auth.customer.response.DeleteUserDto;
 import dto.auth.customer.response.MessageDto;
-import dto.auth.customer.response.UserResponseDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
 import dto.auth.token.customer.CustomerRefreshResultDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -79,7 +79,7 @@ public class MobileOAuthController {
     @Operation(summary = "회원탈퇴", description = "회원탈퇴 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원탈퇴 성공",
-                    content = @Content(schema = @Schema(implementation = UserResponseDto.DeleteUserDto.class))),
+                    content = @Content(schema = @Schema(implementation = DeleteUserDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
@@ -94,7 +94,7 @@ public class MobileOAuthController {
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
                                      @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        UserResponseDto.DeleteUserDto deleteUserDto = mobileOAuthService.deleteUser(provider, accessToken, refreshToken);
+        DeleteUserDto deleteUserDto = mobileOAuthService.deleteUser(provider, accessToken, refreshToken);
         if (deleteUserDto.getMessage().equals(jwtTokenProvider.SUCCESS_STRING)) {
             deleteUserDto.setMessage("Delete user successful");
             return new ResponseEntity(deleteUserDto, HttpStatus.OK);
