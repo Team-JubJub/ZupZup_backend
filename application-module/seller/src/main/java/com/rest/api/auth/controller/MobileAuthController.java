@@ -4,6 +4,7 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileAuthService;
 import domain.auth.Seller.Seller;
+import dto.auth.MessageDto;
 import dto.auth.seller.request.SellerSignInDto;
 import dto.auth.seller.request.SellerTestSignUpDto;
 import dto.auth.seller.response.SellerResponseDto;
@@ -108,7 +109,7 @@ public class MobileAuthController {
         if (remainExpiration >= 1) {
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
-            return new ResponseEntity(new SellerResponseDto().new MessageDto("Sign-out successful"), HttpStatus.OK);
+            return new ResponseEntity(new MessageDto("Sign-out successful"), HttpStatus.OK);
         }
         return new ResponseEntity("redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)", HttpStatus.UNAUTHORIZED);
     }

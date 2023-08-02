@@ -8,7 +8,7 @@ import dto.auth.customer.request.AccountRecoveryDto;
 import dto.auth.customer.request.UserSignInDto;
 import dto.auth.customer.request.UserSignUpDto;
 import dto.auth.customer.response.DeleteUserDto;
-import dto.auth.customer.response.MessageDto;
+import dto.auth.MessageDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
 import dto.auth.token.customer.CustomerRefreshResultDto;
 import io.swagger.v3.oas.annotations.Operation;
