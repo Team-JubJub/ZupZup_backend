@@ -7,7 +7,7 @@ import domain.auth.User.Provider;
 import domain.auth.Role;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
-import dto.auth.customer.request.UserRequestDto;
+import dto.auth.customer.request.AccountRecoveryDto;
 import dto.auth.customer.request.UserSignInDto;
 import dto.auth.customer.request.UserSignUpDto;
 import dto.auth.customer.response.UserResponseDto;
@@ -109,7 +109,7 @@ public class MobileOAuthService {
     }
 
     // <-------------------- Account recovery part -------------------->
-    public String accountRecovery(UserRequestDto.AccountRecoveryDto accountRecoveryDto) {
+    public String accountRecovery(AccountRecoveryDto accountRecoveryDto) {
         String phoneNumber = accountRecoveryDto.getPhoneNumber();
         Optional<User> userEntity = userRepository.findByPhoneNumber(phoneNumber);
         if(userEntity.isEmpty()) {  // 가입된 회원이 없으면

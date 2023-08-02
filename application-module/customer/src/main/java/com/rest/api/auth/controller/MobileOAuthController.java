@@ -4,7 +4,7 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileOAuthService;
 import dto.auth.customer.UserDto;
-import dto.auth.customer.request.UserRequestDto;
+import dto.auth.customer.request.AccountRecoveryDto;
 import dto.auth.customer.request.UserSignInDto;
 import dto.auth.customer.request.UserSignUpDto;
 import dto.auth.customer.response.UserResponseDto;
@@ -214,7 +214,7 @@ public class MobileOAuthController {
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"No user found\"\n}")))
     })
     @PostMapping("/account-recovery")
-    public ResponseEntity accountRecovery(@Valid @RequestBody UserRequestDto.AccountRecoveryDto accountRecoveryDto) {
+    public ResponseEntity accountRecovery(@Valid @RequestBody AccountRecoveryDto accountRecoveryDto) {
         String result = mobileOAuthService.accountRecovery(accountRecoveryDto);
         if(result.equals(mobileOAuthService.NO_USER_FOUND)) {
             return new ResponseEntity(new UserResponseDto().new MessageDto(result), HttpStatus.NOT_FOUND);
