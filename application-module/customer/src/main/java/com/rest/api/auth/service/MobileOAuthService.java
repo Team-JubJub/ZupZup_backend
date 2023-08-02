@@ -8,6 +8,7 @@ import domain.auth.Role;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
+import dto.auth.customer.request.UserSignUpDto;
 import dto.auth.customer.response.UserResponseDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
 import exception.auth.customer.AlreadySignUppedException;
@@ -40,7 +41,7 @@ public class MobileOAuthService {
     final static public String NO_USER_FOUND = "No user found";
 
     // <-------------------- Sign-up part -------------------->
-    public CustomerTokenInfoDto signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
+    public CustomerTokenInfoDto signUp(String provider, UserSignUpDto userSignUpDto) {
         checkIsSignUpped(userSignUpDto.getPhoneNumber());
         UserDto userDto = userSignUpDtoToUserDto(provider, userSignUpDto);
 
@@ -137,7 +138,7 @@ public class MobileOAuthService {
         return formattedRegisterTime;
     }
 
-    private UserDto userSignUpDtoToUserDto(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
+    private UserDto userSignUpDtoToUserDto(String provider, UserSignUpDto userSignUpDto) {
         UserDto userDto = new UserDto();
         if((provider.toUpperCase()).equals(Provider.NAVER.getProvider())) {
             userDto.setProvider(Provider.NAVER);
