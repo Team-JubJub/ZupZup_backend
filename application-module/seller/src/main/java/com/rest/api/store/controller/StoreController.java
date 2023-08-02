@@ -2,6 +2,7 @@ package com.rest.api.store.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import dto.auth.seller.request.SellerRequestDto;
+import dto.auth.seller.request.SellerTestSignInDto;
 import dto.auth.seller.response.SellerResponseDto;
 import dto.store.seller.request.StoreRequestDto;
 import dto.store.seller.response.StoreResponseDto;
@@ -76,7 +77,7 @@ public class StoreController {
     // For Test
     @PostMapping("/test/sign-in")
     public ResponseEntity testSignIn(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                     @RequestBody SellerRequestDto.SellerTestSignInDto sellerTestSignInDto) {
+                                     @RequestBody SellerTestSignInDto sellerTestSignInDto) {
         SellerResponseDto.TestSignInResponseDto testSignInResponseDto = storeService.testSignIn(sellerTestSignInDto);
 
         return new ResponseEntity(testSignInResponseDto, HttpStatus.OK);

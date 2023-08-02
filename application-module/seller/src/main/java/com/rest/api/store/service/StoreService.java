@@ -3,6 +3,7 @@ package com.rest.api.store.service;
 import domain.auth.Seller.Seller;
 import domain.store.Store;
 import dto.auth.seller.request.SellerRequestDto;
+import dto.auth.seller.request.SellerTestSignInDto;
 import dto.auth.seller.response.SellerResponseDto;
 import dto.store.seller.request.StoreRequestDto;
 import dto.store.seller.response.StoreResponseDto;
@@ -79,7 +80,7 @@ public class StoreService {
     }
 
     //For Test
-    public SellerResponseDto.TestSignInResponseDto testSignIn(SellerRequestDto.SellerTestSignInDto sellerTestSignInDto) {
+    public SellerResponseDto.TestSignInResponseDto testSignIn(SellerTestSignInDto sellerTestSignInDto) {
         String loginId = sellerTestSignInDto.getLoginId();
         String loginPwd = sellerTestSignInDto.getLoginPwd();
         Seller seller = sellerRepository.findSellerByLoginId(loginId);
