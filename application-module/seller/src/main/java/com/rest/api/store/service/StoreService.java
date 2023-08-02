@@ -3,7 +3,7 @@ package com.rest.api.store.service;
 import domain.auth.Seller.Seller;
 import domain.store.Store;
 import dto.auth.seller.request.SellerTestSignInDto;
-import dto.auth.seller.response.SellerResponseDto;
+import dto.auth.seller.response.TestSignInResponseDto;
 import dto.store.seller.request.StoreRequestDto;
 import dto.store.seller.response.StoreResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -79,13 +79,13 @@ public class StoreService {
     }
 
     //For Test
-    public SellerResponseDto.TestSignInResponseDto testSignIn(SellerTestSignInDto sellerTestSignInDto) {
+    public TestSignInResponseDto testSignIn(SellerTestSignInDto sellerTestSignInDto) {
         String loginId = sellerTestSignInDto.getLoginId();
         String loginPwd = sellerTestSignInDto.getLoginPwd();
         Seller seller = sellerRepository.findSellerByLoginId(loginId);
         Long sellerId = seller.getSellerId();
         Store store = storeRepository.findBySellerId(sellerId);
-        SellerResponseDto.TestSignInResponseDto testSignInResponseDto = new SellerResponseDto().new TestSignInResponseDto();
+        TestSignInResponseDto testSignInResponseDto = new TestSignInResponseDto();
         testSignInResponseDto.setMessage("success");
         testSignInResponseDto.setStoreId(store.getStoreId());
 
@@ -93,7 +93,7 @@ public class StoreService {
             return testSignInResponseDto;
         }
 
-        return new SellerResponseDto().new TestSignInResponseDto();
+        return new TestSignInResponseDto();
     }
 
 }
