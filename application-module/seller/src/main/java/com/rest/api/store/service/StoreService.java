@@ -2,7 +2,6 @@ package com.rest.api.store.service;
 
 import domain.auth.Seller.Seller;
 import domain.store.Store;
-import dto.auth.seller.request.SellerRequestDto;
 import dto.auth.seller.request.SellerTestSignInDto;
 import dto.auth.seller.response.SellerResponseDto;
 import dto.store.seller.request.StoreRequestDto;

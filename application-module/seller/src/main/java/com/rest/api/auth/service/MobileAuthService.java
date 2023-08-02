@@ -6,8 +6,8 @@ import domain.auth.Role;
 import domain.auth.Seller.Seller;
 import domain.store.Store;
 import dto.auth.seller.SellerDto;
-import dto.auth.seller.request.SellerRequestDto;
 import dto.auth.seller.request.SellerSignInDto;
+import dto.auth.seller.request.SellerTestSignUpDto;
 import dto.auth.token.seller.SellerTokenInfoDto;
 import exception.auth.seller.NoSellerPresentsException;
 import jakarta.transaction.Transactional;
@@ -103,7 +103,7 @@ public class MobileAuthService {
 
 
     // < ---------- Test part ---------- >
-    public Seller testSignUp(SellerRequestDto.SellerTestSignUpDto sellerTestSignUpDto) {
+    public Seller testSignUp(SellerTestSignUpDto sellerTestSignUpDto) {
         Seller sellerEntity = Seller.SellerBuilder()
                 .loginId(sellerTestSignUpDto.getLoginId())
                 .loginPwd(passwordEncoder.encode(sellerTestSignUpDto.getLoginPwd()))
