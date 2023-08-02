@@ -46,4 +46,5 @@ public class UserSignUpDto {
     @Schema(description = "선택 약관 1의 동의 여부", allowableValues = {"true", "false"})
     @NotNull(message = "Answer for optional terms cannot be null")
     private Boolean optionalTerm1;
+
 }
