@@ -10,16 +10,6 @@ import java.nio.charset.Charset;
 
 public class UserRequestDto {
 
-    @Schema(description = "재로그인 요청 시 사용되는 DTO")
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Getter
-    public class UserSignInDto {
-        @Schema(description = "소셜 플랫폼에서 받아온 유저의 unique ID", example = "im1from2naver3")
-        @NotBlank(message = "User unique id cannot be null or empty or space")
-        private String userUniqueId;    // 클라이언트에서 제공한 소셜 플랫폼의 user unique ID
-    }
-
     @Schema(description = "계정 찾기 시 사용되는 DTO")
     @NoArgsConstructor
     @AllArgsConstructor

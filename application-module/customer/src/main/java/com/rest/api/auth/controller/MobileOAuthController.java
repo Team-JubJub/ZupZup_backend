@@ -5,6 +5,7 @@ import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileOAuthService;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
+import dto.auth.customer.request.UserSignInDto;
 import dto.auth.customer.request.UserSignUpDto;
 import dto.auth.customer.response.UserResponseDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
@@ -163,7 +164,7 @@ public class MobileOAuthController {
     @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
     public ResponseEntity signInWithProviderUserId(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
-            @Valid @RequestBody UserRequestDto.UserSignInDto userSignInDto) {
+            @Valid @RequestBody UserSignInDto userSignInDto) {
         CustomerTokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderUserId(provider, userSignInDto);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());

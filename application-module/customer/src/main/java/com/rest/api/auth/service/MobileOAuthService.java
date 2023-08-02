@@ -8,6 +8,7 @@ import domain.auth.Role;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.UserRequestDto;
+import dto.auth.customer.request.UserSignInDto;
 import dto.auth.customer.request.UserSignUpDto;
 import dto.auth.customer.response.UserResponseDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
@@ -93,7 +94,7 @@ public class MobileOAuthService {
     }
 
     // <-------------------- Sign-in part -------------------->
-    public CustomerTokenInfoDto signInWithProviderUserId(String provider, UserRequestDto.UserSignInDto userSignInDto) {
+    public CustomerTokenInfoDto signInWithProviderUserId(String provider, UserSignInDto userSignInDto) {
         String userUniqueId = userSignInDto.getUserUniqueId();
         CustomerTokenInfoDto customerTokenInfoDto = new CustomerTokenInfoDto();
         try {
