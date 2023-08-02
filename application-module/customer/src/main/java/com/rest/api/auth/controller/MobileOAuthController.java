@@ -7,6 +7,7 @@ import dto.auth.customer.UserDto;
 import dto.auth.customer.request.AccountRecoveryDto;
 import dto.auth.customer.request.UserSignInDto;
 import dto.auth.customer.request.UserSignUpDto;
+import dto.auth.customer.response.MessageDto;
 import dto.auth.customer.response.UserResponseDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
 import dto.auth.token.customer.CustomerRefreshResultDto;
@@ -116,10 +117,10 @@ public class MobileOAuthController {
             content = @Content(schema = @Schema(type = "string", example = "S2줍줍화이팅"))) @RequestParam String nickName) {
         Boolean checkResult = mobileOAuthService.nickNameCheck(nickName);
         if(checkResult) {
-            return new ResponseEntity(new UserResponseDto().new MessageDto("true"), HttpStatus.CONFLICT);   // 이미 존재하는 닉네임
+            return new ResponseEntity(new MessageDto("true"), HttpStatus.CONFLICT);   // 이미 존재하는 닉네임
         }
 
-        return new ResponseEntity(new UserResponseDto().new MessageDto("false"), HttpStatus.OK);  // 사용 가능한 닉네임
+        return new ResponseEntity(new MessageDto("false"), HttpStatus.OK);  // 사용 가능한 닉네임
     }
 
     // < -------------- Sign-in part -------------- >
@@ -194,7 +195,7 @@ public class MobileOAuthController {
         if (remainExpiration >= 1) {
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
-            return new ResponseEntity(new UserResponseDto().new MessageDto("Sign-out successful"), HttpStatus.OK);
+            return new ResponseEntity(new MessageDto("Sign-out successful"), HttpStatus.OK);
         }
         return new ResponseEntity("redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)", HttpStatus.UNAUTHORIZED);
     }
@@ -217,10 +218,10 @@ public class MobileOAuthController {
     public ResponseEntity accountRecovery(@Valid @RequestBody AccountRecoveryDto accountRecoveryDto) {
         String result = mobileOAuthService.accountRecovery(accountRecoveryDto);
         if(result.equals(mobileOAuthService.NO_USER_FOUND)) {
-            return new ResponseEntity(new UserResponseDto().new MessageDto(result), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new MessageDto(result), HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity(new UserResponseDto().new MessageDto(result), HttpStatus.OK);
+        return new ResponseEntity(new MessageDto(result), HttpStatus.OK);
     }
 
 
