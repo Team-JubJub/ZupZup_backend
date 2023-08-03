@@ -9,13 +9,6 @@ import java.util.List;
 
 public class OrderResponseDto {
 
-    // <-------------------- GET part -------------------->
-    @Getter
-    @Setter
-    public class GetOrderListDto {
-        private List<GetOrderDetailsDto> orderList;
-    }
-
     @Getter
     @Setter
     public class GetOrderDetailsDto { // 단건 GET에 mapping할 DTO

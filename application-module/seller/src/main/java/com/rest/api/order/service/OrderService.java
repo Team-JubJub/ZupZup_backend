@@ -3,6 +3,7 @@ package com.rest.api.order.service;
 
 import dto.item.ItemDto;
 import dto.order.seller.request.PatchOrderDataDto;
+import dto.order.seller.response.GetOrderListDto;
 import org.modelmapper.ModelMapper;
 import repository.ItemRepository;
 import repository.StoreRepository;
@@ -43,14 +44,14 @@ public class OrderService {
 
     // <-------------------- GET part -------------------->
 //    @Cacheable(cacheNames = "sellerOrders", key = "#storeId + #page")    // 리스트 캐시(sellerOrders::storeId+pageNo 형식, 페이지 별로 캐시함.) -> 캐시 관련한 것 일단 사용자 앱 만들어지기 전까지 주석처리
-    public OrderResponseDto.GetOrderListDto orderList(Long storeId) {
+    public GetOrderListDto orderList(Long storeId) {
         isStorePresent(storeId);    // Check presence of store
 
         List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId);
         List<OrderResponseDto.GetOrderDetailsDto> orderList = allOrderListEntity.stream()   // Entity -> Dto
                 .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDetailsDto.class))
                 .collect(Collectors.toList());
-        OrderResponseDto.GetOrderListDto getOrderListDto = new OrderResponseDto().new GetOrderListDto();
+        GetOrderListDto getOrderListDto = new GetOrderListDto();
         getOrderListDto.setOrderList(orderList);
 
         return getOrderListDto;

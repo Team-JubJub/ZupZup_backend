@@ -3,6 +3,7 @@ package com.rest.api.order.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import domain.order.type.OrderStatus;
 import dto.order.seller.request.PatchOrderDataDto;
+import dto.order.seller.response.GetOrderListDto;
 import dto.order.seller.response.OrderResponseDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -30,13 +31,13 @@ public class OrderController {
     // <-------------------- GET part -------------------->
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "주문 조회 성공",
-                    content = @Content(schema = @Schema(implementation = OrderResponseDto.GetOrderListDto.class))),
+                    content = @Content(schema = @Schema(implementation = GetOrderListDto.class))),
             @ApiResponse(responseCode = "204", description = "주문 목록 없음")
     })
     @GetMapping("")  // order에 대한 GET(주문 항목 모두), ex) ~/seller/1/order?page=1 포맷
     public ResponseEntity orderList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                     @PathVariable Long storeId) { // ResponseEntity의 type이 뭐가될지 몰라서 우선 Type 지정 없이 둠.
-        OrderResponseDto.GetOrderListDto getOrderListDto = orderService.orderList(storeId);
+        GetOrderListDto getOrderListDto = orderService.orderList(storeId);
         if(getOrderListDto.getOrderList().size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT); // NO_CONTENT 시 body가 빈 상태로 감. 204
         }
