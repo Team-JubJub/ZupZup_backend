@@ -1,18 +1,9 @@
 package domain.store;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
-import converter.StringListConverter;
-import domain.item.Item;
-import domain.order.Order;
-import dto.store.StoreDto;
-import dto.store.seller.request.StoreRequestDto;
+import dto.store.seller.request.PatchDto;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "stores")
@@ -67,7 +58,7 @@ public class Store {
     }
 
     // 가게 데이터를 업데이트 하는 로직
-    public void modifyStore(StoreRequestDto.patchDto patchDto) {
+    public void modifyStore(PatchDto patchDto) {
         this.storeImageUrl = patchDto.getStoreImageUrl();
         this.openTime = patchDto.getOpenTime();
         this.closeTime = patchDto.getCloseTime();

@@ -4,10 +4,13 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileOAuthService;
 import dto.auth.customer.UserDto;
-import dto.auth.customer.request.UserRequestDto;
-import dto.auth.customer.response.UserResponseDto;
+import dto.auth.customer.request.AccountRecoveryDto;
+import dto.auth.customer.request.UserSignInDto;
+import dto.auth.customer.request.UserSignUpDto;
+import dto.auth.customer.response.DeleteUserDto;
+import dto.auth.MessageDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
-import dto.auth.token.customer.SellerRefreshResultDto;
+import dto.auth.token.customer.CustomerRefreshResultDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -64,7 +67,7 @@ public class MobileOAuthController {
     @PostMapping("/account/{provider}")    // 회원가입 요청
     public ResponseEntity signUp(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
-                                 @Valid @RequestBody UserRequestDto.UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
+                                 @Valid @RequestBody UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         CustomerTokenInfoDto signUpResult = mobileOAuthService.signUp(provider, userSignUpDto); // service layer에서 user 정보 저장, refresh token redis에 저장까지
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, signUpResult.getAccessToken());
@@ -76,7 +79,7 @@ public class MobileOAuthController {
     @Operation(summary = "회원탈퇴", description = "회원탈퇴 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원탈퇴 성공",
-                    content = @Content(schema = @Schema(implementation = UserResponseDto.DeleteUserDto.class))),
+                    content = @Content(schema = @Schema(implementation = DeleteUserDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
@@ -91,7 +94,7 @@ public class MobileOAuthController {
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
                                      @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        UserResponseDto.DeleteUserDto deleteUserDto = mobileOAuthService.deleteUser(provider, accessToken, refreshToken);
+        DeleteUserDto deleteUserDto = mobileOAuthService.deleteUser(provider, accessToken, refreshToken);
         if (deleteUserDto.getMessage().equals(jwtTokenProvider.SUCCESS_STRING)) {
             deleteUserDto.setMessage("Delete user successful");
             return new ResponseEntity(deleteUserDto, HttpStatus.OK);
@@ -114,10 +117,10 @@ public class MobileOAuthController {
             content = @Content(schema = @Schema(type = "string", example = "S2줍줍화이팅"))) @RequestParam String nickName) {
         Boolean checkResult = mobileOAuthService.nickNameCheck(nickName);
         if(checkResult) {
-            return new ResponseEntity(new UserResponseDto.MessageDto("true"), HttpStatus.CONFLICT);   // 이미 존재하는 닉네임
+            return new ResponseEntity(new MessageDto("true"), HttpStatus.CONFLICT);   // 이미 존재하는 닉네임
         }
 
-        return new ResponseEntity(new UserResponseDto.MessageDto("false"), HttpStatus.OK);  // 사용 가능한 닉네임
+        return new ResponseEntity(new MessageDto("false"), HttpStatus.OK);  // 사용 가능한 닉네임
     }
 
     // < -------------- Sign-in part -------------- >
@@ -125,7 +128,7 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
                     headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰")},
-                    content = @Content(schema = @Schema(implementation = SellerRefreshResultDto.class))),
+                    content = @Content(schema = @Schema(implementation = CustomerRefreshResultDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
             @ApiResponse(responseCode = "401", description = "리프레시 토큰의 유효성 인증이 실패한 경우",
@@ -133,7 +136,7 @@ public class MobileOAuthController {
     })
     @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우), refresh token만 받아옴
     public ResponseEntity signInWithRefreshToken(@Parameter(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        SellerRefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
+        CustomerRefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
         if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, refreshResult.getAccessToken());
@@ -162,7 +165,7 @@ public class MobileOAuthController {
     @PostMapping("/sign-in/{provider}")  // 로그인 요청(access, refresh token 모두 만료일 경우)
     public ResponseEntity signInWithProviderUserId(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
-            @Valid @RequestBody UserRequestDto.UserSignInDto userSignInDto) {
+            @Valid @RequestBody UserSignInDto userSignInDto) {
         CustomerTokenInfoDto reSignInResult = mobileOAuthService.signInWithProviderUserId(provider, userSignInDto);
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());
@@ -192,7 +195,7 @@ public class MobileOAuthController {
         if (remainExpiration >= 1) {
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
-            return new ResponseEntity(new UserResponseDto.MessageDto("Sign-out successful"), HttpStatus.OK);
+            return new ResponseEntity(new MessageDto("Sign-out successful"), HttpStatus.OK);
         }
         return new ResponseEntity("redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)", HttpStatus.UNAUTHORIZED);
     }
@@ -212,13 +215,13 @@ public class MobileOAuthController {
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"No user found\"\n}")))
     })
     @PostMapping("/account-recovery")
-    public ResponseEntity accountRecovery(@Valid @RequestBody UserRequestDto.AccountRecoveryDto accountRecoveryDto) {
+    public ResponseEntity accountRecovery(@Valid @RequestBody AccountRecoveryDto accountRecoveryDto) {
         String result = mobileOAuthService.accountRecovery(accountRecoveryDto);
         if(result.equals(mobileOAuthService.NO_USER_FOUND)) {
-            return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.NOT_FOUND);
+            return new ResponseEntity(new MessageDto(result), HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity(new UserResponseDto.MessageDto(result), HttpStatus.OK);
+        return new ResponseEntity(new MessageDto(result), HttpStatus.OK);
     }
 
 

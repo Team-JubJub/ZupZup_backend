@@ -1,8 +1,10 @@
 package com.rest.api.order.controller;
 
 import com.rest.api.order.service.OrderService;
-import dto.order.customer.request.OrderRequestDto;
-import dto.order.customer.response.OrderResponseDto;
+import dto.order.customer.request.PostOrderRequestDto;
+import dto.order.customer.response.GetOrderDetailsDto;
+import dto.order.customer.response.GetOrderDto;
+import dto.order.customer.response.PostOrderResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -24,8 +26,8 @@ public class OrderController {
 
     // <-------------------- POST part -------------------->
     @PostMapping("/store/{storeId}/order")
-    public ResponseEntity addOrder(@PathVariable Long storeId, @RequestBody @Valid OrderRequestDto.PostOrderDto postOrderDto) {
-        OrderResponseDto.PostOrderResponseDto postOrderResponseDto = orderService.addOrder(storeId, postOrderDto);
+    public ResponseEntity addOrder(@PathVariable Long storeId, @RequestBody @Valid PostOrderRequestDto postOrderRequestDto) {
+        PostOrderResponseDto postOrderResponseDto = orderService.addOrder(storeId, postOrderRequestDto);
 
         return new ResponseEntity(postOrderResponseDto, HttpStatus.CREATED);
     }
@@ -33,7 +35,7 @@ public class OrderController {
     // <-------------------- GET part -------------------->
     @GetMapping("/order")
     public ResponseEntity orderList() {
-        List<OrderResponseDto.GetOrderDto> allOrderListDto = orderService.orderList();
+        List<GetOrderDto> allOrderListDto = orderService.orderList();
         if(allOrderListDto.size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
@@ -42,7 +44,7 @@ public class OrderController {
 
     @GetMapping("/order/{orderId}")
     public ResponseEntity orderDetails(@PathVariable Long orderId) {
-        OrderResponseDto.GetOrderDetailsDto orderDetailsDto = orderService.orderDetails(orderId);
+        GetOrderDetailsDto orderDetailsDto = orderService.orderDetails(orderId);
 
         return new ResponseEntity(orderDetailsDto, HttpStatus.OK);
     }

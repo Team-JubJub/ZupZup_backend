@@ -1,13 +1,15 @@
 package dto.auth.token.customer;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 @Schema(description = "액세스 토큰 갱신 요청의 결과와 정보를 담은 DTO")
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
+@Setter
 @ToString
-public class SellerRefreshResultDto {
+public class CustomerRefreshResultDto {
 
     @Schema(description = "요청 처리 결과", example = "success")
     private String result;
@@ -17,12 +19,5 @@ public class SellerRefreshResultDto {
     private String providerUserId;
     @Schema(description = "갱신된 액세스 토큰")
     private String accessToken;
-
-    public SellerRefreshResultDto(String result, String message, String providerUserId, String accessToken) {
-        this.result = result;
-        this.message = message;
-        this.providerUserId = providerUserId;
-        this.accessToken = accessToken;
-    }
 
 }

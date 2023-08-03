@@ -3,7 +3,7 @@ package com.rest.api.auth.jwt;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.CustomSellerDetailsService;
 import com.rest.api.auth.dto.LoginInfoDto;
-import dto.auth.token.customer.SellerRefreshResultDto;
+import dto.auth.token.seller.SellerRefreshResultDto;
 import io.jsonwebtoken.*;
 
 import jakarta.annotation.PostConstruct;

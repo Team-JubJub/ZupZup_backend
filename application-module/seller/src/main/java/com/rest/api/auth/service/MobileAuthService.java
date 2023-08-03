@@ -6,8 +6,8 @@ import domain.auth.Role;
 import domain.auth.Seller.Seller;
 import domain.store.Store;
 import dto.auth.seller.SellerDto;
-import dto.auth.seller.request.SellerRequestDto;
-import dto.auth.token.customer.CustomerTokenInfoDto;
+import dto.auth.seller.request.SellerSignInDto;
+import dto.auth.seller.test.SellerTestSignUpDto;
 import dto.auth.token.seller.SellerTokenInfoDto;
 import exception.auth.seller.NoSellerPresentsException;
 import jakarta.transaction.Transactional;
@@ -45,7 +45,7 @@ public class MobileAuthService {
     final static public String LOGIN_SUCCESS = "Login success";
 
     // <-------------------- Sign-in part -------------------->
-    public SellerTokenInfoDto signInWithSellerLoginId(SellerRequestDto.SellerSignInDto sellerSignInDto) {
+    public SellerTokenInfoDto signInWithSellerLoginId(SellerSignInDto sellerSignInDto) {
         String sellerLoginId = sellerSignInDto.getLoginId();
         String sellerLoginPwd = sellerSignInDto.getLoginPwd();
 
@@ -103,7 +103,7 @@ public class MobileAuthService {
 
 
     // < ---------- Test part ---------- >
-    public Seller testSignUp(SellerRequestDto.SellerTestSignUpDto sellerTestSignUpDto) {
+    public Seller testSignUp(SellerTestSignUpDto sellerTestSignUpDto) {
         Seller sellerEntity = Seller.SellerBuilder()
                 .loginId(sellerTestSignUpDto.getLoginId())
                 .loginPwd(passwordEncoder.encode(sellerTestSignUpDto.getLoginPwd()))

@@ -7,8 +7,10 @@ import domain.auth.User.Provider;
 import domain.auth.Role;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
-import dto.auth.customer.request.UserRequestDto;
-import dto.auth.customer.response.UserResponseDto;
+import dto.auth.customer.request.AccountRecoveryDto;
+import dto.auth.customer.request.UserSignInDto;
+import dto.auth.customer.request.UserSignUpDto;
+import dto.auth.customer.response.DeleteUserDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
 import exception.auth.customer.AlreadySignUppedException;
 import exception.auth.customer.NoUserPresentsException;
@@ -40,7 +42,7 @@ public class MobileOAuthService {
     final static public String NO_USER_FOUND = "No user found";
 
     // <-------------------- Sign-up part -------------------->
-    public CustomerTokenInfoDto signUp(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
+    public CustomerTokenInfoDto signUp(String provider, UserSignUpDto userSignUpDto) {
         checkIsSignUpped(userSignUpDto.getPhoneNumber());
         UserDto userDto = userSignUpDtoToUserDto(provider, userSignUpDto);
 
@@ -61,9 +63,9 @@ public class MobileOAuthService {
         return customerTokenInfoDto;
     }
 
-    public UserResponseDto.DeleteUserDto deleteUser(String provider, String accessToken, String refreshToken) {
+    public DeleteUserDto deleteUser(String provider, String accessToken, String refreshToken) {
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
-        UserResponseDto.DeleteUserDto deleteUserDto = new UserResponseDto.DeleteUserDto(null, null);
+        DeleteUserDto deleteUserDto = new DeleteUserDto(null, null);
         if (remainExpiration >= 1) {   // 만료 직전 혹은 만료된 토큰이 아니라면
             deleteUserDto.setMessage(jwtTokenProvider.SUCCESS_STRING);
             if (provider.toUpperCase().equals(Provider.APPLE.getProvider())) {
@@ -92,7 +94,7 @@ public class MobileOAuthService {
     }
 
     // <-------------------- Sign-in part -------------------->
-    public CustomerTokenInfoDto signInWithProviderUserId(String provider, UserRequestDto.UserSignInDto userSignInDto) {
+    public CustomerTokenInfoDto signInWithProviderUserId(String provider, UserSignInDto userSignInDto) {
         String userUniqueId = userSignInDto.getUserUniqueId();
         CustomerTokenInfoDto customerTokenInfoDto = new CustomerTokenInfoDto();
         try {
@@ -107,7 +109,7 @@ public class MobileOAuthService {
     }
 
     // <-------------------- Account recovery part -------------------->
-    public String accountRecovery(UserRequestDto.AccountRecoveryDto accountRecoveryDto) {
+    public String accountRecovery(AccountRecoveryDto accountRecoveryDto) {
         String phoneNumber = accountRecoveryDto.getPhoneNumber();
         Optional<User> userEntity = userRepository.findByPhoneNumber(phoneNumber);
         if(userEntity.isEmpty()) {  // 가입된 회원이 없으면
@@ -137,7 +139,7 @@ public class MobileOAuthService {
         return formattedRegisterTime;
     }
 
-    private UserDto userSignUpDtoToUserDto(String provider, UserRequestDto.UserSignUpDto userSignUpDto) {
+    private UserDto userSignUpDtoToUserDto(String provider, UserSignUpDto userSignUpDto) {
         UserDto userDto = new UserDto();
         if((provider.toUpperCase()).equals(Provider.NAVER.getProvider())) {
             userDto.setProvider(Provider.NAVER);

@@ -5,6 +5,7 @@ import lombok.*;
 
 @Schema(description = "Response body에 실을 토큰(액세스, 리프레시) 정보를 담은 DTO")
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @ToString
@@ -18,12 +19,5 @@ public class CustomerTokenInfoDto {
     private String accessToken;
     @Schema(description = "리프레시 토큰")
     private String refreshToken;
-
-    public CustomerTokenInfoDto(String result, String message, String accessToken, String refreshToken) {
-        this.result = result;
-        this.message = message;
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-    }
 
 }
