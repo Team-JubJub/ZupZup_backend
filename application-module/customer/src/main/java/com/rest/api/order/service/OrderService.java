@@ -5,8 +5,9 @@ import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
 import domain.store.Store;
 import dto.order.OrderDto;
-import dto.order.customer.request.PostOrderDto;
+import dto.order.customer.request.PostOrderRequestDto;
 import dto.order.customer.response.OrderResponseDto;
+import dto.order.customer.response.PostOrderResponseDto;
 import exception.NoSuchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,9 +39,9 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     // <-------------------- POST part -------------------->
-    public OrderResponseDto.PostOrderResponseDto addOrder(Long storeId, PostOrderDto postOrderDto) {
+    public PostOrderResponseDto addOrder(Long storeId, PostOrderRequestDto postOrderRequestDto) {
         String formattedOrderTime = orderTimeSetter();
-        OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderDto, formattedOrderTime);
+        OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderRequestDto, formattedOrderTime);
 
         Order orderEntity = Order.builder(orderDto.getStoreId())
                 .userId(123L) // user id 테스트 값임
@@ -58,7 +59,7 @@ public class OrderService {
         orderRepository.save(orderEntity);
         OrderResponseDto.GetOrderDetailsDto madeOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
 
-        OrderResponseDto.PostOrderResponseDto postOrderResponseDto = new OrderResponseDto().new PostOrderResponseDto();
+        PostOrderResponseDto postOrderResponseDto = new PostOrderResponseDto();
         postOrderResponseDto.setData(madeOrderDetailsDto);
         postOrderResponseDto.setHref("http://localhost:8090/customer/order/"+madeOrderDetailsDto.getOrderId());
         postOrderResponseDto.setMessage("주문이 완료되었습니다.");
@@ -103,28 +104,28 @@ public class OrderService {
         return formattedOrderTime;
     }
 
-    private OrderDto postOrderDTOtoOrderDTO(Long storeId, PostOrderDto postOrderDto, String formattedNowTime) {
+    private OrderDto postOrderDTOtoOrderDTO(Long storeId, PostOrderRequestDto postOrderRequestDto, String formattedNowTime) {
         Store store = storeRepository.findById(storeId).get();
         String storeName = store.getStoreName();
         String storeAddress = store.getStoreAddress();
         String category = store.getCategory();
-        OrderSpecific firstAtOrderSpecific = postOrderDto.getOrderList().get(0);
+        OrderSpecific firstAtOrderSpecific = postOrderRequestDto.getOrderList().get(0);
         String firstAtOrderList = firstAtOrderSpecific.getItemName();
         int firstAtOrderListCount = firstAtOrderSpecific.getItemCount();    // 어차피 String이랑 concat 될 때 int로 unboxing된다고 함. 미리 unboxing.
-        int orderListCount = postOrderDto.getOrderList().size() - 1;    // -1이 붙어서 어차피 unboxing 거치니까 int로
+        int orderListCount = postOrderRequestDto.getOrderList().size() - 1;    // -1이 붙어서 어차피 unboxing 거치니까 int로
 
         OrderDto orderDto = new OrderDto();
         orderDto.setStoreId(storeId);
         orderDto.setOrderStatus(OrderStatus.NEW);
-        orderDto.setUserName(postOrderDto.getUserName());
-        orderDto.setPhoneNumber(postOrderDto.getPhoneNumber());
+        orderDto.setUserName(postOrderRequestDto.getUserName());
+        orderDto.setPhoneNumber(postOrderRequestDto.getPhoneNumber());
         orderDto.setOrderTitle(firstAtOrderList + " " + firstAtOrderListCount + "개 외 " + orderListCount + "건");    // 크로플 3개 외 4건
         orderDto.setOrderTime(formattedNowTime);
-        orderDto.setVisitTime(postOrderDto.getVisitTime());
+        orderDto.setVisitTime(postOrderRequestDto.getVisitTime());
         orderDto.setStoreName(storeName);
         orderDto.setStoreAddress(storeAddress);
         orderDto.setCategory(category);
-        orderDto.setOrderList(postOrderDto.getOrderList());
+        orderDto.setOrderList(postOrderRequestDto.getOrderList());
 
         return orderDto;
     }

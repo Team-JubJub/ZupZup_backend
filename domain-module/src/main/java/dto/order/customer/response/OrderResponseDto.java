@@ -8,14 +8,7 @@ import lombok.Setter;
 import java.util.List;
 
 public class OrderResponseDto {
-    // <-------------------- POST part -------------------->
-    @Getter
-    @Setter
-    public class PostOrderResponseDto {
-        private GetOrderDetailsDto data;
-        private String href;
-        private String message;
-    }
+
 
     // <-------------------- GET part -------------------->
     @Getter

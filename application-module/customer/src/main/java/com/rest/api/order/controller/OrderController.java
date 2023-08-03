@@ -1,8 +1,9 @@
 package com.rest.api.order.controller;
 
 import com.rest.api.order.service.OrderService;
-import dto.order.customer.request.PostOrderDto;
+import dto.order.customer.request.PostOrderRequestDto;
 import dto.order.customer.response.OrderResponseDto;
+import dto.order.customer.response.PostOrderResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -24,8 +25,8 @@ public class OrderController {
 
     // <-------------------- POST part -------------------->
     @PostMapping("/store/{storeId}/order")
-    public ResponseEntity addOrder(@PathVariable Long storeId, @RequestBody @Valid PostOrderDto postOrderDto) {
-        OrderResponseDto.PostOrderResponseDto postOrderResponseDto = orderService.addOrder(storeId, postOrderDto);
+    public ResponseEntity addOrder(@PathVariable Long storeId, @RequestBody @Valid PostOrderRequestDto postOrderRequestDto) {
+        PostOrderResponseDto postOrderResponseDto = orderService.addOrder(storeId, postOrderRequestDto);
 
         return new ResponseEntity(postOrderResponseDto, HttpStatus.CREATED);
     }

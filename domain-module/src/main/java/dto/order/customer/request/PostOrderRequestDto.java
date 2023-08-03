@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PostOrderDto {
+public class PostOrderRequestDto {
 
     private String userName; // 닉네임
     private String phoneNumber; // 전화번호 -> 필요 없으면 삭제할 것
