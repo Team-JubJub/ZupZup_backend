@@ -6,6 +6,7 @@ import domain.order.type.OrderStatus;
 import domain.store.Store;
 import dto.order.OrderDto;
 import dto.order.customer.request.PostOrderRequestDto;
+import dto.order.customer.response.GetOrderDto;
 import dto.order.customer.response.OrderResponseDto;
 import dto.order.customer.response.PostOrderResponseDto;
 import exception.NoSuchException;
@@ -68,10 +69,10 @@ public class OrderService {
     }
 
     // <-------------------- GET part -------------------->
-    public List<OrderResponseDto.GetOrderDto> orderList() {
+    public List<GetOrderDto> orderList() {
         List<Order> allOrderListEntity = orderRepository.findAll();
-        List<OrderResponseDto.GetOrderDto> allOrderListDto = allOrderListEntity.stream()
-            .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDto.class))
+        List<GetOrderDto> allOrderListDto = allOrderListEntity.stream()
+            .map(m -> modelMapper.map(m, GetOrderDto.class))
             .collect(Collectors.toList());
 
         return allOrderListDto;

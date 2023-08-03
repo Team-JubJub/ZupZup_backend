@@ -2,6 +2,7 @@ package com.rest.api.order.controller;
 
 import com.rest.api.order.service.OrderService;
 import dto.order.customer.request.PostOrderRequestDto;
+import dto.order.customer.response.GetOrderDto;
 import dto.order.customer.response.OrderResponseDto;
 import dto.order.customer.response.PostOrderResponseDto;
 import jakarta.validation.Valid;
@@ -34,7 +35,7 @@ public class OrderController {
     // <-------------------- GET part -------------------->
     @GetMapping("/order")
     public ResponseEntity orderList() {
-        List<OrderResponseDto.GetOrderDto> allOrderListDto = orderService.orderList();
+        List<GetOrderDto> allOrderListDto = orderService.orderList();
         if(allOrderListDto.size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
