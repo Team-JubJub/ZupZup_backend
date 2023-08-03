@@ -3,6 +3,7 @@ package com.rest.api.store.service;
 import domain.item.Item;
 import domain.store.Store;
 import dto.item.seller.response.ItemResponseDto;
+import dto.store.customer.response.GetStoreDto;
 import dto.store.customer.response.StoreResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -29,19 +30,19 @@ public class StoreService {
     private final ItemRepository itemRepository;
 
     // <-------------------- GET part -------------------->
-    public List<StoreResponseDto.GetStoreDto> storeList() {   // 현재는 예외처리할 것 없어 보임
+    public List<GetStoreDto> storeList() {   // 현재는 예외처리할 것 없어 보임
         List<Store> allStoreListEntity = storeRepository.findAll(); // 나중에는 위치기반 등으로 거르게 될 듯?
-        List<StoreResponseDto.GetStoreDto> allStoreListDto = allStoreListEntity.stream()
-                .map(m -> modelMapper.map(m, StoreResponseDto.GetStoreDto.class))
+        List<GetStoreDto> allStoreListDto = allStoreListEntity.stream()
+                .map(m -> modelMapper.map(m, GetStoreDto.class))
                 .collect(Collectors.toList());
 
         return allStoreListDto;
     }
 
-    public List<StoreResponseDto.GetStoreDto> searchedStoreList(String storeName) {
+    public List<GetStoreDto> searchedStoreList(String storeName) {
         List<Store> searchedStoreListEntity = storeRepository.findByStoreNameContaining(storeName);
-        List<StoreResponseDto.GetStoreDto> searchedStoreListDto = searchedStoreListEntity.stream()
-                .map(m -> modelMapper.map(m, StoreResponseDto.GetStoreDto.class))
+        List<GetStoreDto> searchedStoreListDto = searchedStoreListEntity.stream()
+                .map(m -> modelMapper.map(m, GetStoreDto.class))
                 .collect(Collectors.toList());
 
         return searchedStoreListDto;
