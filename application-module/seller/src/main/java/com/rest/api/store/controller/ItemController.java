@@ -2,7 +2,7 @@ package com.rest.api.store.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import dto.item.ItemDto;
-import dto.item.seller.request.PatchItemDto;
+import dto.item.seller.request.PatchItemCountDto;
 import dto.item.seller.request.PostItemDto;
 import dto.item.seller.request.UpdateRequestDto;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.rest.api.store.service.ItemService;
@@ -97,7 +96,7 @@ public class ItemController {
     @PatchMapping("/{storeId}/quantity")
     public ResponseEntity modifyQuantity(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                          @PathVariable Long storeId,
-                                         @RequestPart(name = "quantity") List<PatchItemDto> quantityList) {
+                                         @RequestPart(name = "quantity") List<PatchItemCountDto> quantityList) {
 
         String result = itemService.modifyQuantity(storeId, quantityList);
         return new ResponseEntity(result, HttpStatus.OK);

@@ -1,8 +1,7 @@
 package com.rest.api.store.service;
 
-import dto.item.seller.request.PatchItemDto;
+import dto.item.seller.request.PatchItemCountDto;
 import dto.item.seller.request.PostItemDto;
-import dto.item.seller.response.ItemResponseDto;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import domain.item.Item;
@@ -119,12 +118,12 @@ public class ItemService {
         return dtoList;
     }
 
-    public String modifyQuantity(Long storeId, List<PatchItemDto> quantityList) {
+    public String modifyQuantity(Long storeId, List<PatchItemCountDto> quantityList) {
 
-        for (PatchItemDto patchItemDto : quantityList) {
+        for (PatchItemCountDto patchItemCountDto : quantityList) {
 
-            Item item = itemRepository.findById(patchItemDto.getItemId()).get();
-            item.setItemCount(patchItemDto.getItemCount());
+            Item item = itemRepository.findById(patchItemCountDto.getItemId()).get();
+            item.setItemCount(patchItemCountDto.getItemCount());
             itemRepository.save(item);
         }
 
