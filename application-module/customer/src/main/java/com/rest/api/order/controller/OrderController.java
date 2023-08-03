@@ -2,8 +2,8 @@ package com.rest.api.order.controller;
 
 import com.rest.api.order.service.OrderService;
 import dto.order.customer.request.PostOrderRequestDto;
+import dto.order.customer.response.GetOrderDetailsDto;
 import dto.order.customer.response.GetOrderDto;
-import dto.order.customer.response.OrderResponseDto;
 import dto.order.customer.response.PostOrderResponseDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class OrderController {
 
     @GetMapping("/order/{orderId}")
     public ResponseEntity orderDetails(@PathVariable Long orderId) {
-        OrderResponseDto.GetOrderDetailsDto orderDetailsDto = orderService.orderDetails(orderId);
+        GetOrderDetailsDto orderDetailsDto = orderService.orderDetails(orderId);
 
         return new ResponseEntity(orderDetailsDto, HttpStatus.OK);
     }

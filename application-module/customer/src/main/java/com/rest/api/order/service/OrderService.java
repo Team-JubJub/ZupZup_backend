@@ -6,8 +6,8 @@ import domain.order.type.OrderStatus;
 import domain.store.Store;
 import dto.order.OrderDto;
 import dto.order.customer.request.PostOrderRequestDto;
+import dto.order.customer.response.GetOrderDetailsDto;
 import dto.order.customer.response.GetOrderDto;
-import dto.order.customer.response.OrderResponseDto;
 import dto.order.customer.response.PostOrderResponseDto;
 import exception.NoSuchException;
 import jakarta.transaction.Transactional;
@@ -58,7 +58,7 @@ public class OrderService {
                 .orderList(orderDto.getOrderList())
                 .build();
         orderRepository.save(orderEntity);
-        OrderResponseDto.GetOrderDetailsDto madeOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
+        GetOrderDetailsDto madeOrderDetailsDto = modelMapper.map(orderEntity, GetOrderDetailsDto.class);
 
         PostOrderResponseDto postOrderResponseDto = new PostOrderResponseDto();
         postOrderResponseDto.setData(madeOrderDetailsDto);
@@ -78,9 +78,9 @@ public class OrderService {
         return allOrderListDto;
     }
 
-    public OrderResponseDto.GetOrderDetailsDto orderDetails(Long orderId) {
+    public GetOrderDetailsDto orderDetails(Long orderId) {
         Order orderDetailsEntity = isOrderPresent(orderId);
-        OrderResponseDto.GetOrderDetailsDto getOrderDetailsDto = modelMapper.map(orderDetailsEntity, OrderResponseDto.GetOrderDetailsDto.class);
+        GetOrderDetailsDto getOrderDetailsDto = modelMapper.map(orderDetailsEntity, GetOrderDetailsDto.class);
 
         return getOrderDetailsDto;
     }

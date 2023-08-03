@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 public class PostOrderResponseDto {
 
-    private OrderResponseDto.GetOrderDetailsDto data;
+    private GetOrderDetailsDto data;
     private String href;
     private String message;
 
