@@ -1,10 +1,10 @@
 package com.rest.api.order.service;
 
-
 import dto.item.ItemDto;
 import dto.order.seller.request.PatchOrderDataDto;
 import dto.order.seller.response.GetOrderDetailsDto;
 import dto.order.seller.response.GetOrderListDto;
+import dto.order.seller.response.PatchOrderResponseDto;
 import org.modelmapper.ModelMapper;
 import repository.ItemRepository;
 import repository.StoreRepository;
@@ -15,7 +15,6 @@ import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
 import domain.store.Store;
 import dto.order.OrderDto;
-import dto.order.seller.response.OrderResponseDto;
 import exception.NoSuchException;
 import exception.OrderNotInStoreException;
 import exception.RequestedCountExceedStockException;
@@ -67,18 +66,18 @@ public class OrderService {
 
     // <-------------------- PATCH part -------------------->
     //    @CacheEvict(cacheNames = "sellerOrders", allEntries = true) // 주문 정보 수정 시 모든 orderList 페이지의 캐시 삭제. -> 캐시 관련한 것 일단 사용자 앱 만들어지기 전까지 주석처리
-    public OrderResponseDto.PatchOrderResponseDto updateOrderStatus(Long storeId, Long orderId, OrderStatus requestedOrderStatus) {   // 신규 주문 취소 시, 확정 주문 완료 시
+    public PatchOrderResponseDto updateOrderStatus(Long storeId, Long orderId, OrderStatus requestedOrderStatus) {   // 신규 주문 취소 시, 확정 주문 완료 시
         Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);
         OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);
         orderDto.setOrderStatus(requestedOrderStatus);  // 신규 주문 취소 시 = CANCEL, 확정 주문 완료 시 = COMPLETE -> 한 함수에서 다 처리하려고 했으나, CANCEL의 신규 주문과 확정 주문 여부를 확인할 방법이 없음.
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = updateOrderAndReturn(orderEntity, orderDto);
+        PatchOrderResponseDto patchOrderResponseDto = updateOrderAndReturn(orderEntity, orderDto);
 
         return patchOrderResponseDto;
     }
 
-    public OrderResponseDto.PatchOrderResponseDto updateOrderData(Long storeId, Long orderId, PatchOrderDataDto patchOrderDataDto, OrderStatus requestedOrderStatus) { // 신규 주문 확정 시, 확정 주문 취소 시
+    public PatchOrderResponseDto updateOrderData(Long storeId, Long orderId, PatchOrderDataDto patchOrderDataDto, OrderStatus requestedOrderStatus) { // 신규 주문 확정 시, 확정 주문 취소 시
         Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = updateOrderDataAndReturn(orderEntity, patchOrderDataDto, requestedOrderStatus);
+        PatchOrderResponseDto patchOrderResponseDto = updateOrderDataAndReturn(orderEntity, patchOrderDataDto, requestedOrderStatus);
 
         return patchOrderResponseDto;
     }
@@ -143,17 +142,17 @@ public class OrderService {
         }
     }
 
-    private OrderResponseDto.PatchOrderResponseDto saveUpdatedDataAndReturnResponse(Order orderEntity, OrderDto orderDto) {
+    private PatchOrderResponseDto saveUpdatedDataAndReturnResponse(Order orderEntity, OrderDto orderDto) {
         orderEntity.updateOrder(orderDto);
         orderRepository.save(orderEntity);
         GetOrderDetailsDto patchedOrderDetailsDto = modelMapper.map(orderEntity, GetOrderDetailsDto.class);
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = new OrderResponseDto().new PatchOrderResponseDto();
+        PatchOrderResponseDto patchOrderResponseDto = new PatchOrderResponseDto();
         patchOrderResponseDto.setData(patchedOrderDetailsDto);
         return patchOrderResponseDto;
     }
 
-    private OrderResponseDto.PatchOrderResponseDto updateOrderAndReturn(Order orderEntity, OrderDto orderDto) { // 신규 주문 취소, 확정 주문 완료일 때도 같이 처리함
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = saveUpdatedDataAndReturnResponse(orderEntity, orderDto);
+    private PatchOrderResponseDto updateOrderAndReturn(Order orderEntity, OrderDto orderDto) { // 신규 주문 취소, 확정 주문 완료일 때도 같이 처리함
+        PatchOrderResponseDto patchOrderResponseDto = saveUpdatedDataAndReturnResponse(orderEntity, orderDto);
 
         if(orderEntity.getOrderStatus().equals(OrderStatus.CANCEL)) patchOrderResponseDto.setMessage("주문이 취소되었습니다.");   // 주문 취소일 떄
         else if(orderEntity.getOrderStatus().equals(OrderStatus.COMPLETE)) patchOrderResponseDto.setMessage("주문이 완료되었습니다.");    // 주문 완료일 때
@@ -162,14 +161,14 @@ public class OrderService {
         return patchOrderResponseDto;
     }
 
-    private OrderResponseDto.PatchOrderResponseDto updateOrderDataAndReturn(Order orderEntity, PatchOrderDataDto patchOrderDataDto, OrderStatus sellerRequestedOrderStatus) {  // 신규 주문 확정, 확정 주문 취소에 대해 처리하는 함수
+    private PatchOrderResponseDto updateOrderDataAndReturn(Order orderEntity, PatchOrderDataDto patchOrderDataDto, OrderStatus sellerRequestedOrderStatus) {  // 신규 주문 확정, 확정 주문 취소에 대해 처리하는 함수
         OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);
         orderDto.setOrderList(patchOrderDataDto.getOrderList());
         orderDto.setOrderStatus(sellerRequestedOrderStatus);    // CONFIRM or CANCEL
 
         List<OrderSpecific> orderList = orderDto.getOrderList();
         updateItemStock(sellerRequestedOrderStatus, orderList); // 주문한 개수만큼 재고에서 차감, 더하기
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = updateOrderAndReturn(orderEntity, orderDto);
+        PatchOrderResponseDto patchOrderResponseDto = updateOrderAndReturn(orderEntity, orderDto);
 
         return patchOrderResponseDto;
     }

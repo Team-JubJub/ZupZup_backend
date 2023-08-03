@@ -5,7 +5,7 @@ import domain.order.type.OrderStatus;
 import dto.order.seller.request.PatchOrderDataDto;
 import dto.order.seller.response.GetOrderDetailsDto;
 import dto.order.seller.response.GetOrderListDto;
-import dto.order.seller.response.OrderResponseDto;
+import dto.order.seller.response.PatchOrderResponseDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -57,48 +57,48 @@ public class OrderController {
     // <-------------------- PATCH part -------------------->
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "주문 취소 성공",
-                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = PatchOrderResponseDto.class)))
     })
     @PatchMapping("/new-order/{orderId}/cancel")  // 신규 주문 취소 시
     public ResponseEntity cancelNewOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                          @PathVariable Long storeId, @PathVariable Long orderId) {
-        OrderResponseDto.PatchOrderResponseDto patchOrderStatusResponseDto = orderService.updateOrderStatus(storeId, orderId, OrderStatus.CANCEL);
+        PatchOrderResponseDto patchOrderStatusResponseDto = orderService.updateOrderStatus(storeId, orderId, OrderStatus.CANCEL);
 
         return new ResponseEntity(patchOrderStatusResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
     }
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "주문 확정 성공",
-                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = PatchOrderResponseDto.class)))
     })
     @PatchMapping("/new-order/{orderId}/confirm")  // 신규 주문 확정 시
     public ResponseEntity confirmNewOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                           @PathVariable Long storeId, @PathVariable Long orderId, @RequestBody PatchOrderDataDto patchOrderDataDto) {
-        OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.updateOrderData(storeId, orderId, patchOrderDataDto, OrderStatus.CONFIRM);
+        PatchOrderResponseDto patchOrderResponseDto = orderService.updateOrderData(storeId, orderId, patchOrderDataDto, OrderStatus.CONFIRM);
 
         return new ResponseEntity(patchOrderResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
     }
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "주문 취소 성공",
-                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = PatchOrderResponseDto.class)))
     })
     @PatchMapping("/confirmed-order/{orderId}/cancel")    // 확정 주문 취소 시
     public ResponseEntity cancelConfirmedOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                                @PathVariable Long storeId, @PathVariable Long orderId, @RequestBody PatchOrderDataDto patchOrderDataDto) {
-        OrderResponseDto.PatchOrderResponseDto completeOrderDto = orderService.updateOrderData(storeId, orderId, patchOrderDataDto, OrderStatus.CANCEL);
+        PatchOrderResponseDto completeOrderDto = orderService.updateOrderData(storeId, orderId, patchOrderDataDto, OrderStatus.CANCEL);
 
         return new ResponseEntity(completeOrderDto, HttpStatus.OK);
     }
 
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "주문 완료 성공",
-                    content = @Content(schema = @Schema(implementation = OrderResponseDto.PatchOrderResponseDto.class)))
+                    content = @Content(schema = @Schema(implementation = PatchOrderResponseDto.class)))
     })
     @PatchMapping("/confirmed-order/{orderId}/complete")  // 확정 주문 완료 시
     public ResponseEntity completeConfirmedOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                                  @PathVariable Long storeId, @PathVariable Long orderId) {
-        OrderResponseDto.PatchOrderResponseDto patchOrderStatusResponseDto = orderService.updateOrderStatus(storeId, orderId, OrderStatus.COMPLETE);
+        PatchOrderResponseDto patchOrderStatusResponseDto = orderService.updateOrderStatus(storeId, orderId, OrderStatus.COMPLETE);
 
         return new ResponseEntity(patchOrderStatusResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
     }
