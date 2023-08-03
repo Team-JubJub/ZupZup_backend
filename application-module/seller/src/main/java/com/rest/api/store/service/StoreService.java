@@ -5,8 +5,8 @@ import domain.store.Store;
 import dto.auth.seller.test.SellerTestSignInDto;
 import dto.auth.seller.test.TestSignInResponseDto;
 import dto.store.seller.request.PatchDto;
-import dto.store.seller.request.StoreRequestDto;
-import dto.store.seller.response.StoreResponseDto;
+import dto.store.seller.response.GetStoreDetailsDto;
+import dto.store.seller.response.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
@@ -32,9 +32,9 @@ public class StoreService {
     ModelMapper modelMapper;
 
     // 가게 메인 페이지
-    public StoreResponseDto.GetStoreDetailsDto storeDetails(Long storeId) {
+    public GetStoreDetailsDto storeDetails(Long storeId) {
         Store store = storeRepository.findById(storeId).get();
-        StoreResponseDto.GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(store, StoreResponseDto.GetStoreDetailsDto.class);
+        GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(store, GetStoreDetailsDto.class);
 
         return getStoreDetailsDto;
     }
@@ -52,7 +52,7 @@ public class StoreService {
     }
 
     // 가게 영업시간, 할인시간, 휴무일, 이미지 변경
-    public StoreResponseDto.response modifyStore(Long storeId, PatchDto patchDto, MultipartFile storeImg) throws IOException {
+    public Response modifyStore(Long storeId, PatchDto patchDto, MultipartFile storeImg) throws IOException {
 
         Store store = storeRepository.findById(storeId).get();
 
@@ -65,7 +65,7 @@ public class StoreService {
 
         store.modifyStore(patchDto);
 
-        StoreResponseDto.response response = modelMapper.map(store, StoreResponseDto.response.class);
+        Response response = modelMapper.map(store, Response.class);
 
         return response;
     }

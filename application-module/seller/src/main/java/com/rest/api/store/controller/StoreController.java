@@ -4,8 +4,7 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 import dto.auth.seller.test.SellerTestSignInDto;
 import dto.auth.seller.test.TestSignInResponseDto;
 import dto.store.seller.request.PatchDto;
-import dto.store.seller.request.StoreRequestDto;
-import dto.store.seller.response.StoreResponseDto;
+import dto.store.seller.response.Response;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,9 +29,9 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping("/{storeId}")
-    public StoreResponseDto.GetStoreDetailsDto storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                                            @PathVariable Long storeId) {
-        return storeService.storeDetails(storeId);
+    public ResponseEntity storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                           @PathVariable Long storeId) {
+        return new ResponseEntity(storeService.storeDetails(storeId), HttpStatus.OK);
     }
 
     @Tag(name = "영업/휴무 설정", description = "영업/휴무 변경")
@@ -57,7 +56,7 @@ public class StoreController {
                                       @RequestPart(name = "data") PatchDto patchDto,
                                       @RequestPart(name = "image", required = false) MultipartFile storeImg) throws IOException {
 
-        StoreResponseDto.response response = storeService.modifyStore(storeId, patchDto, storeImg);
+        Response response = storeService.modifyStore(storeId, patchDto, storeImg);
         return new ResponseEntity(response, HttpStatus.OK);
     }
 

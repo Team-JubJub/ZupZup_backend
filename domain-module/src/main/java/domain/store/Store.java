@@ -1,19 +1,9 @@
 package domain.store;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
-
-import converter.StringListConverter;
-import domain.item.Item;
-import domain.order.Order;
-import dto.store.StoreDto;
 import dto.store.seller.request.PatchDto;
-import dto.store.seller.request.StoreRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "stores")
