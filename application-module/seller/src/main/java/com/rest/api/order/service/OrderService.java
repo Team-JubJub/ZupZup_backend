@@ -2,10 +2,8 @@ package com.rest.api.order.service;
 
 
 import dto.item.ItemDto;
-import dto.order.seller.request.OrderRequestDto;
-import org.jetbrains.annotations.NotNull;
+import dto.order.seller.request.PatchOrderDataDto;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Pageable;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import repository.OrderRepository;
@@ -76,7 +74,7 @@ public class OrderService {
         return patchOrderResponseDto;
     }
 
-    public OrderResponseDto.PatchOrderResponseDto updateOrderData(Long storeId, Long orderId, OrderRequestDto.PatchOrderDataDto patchOrderDataDto, OrderStatus requestedOrderStatus) { // 신규 주문 확정 시, 확정 주문 취소 시
+    public OrderResponseDto.PatchOrderResponseDto updateOrderData(Long storeId, Long orderId, PatchOrderDataDto patchOrderDataDto, OrderStatus requestedOrderStatus) { // 신규 주문 확정 시, 확정 주문 취소 시
         Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);
         OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = updateOrderDataAndReturn(orderEntity, patchOrderDataDto, requestedOrderStatus);
 
@@ -162,7 +160,7 @@ public class OrderService {
         return patchOrderResponseDto;
     }
 
-    private OrderResponseDto.PatchOrderResponseDto updateOrderDataAndReturn(Order orderEntity, OrderRequestDto.PatchOrderDataDto patchOrderDataDto, OrderStatus sellerRequestedOrderStatus) {  // 신규 주문 확정, 확정 주문 취소에 대해 처리하는 함수
+    private OrderResponseDto.PatchOrderResponseDto updateOrderDataAndReturn(Order orderEntity, PatchOrderDataDto patchOrderDataDto, OrderStatus sellerRequestedOrderStatus) {  // 신규 주문 확정, 확정 주문 취소에 대해 처리하는 함수
         OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);
         orderDto.setOrderList(patchOrderDataDto.getOrderList());
         orderDto.setOrderStatus(sellerRequestedOrderStatus);    // CONFIRM or CANCEL

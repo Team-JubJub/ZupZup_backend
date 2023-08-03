@@ -2,7 +2,7 @@ package com.rest.api.order.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import domain.order.type.OrderStatus;
-import dto.order.seller.request.OrderRequestDto;
+import dto.order.seller.request.PatchOrderDataDto;
 import dto.order.seller.response.OrderResponseDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -12,9 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -74,7 +71,7 @@ public class OrderController {
     })
     @PatchMapping("/new-order/{orderId}/confirm")  // 신규 주문 확정 시
     public ResponseEntity confirmNewOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                          @PathVariable Long storeId, @PathVariable Long orderId, @RequestBody OrderRequestDto.PatchOrderDataDto patchOrderDataDto) {
+                                          @PathVariable Long storeId, @PathVariable Long orderId, @RequestBody PatchOrderDataDto patchOrderDataDto) {
         OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = orderService.updateOrderData(storeId, orderId, patchOrderDataDto, OrderStatus.CONFIRM);
 
         return new ResponseEntity(patchOrderResponseDto, HttpStatus.OK); // patch 된 order의 dto 반환
@@ -86,7 +83,7 @@ public class OrderController {
     })
     @PatchMapping("/confirmed-order/{orderId}/cancel")    // 확정 주문 취소 시
     public ResponseEntity cancelConfirmedOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                               @PathVariable Long storeId, @PathVariable Long orderId, @RequestBody OrderRequestDto.PatchOrderDataDto patchOrderDataDto) {
+                                               @PathVariable Long storeId, @PathVariable Long orderId, @RequestBody PatchOrderDataDto patchOrderDataDto) {
         OrderResponseDto.PatchOrderResponseDto completeOrderDto = orderService.updateOrderData(storeId, orderId, patchOrderDataDto, OrderStatus.CANCEL);
 
         return new ResponseEntity(completeOrderDto, HttpStatus.OK);
