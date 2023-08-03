@@ -13,6 +13,6 @@ import java.util.List;
 @Setter
 public class GetOrderListDto {
 
-    private List<OrderResponseDto.GetOrderDetailsDto> orderList;
+    private List<GetOrderDetailsDto> orderList;
 
 }

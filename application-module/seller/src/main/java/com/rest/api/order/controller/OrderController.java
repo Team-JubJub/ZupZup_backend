@@ -3,6 +3,7 @@ package com.rest.api.order.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import domain.order.type.OrderStatus;
 import dto.order.seller.request.PatchOrderDataDto;
+import dto.order.seller.response.GetOrderDetailsDto;
 import dto.order.seller.response.GetOrderListDto;
 import dto.order.seller.response.OrderResponseDto;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -48,7 +49,7 @@ public class OrderController {
     @GetMapping("/{orderId}")  // 각 order에 대한 단건 GET    -> 일단 안쓰일 듯
     public ResponseEntity orderDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                        @PathVariable Long storeId, @PathVariable Long orderId) {
-        OrderResponseDto.GetOrderDetailsDto getOrderDetailsDto = orderService.orderDetails(storeId, orderId);
+        GetOrderDetailsDto getOrderDetailsDto = orderService.orderDetails(storeId, orderId);
 
         return new ResponseEntity(getOrderDetailsDto, HttpStatus.OK); // 한 개 order의 dto 반환
     }

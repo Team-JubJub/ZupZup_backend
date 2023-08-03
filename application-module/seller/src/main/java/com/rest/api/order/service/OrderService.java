@@ -3,6 +3,7 @@ package com.rest.api.order.service;
 
 import dto.item.ItemDto;
 import dto.order.seller.request.PatchOrderDataDto;
+import dto.order.seller.response.GetOrderDetailsDto;
 import dto.order.seller.response.GetOrderListDto;
 import org.modelmapper.ModelMapper;
 import repository.ItemRepository;
@@ -48,8 +49,8 @@ public class OrderService {
         isStorePresent(storeId);    // Check presence of store
 
         List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId);
-        List<OrderResponseDto.GetOrderDetailsDto> orderList = allOrderListEntity.stream()   // Entity -> Dto
-                .map(m -> modelMapper.map(m, OrderResponseDto.GetOrderDetailsDto.class))
+        List<GetOrderDetailsDto> orderList = allOrderListEntity.stream()   // Entity -> Dto
+                .map(m -> modelMapper.map(m, GetOrderDetailsDto.class))
                 .collect(Collectors.toList());
         GetOrderListDto getOrderListDto = new GetOrderListDto();
         getOrderListDto.setOrderList(orderList);
@@ -57,9 +58,9 @@ public class OrderService {
         return getOrderListDto;
     }
 
-    public OrderResponseDto.GetOrderDetailsDto orderDetails(Long storeId, Long orderId) {
+    public GetOrderDetailsDto orderDetails(Long storeId, Long orderId) {
         Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);
-        OrderResponseDto.GetOrderDetailsDto getOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
+        GetOrderDetailsDto getOrderDetailsDto = modelMapper.map(orderEntity, GetOrderDetailsDto.class);
 
         return getOrderDetailsDto;
     }
@@ -145,7 +146,7 @@ public class OrderService {
     private OrderResponseDto.PatchOrderResponseDto saveUpdatedDataAndReturnResponse(Order orderEntity, OrderDto orderDto) {
         orderEntity.updateOrder(orderDto);
         orderRepository.save(orderEntity);
-        OrderResponseDto.GetOrderDetailsDto patchedOrderDetailsDto = modelMapper.map(orderEntity, OrderResponseDto.GetOrderDetailsDto.class);
+        GetOrderDetailsDto patchedOrderDetailsDto = modelMapper.map(orderEntity, GetOrderDetailsDto.class);
         OrderResponseDto.PatchOrderResponseDto patchOrderResponseDto = new OrderResponseDto().new PatchOrderResponseDto();
         patchOrderResponseDto.setData(patchedOrderDetailsDto);
         return patchOrderResponseDto;
