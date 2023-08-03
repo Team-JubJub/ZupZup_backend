@@ -1,8 +1,8 @@
 package com.rest.api.store.controller;
 
 import com.rest.api.store.service.StoreService;
+import dto.store.customer.response.GetStoreDetailsDto;
 import dto.store.customer.response.GetStoreDto;
-import dto.store.customer.response.StoreResponseDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
@@ -41,7 +41,7 @@ public class StoreController {
     @GetMapping("/{storeId}") // 가게 상세 화면
     public ResponseEntity storeDetail(@PathVariable Long storeId) {
 
-        StoreResponseDto.GetStoreDetailDto storeDetailDto = storeService.storeDetail(storeId);
+        GetStoreDetailsDto storeDetailDto = storeService.storeDetail(storeId);
 
         if(storeDetailDto.getItemDtoList().size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);

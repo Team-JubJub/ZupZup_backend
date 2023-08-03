@@ -3,8 +3,8 @@ package com.rest.api.store.service;
 import domain.item.Item;
 import domain.store.Store;
 import dto.item.seller.response.ItemResponseDto;
+import dto.store.customer.response.GetStoreDetailsDto;
 import dto.store.customer.response.GetStoreDto;
-import dto.store.customer.response.StoreResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -48,13 +48,13 @@ public class StoreService {
         return searchedStoreListDto;
     }
 
-    public StoreResponseDto.GetStoreDetailDto storeDetail(Long storeId) {
+    public GetStoreDetailsDto storeDetail(Long storeId) {
 
         //store entity 가져와서 DTO로 변환
         Store storeEntity = storeRepository.findById(storeId).get();
 
-        StoreResponseDto.GetStoreDetailDto storeDetailDto
-                = modelMapper.map(storeEntity, StoreResponseDto.GetStoreDetailDto.class);
+        GetStoreDetailsDto storeDetailDto
+                = modelMapper.map(storeEntity, GetStoreDetailsDto.class);
 
         //item list 생성 및 StoreDto에 저장
         List<Item> itemList = itemRepository.findAllByStore(storeEntity);
