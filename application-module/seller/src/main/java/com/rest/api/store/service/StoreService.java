@@ -4,6 +4,7 @@ import domain.auth.Seller.Seller;
 import domain.store.Store;
 import dto.auth.seller.test.SellerTestSignInDto;
 import dto.auth.seller.test.TestSignInResponseDto;
+import dto.store.seller.request.PatchDto;
 import dto.store.seller.request.StoreRequestDto;
 import dto.store.seller.response.StoreResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,7 @@ public class StoreService {
     }
 
     // 가게 영업시간, 할인시간, 휴무일, 이미지 변경
-    public StoreResponseDto.response modifyStore(Long storeId, StoreRequestDto.patchDto patchDto, MultipartFile storeImg) throws IOException {
+    public StoreResponseDto.response modifyStore(Long storeId, PatchDto patchDto, MultipartFile storeImg) throws IOException {
 
         Store store = storeRepository.findById(storeId).get();
 

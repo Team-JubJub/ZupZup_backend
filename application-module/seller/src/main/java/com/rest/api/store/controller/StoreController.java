@@ -3,6 +3,7 @@ package com.rest.api.store.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import dto.auth.seller.test.SellerTestSignInDto;
 import dto.auth.seller.test.TestSignInResponseDto;
+import dto.store.seller.request.PatchDto;
 import dto.store.seller.request.StoreRequestDto;
 import dto.store.seller.response.StoreResponseDto;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -53,7 +54,7 @@ public class StoreController {
     @PatchMapping("/modification/{storeId}")
     public ResponseEntity modifyStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                       @PathVariable Long storeId,
-                                      @RequestPart(name = "data") StoreRequestDto.patchDto patchDto,
+                                      @RequestPart(name = "data") PatchDto patchDto,
                                       @RequestPart(name = "image", required = false) MultipartFile storeImg) throws IOException {
 
         StoreResponseDto.response response = storeService.modifyStore(storeId, patchDto, storeImg);

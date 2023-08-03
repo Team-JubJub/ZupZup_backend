@@ -7,6 +7,7 @@ import converter.StringListConverter;
 import domain.item.Item;
 import domain.order.Order;
 import dto.store.StoreDto;
+import dto.store.seller.request.PatchDto;
 import dto.store.seller.request.StoreRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -67,7 +68,7 @@ public class Store {
     }
 
     // 가게 데이터를 업데이트 하는 로직
-    public void modifyStore(StoreRequestDto.patchDto patchDto) {
+    public void modifyStore(PatchDto patchDto) {
         this.storeImageUrl = patchDto.getStoreImageUrl();
         this.openTime = patchDto.getOpenTime();
         this.closeTime = patchDto.getCloseTime();
