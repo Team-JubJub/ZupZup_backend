@@ -2,7 +2,7 @@ package com.rest.api.store.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import dto.item.ItemDto;
-import dto.item.seller.request.ItemRequestDto;
+import dto.item.seller.request.PatchItemDto;
 import dto.item.seller.request.PostItemDto;
 import dto.item.seller.request.UpdateRequestDto;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -97,7 +97,7 @@ public class ItemController {
     @PatchMapping("/{storeId}/quantity")
     public ResponseEntity modifyQuantity(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                          @PathVariable Long storeId,
-                                         @RequestPart(name = "quantity") List<ItemRequestDto.patchDto> quantityList) {
+                                         @RequestPart(name = "quantity") List<PatchItemDto> quantityList) {
 
         String result = itemService.modifyQuantity(storeId, quantityList);
         return new ResponseEntity(result, HttpStatus.OK);

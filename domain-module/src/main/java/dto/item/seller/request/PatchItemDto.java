@@ -11,11 +11,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PostItemDto {
+public class PatchItemDto {
 
-    private String itemName;
-    private int itemPrice;
-    private int salePrice;
+    private Long itemId;
     private int itemCount;
 
 }
