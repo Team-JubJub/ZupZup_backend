@@ -5,7 +5,7 @@ import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
 import domain.store.Store;
 import dto.order.OrderDto;
-import dto.order.customer.request.OrderRequestDto;
+import dto.order.customer.request.PostOrderDto;
 import dto.order.customer.response.OrderResponseDto;
 import exception.NoSuchException;
 import jakarta.transaction.Transactional;
@@ -18,12 +18,10 @@ import repository.ItemRepository;
 import repository.OrderRepository;
 import repository.StoreRepository;
 
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
@@ -40,7 +38,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     // <-------------------- POST part -------------------->
-    public OrderResponseDto.PostOrderResponseDto addOrder(Long storeId, OrderRequestDto.PostOrderDto postOrderDto) {
+    public OrderResponseDto.PostOrderResponseDto addOrder(Long storeId, PostOrderDto postOrderDto) {
         String formattedOrderTime = orderTimeSetter();
         OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderDto, formattedOrderTime);
 
@@ -105,7 +103,7 @@ public class OrderService {
         return formattedOrderTime;
     }
 
-    private OrderDto postOrderDTOtoOrderDTO(Long storeId, OrderRequestDto.PostOrderDto postOrderDto, String formattedNowTime) {
+    private OrderDto postOrderDTOtoOrderDTO(Long storeId, PostOrderDto postOrderDto, String formattedNowTime) {
         Store store = storeRepository.findById(storeId).get();
         String storeName = store.getStoreName();
         String storeAddress = store.getStoreAddress();
