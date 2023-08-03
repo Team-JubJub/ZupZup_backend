@@ -1,8 +1,8 @@
 package com.rest.api.store.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
-import dto.auth.seller.request.SellerTestSignInDto;
-import dto.auth.seller.response.TestSignInResponseDto;
+import dto.auth.seller.test.SellerTestSignInDto;
+import dto.auth.seller.test.TestSignInResponseDto;
 import dto.store.seller.request.StoreRequestDto;
 import dto.store.seller.response.StoreResponseDto;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -6,7 +6,7 @@ import com.rest.api.auth.service.MobileAuthService;
 import domain.auth.Seller.Seller;
 import dto.auth.MessageDto;
 import dto.auth.seller.request.SellerSignInDto;
-import dto.auth.seller.request.SellerTestSignUpDto;
+import dto.auth.seller.test.SellerTestSignUpDto;
 
 import dto.auth.token.seller.SellerRefreshResultDto;
 import dto.auth.token.seller.SellerTokenInfoDto;

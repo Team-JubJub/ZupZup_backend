@@ -1,4 +1,4 @@
-package dto.auth.seller.request;
+package dto.auth.seller.test;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

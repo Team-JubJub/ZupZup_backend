@@ -1,4 +1,4 @@
-package dto.auth.seller.request;
+package dto.auth.seller.test;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

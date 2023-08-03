@@ -1,5 +1,6 @@
 package com.rest.api.store.service;
 
+import dto.item.seller.request.PostItemDto;
 import dto.item.seller.response.ItemResponseDto;
 import repository.ItemRepository;
 import repository.StoreRepository;
@@ -33,7 +34,7 @@ public class ItemService {
     ModelMapper modelMapper;
 
     @Transactional
-    public String saveItem(ItemRequestDto.postDto requestDto, MultipartFile itemImgFile, Long storeId) throws Exception {
+    public String saveItem(PostItemDto requestDto, MultipartFile itemImgFile, Long storeId) throws Exception {
         /**
          * 상품 등록
          * param: itemDto & multipartFile

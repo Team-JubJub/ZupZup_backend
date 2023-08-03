@@ -3,6 +3,7 @@ package com.rest.api.store.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import dto.item.ItemDto;
 import dto.item.seller.request.ItemRequestDto;
+import dto.item.seller.request.PostItemDto;
 import dto.item.seller.request.UpdateRequestDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -37,7 +38,7 @@ public class ItemController {
     )
     @PostMapping("/{storeId}") // 상품 저장
     public ResponseEntity saveItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                   @RequestPart(value = "item") ItemRequestDto.postDto requestDto,
+                                   @RequestPart(value = "item") PostItemDto requestDto,
                                    @RequestPart(value = "image", required = false) MultipartFile itemImg,
                                    @PathVariable Long storeId) throws Exception {
 
