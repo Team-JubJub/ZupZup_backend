@@ -61,7 +61,9 @@ public class InfoController {
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
             @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
-                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
+                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again."))),
+            @ApiResponse(responseCode = "409", description = "이미 존재하는 닉네임",
+                    content = @Content(schema = @Schema(example = "{\n\"message\" : \"Nickname conflicted.\"\n}")))
     })
     @PatchMapping("/nickname")
     public ResponseEntity updateNickName(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
