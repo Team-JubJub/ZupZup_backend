@@ -51,4 +51,8 @@ public class User {
         this.nickName = patchNickNameDto.getNickName();
     }
 
+    public void updateOptionalTerm1() {
+        
+    }
+
 }
