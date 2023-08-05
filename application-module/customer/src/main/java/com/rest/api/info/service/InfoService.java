@@ -42,6 +42,10 @@ public class InfoService {
     public PatchInfoResponseDto updateNickName(String accessToken, PatchNickNameDto patchNickNameDto) {
         String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);    // 유저의 id 조회
         User userEntity = userRepository.findByProviderUserId(providerUserId).get();
+        if (userRepository.findByNickName(patchNickNameDto.getNickName()).isPresent()) {    // 해당 닉네임이 존재하면
+            return null;    // null 반환
+        }
+
         userEntity.updateNickName(patchNickNameDto);    // 닉네임 변경
         userRepository.save(userEntity);
         UserDto updatedUserDto = modelMapper.map(userEntity, UserDto.class);

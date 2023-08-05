@@ -4,7 +4,7 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileAuthService;
 import domain.auth.Seller.Seller;
-import dto.auth.MessageDto;
+import dto.MessageDto;
 import dto.auth.seller.request.SellerSignInDto;
 import dto.auth.seller.test.SellerTestSignUpDto;
 

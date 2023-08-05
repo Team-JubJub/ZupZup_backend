@@ -3,6 +3,7 @@ package com.rest.api.info.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.info.service.InfoService;
+import dto.MessageDto;
 import dto.info.customer.request.PatchNickNameDto;
 import dto.info.customer.request.PatchOptionalTermDto;
 import dto.info.customer.request.PatchPhoneNumberDto;
@@ -67,6 +68,7 @@ public class InfoController {
                                          @RequestBody PatchNickNameDto patchNickNameDto) {
 
         PatchInfoResponseDto patchNicknameResponseDto = infoService.updateNickName(accessToken, patchNickNameDto);
+        if (patchNicknameResponseDto == null) return new ResponseEntity(new MessageDto("Nickname conflicted."), HttpStatus.CONFLICT);
 
         return new ResponseEntity(patchNicknameResponseDto, HttpStatus.OK);
     }
