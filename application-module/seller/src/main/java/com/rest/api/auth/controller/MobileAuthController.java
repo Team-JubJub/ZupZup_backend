@@ -49,13 +49,21 @@ public class MobileAuthController {
                     content = @Content(schema = @Schema(example = "{\n" +
                             "\t\"userUniqueId\": \"User unique id cannot be null or empty or space\"\n" +
                             "}"))),
-            @ApiResponse(responseCode = "401", description = "제공된 login ID를 가진 사장님 조회가 불가능한 경우(login ID가 잘못된 경우)",
+            @ApiResponse(responseCode = "403", description = "아이디를 통한 로그인 시 비밀번호가 틀린 경우",
+                    content = @Content(schema = @Schema(example = "{\n" +
+                            "\t\"result\": \"Login fails\",\n" +
+                            "\t\"message\": \"Wrong password\",\n" +
+                            "\t\"accessToken\": null,\n" +
+                            "\t\"refreshToken\": null,\n" +
+                            "\t\"storeId\": null\n" +
+                            "}"))),
+            @ApiResponse(responseCode = "404", description = "제공된 login ID를 가진 사장님 조회가 불가능한 경우(login ID가 잘못된 경우)",
                     content = @Content(schema = @Schema(example = "Seller with ID doesn't present")))
     })
     @PostMapping("/sign-in")  // 로그인 요청(access, refresh token 모두 만료일 경우)
     public ResponseEntity signInWithSellerLoginId(@Valid @RequestBody SellerSignInDto sellerSignInDto) {
         SellerTokenInfoDto reSignInResult = mobileAuthService.signInWithSellerLoginId(sellerSignInDto);
-        if (reSignInResult.getResult().equals(mobileAuthService.LOGIN_FAILS)) return new ResponseEntity(reSignInResult, HttpStatus.UNAUTHORIZED);   // 비밀번호 틀렸을 경우
+        if (reSignInResult.getResult().equals(mobileAuthService.LOGIN_FAILS)) return new ResponseEntity(reSignInResult, HttpStatus.FORBIDDEN);   // 비밀번호 틀렸을 경우
 
         HttpHeaders responseHeaders = new HttpHeaders();
         responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, reSignInResult.getAccessToken());
