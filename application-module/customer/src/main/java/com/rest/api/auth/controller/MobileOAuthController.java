@@ -80,14 +80,12 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원탈퇴 성공",
                     content = @Content(schema = @Schema(implementation = DeleteUserDto.class))),
-            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
-                    content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
+            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰, 리프레시 토큰)가 없음",
+                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
             @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
-                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again."))),
-            @ApiResponse(responseCode = "403", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
-                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits")))
+                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
     @DeleteMapping("/account/{provider}")   // 회원탈퇴 요청
     public ResponseEntity deleteUser(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
@@ -179,14 +177,14 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공",
                 content = @Content(schema = @Schema(example = "{\n\"message\" : \"Sign-out successful\"\n}"))),
+            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
+                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
                 content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
             @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
-                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again."))),
-            @ApiResponse(responseCode = "403", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
-                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits")))
+                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
     @PostMapping("/sign-out")
     public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
