@@ -34,7 +34,7 @@ public class InfoService {
         userRepository.save(userEntity);
         UserDto updatedUserDto = modelMapper.map(userEntity, UserDto.class);
 
-        PatchInfoResponseDto patchPhoneNumberResponseDto = new PatchInfoResponseDto(updatedUserDto, "Nickname updated.");
+        PatchInfoResponseDto patchPhoneNumberResponseDto = new PatchInfoResponseDto(updatedUserDto, "Phone number updated.");
 
         return patchPhoneNumberResponseDto;
     }
@@ -58,7 +58,7 @@ public class InfoService {
         userRepository.save(userEntity);
         UserDto updatedUserDto = modelMapper.map(userEntity, UserDto.class);
 
-        PatchInfoResponseDto patchOptionalTermResponseDto = new PatchInfoResponseDto(updatedUserDto, "Nickname updated.");
+        PatchInfoResponseDto patchOptionalTermResponseDto = new PatchInfoResponseDto(updatedUserDto, "Optional term's agree or not updated.");
 
         return patchOptionalTermResponseDto;
     }
