@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
@@ -42,7 +43,7 @@ public class InfoController {
     })
     @PatchMapping("/phone-number")
     public ResponseEntity updatePhoneNumber(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                            @RequestBody PatchPhoneNumberDto patchPhoneNumberDto) {
+                                            @Valid @RequestBody PatchPhoneNumberDto patchPhoneNumberDto) {
         PatchInfoResponseDto patchPhoneNumberResponseDto = infoService.updatePhoneNumber(accessToken, patchPhoneNumberDto);
 
         return new ResponseEntity(patchPhoneNumberResponseDto, HttpStatus.OK);
