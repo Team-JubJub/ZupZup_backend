@@ -1,7 +1,7 @@
 package domain.auth.User;
 
 import domain.auth.Role;
-import dto.auth.customer.request.PatchNickNameDto;
+import dto.info.customer.request.PatchNickNameDto;
 import jakarta.persistence.*;
 import lombok.*;
 
