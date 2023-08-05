@@ -42,7 +42,7 @@ public class SellerControllerAdvice {
 
     @ExceptionHandler(value = NoSellerPresentsException.class)
     public ResponseEntity noUserPresents(NoSellerPresentsException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)   // 가게, 주문이 존재하지 않는 경우
