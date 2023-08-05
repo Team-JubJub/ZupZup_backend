@@ -2,6 +2,7 @@ package domain.auth.User;
 
 import domain.auth.Role;
 import dto.info.customer.request.PatchNickNameDto;
+import dto.info.customer.request.PatchOptionalTermDto;
 import dto.info.customer.request.PatchPhoneNumberDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -51,8 +52,8 @@ public class User {
         this.nickName = patchNickNameDto.getNickName();
     }
 
-    public void updateOptionalTerm1() {
-        
+    public void updateOptionalTerm1(PatchOptionalTermDto patchOptionalTermDto) {
+        this.optionalTerm1 = patchOptionalTermDto.getOptionalTerm1();
     }
 
 }

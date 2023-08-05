@@ -4,6 +4,7 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.info.customer.request.PatchNickNameDto;
+import dto.info.customer.request.PatchOptionalTermDto;
 import dto.info.customer.request.PatchPhoneNumberDto;
 import dto.info.customer.response.PatchInfoResponseDto;
 import jakarta.transaction.Transactional;
@@ -48,6 +49,18 @@ public class InfoService {
         PatchInfoResponseDto patchNicknameResponseDto = new PatchInfoResponseDto(updatedUserDto, "Nickname updated.");
 
         return patchNicknameResponseDto;
+    }
+
+    public PatchInfoResponseDto updateOptionalTerm(String accessToken, PatchOptionalTermDto patchOptionalTermDto) {
+        String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);    // 유저의 id 조회
+        User userEntity = userRepository.findByProviderUserId(providerUserId).get();
+        userEntity.updateOptionalTerm1(patchOptionalTermDto);    // 선택 약관 동의 여부 변경
+        userRepository.save(userEntity);
+        UserDto updatedUserDto = modelMapper.map(userEntity, UserDto.class);
+
+        PatchInfoResponseDto patchOptionalTermResponseDto = new PatchInfoResponseDto(updatedUserDto, "Nickname updated.");
+
+        return patchOptionalTermResponseDto;
     }
 
 }

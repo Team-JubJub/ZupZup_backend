@@ -11,6 +11,6 @@ import lombok.Setter;
 @Setter
 public class PatchOptionalTermDto {
 
-    String optionalTerm1;
+    Boolean optionalTerm1;
 
 }

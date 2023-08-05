@@ -85,9 +85,9 @@ public class InfoController {
     @PatchMapping("/optional-term")
     public ResponseEntity updateOptionalTerm(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                             @Valid @RequestBody PatchOptionalTermDto patchOptionalTermDto) {
-//        PatchInfoResponseDto patchPhoneNumberResponseDto = infoService.updatePhoneNumber(accessToken, patchPhoneNumberDto);
+        PatchInfoResponseDto patchOptionalResponseTermDto = infoService.updateOptionalTerm(accessToken, patchOptionalTermDto);
 
-        return new ResponseEntity(patchPhoneNumberResponseDto, HttpStatus.OK);
+        return new ResponseEntity(patchOptionalResponseTermDto, HttpStatus.OK);
     }
 
 }
