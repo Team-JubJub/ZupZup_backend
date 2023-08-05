@@ -4,7 +4,6 @@ package com.rest.api.info.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.info.service.InfoService;
 import dto.auth.customer.request.PatchNickNameDto;
-import dto.auth.customer.response.DeleteUserDto;
 import dto.auth.customer.response.PatchNicknameResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
