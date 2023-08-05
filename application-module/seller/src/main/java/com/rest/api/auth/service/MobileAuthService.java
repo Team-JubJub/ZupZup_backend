@@ -40,7 +40,6 @@ public class MobileAuthService {
     private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    final static public String NO_USER_FOUND = "No user found";
     final static public String LOGIN_FAILS = "Login fails";
     final static public String LOGIN_SUCCESS = "Login success";
 
@@ -50,21 +49,18 @@ public class MobileAuthService {
         String sellerLoginPwd = sellerSignInDto.getLoginPwd();
 
         SellerTokenInfoDto sellerTokenInfoDto = new SellerTokenInfoDto();
-        try {
-            Seller sellerEntity = sellerRepository.findSellerByLoginId(sellerLoginId);
-            if (!isValidPassword(sellerEntity, sellerLoginPwd)) {   // 비밀번호가 잘못됐을 경우
-                sellerTokenInfoDto.setResult(LOGIN_FAILS);
-                sellerTokenInfoDto.setMessage("Wrong password");
-                sellerTokenInfoDto.setAccessToken(null);
-                sellerTokenInfoDto.setRefreshToken(null);
+        Seller sellerEntity = sellerRepository.findSellerByLoginId(sellerLoginId);
+        if (sellerEntity == null) throw new NoSellerPresentsException();    // 로그인 아이디가 잘못됐을 경우
+        if (!isValidPassword(sellerEntity, sellerLoginPwd)) {   // 비밀번호가 잘못됐을 경우
+            sellerTokenInfoDto.setResult(LOGIN_FAILS);
+            sellerTokenInfoDto.setMessage("Wrong password");
+            sellerTokenInfoDto.setAccessToken(null);
+            sellerTokenInfoDto.setRefreshToken(null);
 
-                return sellerTokenInfoDto;
-            }
-            SellerDto sellerDto = modelMapper.map(sellerEntity, SellerDto.class);
-            sellerTokenInfoDto = generateTokens(sellerDto, "Token generated");
-        } catch (NoSuchElementException e) {    // 로그인 id와 매칭되는 사장님 없으면 예외 처리
-            throw new NoSellerPresentsException();
+            return sellerTokenInfoDto;
         }
+        SellerDto sellerDto = modelMapper.map(sellerEntity, SellerDto.class);
+        sellerTokenInfoDto = generateTokens(sellerDto, "Token generated");
 
         return sellerTokenInfoDto;
     }
