@@ -28,6 +28,13 @@ public class InfoController {
 
     private final InfoService infoService;
 
+    public ResponseEntity updatePhoneNumber() {
+
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+
     @Operation(summary = "닉네임 수정", description = "유저의 닉네임 수정 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "닉네임 변경 성공",

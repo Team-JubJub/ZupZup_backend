@@ -25,6 +25,12 @@ public class InfoService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
+    public String updatePhoneNumber() {
+
+
+        return "temp";
+    }
+
     public PatchNicknameResponseDto updateNickName(String accessToken, PatchNickNameDto patchNickNameDto) {
         String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);    // 유저의 id 조회
         User userEntity = userRepository.findByProviderUserId(providerUserId).get();
