@@ -10,9 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PatchNickNameDto {
+public class PatchOptionalTermDto {
 
-    @Schema(description = "변경하고자 하는 닉네임")
-    private String nickName;
+    @Schema(description = "변경하고자 하는 약관의 동의 여부", allowableValues = {"true", "false"})
+    Boolean optionalTerm1;
 
 }

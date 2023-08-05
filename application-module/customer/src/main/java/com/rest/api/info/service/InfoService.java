@@ -4,6 +4,7 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.info.customer.request.PatchNickNameDto;
+import dto.info.customer.request.PatchOptionalTermDto;
 import dto.info.customer.request.PatchPhoneNumberDto;
 import dto.info.customer.response.PatchInfoResponseDto;
 import jakarta.transaction.Transactional;
@@ -33,7 +34,7 @@ public class InfoService {
         userRepository.save(userEntity);
         UserDto updatedUserDto = modelMapper.map(userEntity, UserDto.class);
 
-        PatchInfoResponseDto patchPhoneNumberResponseDto = new PatchInfoResponseDto(updatedUserDto, "Nickname updated.");
+        PatchInfoResponseDto patchPhoneNumberResponseDto = new PatchInfoResponseDto(updatedUserDto, "Phone number updated.");
 
         return patchPhoneNumberResponseDto;
     }
@@ -41,6 +42,10 @@ public class InfoService {
     public PatchInfoResponseDto updateNickName(String accessToken, PatchNickNameDto patchNickNameDto) {
         String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);    // 유저의 id 조회
         User userEntity = userRepository.findByProviderUserId(providerUserId).get();
+        if (userRepository.findByNickName(patchNickNameDto.getNickName()).isPresent()) {    // 해당 닉네임이 존재하면
+            return null;    // null 반환
+        }
+
         userEntity.updateNickName(patchNickNameDto);    // 닉네임 변경
         userRepository.save(userEntity);
         UserDto updatedUserDto = modelMapper.map(userEntity, UserDto.class);
@@ -48,6 +53,18 @@ public class InfoService {
         PatchInfoResponseDto patchNicknameResponseDto = new PatchInfoResponseDto(updatedUserDto, "Nickname updated.");
 
         return patchNicknameResponseDto;
+    }
+
+    public PatchInfoResponseDto updateOptionalTerm(String accessToken, PatchOptionalTermDto patchOptionalTermDto) {
+        String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);    // 유저의 id 조회
+        User userEntity = userRepository.findByProviderUserId(providerUserId).get();
+        userEntity.updateOptionalTerm1(patchOptionalTermDto);    // 선택 약관 동의 여부 변경
+        userRepository.save(userEntity);
+        UserDto updatedUserDto = modelMapper.map(userEntity, UserDto.class);
+
+        PatchInfoResponseDto patchOptionalTermResponseDto = new PatchInfoResponseDto(updatedUserDto, "Optional term's agree or not updated.");
+
+        return patchOptionalTermResponseDto;
     }
 
 }
