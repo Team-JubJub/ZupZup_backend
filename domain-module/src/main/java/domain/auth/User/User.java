@@ -1,6 +1,7 @@
 package domain.auth.User;
 
 import domain.auth.Role;
+import dto.auth.customer.request.PatchNickNameDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -39,6 +40,10 @@ public class User {
             throw new IllegalArgumentException("필수 파라미터(providerUserId) 누락");
         }
         return UserBuilder().providerUserId(providerUserId);
+    }
+
+    public void updateNickName(PatchNickNameDto patchNickNameDto) {
+        this.nickName = patchNickNameDto.getNickName();
     }
 
 }
