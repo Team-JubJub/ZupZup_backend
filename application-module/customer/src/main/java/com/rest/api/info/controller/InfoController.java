@@ -4,6 +4,7 @@ package com.rest.api.info.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.info.service.InfoService;
 import dto.info.customer.request.PatchNickNameDto;
+import dto.info.customer.request.PatchOptionalTermDto;
 import dto.info.customer.request.PatchPhoneNumberDto;
 import dto.info.customer.response.PatchInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,7 +31,7 @@ public class InfoController {
 
     private final InfoService infoService;
 
-    @Operation(summary = "닉네임 수정", description = "유저의 전화번호 수정 요청")
+    @Operation(summary = "전화번호 수정", description = "유저의 전화번호 수정 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "전화번호 변경 성공",
                     content = @Content(schema = @Schema(implementation = PatchInfoResponseDto.class))),
@@ -68,6 +69,25 @@ public class InfoController {
         PatchInfoResponseDto patchNicknameResponseDto = infoService.updateNickName(accessToken, patchNickNameDto);
 
         return new ResponseEntity(patchNicknameResponseDto, HttpStatus.OK);
+    }
+
+    @Operation(summary = "선택 약관 동의 여부 수정", description = "유저의 선택 약관 동의 여부 수정 요청")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "선택 약관 동의 여부 변경 성공",
+                    content = @Content(schema = @Schema(implementation = PatchInfoResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
+                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
+                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
+            @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
+                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
+    })
+    @PatchMapping("/optional-term")
+    public ResponseEntity updateOptionalTerm(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                            @Valid @RequestBody PatchOptionalTermDto patchOptionalTermDto) {
+//        PatchInfoResponseDto patchPhoneNumberResponseDto = infoService.updatePhoneNumber(accessToken, patchPhoneNumberDto);
+
+        return new ResponseEntity(patchPhoneNumberResponseDto, HttpStatus.OK);
     }
 
 }
