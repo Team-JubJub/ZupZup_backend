@@ -1,4 +1,4 @@
-package dto.auth.customer.request;
+package dto.info.customer.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

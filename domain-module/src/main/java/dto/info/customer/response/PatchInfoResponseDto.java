@@ -1,4 +1,4 @@
-package dto.auth.customer.response;
+package dto.info.customer.response;
 
 import dto.auth.customer.UserDto;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PatchNicknameResponseDto {
+public class PatchInfoResponseDto {
 
     private UserDto data;
     private String message;

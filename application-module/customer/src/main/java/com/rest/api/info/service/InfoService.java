@@ -3,8 +3,9 @@ package com.rest.api.info.service;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
-import dto.auth.customer.request.PatchNickNameDto;
-import dto.auth.customer.response.PatchNicknameResponseDto;
+import dto.info.customer.request.PatchNickNameDto;
+import dto.info.customer.request.PatchPhoneNumberDto;
+import dto.info.customer.response.PatchInfoResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -25,14 +26,26 @@ public class InfoService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public PatchNicknameResponseDto updateNickName(String accessToken, PatchNickNameDto patchNickNameDto) {
+    public PatchInfoResponseDto updatePhoneNumber(String accessToken, PatchPhoneNumberDto patchPhoneNumberDto) {
+        String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);    // 유저의 id 조회
+        User userEntity = userRepository.findByProviderUserId(providerUserId).get();
+        userEntity.updatePhoneNumber(patchPhoneNumberDto);    // 전화번호 변경
+        userRepository.save(userEntity);
+        UserDto updatedUserDto = modelMapper.map(userEntity, UserDto.class);
+
+        PatchInfoResponseDto patchPhoneNumberResponseDto = new PatchInfoResponseDto(updatedUserDto, "Nickname updated.");
+
+        return patchPhoneNumberResponseDto;
+    }
+
+    public PatchInfoResponseDto updateNickName(String accessToken, PatchNickNameDto patchNickNameDto) {
         String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);    // 유저의 id 조회
         User userEntity = userRepository.findByProviderUserId(providerUserId).get();
         userEntity.updateNickName(patchNickNameDto);    // 닉네임 변경
         userRepository.save(userEntity);
         UserDto updatedUserDto = modelMapper.map(userEntity, UserDto.class);
 
-        PatchNicknameResponseDto patchNicknameResponseDto = new PatchNicknameResponseDto(updatedUserDto, "Nickname updated.");
+        PatchInfoResponseDto patchNicknameResponseDto = new PatchInfoResponseDto(updatedUserDto, "Nickname updated.");
 
         return patchNicknameResponseDto;
     }
