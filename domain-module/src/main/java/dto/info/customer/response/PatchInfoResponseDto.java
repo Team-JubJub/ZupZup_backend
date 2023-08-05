@@ -10,7 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PatchNicknameResponseDto {
+public class PatchInfoResponseDto {
 
     private UserDto data;
     private String message;
