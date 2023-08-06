@@ -1,4 +1,4 @@
-package dto.item.seller.request;
+package dto.item.seller.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,9 +7,11 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter @Setter
-public class UpdateRequestDto {
+@Getter
+@Setter
+public class GetDto {
 
+    private Long itemId;
     private String itemName;
     private String imageURL;
     private int itemPrice;

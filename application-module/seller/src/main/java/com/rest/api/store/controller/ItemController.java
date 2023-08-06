@@ -1,10 +1,10 @@
 package com.rest.api.store.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
-import dto.item.ItemDto;
 import dto.item.seller.request.PatchItemCountDto;
 import dto.item.seller.request.PostItemDto;
 import dto.item.seller.request.UpdateRequestDto;
+import dto.item.seller.response.GetDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -84,7 +84,7 @@ public class ItemController {
     public ResponseEntity readItems(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                     @PathVariable Long storeId) {
 
-        List<ItemDto.getDto> dtoList = itemService.readItems(storeId);
+        List<GetDto> dtoList = itemService.readItems(storeId);
         return new ResponseEntity(dtoList, HttpStatus.OK);
     }
 

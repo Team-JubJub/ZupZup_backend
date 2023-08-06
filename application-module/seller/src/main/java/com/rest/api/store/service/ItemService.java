@@ -2,11 +2,12 @@ package com.rest.api.store.service;
 
 import dto.item.seller.request.PatchItemCountDto;
 import dto.item.seller.request.PostItemDto;
+import dto.item.seller.response.GetDto;
+import dto.item.seller.response.GetDtoWithStore;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import domain.item.Item;
 import domain.store.Store;
-import dto.item.ItemDto;
 import dto.item.seller.request.UpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,7 @@ public class ItemService {
          */
 
         //1. requestDto -> itemDto로 전환
-        ItemDto.getDtoWithStore itemDto = new ItemDto().new getDtoWithStore();
+        GetDtoWithStore itemDto = new GetDtoWithStore();
         itemDto.setItemName(requestDto.getItemName());
         itemDto.setItemPrice(requestDto.getItemPrice());
         itemDto.setSalePrice(requestDto.getSalePrice());
@@ -103,15 +104,15 @@ public class ItemService {
         return "상품 업데이트에 성공했습니다.";
     }
 
-    public List<ItemDto.getDto> readItems(Long storeId) {
+    public List<GetDto> readItems(Long storeId) {
 
         Store store = storeRepository.findById(storeId).get();
         List<Item> itemList = itemRepository.findAllByStore(store);
-        List<ItemDto.getDto> dtoList = new ArrayList<>();
+        List<GetDto> dtoList = new ArrayList<>();
 
         for(Item item : itemList) {
 
-            ItemDto.getDto itemDto = modelMapper.map(item, ItemDto.getDto.class);
+            GetDto itemDto = modelMapper.map(item, GetDto.class);
             dtoList.add(itemDto);
         }
 

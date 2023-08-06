@@ -1,6 +1,6 @@
 package com.rest.api.order.service;
 
-import dto.item.ItemDto;
+import dto.item.seller.response.GetDtoWithStore;
 import dto.order.seller.request.PatchOrderDataDto;
 import dto.order.seller.response.GetOrderDetailsDto;
 import dto.order.seller.response.GetOrderListDto;
@@ -128,7 +128,7 @@ public class OrderService {
             Long itemId = orderList.get(i).getItemId();
             int orderedItemCount = orderList.get(i).getItemCount(); // 여기까지 클라에서 받아온 아이템 주문 정보
 
-            ItemDto.getDtoWithStore itemDto = new ItemDto().new getDtoWithStore();    // Entity 수정에 쓰일 Dto.
+            GetDtoWithStore itemDto = new GetDtoWithStore();    // Entity 수정에 쓰일 Dto.
             Item itemEntity = itemRepository.findById(itemId).get();
             int originalItemCount = itemEntity.getItemCount();
 
