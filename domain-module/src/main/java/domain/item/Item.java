@@ -1,8 +1,8 @@
 package domain.item;
 
 import domain.store.Store;
-import dto.item.ItemDto;
 import dto.item.seller.request.UpdateRequestDto;
+import dto.item.seller.response.GetDtoWithStore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,7 +37,7 @@ public class Item {
             this.itemCount = itemDto.getItemCount();
         }
 
-        public void saveItem(ItemDto.getDtoWithStore itemDto) {
+        public void saveItem(GetDtoWithStore itemDto) {
 
             this.itemName = itemDto.getItemName();
             this.imageURL = itemDto.getImageURL();
@@ -48,7 +48,7 @@ public class Item {
         }
 
     // 상품 개수 변경(사장님이 예약 확정, 완료 시)
-        public void updateItemCount(ItemDto.getDtoWithStore itemDto) {
+        public void updateItemCount(GetDtoWithStore itemDto) {
             this.itemCount = itemDto.getItemCount();
         }
 
