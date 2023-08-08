@@ -3,6 +3,7 @@ package com.rest.api.auth.service;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 
 import com.rest.api.auth.redis.RedisService;
+import com.rest.api.utils.AuthUtils;
 import domain.auth.User.Provider;
 import domain.auth.Role;
 import domain.auth.User.User;
@@ -11,6 +12,7 @@ import dto.auth.customer.request.AccountRecoveryDto;
 import dto.auth.customer.request.UserSignInDto;
 import dto.auth.customer.request.UserSignUpDto;
 import dto.auth.customer.response.DeleteUserDto;
+import dto.auth.token.customer.CustomerRefreshResultDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
 import exception.auth.customer.AlreadySignUppedException;
 import exception.auth.customer.NoUserPresentsException;
@@ -19,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
 
@@ -38,6 +43,7 @@ public class MobileOAuthService {
     private final UserRepository userRepository;
     private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final AuthUtils authUtils;
 
     final static public String NO_USER_FOUND = "No user found";
 
@@ -94,6 +100,23 @@ public class MobileOAuthService {
     }
 
     // <-------------------- Sign-in part -------------------->
+    public CustomerTokenInfoDto signInWithRefreshToken(String refreshToken) {
+        CustomerTokenInfoDto customerTokenInfoDto = new CustomerTokenInfoDto();
+        CustomerRefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
+        if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
+            User userEntity = authUtils.getUserEntity(refreshResult.getAccessToken());
+            customerTokenInfoDto.setRefreshToken(refreshResult.getResult());
+            customerTokenInfoDto.setMessage(refreshResult.getMessage());
+            customerTokenInfoDto.setAccessToken(refreshResult.getAccessToken());
+            customerTokenInfoDto.setRefreshToken(null); // 리프레시 갱신되는 코드까지 넣으면 이 부분 수정하기
+            customerTokenInfoDto.setUserDto(modelMapper.map(userEntity, UserDto.class));
+
+            return customerTokenInfoDto;
+        }
+
+        return null;
+    }
+
     public CustomerTokenInfoDto signInWithProviderUserId(String provider, UserSignInDto userSignInDto) {
         String userUniqueId = userSignInDto.getUserUniqueId();
         CustomerTokenInfoDto customerTokenInfoDto = new CustomerTokenInfoDto();
