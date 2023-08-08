@@ -64,6 +64,8 @@ public class MobileOAuthService {
                 .registerTime(registerTimeSetter())
                 .build();
         userRepository.save(userEntity);
+        userDto.setUserId(userEntity.getUserId());  // user id와 registertime은 user entity 생성 시점에 만들어지므로 다시 dto에 set
+        userDto.setRegisterTime(userEntity.getRegisterTime());
         CustomerTokenInfoDto customerTokenInfoDto = generateTokens(userDto, "Create user success");
 
         return customerTokenInfoDto;
@@ -105,7 +107,7 @@ public class MobileOAuthService {
         CustomerRefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
         if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
             User userEntity = authUtils.getUserEntity(refreshResult.getAccessToken());
-            customerTokenInfoDto.setRefreshToken(refreshResult.getResult());
+            customerTokenInfoDto.setResult(refreshResult.getResult());
             customerTokenInfoDto.setMessage(refreshResult.getMessage());
             customerTokenInfoDto.setAccessToken(refreshResult.getAccessToken());
             customerTokenInfoDto.setRefreshToken(null); // 리프레시 갱신되는 코드까지 넣으면 이 부분 수정하기
