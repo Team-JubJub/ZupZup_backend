@@ -170,7 +170,7 @@ public class MobileOAuthService {
         String accessToken = jwtTokenProvider.generateAccessToken(userDto.getProviderUserId(), roles);
         String refreshToken = jwtTokenProvider.generateRefreshToken();
         redisService.setStringValue(refreshToken, userDto.getProviderUserId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
-        CustomerTokenInfoDto customerTokenInfoDto = new CustomerTokenInfoDto("success", message, accessToken, refreshToken);
+        CustomerTokenInfoDto customerTokenInfoDto = new CustomerTokenInfoDto("success", message, accessToken, refreshToken, userDto);
 
         return customerTokenInfoDto;
     }

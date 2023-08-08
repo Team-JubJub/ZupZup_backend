@@ -21,7 +21,7 @@ public class CustomerTokenInfoDto {
     @Schema(description = "리프레시 토큰")
     private String refreshToken;
 
-    @Schema()
-    private UserDto
+    @Schema(description = "유저의 정보", implementation = UserDto.class)
+    private UserDto userDto;
 
 }
