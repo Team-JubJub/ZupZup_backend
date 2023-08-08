@@ -6,6 +6,7 @@ import dto.auth.customer.UserDto;
 import dto.info.customer.request.PatchNickNameDto;
 import dto.info.customer.request.PatchOptionalTermDto;
 import dto.info.customer.request.PatchPhoneNumberDto;
+import dto.info.customer.response.GetInfoResponseDto;
 import dto.info.customer.response.PatchInfoResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,16 @@ public class InfoService {
     private final UserRepository userRepository;
     private final AuthUtils authUtils;
 
+    // <-------------------- GET part -------------------->
+    public GetInfoResponseDto getUserInfo(String accessToken) {
+        User userEntity = authUtils.getUserEntity(accessToken); // 액세스 토큰을 이용하여 유저 정보 반환
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+        GetInfoResponseDto userInfoDto = new GetInfoResponseDto(userDto, "Get user data succeed.");
+
+        return userInfoDto;
+    }
+
+    // <-------------------- PATCH part -------------------->
     public PatchInfoResponseDto updatePhoneNumber(String accessToken, PatchPhoneNumberDto patchPhoneNumberDto) {
         User userEntity = authUtils.getUserEntity(accessToken); // 액세스 토큰을 이용하여 유저 정보 반환
         userEntity.updatePhoneNumber(patchPhoneNumberDto);    // 전화번호 변경

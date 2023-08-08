@@ -7,6 +7,7 @@ import dto.MessageDto;
 import dto.info.customer.request.PatchNickNameDto;
 import dto.info.customer.request.PatchOptionalTermDto;
 import dto.info.customer.request.PatchPhoneNumberDto;
+import dto.info.customer.response.GetInfoResponseDto;
 import dto.info.customer.response.PatchInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,6 +31,27 @@ public class InfoController {
 
     private final InfoService infoService;
 
+    // <-------------------- GET part -------------------->
+    @Operation(summary = "유저의 정보 반환", description = "유저의 정보 반환 요청")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "유저 정보 반환 성공",
+                    content = @Content(schema = @Schema(implementation = GetInfoResponseDto.class))),
+            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
+                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
+                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
+            @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
+                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
+    })
+    @GetMapping("")
+    public ResponseEntity getUserInfo(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
+        GetInfoResponseDto userInfoDto = infoService.getUserInfo(accessToken);
+
+        return new ResponseEntity(userInfoDto, HttpStatus.OK);
+    }
+
+
+    // <-------------------- PATCH part -------------------->
     @Operation(summary = "전화번호 수정", description = "유저의 전화번호 수정 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "전화번호 변경 성공",
