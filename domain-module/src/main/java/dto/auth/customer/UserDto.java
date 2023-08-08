@@ -15,17 +15,16 @@ import lombok.Setter;
 public class UserDto {
 
     private Long userId;
+    private Provider provider;
     private String providerUserId;  // ex) NAVER_userID
     private String userName;
-
     private String nickName;
     private String gender;
     private String phoneNumber;
-
     private Role role;
-    private Provider provider;
-
     private Boolean essentialTerms;
     private Boolean optionalTerm1;
+    private String registerTime;
+    private int orderCount;
 
 }

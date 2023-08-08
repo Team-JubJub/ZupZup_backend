@@ -1,5 +1,6 @@
 package dto.auth.token.customer;
 
+import dto.auth.customer.UserDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
@@ -19,5 +20,8 @@ public class CustomerTokenInfoDto {
     private String accessToken;
     @Schema(description = "리프레시 토큰")
     private String refreshToken;
+
+    @Schema()
+    private UserDto
 
 }
