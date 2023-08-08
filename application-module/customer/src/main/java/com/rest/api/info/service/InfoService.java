@@ -1,6 +1,6 @@
 package com.rest.api.info.service;
 
-import com.rest.api.auth.jwt.JwtTokenProvider;
+import com.rest.api.utils.AuthUtils;
 import domain.auth.User.User;
 import dto.auth.customer.UserDto;
 import dto.info.customer.request.PatchNickNameDto;
@@ -25,11 +25,10 @@ public class InfoService {
     ModelMapper modelMapper;
 
     private final UserRepository userRepository;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthUtils authUtils;
 
     public PatchInfoResponseDto updatePhoneNumber(String accessToken, PatchPhoneNumberDto patchPhoneNumberDto) {
-        String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);    // 유저의 id 조회
-        User userEntity = userRepository.findByProviderUserId(providerUserId).get();
+        User userEntity = authUtils.getUserEntity(accessToken); // 액세스 토큰을 이용하여 유저 정보 반환
         userEntity.updatePhoneNumber(patchPhoneNumberDto);    // 전화번호 변경
         userRepository.save(userEntity);
         UserDto updatedUserDto = modelMapper.map(userEntity, UserDto.class);
@@ -40,8 +39,7 @@ public class InfoService {
     }
 
     public PatchInfoResponseDto updateNickName(String accessToken, PatchNickNameDto patchNickNameDto) {
-        String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);    // 유저의 id 조회
-        User userEntity = userRepository.findByProviderUserId(providerUserId).get();
+        User userEntity = authUtils.getUserEntity(accessToken); // 액세스 토큰을 이용하여 유저 정보 반환
         if (userRepository.findByNickName(patchNickNameDto.getNickName()).isPresent()) {    // 해당 닉네임이 존재하면
             return null;    // null 반환
         }
@@ -56,8 +54,7 @@ public class InfoService {
     }
 
     public PatchInfoResponseDto updateOptionalTerm(String accessToken, PatchOptionalTermDto patchOptionalTermDto) {
-        String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);    // 유저의 id 조회
-        User userEntity = userRepository.findByProviderUserId(providerUserId).get();
+        User userEntity = authUtils.getUserEntity(accessToken); // 액세스 토큰을 이용하여 유저 정보 반환
         userEntity.updateOptionalTerm1(patchOptionalTermDto);    // 선택 약관 동의 여부 변경
         userRepository.save(userEntity);
         UserDto updatedUserDto = modelMapper.map(userEntity, UserDto.class);
