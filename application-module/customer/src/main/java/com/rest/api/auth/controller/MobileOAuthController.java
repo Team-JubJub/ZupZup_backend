@@ -139,7 +139,7 @@ public class MobileOAuthController {
         if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, refreshResult.getAccessToken());
-//            responseHeaders.set(jwtTokenProvider.REFRESH_TOKEN_NAME, refreshResult.getRefreshToken());    // 클라분들이랑 얘기 나눠보고 이거 헤더에 셋해줄지 생각해볼 정할 것.
+            responseHeaders.set(jwtTokenProvider.REFRESH_TOKEN_NAME, refreshResult.getRefreshToken());    // 클라분들이랑 얘기 나눠보고 이거 헤더에 셋해줄지 생각해볼 정할 것.
 
             return new ResponseEntity(refreshResult, responseHeaders, HttpStatus.OK);
         }

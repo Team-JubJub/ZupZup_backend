@@ -100,11 +100,11 @@ public class MobileOAuthService {
     public CustomerRefreshResultDto signInWithRefreshToken(String refreshToken) {
         CustomerRefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
         if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
-//            redisService.deleteKey(refreshToken);   // 일단 리프레시 토큰 새로 생성은 하는데, 기존 리프레시 토큰 삭제는 클라분들이랑 얘기되고 난 후에 작동시키든 말든 할 것.
-            return refreshResult;
+            redisService.deleteKey(refreshToken);   // 기존 리프레시 토큰 삭제
+            redisService.setStringValue(refreshResult.getRefreshToken(), refreshResult.getProviderUserId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);   // 새 리프레시 토큰 저장
         }
 
-        return null;
+        return refreshResult;
     }
 
     public CustomerTokenInfoDto signInWithProviderUserId(String provider, UserSignInDto userSignInDto) {
