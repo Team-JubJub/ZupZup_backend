@@ -19,5 +19,6 @@ public class CustomerRefreshResultDto {
     private String providerUserId;
     @Schema(description = "갱신된 액세스 토큰")
     private String accessToken;
-
+    @Schema(description = "갱신된 리프레시 토큰")
+    private String refreshToken;
 }
