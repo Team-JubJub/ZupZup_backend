@@ -104,7 +104,7 @@ public class MobileOAuthService {
             return refreshResult;
         }
 
-        return null;
+        return refreshResult;
     }
 
     public CustomerTokenInfoDto signInWithProviderUserId(String provider, UserSignInDto userSignInDto) {
