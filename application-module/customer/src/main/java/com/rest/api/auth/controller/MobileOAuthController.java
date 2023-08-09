@@ -7,7 +7,7 @@ import dto.auth.customer.UserDto;
 import dto.auth.customer.request.AccountRecoveryDto;
 import dto.auth.customer.request.UserSignInDto;
 import dto.auth.customer.request.UserSignUpDto;
-import dto.auth.customer.response.DeleteUserDto;
+import dto.auth.customer.response.AppleClientSecretDto;
 import dto.MessageDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
 import dto.auth.token.customer.CustomerRefreshResultDto;
@@ -79,7 +79,7 @@ public class MobileOAuthController {
     @Operation(summary = "회원탈퇴", description = "회원탈퇴 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원탈퇴 성공",
-                    content = @Content(schema = @Schema(implementation = DeleteUserDto.class))),
+                    content = @Content(schema = @Schema(implementation = MessageDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰, 리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
@@ -92,7 +92,7 @@ public class MobileOAuthController {
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
                                      @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        DeleteUserDto deleteUserDto = mobileOAuthService.deleteUser(provider, accessToken, refreshToken);
+        MessageDto deleteUserDto = mobileOAuthService.deleteUser(accessToken, refreshToken);
         if (deleteUserDto.getMessage().equals(jwtTokenProvider.SUCCESS_STRING)) {
             deleteUserDto.setMessage("Delete user successful");
             return new ResponseEntity(deleteUserDto, HttpStatus.OK);
@@ -179,10 +179,8 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "로그아웃 성공",
                 content = @Content(schema = @Schema(example = "{\n\"message\" : \"Sign-out successful\"\n}"))),
-            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
+            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰, 리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
-            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
-                    content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
                 content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
             @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
@@ -214,7 +212,7 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "404", description = "해당 유저는 가입한 적이 없음(자원 없음)",
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"No user found\"\n}")))
     })
-    @PostMapping("/account-recovery")
+    @GetMapping("/account-recovery")
     public ResponseEntity accountRecovery(@Valid @RequestBody AccountRecoveryDto accountRecoveryDto) {
         String result = mobileOAuthService.accountRecovery(accountRecoveryDto);
         if(result.equals(mobileOAuthService.NO_USER_FOUND)) {
@@ -224,6 +222,24 @@ public class MobileOAuthController {
         return new ResponseEntity(new MessageDto(result), HttpStatus.OK);
     }
 
+    // < -------------- Apple part -------------- >
+    @Operation(summary = "애플 client-secret", description = "애플 유저의 client-secret 리턴")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "애플 유저의 client-secret 리턴",
+                    content = @Content(schema = @Schema(implementation = AppleClientSecretDto.class))),
+            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰, 리프레시 토큰)가 없음",
+                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
+                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
+                @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
+                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
+    })
+    @GetMapping("/client-secret")
+    public ResponseEntity getClientSecret(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
+        String appleClientSecret = jwtTokenProvider.generateAppleClientSecret();
+
+        return new ResponseEntity(new AppleClientSecretDto(appleClientSecret), HttpStatus.OK);
+    }
 
     // <----------- Test Controller ----------->
     @Operation(summary = "김영후의 테스트용 컨트롤러")
