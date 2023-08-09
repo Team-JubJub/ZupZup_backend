@@ -125,7 +125,8 @@ public class MobileOAuthController {
     @Operation(summary = "로그인(리프레시 토큰 유효 시)", description = "리프레시 토큰을 이용한 액세스 토큰 갱신")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
-                    headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰")},
+                    headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
+                            /* @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰") */},
                     content = @Content(schema = @Schema(implementation = CustomerRefreshResultDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
@@ -134,10 +135,11 @@ public class MobileOAuthController {
     })
     @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우), refresh token만 받아옴
     public ResponseEntity signInWithRefreshToken(@Parameter(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        CustomerTokenInfoDto refreshResult = mobileOAuthService.signInWithRefreshToken(refreshToken);
+        CustomerRefreshResultDto refreshResult = mobileOAuthService.signInWithRefreshToken(refreshToken);
         if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
             HttpHeaders responseHeaders = new HttpHeaders();
             responseHeaders.set(jwtTokenProvider.ACCESS_TOKEN_NAME, refreshResult.getAccessToken());
+//            responseHeaders.set(jwtTokenProvider.REFRESH_TOKEN_NAME, refreshResult.getRefreshToken());    // 클라분들이랑 얘기 나눠보고 이거 헤더에 셋해줄지 생각해볼 정할 것.
 
             return new ResponseEntity(refreshResult, responseHeaders, HttpStatus.OK);
         }
