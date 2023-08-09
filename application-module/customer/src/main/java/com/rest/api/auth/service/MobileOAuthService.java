@@ -7,11 +7,11 @@ import com.rest.api.utils.AuthUtils;
 import domain.auth.User.Provider;
 import domain.auth.Role;
 import domain.auth.User.User;
+import dto.MessageDto;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.AccountRecoveryDto;
 import dto.auth.customer.request.UserSignInDto;
 import dto.auth.customer.request.UserSignUpDto;
-import dto.auth.customer.response.DeleteUserDto;
 import dto.auth.token.customer.CustomerRefreshResultDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
 import exception.auth.customer.AlreadySignUppedException;
@@ -21,9 +21,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
 
@@ -71,14 +68,12 @@ public class MobileOAuthService {
         return customerTokenInfoDto;
     }
 
-    public DeleteUserDto deleteUser(String provider, String accessToken, String refreshToken) {
+    public MessageDto deleteUser(String accessToken, String refreshToken) {
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
-        DeleteUserDto deleteUserDto = new DeleteUserDto(null, null);
+        MessageDto deleteUserDto = new MessageDto(null);
         if (remainExpiration >= 1) {   // 만료 직전 혹은 만료된 토큰이 아니라면
             deleteUserDto.setMessage(jwtTokenProvider.SUCCESS_STRING);
-            if (provider.toUpperCase().equals(Provider.APPLE.getProvider())) {
-                deleteUserDto.setClientSecret(jwtTokenProvider.generateAppleClientSecret());
-            }
+
             String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);
             User userEntity = userRepository.findByProviderUserId(providerUserId).get();    // delete()와 deleteById() 모두 findBy로 유저 엔티티 찾는 과정은 거침. 예외 처리를 직접 하는 것이냐 아니냐의 차이인데, 일단 이렇게 적용하고 delete()가 더 나을지 고민해볼 것.
             userRepository.deleteById(userEntity.getUserId());  // RDB에서 유저 삭제

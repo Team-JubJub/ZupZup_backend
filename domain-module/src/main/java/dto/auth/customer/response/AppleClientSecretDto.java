@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class AppleClientSecretDto {
 
-    @Schema(description = "애플 회원탈퇴에 필요한 client secret(jwt), 다른 플랫폼은 null", example = "jwt token(or null with platform except for apple)")
+    @Schema(description = "애플 회원탈퇴에 필요한 client secret(jwt)", example = "jwt token")
     private String clientSecret;
 
 }
