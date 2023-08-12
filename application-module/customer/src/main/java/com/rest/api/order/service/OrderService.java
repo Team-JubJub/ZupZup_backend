@@ -39,7 +39,6 @@ public class OrderService {
     ModelMapper modelMapper;
 
     private final StoreRepository storeRepository;
-    private final ItemRepository itemRepository;
     private final OrderRepository orderRepository;
     private final AuthUtils authUtils;
 
@@ -135,13 +134,5 @@ public class OrderService {
 
         return orderDto;
     }
-
-//    private void updateItemStock(Long customerRequestedItemId, int customerRequestedItemCount) {
-//        ItemDto itemDto = new ItemDto();    // Entity의 개수 변경을 위한 dto
-//        Item itemEntity = itemRepository.findById(customerRequestedItemId).get();
-//        itemDto.setItemCount(itemEntity.getItemCount() - customerRequestedItemCount);     // 상품 재고에서 요청받은 개수 차감
-//        itemEntity.updateItemCount(itemDto);
-//        itemRepository.save(itemEntity);
-//    }
 
 }
