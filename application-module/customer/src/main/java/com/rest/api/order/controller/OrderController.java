@@ -67,17 +67,19 @@ public class OrderController {
 
     @Operation(summary = "주문의 상세 정보 반환", description = "주문의 상세 정보 반환 요청")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "유저의 주문 정보(리스트) 반환 성공",
-                    content = @Content(schema = @Schema(implementation = GetOrderDto.class))),
+            @ApiResponse(responseCode = "200", description = "주문의 상세 정보 반환 성공",
+                    content = @Content(schema = @Schema(implementation = GetOrderDetailsDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
             @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
-                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
+                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again."))),
+            @ApiResponse(responseCode = "404", description = "해당 주문을 찾을 수 없음",
+                    content = @Content(schema = @Schema(example = "해당 주문을 찾을 수 없습니다.")))
     })
     @GetMapping("/{orderId}")
-    public ResponseEntity orderDetails(@PathVariable Long orderId) {
+    public ResponseEntity orderDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken, @PathVariable Long orderId) {
         GetOrderDetailsDto orderDetailsDto = orderService.orderDetails(orderId);
 
         return new ResponseEntity(orderDetailsDto, HttpStatus.OK);
