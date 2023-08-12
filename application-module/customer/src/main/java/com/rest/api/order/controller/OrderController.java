@@ -57,7 +57,7 @@ public class OrderController {
     })
     @GetMapping("")
     public ResponseEntity orderList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
-        List<GetOrderDto> allOrderListDto = orderService.orderList();
+        List<GetOrderDto> allOrderListDto = orderService.orderList(accessToken);
         if(allOrderListDto.size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }

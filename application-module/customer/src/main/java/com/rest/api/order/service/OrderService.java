@@ -1,5 +1,7 @@
 package com.rest.api.order.service;
 
+import com.rest.api.utils.AuthUtils;
+import domain.auth.User.User;
 import domain.order.Order;
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
@@ -35,9 +37,11 @@ public class OrderService {
 
     @Autowired
     ModelMapper modelMapper;
+
     private final StoreRepository storeRepository;
     private final ItemRepository itemRepository;
     private final OrderRepository orderRepository;
+    private final AuthUtils authUtils;
 
     // <-------------------- POST part -------------------->
     public PostOrderResponseDto addOrder(Long storeId, PostOrderRequestDto postOrderRequestDto) {
@@ -69,13 +73,14 @@ public class OrderService {
     }
 
     // <-------------------- GET part -------------------->
-    public List<GetOrderDto> orderList() {
-        List<Order> allOrderListEntity = orderRepository.findAll();
-        List<GetOrderDto> allOrderListDto = allOrderListEntity.stream()
+    public List<GetOrderDto> orderList(String accessToken) {
+        User userEntity = authUtils.getUserEntity(accessToken);
+        List<Order> userOrderListEntity = orderRepository.findByUserId(userEntity.getUserId());
+        List<GetOrderDto> userOrderListDto = userOrderListEntity.stream()
             .map(m -> modelMapper.map(m, GetOrderDto.class))
             .collect(Collectors.toList());
 
-        return allOrderListDto;
+        return userOrderListDto;
     }
 
     public GetOrderDetailsDto orderDetails(Long orderId) {
