@@ -30,13 +30,13 @@ import java.util.List;
 @Validated
 @Log
 @RequiredArgsConstructor
-@RequestMapping("/customer")
+@RequestMapping("/order")
 public class OrderController {
 
     private final OrderService orderService;
 
     // <-------------------- POST part -------------------->
-    @PostMapping("/store/{storeId}/order")
+    @PostMapping("/store/{storeId}")
     public ResponseEntity addOrder(@PathVariable Long storeId, @RequestBody @Valid PostOrderRequestDto postOrderRequestDto) {
         PostOrderResponseDto postOrderResponseDto = orderService.addOrder(storeId, postOrderRequestDto);
 
@@ -55,7 +55,7 @@ public class OrderController {
             @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
                     content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
-    @GetMapping("/order")
+    @GetMapping("")
     public ResponseEntity orderList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
         List<GetOrderDto> allOrderListDto = orderService.orderList();
         if(allOrderListDto.size() == 0) {
@@ -64,7 +64,7 @@ public class OrderController {
         return new ResponseEntity(allOrderListDto, HttpStatus.OK);
     }
 
-    @GetMapping("/order/{orderId}")
+    @GetMapping("/{orderId}")
     public ResponseEntity orderDetails(@PathVariable Long orderId) {
         GetOrderDetailsDto orderDetailsDto = orderService.orderDetails(orderId);
 
