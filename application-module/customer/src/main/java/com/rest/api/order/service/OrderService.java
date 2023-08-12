@@ -65,7 +65,7 @@ public class OrderService {
 
         PostOrderResponseDto postOrderResponseDto = new PostOrderResponseDto();
         postOrderResponseDto.setData(madeOrderDetailsDto);
-        postOrderResponseDto.setHref("http://localhost:8090/customer/order/"+madeOrderDetailsDto.getOrderId());
+        postOrderResponseDto.setHref(":8090/order/"+madeOrderDetailsDto.getOrderId());
         postOrderResponseDto.setMessage("주문이 완료되었습니다.");
 
         return postOrderResponseDto;
