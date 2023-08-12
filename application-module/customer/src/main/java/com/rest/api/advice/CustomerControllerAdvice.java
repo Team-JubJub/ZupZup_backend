@@ -1,5 +1,6 @@
 package com.rest.api.advice;
 
+import dto.MessageDto;
 import exception.NoSuchException;
 import exception.auth.customer.AlreadySignUppedException;
 import exception.auth.customer.NoUserPresentsException;
@@ -80,7 +81,7 @@ public class CustomerControllerAdvice {
     @ExceptionHandler(value = NoSuchException.class)    // 가게, 주문이 존재하지 않는 경우
     public ResponseEntity noSuchStoreOrOrder(NoSuchException e) {
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageDto(e.getMessage()));
     }   // 후에 수정(이름 등) 필요할 듯
 
 }
