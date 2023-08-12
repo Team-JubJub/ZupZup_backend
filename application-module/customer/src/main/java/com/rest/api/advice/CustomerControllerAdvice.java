@@ -60,24 +60,6 @@ public class CustomerControllerAdvice {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
-    @ExceptionHandler(value = ConstraintViolationException.class)
-    public ResponseEntity orderConstraintViolation(ConstraintViolationException e) {
-        List<String> constraintViolations = new ArrayList<>();
-        e.getConstraintViolations().forEach(error -> {
-            Stream<Path.Node> propertyStream = StreamSupport.stream(error.getPropertyPath().spliterator(), false);
-            List<Path.Node> propertyList = propertyStream.collect(Collectors.toList());
-            String wrongItem = propertyList.get(0).toString();  // ex) "orderList[index]"
-            String wrongField = propertyList.get(propertyList.size()-1).getName();   // ex) "itemCount"
-            String exceptionMessage = error.getMessage();    // ex) "상품이 개수는 0개 미만일 수 없습니다." -> valid에 적어놓은 message
-            String invalidValue = error.getInvalidValue().toString();   // ex) -3(잘못 요청한 개수)
-
-            constraintViolations.add(wrongItem + ", " + wrongField + ": " + exceptionMessage + "(잘못된 요청 값: " + invalidValue + ")");
-            // ex) "[orderList[0], itemCount: 상품의 개수는 0개 미만일 수 없습니다.(잘못된 요청 값: -3), ...]"
-        });
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(constraintViolations);
-    }
-
     @ExceptionHandler(value = NoSuchException.class)    // 가게, 주문이 존재하지 않는 경우
     public ResponseEntity noSuchStoreOrOrder(NoSuchException e) {
 
