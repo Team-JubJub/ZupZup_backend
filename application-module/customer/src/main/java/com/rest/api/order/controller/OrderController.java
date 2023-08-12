@@ -48,8 +48,9 @@ public class OrderController {
                     content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
     @PostMapping("/store/{storeId}")
-    public ResponseEntity addOrder(@PathVariable Long storeId, @RequestBody @Valid PostOrderRequestDto postOrderRequestDto) {
-        PostOrderResponseDto postOrderResponseDto = orderService.addOrder(storeId, postOrderRequestDto);
+    public ResponseEntity addOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                   @PathVariable Long storeId, @RequestBody @Valid PostOrderRequestDto postOrderRequestDto) {
+        PostOrderResponseDto postOrderResponseDto = orderService.addOrder(accessToken, storeId, postOrderRequestDto);
 
         return new ResponseEntity(postOrderResponseDto, HttpStatus.CREATED);
     }

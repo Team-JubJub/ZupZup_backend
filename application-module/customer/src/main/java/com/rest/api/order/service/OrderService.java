@@ -43,12 +43,13 @@ public class OrderService {
     private final AuthUtils authUtils;
 
     // <-------------------- POST part -------------------->
-    public PostOrderResponseDto addOrder(Long storeId, PostOrderRequestDto postOrderRequestDto) {
+    public PostOrderResponseDto addOrder(String accessToken, Long storeId, PostOrderRequestDto postOrderRequestDto) {
+        User userEntity = authUtils.getUserEntity(accessToken);
         String formattedOrderTime = orderTimeSetter();
-        OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderRequestDto, formattedOrderTime);
+        OrderDto orderDto = postOrderDTOtoOrderDTO(userEntity, storeId, postOrderRequestDto, formattedOrderTime);
 
         Order orderEntity = Order.builder(orderDto.getStoreId())
-                .userId(1L) // user id 테스트 값임
+                .userId(orderDto.getUserId()) // user id 테스트 값임
                 .orderStatus(OrderStatus.NEW)
                 .userName(orderDto.getUserName())
                 .phoneNumber(orderDto.getPhoneNumber())
@@ -109,11 +110,8 @@ public class OrderService {
         return formattedOrderTime;
     }
 
-    private OrderDto postOrderDTOtoOrderDTO(Long storeId, PostOrderRequestDto postOrderRequestDto, String formattedNowTime) {
+    private OrderDto postOrderDTOtoOrderDTO(User userEntity, Long storeId, PostOrderRequestDto postOrderRequestDto, String formattedNowTime) {
         Store store = storeRepository.findById(storeId).get();
-        String storeName = store.getStoreName();
-        String storeAddress = store.getStoreAddress();
-        String category = store.getCategory();
         OrderSpecific firstAtOrderSpecific = postOrderRequestDto.getOrderList().get(0);
         String firstAtOrderList = firstAtOrderSpecific.getItemName();
         int firstAtOrderListCount = firstAtOrderSpecific.getItemCount();    // 어차피 String이랑 concat 될 때 int로 unboxing된다고 함. 미리 unboxing.
@@ -121,15 +119,16 @@ public class OrderService {
 
         OrderDto orderDto = new OrderDto();
         orderDto.setStoreId(storeId);
+        orderDto.setUserId(userEntity.getUserId());
         orderDto.setOrderStatus(OrderStatus.NEW);
-        orderDto.setUserName(postOrderRequestDto.getUserName());
-        orderDto.setPhoneNumber(postOrderRequestDto.getPhoneNumber());
+        orderDto.setUserName(userEntity.getUserName());
+        orderDto.setPhoneNumber(userEntity.getPhoneNumber());
         orderDto.setOrderTitle(firstAtOrderList + " " + firstAtOrderListCount + "개 외 " + orderListCount + "건");    // 크로플 3개 외 4건
         orderDto.setOrderTime(formattedNowTime);
         orderDto.setVisitTime(postOrderRequestDto.getVisitTime());
-        orderDto.setStoreName(storeName);
-        orderDto.setStoreAddress(storeAddress);
-        orderDto.setCategory(category);
+        orderDto.setStoreName(store.getStoreName());
+        orderDto.setStoreAddress(store.getStoreAddress());
+        orderDto.setCategory(store.getCategory());
         orderDto.setOrderList(postOrderRequestDto.getOrderList());
 
         return orderDto;
