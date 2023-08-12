@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Log
 @Transactional
-public class StoreService {
+public class  StoreService {
 
     @Autowired
     ModelMapper modelMapper;

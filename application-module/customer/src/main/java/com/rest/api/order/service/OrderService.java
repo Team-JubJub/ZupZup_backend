@@ -1,5 +1,7 @@
 package com.rest.api.order.service;
 
+import com.rest.api.utils.AuthUtils;
+import domain.auth.User.User;
 import domain.order.Order;
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
@@ -35,17 +37,19 @@ public class OrderService {
 
     @Autowired
     ModelMapper modelMapper;
+
     private final StoreRepository storeRepository;
-    private final ItemRepository itemRepository;
     private final OrderRepository orderRepository;
+    private final AuthUtils authUtils;
 
     // <-------------------- POST part -------------------->
-    public PostOrderResponseDto addOrder(Long storeId, PostOrderRequestDto postOrderRequestDto) {
+    public PostOrderResponseDto addOrder(String accessToken, Long storeId, PostOrderRequestDto postOrderRequestDto) {
+        User userEntity = authUtils.getUserEntity(accessToken);
         String formattedOrderTime = orderTimeSetter();
-        OrderDto orderDto = postOrderDTOtoOrderDTO(storeId, postOrderRequestDto, formattedOrderTime);
+        OrderDto orderDto = postOrderDTOtoOrderDTO(userEntity, storeId, postOrderRequestDto, formattedOrderTime);
 
         Order orderEntity = Order.builder(orderDto.getStoreId())
-                .userId(123L) // user id 테스트 값임
+                .userId(orderDto.getUserId()) // user id 테스트 값임
                 .orderStatus(OrderStatus.NEW)
                 .userName(orderDto.getUserName())
                 .phoneNumber(orderDto.getPhoneNumber())
@@ -62,20 +66,21 @@ public class OrderService {
 
         PostOrderResponseDto postOrderResponseDto = new PostOrderResponseDto();
         postOrderResponseDto.setData(madeOrderDetailsDto);
-        postOrderResponseDto.setHref("http://localhost:8090/customer/order/"+madeOrderDetailsDto.getOrderId());
+        postOrderResponseDto.setHref(":8090/order/"+madeOrderDetailsDto.getOrderId());
         postOrderResponseDto.setMessage("주문이 완료되었습니다.");
 
         return postOrderResponseDto;
     }
 
     // <-------------------- GET part -------------------->
-    public List<GetOrderDto> orderList() {
-        List<Order> allOrderListEntity = orderRepository.findAll();
-        List<GetOrderDto> allOrderListDto = allOrderListEntity.stream()
+    public List<GetOrderDto> orderList(String accessToken) {
+        User userEntity = authUtils.getUserEntity(accessToken);
+        List<Order> userOrderListEntity = orderRepository.findByUserId(userEntity.getUserId());
+        List<GetOrderDto> userOrderListDto = userOrderListEntity.stream()
             .map(m -> modelMapper.map(m, GetOrderDto.class))
             .collect(Collectors.toList());
 
-        return allOrderListDto;
+        return userOrderListDto;
     }
 
     public GetOrderDetailsDto orderDetails(Long orderId) {
@@ -105,11 +110,8 @@ public class OrderService {
         return formattedOrderTime;
     }
 
-    private OrderDto postOrderDTOtoOrderDTO(Long storeId, PostOrderRequestDto postOrderRequestDto, String formattedNowTime) {
+    private OrderDto postOrderDTOtoOrderDTO(User userEntity, Long storeId, PostOrderRequestDto postOrderRequestDto, String formattedNowTime) {
         Store store = storeRepository.findById(storeId).get();
-        String storeName = store.getStoreName();
-        String storeAddress = store.getStoreAddress();
-        String category = store.getCategory();
         OrderSpecific firstAtOrderSpecific = postOrderRequestDto.getOrderList().get(0);
         String firstAtOrderList = firstAtOrderSpecific.getItemName();
         int firstAtOrderListCount = firstAtOrderSpecific.getItemCount();    // 어차피 String이랑 concat 될 때 int로 unboxing된다고 함. 미리 unboxing.
@@ -117,26 +119,19 @@ public class OrderService {
 
         OrderDto orderDto = new OrderDto();
         orderDto.setStoreId(storeId);
+        orderDto.setUserId(userEntity.getUserId());
         orderDto.setOrderStatus(OrderStatus.NEW);
-        orderDto.setUserName(postOrderRequestDto.getUserName());
-        orderDto.setPhoneNumber(postOrderRequestDto.getPhoneNumber());
+        orderDto.setUserName(userEntity.getUserName());
+        orderDto.setPhoneNumber(userEntity.getPhoneNumber());
         orderDto.setOrderTitle(firstAtOrderList + " " + firstAtOrderListCount + "개 외 " + orderListCount + "건");    // 크로플 3개 외 4건
         orderDto.setOrderTime(formattedNowTime);
         orderDto.setVisitTime(postOrderRequestDto.getVisitTime());
-        orderDto.setStoreName(storeName);
-        orderDto.setStoreAddress(storeAddress);
-        orderDto.setCategory(category);
+        orderDto.setStoreName(store.getStoreName());
+        orderDto.setStoreAddress(store.getStoreAddress());
+        orderDto.setCategory(store.getCategory());
         orderDto.setOrderList(postOrderRequestDto.getOrderList());
 
         return orderDto;
     }
-
-//    private void updateItemStock(Long customerRequestedItemId, int customerRequestedItemCount) {
-//        ItemDto itemDto = new ItemDto();    // Entity의 개수 변경을 위한 dto
-//        Item itemEntity = itemRepository.findById(customerRequestedItemId).get();
-//        itemDto.setItemCount(itemEntity.getItemCount() - customerRequestedItemCount);     // 상품 재고에서 요청받은 개수 차감
-//        itemEntity.updateItemCount(itemDto);
-//        itemRepository.save(itemEntity);
-//    }
 
 }

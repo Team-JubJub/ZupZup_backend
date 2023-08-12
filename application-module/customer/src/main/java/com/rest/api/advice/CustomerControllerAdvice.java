@@ -1,5 +1,6 @@
 package com.rest.api.advice;
 
+import dto.MessageDto;
 import exception.NoSuchException;
 import exception.auth.customer.AlreadySignUppedException;
 import exception.auth.customer.NoUserPresentsException;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ArrayList;
@@ -60,28 +60,10 @@ public class CustomerControllerAdvice {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
-    @ExceptionHandler(value = ConstraintViolationException.class)
-    public ResponseEntity orderConstraintViolation(ConstraintViolationException e) {
-        List<String> constraintViolations = new ArrayList<>();
-        e.getConstraintViolations().forEach(error -> {
-            Stream<Path.Node> propertyStream = StreamSupport.stream(error.getPropertyPath().spliterator(), false);
-            List<Path.Node> propertyList = propertyStream.collect(Collectors.toList());
-            String wrongItem = propertyList.get(0).toString();  // ex) "orderList[index]"
-            String wrongField = propertyList.get(propertyList.size()-1).getName();   // ex) "itemCount"
-            String exceptionMessage = error.getMessage();    // ex) "상품이 개수는 0개 미만일 수 없습니다." -> valid에 적어놓은 message
-            String invalidValue = error.getInvalidValue().toString();   // ex) -3(잘못 요청한 개수)
+    @ExceptionHandler(value = NoSuchException.class)    // 가게, 주문이 존재하지 않는 경우
+    public ResponseEntity noSuchStoreOrOrder(NoSuchException e) {
 
-            constraintViolations.add(wrongItem + ", " + wrongField + ": " + exceptionMessage + "(잘못된 요청 값: " + invalidValue + ")");
-            // ex) "[orderList[0], itemCount: 상품의 개수는 0개 미만일 수 없습니다.(잘못된 요청 값: -3), ...]"
-        });
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(constraintViolations);
-    }
-
-    @ResponseStatus(value = HttpStatus.NOT_FOUND)   // 가게, 주문이 존재하지 않는 경우
-    @ExceptionHandler(value = NoSuchException.class)
-    public String reservationNoSuch(NoSuchException e) {
-        return e.getMessage();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageDto(e.getMessage()));
     }   // 후에 수정(이름 등) 필요할 듯
 
 }

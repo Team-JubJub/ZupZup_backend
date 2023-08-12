@@ -16,13 +16,16 @@ import java.util.List;
 public class GetOrderDetailsDto {
 
     private Long orderId;
-    private String storeName;   // entity에는 store 객체 저장, modelMapper가 알아서 name 빼내줌.
-    private String storeAddress; // 상동
+    private Long storeId;
+    private Long userId;
     private OrderStatus orderStatus;
-    private String userName; // 닉네임
+    private String userName;
     private String phoneNumber;
     private String orderTime;
     private String visitTime;
+    private String storeName;
+    private String storeAddress;
+    private String category;
     private List<OrderSpecific> orderList;
     
 }
