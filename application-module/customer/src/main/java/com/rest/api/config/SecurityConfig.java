@@ -29,7 +29,6 @@ public class SecurityConfig {
         return web -> {
             web.ignoring()
                     .requestMatchers( "", "/", "/error/**", "http://localhost:8082/**", "/swagger-ui/**", "/v3/api-docs/**") // H2, swagger permit all
-                    .requestMatchers("/customer/**")
                     .requestMatchers(
                             "/mobile/account", "/mobile/account/", "/mobile/account/{provider}", "/mobile/account/nickname-check",
                             "/mobile/sign-in/**",
@@ -62,7 +61,6 @@ public class SecurityConfig {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeHttpRequests()    // authorizeRequests() -> authorizeHttpRequests()
                     .requestMatchers( "/", "http://localhost:8082/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // H2, swagger permit all
-                    .requestMatchers("/customer/**").permitAll() // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리)
                     .requestMatchers("/mobile/sign-up/**", "/mobile/sign-in/**", "/mobile/account-recovery").permitAll()    // 회원가입, 로그인, 계정 찾기 permit all
                     .anyRequest().authenticated()   // permitAll() 이외의 모든 request authenticated 처리
                 .and()  // Filter로 JwtAuthenticationFilter 적용, 그 앞에 Exception handle 위해 JwtExceptionFilter 추가
