@@ -126,7 +126,7 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
                     headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
-                            /* @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰") */},
+                            @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
                     content = @Content(schema = @Schema(implementation = CustomerRefreshResultDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
