@@ -212,8 +212,8 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "404", description = "해당 유저는 가입한 적이 없음(자원 없음)",
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"No user found\"\n}")))
     })
-    @GetMapping("/account-recovery")
-    public ResponseEntity accountRecovery(@Valid @RequestBody AccountRecoveryDto accountRecoveryDto) {
+    @PostMapping("/account-recovery")
+    public ResponseEntity accountRecovery(@Valid @RequestParam AccountRecoveryDto accountRecoveryDto) {
         String result = mobileOAuthService.accountRecovery(accountRecoveryDto);
         if(result.equals(mobileOAuthService.NO_USER_FOUND)) {
             return new ResponseEntity(new MessageDto(result), HttpStatus.NOT_FOUND);
