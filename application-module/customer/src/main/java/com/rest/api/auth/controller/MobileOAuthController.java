@@ -213,7 +213,7 @@ public class MobileOAuthController {
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"No user found\"\n}")))
     })
     @PostMapping("/account-recovery")
-    public ResponseEntity accountRecovery(@Valid @RequestParam AccountRecoveryDto accountRecoveryDto) {
+    public ResponseEntity accountRecovery(@Valid @RequestBody AccountRecoveryDto accountRecoveryDto) {
         String result = mobileOAuthService.accountRecovery(accountRecoveryDto);
         if(result.equals(mobileOAuthService.NO_USER_FOUND)) {
             return new ResponseEntity(new MessageDto(result), HttpStatus.NOT_FOUND);
