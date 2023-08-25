@@ -1,14 +1,14 @@
 package com.rest.api.store.service;
 
-import dto.item.seller.request.PatchItemCountDto;
-import dto.item.seller.request.PostItemDto;
-import dto.item.seller.response.GetDto;
-import dto.item.seller.response.GetDtoWithStore;
-import repository.ItemRepository;
-import repository.StoreRepository;
-import domain.item.Item;
-import domain.store.Store;
-import dto.item.seller.request.UpdateRequestDto;
+import com.zupzup.untact.domain.item.Item;
+import com.zupzup.untact.domain.store.Store;
+import com.zupzup.untact.dto.item.seller.request.PatchItemCountDto;
+import com.zupzup.untact.dto.item.seller.request.PostItemDto;
+import com.zupzup.untact.dto.item.seller.request.UpdateRequestDto;
+import com.zupzup.untact.dto.item.seller.response.GetDto;
+import com.zupzup.untact.dto.item.seller.response.GetDtoWithStore;
+import com.zupzup.untact.repository.ItemRepository;
+import com.zupzup.untact.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;

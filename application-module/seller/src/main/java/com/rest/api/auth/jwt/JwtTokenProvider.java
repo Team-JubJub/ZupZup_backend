@@ -1,11 +1,10 @@
 package com.rest.api.auth.jwt;
 
+import com.rest.api.auth.dto.LoginInfoDto;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.CustomSellerDetailsService;
-import com.rest.api.auth.dto.LoginInfoDto;
-import dto.auth.token.seller.SellerRefreshResultDto;
+import com.zupzup.untact.dto.auth.token.seller.SellerRefreshResultDto;
 import io.jsonwebtoken.*;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j

@@ -1,11 +1,9 @@
 package com.rest.api.advice;
 
-import dto.MessageDto;
+import com.zupzup.untact.dto.MessageDto;
 import exception.NoSuchException;
 import exception.auth.customer.AlreadySignUppedException;
 import exception.auth.customer.NoUserPresentsException;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Path;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -16,13 +14,8 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @RestControllerAdvice
 public class CustomerControllerAdvice {

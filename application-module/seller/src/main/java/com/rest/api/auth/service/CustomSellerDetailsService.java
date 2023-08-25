@@ -1,10 +1,10 @@
 package com.rest.api.auth.service;
 
 import com.rest.api.auth.dto.LoginInfoDto;
+import com.zupzup.untact.repository.SellerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import repository.SellerRepository;
 
 @Service
 @RequiredArgsConstructor

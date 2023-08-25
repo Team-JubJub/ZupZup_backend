@@ -1,8 +1,8 @@
 package com.rest.api.store.controller;
 
 import com.rest.api.store.service.StoreService;
-import dto.store.customer.response.GetStoreDetailsDto;
-import dto.store.customer.response.GetStoreDto;
+import com.zupzup.untact.dto.store.customer.response.GetStoreDetailsDto;
+import com.zupzup.untact.dto.store.customer.response.GetStoreDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;

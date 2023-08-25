@@ -1,12 +1,14 @@
 package com.rest.api.store.service;
 
-import domain.auth.Seller.Seller;
-import domain.store.Store;
-import dto.auth.seller.test.SellerTestSignInDto;
-import dto.auth.seller.test.TestSignInResponseDto;
-import dto.store.seller.request.PatchDto;
-import dto.store.seller.response.GetStoreDetailsDto;
-import dto.store.seller.response.Response;
+import com.zupzup.untact.domain.auth.Seller.Seller;
+import com.zupzup.untact.domain.store.Store;
+import com.zupzup.untact.dto.auth.seller.test.SellerTestSignInDto;
+import com.zupzup.untact.dto.auth.seller.test.TestSignInResponseDto;
+import com.zupzup.untact.dto.store.seller.request.PatchDto;
+import com.zupzup.untact.dto.store.seller.response.GetStoreDetailsDto;
+import com.zupzup.untact.dto.store.seller.response.Response;
+import com.zupzup.untact.repository.SellerRepository;
+import com.zupzup.untact.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
@@ -14,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import repository.SellerRepository;
-import repository.StoreRepository;
 
 import java.io.IOException;
 

@@ -1,11 +1,12 @@
 package com.rest.api.order.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
-import domain.order.type.OrderStatus;
-import dto.order.seller.request.PatchOrderDataDto;
-import dto.order.seller.response.GetOrderDetailsDto;
-import dto.order.seller.response.GetOrderListDto;
-import dto.order.seller.response.PatchOrderResponseDto;
+import com.rest.api.order.service.OrderService;
+import com.zupzup.untact.domain.order.type.OrderStatus;
+import com.zupzup.untact.dto.order.seller.request.PatchOrderDataDto;
+import com.zupzup.untact.dto.order.seller.response.GetOrderDetailsDto;
+import com.zupzup.untact.dto.order.seller.response.GetOrderListDto;
+import com.zupzup.untact.dto.order.seller.response.PatchOrderResponseDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,7 +19,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import com.rest.api.order.service.OrderService;
 
 @RestController
 @Validated

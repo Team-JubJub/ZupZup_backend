@@ -1,19 +1,19 @@
 package com.rest.api.auth.service;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
-
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.utils.AuthUtils;
-import domain.auth.User.Provider;
-import domain.auth.Role;
-import domain.auth.User.User;
-import dto.MessageDto;
-import dto.auth.customer.UserDto;
-import dto.auth.customer.request.AccountRecoveryDto;
-import dto.auth.customer.request.UserSignInDto;
-import dto.auth.customer.request.UserSignUpDto;
-import dto.auth.token.customer.CustomerRefreshResultDto;
-import dto.auth.token.customer.CustomerTokenInfoDto;
+import com.zupzup.untact.domain.auth.Role;
+import com.zupzup.untact.domain.auth.User.Provider;
+import com.zupzup.untact.domain.auth.User.User;
+import com.zupzup.untact.dto.MessageDto;
+import com.zupzup.untact.dto.auth.customer.UserDto;
+import com.zupzup.untact.dto.auth.customer.request.AccountRecoveryDto;
+import com.zupzup.untact.dto.auth.customer.request.UserSignInDto;
+import com.zupzup.untact.dto.auth.customer.request.UserSignUpDto;
+import com.zupzup.untact.dto.auth.token.customer.CustomerRefreshResultDto;
+import com.zupzup.untact.dto.auth.token.customer.CustomerTokenInfoDto;
+import com.zupzup.untact.repository.UserRepository;
 import exception.auth.customer.AlreadySignUppedException;
 import exception.auth.customer.NoUserPresentsException;
 import jakarta.transaction.Transactional;
@@ -22,12 +22,14 @@ import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.UserRepository;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

@@ -1,10 +1,11 @@
 package com.rest.api.store.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
-import dto.item.seller.request.PatchItemCountDto;
-import dto.item.seller.request.PostItemDto;
-import dto.item.seller.request.UpdateRequestDto;
-import dto.item.seller.response.GetDto;
+import com.rest.api.store.service.ItemService;
+import com.zupzup.untact.dto.item.seller.request.PatchItemCountDto;
+import com.zupzup.untact.dto.item.seller.request.PostItemDto;
+import com.zupzup.untact.dto.item.seller.request.UpdateRequestDto;
+import com.zupzup.untact.dto.item.seller.response.GetDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.rest.api.store.service.ItemService;
 
 import java.util.List;
 

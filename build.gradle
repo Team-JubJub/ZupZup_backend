@@ -30,7 +30,7 @@ subprojects {	// 모든 하위 모듈에 적용되는 setting
 	apply plugin: 'org.springframework.boot'
 	apply plugin: 'io.spring.dependency-management'
 
-	group = 'zupzup'
+	group = 'com.zupzup'
 	version = '0.0.1-SNAPSHOT'
 	sourceCompatibility = '17'
 
@@ -67,18 +67,7 @@ subprojects {	// 모든 하위 모듈에 적용되는 setting
 		useJUnitPlatform()
 	}
 }
-project(':core-module') {	// 공통 코드 모듈
-	bootJar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
-		enabled = false
-	}
-	jar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
-		enabled = true
-	}
-}
-project(':domain-module') {	// domain 모듈
-	dependencies {
-		implementation(project(":core-module"))
-	}
+project(':spring-module-common') {	// 공통 코드 모듈
 	bootJar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
 		enabled = false
 	}
@@ -88,8 +77,7 @@ project(':domain-module') {	// domain 모듈
 }
 project(':application-module') {	// 어플리케이션(사장님, 고객님) 모듈
 	dependencies {
-		implementation(project(":core-module"))
-		implementation(project(":domain-module"))
+		implementation(project(":spring-module-common"))
 	}
 	bootJar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
 		enabled = false
