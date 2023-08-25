@@ -41,6 +41,9 @@ subprojects {   // Applied to application-common, seller, customer
     }
 }
 project(':application-module:application-common') {
+    dependencies {
+        implementation(project(":spring-module-common"))
+    }
     bootJar {	// 단독으로 실행되지 않으므로, 해당 모듈 라이브러리화 필요
         enabled = false
     }
