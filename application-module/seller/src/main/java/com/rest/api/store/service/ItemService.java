@@ -4,6 +4,7 @@ import dto.item.seller.request.PatchItemCountDto;
 import dto.item.seller.request.PostItemDto;
 import dto.item.seller.response.GetDto;
 import dto.item.seller.response.GetDtoWithStore;
+import dto.item.seller.response.ItemResponseDto;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import domain.item.Item;
@@ -34,7 +35,7 @@ public class ItemService {
     ModelMapper modelMapper;
 
     @Transactional
-    public String saveItem(PostItemDto requestDto, MultipartFile itemImgFile, Long storeId) throws Exception {
+    public ItemResponseDto saveItem(PostItemDto requestDto, MultipartFile itemImgFile, Long storeId) throws Exception {
         /**
          * 상품 등록
          * param: itemDto & multipartFile
@@ -67,7 +68,7 @@ public class ItemService {
         //3. 상품 저장
         itemRepository.save(item);
 
-        return item.getItemName();
+        return modelMapper.map(item, ItemResponseDto.class);
     }
 
     @Transactional
@@ -86,7 +87,7 @@ public class ItemService {
     }
 
     @Transactional
-    public String updateItem(Long itemId, Long storeId, UpdateRequestDto updateDto, MultipartFile itemImg) throws IOException {
+    public ItemResponseDto updateItem(Long itemId, Long storeId, UpdateRequestDto updateDto, MultipartFile itemImg) throws IOException {
         // 1. 상품과 가게가 존재하는지
         Item itemEntity = isItemPresent(itemId);
         Store store = isStorePresent(storeId);
@@ -101,7 +102,7 @@ public class ItemService {
 
         // 3. 엔티티 업데이트
         itemEntity.updateItem(updateDto);
-        return "상품 업데이트에 성공했습니다.";
+        return modelMapper.map(itemEntity, ItemResponseDto.class);
     }
 
     public List<GetDto> readItems(Long storeId) {
