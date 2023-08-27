@@ -1,9 +1,10 @@
 package com.rest.api.store.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
-import dto.item.ItemDto;
-import dto.item.seller.request.ItemRequestDto;
+import dto.item.seller.request.PatchItemCountDto;
+import dto.item.seller.request.PostItemDto;
 import dto.item.seller.request.UpdateRequestDto;
+import dto.item.seller.response.GetDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.rest.api.store.service.ItemService;
@@ -37,7 +37,7 @@ public class ItemController {
     )
     @PostMapping("/{storeId}") // 상품 저장
     public ResponseEntity saveItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                   @RequestPart(value = "item") ItemRequestDto.postDto requestDto,
+                                   @RequestPart(value = "item") PostItemDto requestDto,
                                    @RequestPart(value = "image", required = false) MultipartFile itemImg,
                                    @PathVariable Long storeId) throws Exception {
 
@@ -84,7 +84,7 @@ public class ItemController {
     public ResponseEntity readItems(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                     @PathVariable Long storeId) {
 
-        List<ItemDto.getDto> dtoList = itemService.readItems(storeId);
+        List<GetDto> dtoList = itemService.readItems(storeId);
         return new ResponseEntity(dtoList, HttpStatus.OK);
     }
 
@@ -96,7 +96,7 @@ public class ItemController {
     @PatchMapping("/{storeId}/quantity")
     public ResponseEntity modifyQuantity(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                          @PathVariable Long storeId,
-                                         @RequestPart(name = "quantity") List<ItemRequestDto.patchDto> quantityList) {
+                                         @RequestPart(name = "quantity") List<PatchItemCountDto> quantityList) {
 
         String result = itemService.modifyQuantity(storeId, quantityList);
         return new ResponseEntity(result, HttpStatus.OK);

@@ -1,12 +1,13 @@
 package com.rest.api.store.service;
 
-import dto.item.seller.response.ItemResponseDto;
+import dto.item.seller.request.PatchItemCountDto;
+import dto.item.seller.request.PostItemDto;
+import dto.item.seller.response.GetDto;
+import dto.item.seller.response.GetDtoWithStore;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import domain.item.Item;
 import domain.store.Store;
-import dto.item.ItemDto;
-import dto.item.seller.request.ItemRequestDto;
 import dto.item.seller.request.UpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ public class ItemService {
     ModelMapper modelMapper;
 
     @Transactional
-    public String saveItem(ItemRequestDto.postDto requestDto, MultipartFile itemImgFile, Long storeId) throws Exception {
+    public String saveItem(PostItemDto requestDto, MultipartFile itemImgFile, Long storeId) throws Exception {
         /**
          * 상품 등록
          * param: itemDto & multipartFile
@@ -41,7 +42,7 @@ public class ItemService {
          */
 
         //1. requestDto -> itemDto로 전환
-        ItemDto.getDtoWithStore itemDto = new ItemDto.getDtoWithStore();
+        GetDtoWithStore itemDto = new GetDtoWithStore();
         itemDto.setItemName(requestDto.getItemName());
         itemDto.setItemPrice(requestDto.getItemPrice());
         itemDto.setSalePrice(requestDto.getSalePrice());
@@ -103,27 +104,27 @@ public class ItemService {
         return "상품 업데이트에 성공했습니다.";
     }
 
-    public List<ItemDto.getDto> readItems(Long storeId) {
+    public List<GetDto> readItems(Long storeId) {
 
         Store store = storeRepository.findById(storeId).get();
         List<Item> itemList = itemRepository.findAllByStore(store);
-        List<ItemDto.getDto> dtoList = new ArrayList<>();
+        List<GetDto> dtoList = new ArrayList<>();
 
         for(Item item : itemList) {
 
-            ItemDto.getDto itemDto = modelMapper.map(item, ItemDto.getDto.class);
+            GetDto itemDto = modelMapper.map(item, GetDto.class);
             dtoList.add(itemDto);
         }
 
         return dtoList;
     }
 
-    public String modifyQuantity(Long storeId, List<ItemRequestDto.patchDto> quantityList) {
+    public String modifyQuantity(Long storeId, List<PatchItemCountDto> quantityList) {
 
-        for (ItemRequestDto.patchDto patchDto : quantityList) {
+        for (PatchItemCountDto patchItemCountDto : quantityList) {
 
-            Item item = itemRepository.findById(patchDto.getItemId()).get();
-            item.setItemCount(patchDto.getItemCount());
+            Item item = itemRepository.findById(patchItemCountDto.getItemId()).get();
+            item.setItemCount(patchItemCountDto.getItemCount());
             itemRepository.save(item);
         }
 
