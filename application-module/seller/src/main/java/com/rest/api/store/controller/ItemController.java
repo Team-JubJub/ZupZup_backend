@@ -5,6 +5,7 @@ import dto.item.seller.request.PatchItemCountDto;
 import dto.item.seller.request.PostItemDto;
 import dto.item.seller.request.UpdateRequestDto;
 import dto.item.seller.response.GetDto;
+import dto.item.seller.response.ItemResponseDto;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,9 +42,8 @@ public class ItemController {
                                    @RequestPart(value = "image", required = false) MultipartFile itemImg,
                                    @PathVariable Long storeId) throws Exception {
 
-        String itemName = itemService.saveItem(requestDto, itemImg, storeId);
-        String format = String.format("상품 %s(이)가 저장되었습니다.", itemName);
-        return new ResponseEntity(format, HttpStatus.CREATED); // 상품의 이름 반환
+        ItemResponseDto rs = itemService.saveItem(requestDto, itemImg, storeId);
+        return new ResponseEntity(rs, HttpStatus.CREATED); // 상품 관련 response 제공
     }
 
     @Tag(name = "아이템 업데이트", description = "기존 아이템 업데이트")
@@ -58,7 +58,7 @@ public class ItemController {
                                      @RequestPart(value = "image", required = false) MultipartFile itemImg) throws Exception {
 
 
-        String response = itemService.updateItem(itemId, storeId, updateDto, itemImg);
+        ItemResponseDto response = itemService.updateItem(itemId, storeId, updateDto, itemImg);
 
         return new ResponseEntity(response, HttpStatus.OK); //완료 여부 반환
     }
