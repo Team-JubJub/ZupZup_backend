@@ -5,6 +5,7 @@ import dto.auth.seller.test.SellerTestSignInDto;
 import dto.auth.seller.test.TestSignInResponseDto;
 import dto.store.seller.request.PatchDto;
 import dto.store.seller.response.Response;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,7 +36,7 @@ public class StoreController {
         return new ResponseEntity(storeService.storeDetails(storeId), HttpStatus.OK);
     }
 
-    @Tag(name = "영업/휴무 설정", description = "영업/휴무 변경")
+    @Operation(summary = "영업/휴무 설정", description = "영업/휴무 변경")
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "휴무/영업 변경 완료(0-휴무, 1-영업)")
     )
@@ -47,7 +48,7 @@ public class StoreController {
         return new ResponseEntity(isClosed, HttpStatus.OK);
     }
 
-    @Tag(name = "공지 제외 수정", description = "가게 정보 관련 수정 중, 공지사항 제외 수정")
+    @Operation(summary = "공지사항 제외 수정", description = "가게 정보 관련 수정 중, 공지사항 제외한 정보 수정")
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "수정된 정보 다시 리턴(확인용)")
     )
@@ -61,7 +62,7 @@ public class StoreController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
-    @Tag(name = "공지 수정", description = "가게 정보 관련 수정 중, 공지사항 수정")
+    @Operation(summary = "공지사항 수정", description = "가게 정보 관련 수정 중, 공지사항 수정")
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "수정된 정보 다시 리턴(확인용)")
     )
