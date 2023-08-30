@@ -5,6 +5,7 @@ import dto.item.seller.request.PostItemDto;
 import dto.item.seller.response.GetDto;
 import dto.item.seller.response.GetDtoWithStore;
 import dto.item.seller.response.ItemResponseDto;
+import exception.item.seller.NoSuchItemException;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import domain.item.Item;
@@ -139,7 +140,7 @@ public class ItemService {
             Item itemEntity = itemRepository.findById(itemId).get();
             return itemEntity;
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("해당 상품을 찾을 수 없습니다.");
+            throw new NoSuchItemException("해당 상품을 찾을 수 없습니다.");
         }
     }
 
