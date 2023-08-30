@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Tag(name = "Store", description = "가게와 관련된 API")
 @RestController
 @Log
 @RequiredArgsConstructor
