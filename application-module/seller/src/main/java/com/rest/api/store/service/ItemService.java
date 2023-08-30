@@ -49,8 +49,6 @@ public class ItemService {
         itemDto.setSalePrice(requestDto.getSalePrice());
         itemDto.setItemCount(requestDto.getItemCount());
 
-        //System.out.println(storeRepository.findById(storeId));
-
         Store store = isStorePresent(storeId);
         itemDto.setStore(store);
 
@@ -71,19 +69,19 @@ public class ItemService {
         return modelMapper.map(item, ItemResponseDto.class);
     }
 
-    @Transactional
-    public String deleteItem(Long itemId) {
-        /**
-         * 상품 삭제
-         * param : itemId
-         * return : String
-         */
+    public List<GetDto> readItems(Long storeId) {
 
-        Item item = isItemPresent(itemId);
+        Store store = storeRepository.findById(storeId).get();
+        List<Item> itemList = itemRepository.findAllByStore(store);
+        List<GetDto> dtoList = new ArrayList<>();
 
-        itemRepository.deleteById(itemId);
+        for(Item item : itemList) {
 
-        return "상품 삭제가 완료되었습니다.";
+            GetDto itemDto = modelMapper.map(item, GetDto.class);
+            dtoList.add(itemDto);
+        }
+
+        return dtoList;
     }
 
     @Transactional
@@ -105,21 +103,6 @@ public class ItemService {
         return modelMapper.map(itemEntity, ItemResponseDto.class);
     }
 
-    public List<GetDto> readItems(Long storeId) {
-
-        Store store = storeRepository.findById(storeId).get();
-        List<Item> itemList = itemRepository.findAllByStore(store);
-        List<GetDto> dtoList = new ArrayList<>();
-
-        for(Item item : itemList) {
-
-            GetDto itemDto = modelMapper.map(item, GetDto.class);
-            dtoList.add(itemDto);
-        }
-
-        return dtoList;
-    }
-
     public String modifyQuantity(Long storeId, List<PatchItemCountDto> quantityList) {
 
         for (PatchItemCountDto patchItemCountDto : quantityList) {
@@ -131,6 +114,22 @@ public class ItemService {
 
         return "수정이 완료되었습니다.";
     }
+
+    @Transactional
+    public String deleteItem(Long itemId) {
+        /**
+         * 상품 삭제
+         * param : itemId
+         * return : String
+         */
+
+        Item item = isItemPresent(itemId);
+
+        itemRepository.deleteById(itemId);
+
+        return "상품 삭제가 완료되었습니다.";
+    }
+
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->

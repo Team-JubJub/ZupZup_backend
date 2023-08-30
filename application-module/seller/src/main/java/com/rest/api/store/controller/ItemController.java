@@ -48,6 +48,19 @@ public class ItemController {
         return new ResponseEntity(rs, HttpStatus.CREATED); // 상품 관련 response 제공
     }
 
+    @Operation(summary = "전체 아이템 읽어오기", description = "전체 아이템 읽어오기")
+    @ApiResponses(
+            @ApiResponse(responseCode = "200", description = "전체 아이템 리스트 제공")
+    )
+    // 전체 제품 불러오기
+    @GetMapping("/{storeId}/management")
+    public ResponseEntity readItems(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                    @PathVariable Long storeId) {
+
+        List<GetDto> dtoList = itemService.readItems(storeId);
+        return new ResponseEntity(dtoList, HttpStatus.OK);
+    }
+
     @Operation(summary = "아이템 업데이트", description = "기존 아이템 업데이트")
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "수정된 response(확인용)")
@@ -65,31 +78,6 @@ public class ItemController {
         return new ResponseEntity(response, HttpStatus.OK); //완료 여부 반환
     }
 
-    @Operation(summary = "아이템 삭제", description = "아이템 삭제")
-    @ApiResponses(
-            @ApiResponse(responseCode = "200", description = "(아무것도 X)")
-    )
-    @DeleteMapping("/{storeId}/{itemId}")
-    public ResponseEntity deleteItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                     @PathVariable Long itemId, @PathVariable String storeId) {
-
-        String response = itemService.deleteItem(itemId);
-        return new ResponseEntity(response, HttpStatus.OK); //삭제 여부 반환
-    }
-
-    @Operation(summary = "전체 아이템 읽어오기", description = "전체 아이템 읽어오기")
-    @ApiResponses(
-            @ApiResponse(responseCode = "200", description = "전체 아이템 리스트 제공")
-    )
-    // 전체 제품 불러오기
-    @GetMapping("/{storeId}/management")
-    public ResponseEntity readItems(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                    @PathVariable Long storeId) {
-
-        List<GetDto> dtoList = itemService.readItems(storeId);
-        return new ResponseEntity(dtoList, HttpStatus.OK);
-    }
-
     @Operation(summary = "아이템 갯수 수정", description = "아이템 갯수 수정")
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "수정이 완료되었습니다.")
@@ -102,6 +90,18 @@ public class ItemController {
 
         String result = itemService.modifyQuantity(storeId, quantityList);
         return new ResponseEntity(result, HttpStatus.OK);
+    }
+
+    @Operation(summary = "아이템 삭제", description = "아이템 삭제")
+    @ApiResponses(
+            @ApiResponse(responseCode = "200", description = "(아무것도 X)")
+    )
+    @DeleteMapping("/{storeId}/{itemId}")
+    public ResponseEntity deleteItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                     @PathVariable Long itemId, @PathVariable String storeId) {
+
+        String response = itemService.deleteItem(itemId);
+        return new ResponseEntity(response, HttpStatus.OK); //삭제 여부 반환
     }
 
 }
