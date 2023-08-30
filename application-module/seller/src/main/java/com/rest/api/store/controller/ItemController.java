@@ -6,6 +6,7 @@ import dto.item.seller.request.PostItemDto;
 import dto.item.seller.request.UpdateRequestDto;
 import dto.item.seller.response.GetDto;
 import dto.item.seller.response.ItemResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,7 +34,7 @@ public class ItemController {
     /**
      * 아이템 컨트롤러
      */
-    @Tag(name = "아이템 저장", description = "새로운 아이템 저장용")
+    @Operation(summary = "아이템 저장", description = "새로운 아이템 저장")
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "상품 (상품명)(이)가 저장되었습니다.")
     )
@@ -47,7 +48,7 @@ public class ItemController {
         return new ResponseEntity(rs, HttpStatus.CREATED); // 상품 관련 response 제공
     }
 
-    @Tag(name = "아이템 업데이트", description = "기존 아이템 업데이트")
+    @Operation(summary = "아이템 업데이트", description = "기존 아이템 업데이트")
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "수정된 response(확인용)")
     )
@@ -64,7 +65,7 @@ public class ItemController {
         return new ResponseEntity(response, HttpStatus.OK); //완료 여부 반환
     }
 
-    @Tag(name = "아이템 삭제", description = "아이템 삭제")
+    @Operation(summary = "아이템 삭제", description = "아이템 삭제")
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "(아무것도 X)")
     )
@@ -76,7 +77,7 @@ public class ItemController {
         return new ResponseEntity(response, HttpStatus.OK); //삭제 여부 반환
     }
 
-    @Tag(name = "아이템 읽어오기", description = "전체 아이템 읽어오기")
+    @Operation(summary = "전체 아이템 읽어오기", description = "전체 아이템 읽어오기")
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "전체 아이템 리스트 제공")
     )
@@ -89,7 +90,7 @@ public class ItemController {
         return new ResponseEntity(dtoList, HttpStatus.OK);
     }
 
-    @Tag(name = "갯수 수정", description = "아이템 갯수 수정")
+    @Operation(summary = "아이템 갯수 수정", description = "아이템 갯수 수정")
     @ApiResponses(
             @ApiResponse(responseCode = "200", description = "수정이 완료되었습니다.")
     )
