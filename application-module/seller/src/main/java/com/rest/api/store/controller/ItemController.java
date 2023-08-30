@@ -21,6 +21,7 @@ import com.rest.api.store.service.ItemService;
 
 import java.util.List;
 
+@Tag(name = "Item", description = "상품과 관련된 API")
 @RestController
 @Log
 @RequiredArgsConstructor
