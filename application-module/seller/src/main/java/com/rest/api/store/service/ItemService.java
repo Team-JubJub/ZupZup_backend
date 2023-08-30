@@ -6,6 +6,7 @@ import dto.item.seller.response.GetDto;
 import dto.item.seller.response.GetDtoWithStore;
 import dto.item.seller.response.ItemResponseDto;
 import exception.item.seller.NoSuchItemException;
+import exception.store.seller.NoSuchStoreException;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import domain.item.Item;
@@ -72,7 +73,7 @@ public class ItemService {
 
     public List<GetDto> readItems(Long storeId) {
 
-        Store store = storeRepository.findById(storeId).get();
+        Store store = isStorePresent(storeId);
         List<Item> itemList = itemRepository.findAllByStore(store);
         List<GetDto> dtoList = new ArrayList<>();
 
@@ -87,9 +88,9 @@ public class ItemService {
 
     @Transactional
     public ItemResponseDto updateItem(Long itemId, Long storeId, UpdateRequestDto updateDto, MultipartFile itemImg) throws IOException {
-        // 1. 상품과 가게가 존재하는지
-        Item itemEntity = isItemPresent(itemId);
+        // 1. 가게와 상품이 존재하는지
         Store store = isStorePresent(storeId);
+        Item itemEntity = isItemPresent(itemId);
 
         // 2. 바뀐 이미지 체크해서 저장 (이미지가 없으면 빈 이미지로 저장)
         if(itemImg != null) {
@@ -107,8 +108,7 @@ public class ItemService {
     public String modifyQuantity(Long storeId, List<PatchItemCountDto> quantityList) {
 
         for (PatchItemCountDto patchItemCountDto : quantityList) {
-
-            Item item = itemRepository.findById(patchItemCountDto.getItemId()).get();
+            Item item = isItemPresent(patchItemCountDto.getItemId());
             item.setItemCount(patchItemCountDto.getItemCount());
             itemRepository.save(item);
         }
@@ -126,7 +126,7 @@ public class ItemService {
 
         Item item = isItemPresent(itemId);
 
-        itemRepository.deleteById(itemId);
+        itemRepository.deleteById(item.getItemId());
 
         return "상품 삭제가 완료되었습니다.";
     }
@@ -150,7 +150,7 @@ public class ItemService {
             Store store = storeRepository.findById(storeId).get();
             return store;
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("해당 가게를 찾을 수 없습니다.");
+            throw new NoSuchStoreException("해당 가게를 찾을 수 없습니다.");
         }
     }
 }

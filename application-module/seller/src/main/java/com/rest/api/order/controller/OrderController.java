@@ -40,10 +40,9 @@ public class OrderController {
             @ApiResponse(responseCode = "204", description = "주문 정보 요청은 성공했으나 해당 가게의 주문이 0개인 경우"),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
-            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
-                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
-            @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
-                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user.")))
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
+                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
+                            "Sign-outed or deleted user.")))
     })
     @GetMapping("")  // order에 대한 GET(주문 항목 모두), ex) ~/seller/1/order?page=1 포맷
     public ResponseEntity orderList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -62,10 +61,9 @@ public class OrderController {
                     content = @Content(schema = @Schema(implementation = dto.order.customer.response.GetOrderDetailsDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
-            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
-                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
-            @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
-                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user."))),
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
+                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
+                            "Sign-outed or deleted user."))),
             @ApiResponse(responseCode = "404", description = "해당 주문을 찾을 수 없음",
                     content = @Content(schema = @Schema(example = "해당 주문을 찾을 수 없습니다.")))
     })
@@ -84,10 +82,9 @@ public class OrderController {
                     content = @Content(schema = @Schema(implementation = PatchOrderResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
-            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
-                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
-            @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
-                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user.")))
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
+                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
+                            "Sign-outed or deleted user.")))
     })
     @PatchMapping("/new-order/{orderId}/cancel")  // 신규 주문 취소 시
     public ResponseEntity cancelNewOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -103,10 +100,9 @@ public class OrderController {
                     content = @Content(schema = @Schema(implementation = PatchOrderResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
-            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
-                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
-            @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
-                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user.")))
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
+                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
+                            "Sign-outed or deleted user.")))
     })
     @PatchMapping("/new-order/{orderId}/confirm")  // 신규 주문 확정 시
     public ResponseEntity confirmNewOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -122,10 +118,9 @@ public class OrderController {
                     content = @Content(schema = @Schema(implementation = PatchOrderResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
-            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
-                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
-            @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
-                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user.")))
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
+                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
+                            "Sign-outed or deleted user.")))
     })
     @PatchMapping("/confirmed-order/{orderId}/cancel")    // 확정 주문 취소 시
     public ResponseEntity cancelConfirmedOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -141,10 +136,9 @@ public class OrderController {
                     content = @Content(schema = @Schema(implementation = PatchOrderResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
-            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
-                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
-            @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
-                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user.")))
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
+                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
+                            "Sign-outed or deleted user.")))
     })
     @PatchMapping("/confirmed-order/{orderId}/complete")  // 확정 주문 완료 시
     public ResponseEntity completeConfirmedOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
