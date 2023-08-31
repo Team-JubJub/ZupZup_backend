@@ -7,6 +7,7 @@ import dto.order.seller.response.GetOrderListDto;
 import dto.store.seller.request.PatchDto;
 import dto.store.seller.response.GetStoreDetailsDto;
 import dto.store.seller.response.Response;
+import io.lettuce.core.dynamic.annotation.Param;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -48,7 +49,7 @@ public class StoreController {
     })
     @GetMapping("/{storeId}")
     public ResponseEntity storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                           @PathVariable Long storeId) {
+                                       @Parameter(name = "storeId", description = "조회할 가게 id", in = ParameterIn.PATH) @PathVariable Long storeId) {
         return new ResponseEntity(storeService.storeDetails(storeId), HttpStatus.OK);
     }
 
@@ -65,7 +66,7 @@ public class StoreController {
     })
     @PatchMapping("/open/{storeId}")
     public ResponseEntity changeIsOpened(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                         @PathVariable Long storeId,
+                                         @Parameter(name = "storeId", description = "수정할 가게 id", in = ParameterIn.PATH) @PathVariable Long storeId,
                                          Boolean isOpened) {
         String isClosed = storeService.changeIsOpened(storeId, isOpened);
         return new ResponseEntity(isClosed, HttpStatus.OK);
@@ -84,9 +85,9 @@ public class StoreController {
     })
     @PatchMapping("/modification/{storeId}")
     public ResponseEntity modifyStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                      @PathVariable Long storeId,
-                                      @RequestPart(name = "data") PatchDto patchDto,
-                                      @RequestPart(name = "image", required = false) MultipartFile storeImg) throws IOException {
+                                      @Parameter(name = "storeId", description = "수정할 가게 id", in = ParameterIn.PATH) @PathVariable Long storeId,
+                                      @Schema(name = "patchDto", type = "form-data, Content-type = application/json", description = "수정할 사항") @RequestPart(name = "data") PatchDto patchDto,
+                                      @Schema(name = "image", type = "form-data, Content-type = multipart/form-data", description = "수정할 가게 이미지") @RequestPart(name = "image", required = false) MultipartFile storeImg) throws IOException {
 
         Response response = storeService.modifyStore(storeId, patchDto, storeImg);
         return new ResponseEntity(response, HttpStatus.OK);
@@ -105,7 +106,7 @@ public class StoreController {
     })
     @PostMapping("/notice/{storeId}")
     public ResponseEntity changeNotification(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                             @PathVariable Long storeId,
+                                             @Parameter(name = "storeId", description = "수정할 가게 id", in = ParameterIn.PATH) @PathVariable Long storeId,
                                              String storeMatters) {
 
         String isChanged = storeService.changeNotification(storeId, storeMatters);
