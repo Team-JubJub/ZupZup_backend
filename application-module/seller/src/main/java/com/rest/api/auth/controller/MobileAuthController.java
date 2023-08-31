@@ -43,10 +43,9 @@ public class MobileAuthController {
                     headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
                             @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
                     content = @Content(schema = @Schema(implementation = SellerTokenInfoDto.class))),
-            @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우",
-                    content = @Content(schema = @Schema(example = "Required request body is missing"))),
-            @ApiResponse(responseCode = "400", description = "Request body의 값이 유효셩에 어긋나는 경우",
-                    content = @Content(schema = @Schema(example = "{\n" +
+            @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우, Request body의 값이 유효셩에 어긋나는 경우",
+                    content = @Content(schema = @Schema(example = "Required request body is missing\n or \n" +
+                            "{\n" +
                             "\t\"userUniqueId\": \"User unique id cannot be null or empty or space\"\n" +
                             "}"))),
             @ApiResponse(responseCode = "403", description = "아이디를 통한 로그인 시 비밀번호가 틀린 경우",
@@ -102,10 +101,9 @@ public class MobileAuthController {
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"Sign-out successful\"\n}"))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
-            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
-                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
-            @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
-                    content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again."))),
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
+                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
+                            "Sign-outed or deleted user."))),
             @ApiResponse(responseCode = "403", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits")))
     })

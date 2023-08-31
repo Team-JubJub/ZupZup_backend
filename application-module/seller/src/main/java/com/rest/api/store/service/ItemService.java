@@ -5,6 +5,8 @@ import dto.item.seller.request.PostItemDto;
 import dto.item.seller.response.GetDto;
 import dto.item.seller.response.GetDtoWithStore;
 import dto.item.seller.response.ItemResponseDto;
+import exception.item.seller.NoSuchItemException;
+import exception.store.seller.NoSuchStoreException;
 import repository.ItemRepository;
 import repository.StoreRepository;
 import domain.item.Item;
@@ -49,8 +51,6 @@ public class ItemService {
         itemDto.setSalePrice(requestDto.getSalePrice());
         itemDto.setItemCount(requestDto.getItemCount());
 
-        //System.out.println(storeRepository.findById(storeId));
-
         Store store = isStorePresent(storeId);
         itemDto.setStore(store);
 
@@ -71,26 +71,26 @@ public class ItemService {
         return modelMapper.map(item, ItemResponseDto.class);
     }
 
-    @Transactional
-    public String deleteItem(Long itemId) {
-        /**
-         * 상품 삭제
-         * param : itemId
-         * return : String
-         */
+    public List<GetDto> readItems(Long storeId) {
 
-        Item item = isItemPresent(itemId);
+        Store store = isStorePresent(storeId);
+        List<Item> itemList = itemRepository.findAllByStore(store);
+        List<GetDto> dtoList = new ArrayList<>();
 
-        itemRepository.deleteById(itemId);
+        for(Item item : itemList) {
 
-        return "상품 삭제가 완료되었습니다.";
+            GetDto itemDto = modelMapper.map(item, GetDto.class);
+            dtoList.add(itemDto);
+        }
+
+        return dtoList;
     }
 
     @Transactional
     public ItemResponseDto updateItem(Long itemId, Long storeId, UpdateRequestDto updateDto, MultipartFile itemImg) throws IOException {
-        // 1. 상품과 가게가 존재하는지
-        Item itemEntity = isItemPresent(itemId);
+        // 1. 가게와 상품이 존재하는지
         Store store = isStorePresent(storeId);
+        Item itemEntity = isItemPresent(itemId);
 
         // 2. 바뀐 이미지 체크해서 저장 (이미지가 없으면 빈 이미지로 저장)
         if(itemImg != null) {
@@ -105,32 +105,32 @@ public class ItemService {
         return modelMapper.map(itemEntity, ItemResponseDto.class);
     }
 
-    public List<GetDto> readItems(Long storeId) {
-
-        Store store = storeRepository.findById(storeId).get();
-        List<Item> itemList = itemRepository.findAllByStore(store);
-        List<GetDto> dtoList = new ArrayList<>();
-
-        for(Item item : itemList) {
-
-            GetDto itemDto = modelMapper.map(item, GetDto.class);
-            dtoList.add(itemDto);
-        }
-
-        return dtoList;
-    }
-
     public String modifyQuantity(Long storeId, List<PatchItemCountDto> quantityList) {
 
         for (PatchItemCountDto patchItemCountDto : quantityList) {
-
-            Item item = itemRepository.findById(patchItemCountDto.getItemId()).get();
+            Item item = isItemPresent(patchItemCountDto.getItemId());
             item.setItemCount(patchItemCountDto.getItemCount());
             itemRepository.save(item);
         }
 
         return "수정이 완료되었습니다.";
     }
+
+    @Transactional
+    public String deleteItem(Long itemId) {
+        /**
+         * 상품 삭제
+         * param : itemId
+         * return : String
+         */
+
+        Item item = isItemPresent(itemId);
+
+        itemRepository.deleteById(item.getItemId());
+
+        return "상품 삭제가 완료되었습니다.";
+    }
+
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
@@ -140,7 +140,7 @@ public class ItemService {
             Item itemEntity = itemRepository.findById(itemId).get();
             return itemEntity;
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("해당 상품을 찾을 수 없습니다.");
+            throw new NoSuchItemException("해당 상품을 찾을 수 없습니다.");
         }
     }
 
@@ -150,7 +150,7 @@ public class ItemService {
             Store store = storeRepository.findById(storeId).get();
             return store;
         } catch (NoSuchElementException e) {
-            throw new NoSuchElementException("해당 가게를 찾을 수 없습니다.");
+            throw new NoSuchStoreException("해당 가게를 찾을 수 없습니다.");
         }
     }
 }
