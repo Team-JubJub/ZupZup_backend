@@ -35,7 +35,7 @@ public class StoreService {
 
     // 가게 메인 페이지
     public GetStoreDetailsDto storeDetails(Long storeId) {
-        Store store = storeRepository.findById(storeId).get();
+        Store store = isStorePresent(storeId);
         GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(store, GetStoreDetailsDto.class);
 
         return getStoreDetailsDto;
@@ -43,8 +43,7 @@ public class StoreService {
 
     // 가게 영업중 여부 전환
     public String changeIsOpened(Long storeId, Boolean isOpened) {
-
-        Store store = storeRepository.findById(storeId).get();
+        Store store = isStorePresent(storeId);
         store.setIsOpen(isOpened);
 
         if(isOpened) {
@@ -55,8 +54,7 @@ public class StoreService {
 
     // 가게 영업시간, 할인시간, 휴무일, 이미지 변경
     public Response modifyStore(Long storeId, PatchDto patchDto, MultipartFile storeImg) throws IOException {
-
-        Store store = storeRepository.findById(storeId).get();
+        Store store = isStorePresent(storeId);
 
         if(storeImg != null) {
             String imageURL = s3Uploader.upload(storeImg, store.getStoreName());
@@ -74,7 +72,6 @@ public class StoreService {
 
     // 공지사항 수정
     public String changeNotification(Long storeId, String storeMatters) {
-
         Store store = isStorePresent(storeId);
         store.setSaleMatters(storeMatters);
 
