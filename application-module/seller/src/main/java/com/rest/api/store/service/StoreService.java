@@ -59,6 +59,8 @@ public class StoreService {
         if(storeImg != null) {
             String imageURL = s3Uploader.upload(storeImg, store.getStoreName());
             patchDto.setStoreImageUrl(imageURL);
+        } else {    // 변경할 이미지를 보내지 않았을 때
+            patchDto.setStoreImageUrl(store.getStoreImageUrl());    // 기존의 이미지를 사용하도록 수정
         }
 
         store.modifyStore(patchDto);
