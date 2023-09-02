@@ -59,11 +59,10 @@ public class StoreService {
         if(storeImg != null) {
             String imageURL = s3Uploader.upload(storeImg, store.getStoreName());
             patchDto.setStoreImageUrl(imageURL);
-        } else {
-            patchDto.setStoreImageUrl(""); // 이미지가 없을시 null 로 설정
         }
 
         store.modifyStore(patchDto);
+        storeRepository.save(store);
 
         Response response = modelMapper.map(store, Response.class);
 

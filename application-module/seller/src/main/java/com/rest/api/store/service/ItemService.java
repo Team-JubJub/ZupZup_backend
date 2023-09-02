@@ -96,12 +96,12 @@ public class ItemService {
         if(itemImg != null) {
             String imageURL = s3Uploader.upload(itemImg, store.getStoreName());
             updateDto.setImageURL(imageURL);
-        } else {
-            updateDto.setImageURL("");
         }
 
         // 3. 엔티티 업데이트
         itemEntity.updateItem(updateDto);
+        itemRepository.save(itemEntity);
+
         return modelMapper.map(itemEntity, ItemResponseDto.class);
     }
 
