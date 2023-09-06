@@ -21,6 +21,13 @@ public class Seller {
     private String loginPwd;
 
     @Column(nullable = false)
+    private String name;
+    @Column(nullable = false)
+    private String phoneNumber;
+    @Column(nullable = false)
+    private String email;
+
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;  // 사장님의 앱 권한 -> 우선 ROLE_SELLER로 통일
 

@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface SellerRepository extends JpaRepository<Seller, Long> {
 
-    Seller findSellerByLoginId(String loginId);   // 테스트용 임시 함수
+    Seller findSellerByLoginId(String loginId);
 
 }

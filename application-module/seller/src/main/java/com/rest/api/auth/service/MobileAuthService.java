@@ -103,6 +103,9 @@ public class MobileAuthService {
         Seller sellerEntity = Seller.SellerBuilder()
                 .loginId(sellerTestSignUpDto.getLoginId())
                 .loginPwd(passwordEncoder.encode(sellerTestSignUpDto.getLoginPwd()))
+                .name(sellerTestSignUpDto.getName())
+                .phoneNumber(sellerTestSignUpDto.getPhoneNumber())
+                .email(sellerTestSignUpDto.getEmail())
                 .role(Role.ROLE_SELLER)
                 .build();
         sellerRepository.save(sellerEntity);

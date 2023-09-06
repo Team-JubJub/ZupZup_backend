@@ -18,6 +18,8 @@ public class LoginInfoDto implements UserDetails { // Token validation에 사용
     private String loginId;
     private String loginPwd;
     private String name;
+    private String phoneNumber;
+    private String email;
     private Collection<GrantedAuthority> roles;
 
     public LoginInfoDto() {
@@ -29,7 +31,9 @@ public class LoginInfoDto implements UserDetails { // Token validation에 사용
     public LoginInfoDto(Seller seller) {
         this.number = seller.getSellerId();
         this.loginId = seller.getLoginId();
-        this.name = seller.getLoginId();    // 이름 -> 나중에 다시 설정해주기
+        this.name = seller.getName();
+        this.phoneNumber = seller.getPhoneNumber();
+        this.email = seller.getEmail();
         roles = new ArrayList<GrantedAuthority>();
         roles.add(new SimpleGrantedAuthority(seller.getRole().getRole()));
     }
