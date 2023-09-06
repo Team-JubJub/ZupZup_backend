@@ -16,5 +16,9 @@ public class SellerDto {
     private String loginId;
     private String loginPwd;
 
+    private String name;
+    private String phoneNumber;
+    private String email;
+
     private Role role;
 }
