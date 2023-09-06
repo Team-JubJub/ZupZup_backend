@@ -100,7 +100,6 @@ public class StoreService {
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
     private Store isStorePresent(Long storeId) {
-
         try {
             Store store = storeRepository.findById(storeId).get();
             return store;

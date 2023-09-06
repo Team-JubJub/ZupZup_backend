@@ -31,7 +31,7 @@ public class LoginInfoDto implements UserDetails { // Token validation에 사용
     public LoginInfoDto(Seller seller) {
         this.number = seller.getSellerId();
         this.loginId = seller.getLoginId();
-        this.name = seller.getName();    // 이름 -> 나중에 다시 설정해주기
+        this.name = seller.getName();
         this.phoneNumber = seller.getPhoneNumber();
         this.email = seller.getEmail();
         roles = new ArrayList<GrantedAuthority>();
