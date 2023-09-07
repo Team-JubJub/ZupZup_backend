@@ -1,6 +1,6 @@
 package dto.store.customer.response;
 
-import dto.item.seller.response.ItemResponseDto;
+import dto.item.customer.response.ItemResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,22 +17,21 @@ public class GetStoreDetailsDto {
     private Long storeId;
 
     private String storeName;
-    private String category;
+    private String storeImageUrl;
     private String storeAddress;
-
-    private String openTime;
-    private String endTime;
-    private String saleMatters;
-
-    private String saleTimeStart;
-    private String saleTimeEnd;
-
-    private String salePercent;
+    private String category;
+    private String sellerContact;
 
     private Double longitude;
     private Double latitude;
+    private String openTime;
+    private String closeTime;
+    private String saleTimeStart;
+    private String saleTimeEnd;
+    private String saleMatters;
 
-    private List<String> eventList;
+    private Boolean isOpen;
+    private String closedDay;
 
     private List<ItemResponseDto> itemDtoList;
 

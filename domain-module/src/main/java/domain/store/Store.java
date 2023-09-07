@@ -30,7 +30,7 @@ public class Store {
     @Column(nullable = false)
     private String category; // 카테고리
     @Column(nullable = false)
-    private String contact; // 카테고리
+    private String sellerContact; // 대표자 연락처
     @Column(nullable = false)
     private Double longitude;   // 경도
     @Column(nullable = false)
