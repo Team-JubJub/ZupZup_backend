@@ -20,7 +20,9 @@ public class StoreDto {
     private String storeImageUrl;
     private String storeAddress; //가게 주소
     private String category;
+    private String sellerName;
     private String sellerContact;
+    private String storeContact;
 
     private Double longitude;
     private Double latitude;
