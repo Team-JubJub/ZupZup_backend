@@ -35,6 +35,9 @@ public class Store {
     @Column(nullable = false)
     private String sellerContact; // 대표자 연락처
     @Column(nullable = true)
+    private String storeContact; // 가게 연락처
+
+    @Column(nullable = true)
     private Double longitude;   // 경도
     @Column(nullable = true)
     private Double latitude;    // 위도
@@ -48,6 +51,7 @@ public class Store {
     private String saleTimeEnd; // 할인 마감 시간
     @Column(nullable = true)
     private String saleMatters; // 공지사항
+
     @Column
     private Boolean isOpen; // 가게 운영 여부
     @Column(nullable = true)

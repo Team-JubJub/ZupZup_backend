@@ -22,6 +22,7 @@ public class GetStoreDetailsDto {
     private String category;
     private String sellerName;
     private String sellerContact;
+    private String storeContact;
 
     private Double longitude;
     private Double latitude;
