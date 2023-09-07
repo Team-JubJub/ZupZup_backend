@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Response {
+public class ModifyStoreResponse {
 
     private String storeName;
     private String openTime;

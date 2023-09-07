@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PatchDto {
+public class ModifyStoreDto {
 
     private String storeImageUrl; // 가게 대표 이미지 url - 이미지 없을 시 기본이미지
     private String openTime; // 운영 시작 시간

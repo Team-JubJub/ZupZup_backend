@@ -3,11 +3,9 @@ package com.rest.api.store.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import dto.auth.seller.test.SellerTestSignInDto;
 import dto.auth.seller.test.TestSignInResponseDto;
-import dto.order.seller.response.GetOrderListDto;
-import dto.store.seller.request.PatchDto;
+import dto.store.seller.request.ModifyStoreDto;
 import dto.store.seller.response.GetStoreDetailsDto;
-import dto.store.seller.response.Response;
-import io.lettuce.core.dynamic.annotation.Param;
+import dto.store.seller.response.ModifyStoreResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -86,11 +84,11 @@ public class StoreController {
     @PatchMapping("/modification/{storeId}")
     public ResponseEntity modifyStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                       @Parameter(name = "storeId", description = "수정할 가게 id", in = ParameterIn.PATH) @PathVariable Long storeId,
-                                      @Schema(name = "patchDto", type = "form-data, Content-type = application/json", description = "수정할 사항") @RequestPart(name = "data") PatchDto patchDto,
+                                      @Schema(name = "patchDto", type = "form-data, Content-type = application/json", description = "수정할 사항") @RequestPart(name = "data") ModifyStoreDto modifyStoreDto,
                                       @Schema(name = "image", type = "form-data, Content-type = multipart/form-data", description = "수정할 가게 이미지") @RequestPart(name = "image", required = false) MultipartFile storeImg) throws IOException {
 
-        Response response = storeService.modifyStore(storeId, patchDto, storeImg);
-        return new ResponseEntity(response, HttpStatus.OK);
+        ModifyStoreResponse modifyStoreResponse = storeService.modifyStore(storeId, modifyStoreDto, storeImg);
+        return new ResponseEntity(modifyStoreResponse, HttpStatus.OK);
     }
 
     @Operation(summary = "공지사항 수정", description = "가게 정보 관련 수정 중, 공지사항 수정")

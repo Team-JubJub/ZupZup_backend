@@ -17,7 +17,8 @@ public class GetStoreDetailsDto {
     private String storeImageUrl;
     private String storeAddress;
     private String category;
-    private String contact;
+    private String sellerName;
+    private String sellerContact;
     private Double longitude;
     private Double latitude;
     private String openTime;
