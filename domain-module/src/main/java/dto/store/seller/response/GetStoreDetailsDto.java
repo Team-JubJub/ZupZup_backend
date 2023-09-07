@@ -28,8 +28,11 @@ public class GetStoreDetailsDto {
     private String saleTimeStart;
     private String saleTimeEnd;
     private String saleMatters; //영업 관련 사항 / ex. 공휴일 휴무
+    private String promotion;
 
     private Boolean isOpen;
     private String closedDay;
+
+    private String crNumber;    // 사업자 등록번호
 
 }

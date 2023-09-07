@@ -31,6 +31,7 @@ public class GetStoreDetailsDto {
     private String saleTimeStart;
     private String saleTimeEnd;
     private String saleMatters;
+    private String promotion;
 
     private Boolean isOpen;
     private String closedDay;

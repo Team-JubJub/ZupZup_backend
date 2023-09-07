@@ -51,11 +51,16 @@ public class Store {
     private String saleTimeEnd; // 할인 마감 시간
     @Column(nullable = true)
     private String saleMatters; // 공지사항
+    @Column(nullable = true)
+    private String promotion; // 공지와 별개의 프로모션
 
     @Column
     private Boolean isOpen; // 가게 운영 여부
     @Column(nullable = true)
     private String closedDay; // 휴무일 (0-휴무, 1-영업)
+
+    @Column(nullable = false)
+    private String crNumber;    // 사업자 등록번호
 
     public static StoreBuilder builder(String storeName) {   // 필수 파라미터 고려해볼 것
         if(storeName == null) {
