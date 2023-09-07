@@ -29,9 +29,12 @@ public class StoreDto {
     private String saleTimeStart;
     private String saleTimeEnd;
     private String saleMatters;
+    private String promotion;
 
     private Boolean isOpen;
     private String closedDay;
+
+    private String crNumber;
 
     private List<Item> storeItems;
 
