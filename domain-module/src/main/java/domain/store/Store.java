@@ -4,6 +4,9 @@ package domain.store;
 import dto.store.seller.request.ModifyStoreDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+
+import java.util.List;
 
 @Entity
 @Table(name = "stores")
@@ -58,6 +61,11 @@ public class Store {
     private Boolean isOpen; // 가게 운영 여부
     @Column(nullable = true)
     private String closedDay; // 휴무일 (0-휴무, 1-영업)
+
+    @Column(nullable = true)
+    @ElementCollection
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Integer> starredUsers;    // 찜한 유저 아이디들
 
     @Column(nullable = false)
     private String crNumber;    // 사업자 등록번호
