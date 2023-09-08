@@ -64,6 +64,7 @@ public class Store {
 
     @Column(nullable = true)
     @ElementCollection
+    @CollectionTable(name = "starredUsers", joinColumns = @JoinColumn(name="storeId", referencedColumnName="storeId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Integer> starredUsers;    // 찜한 유저 아이디들
 
