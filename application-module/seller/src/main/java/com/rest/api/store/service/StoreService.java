@@ -4,9 +4,9 @@ import domain.auth.Seller.Seller;
 import domain.store.Store;
 import dto.auth.seller.test.SellerTestSignInDto;
 import dto.auth.seller.test.TestSignInResponseDto;
-import dto.store.seller.request.PatchDto;
+import dto.store.seller.request.ModifyStoreDto;
 import dto.store.seller.response.GetStoreDetailsDto;
-import dto.store.seller.response.Response;
+import dto.store.seller.response.ModifyStoreResponse;
 import exception.store.seller.NoSuchStoreException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -53,22 +53,22 @@ public class StoreService {
     }
 
     // 가게 영업시간, 할인시간, 휴무일, 이미지 변경
-    public Response modifyStore(Long storeId, PatchDto patchDto, MultipartFile storeImg) throws IOException {
+    public ModifyStoreResponse modifyStore(Long storeId, ModifyStoreDto modifyStoreDto, MultipartFile storeImg) throws IOException {
         Store store = isStorePresent(storeId);
 
         if(storeImg != null) {
             String imageURL = s3Uploader.upload(storeImg, store.getStoreName());
-            patchDto.setStoreImageUrl(imageURL);
+            modifyStoreDto.setStoreImageUrl(imageURL);
         } else {    // 변경할 이미지를 보내지 않았을 때
-            patchDto.setStoreImageUrl(store.getStoreImageUrl());    // 기존의 이미지를 사용하도록 수정
+            modifyStoreDto.setStoreImageUrl(store.getStoreImageUrl());    // 기존의 이미지를 사용하도록 수정
         }
 
-        store.modifyStore(patchDto);
+        store.modifyStore(modifyStoreDto);
         storeRepository.save(store);
 
-        Response response = modelMapper.map(store, Response.class);
+        ModifyStoreResponse modifyStoreResponse = modelMapper.map(store, ModifyStoreResponse.class);
 
-        return response;
+        return modifyStoreResponse;
     }
 
     // 공지사항 수정

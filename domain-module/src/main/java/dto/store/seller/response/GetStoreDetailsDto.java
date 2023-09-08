@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -17,7 +19,10 @@ public class GetStoreDetailsDto {
     private String storeImageUrl;
     private String storeAddress;
     private String category;
-    private String contact;
+    private String sellerName;
+    private String sellerContact;
+    private String storeContact;
+
     private Double longitude;
     private Double latitude;
     private String openTime;
@@ -25,7 +30,13 @@ public class GetStoreDetailsDto {
     private String saleTimeStart;
     private String saleTimeEnd;
     private String saleMatters; //영업 관련 사항 / ex. 공휴일 휴무
+    private String promotion;
+
     private Boolean isOpen;
     private String closedDay;
+
+    private List<Integer> starredUsers;
+
+    private String crNumber;    // 사업자 등록번호
 
 }

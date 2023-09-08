@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -18,15 +17,29 @@ public class StoreDto {
     private Long storeId;
 
     private String storeName; //가게이름
+    private String storeImageUrl;
     private String storeAddress; //가게 주소
-    private String openTime;
-    private String endTime;
-    private String saleMatters; //영업 관련 사항 / ex. 공휴일 휴무
-    private String saleTimeStart;
-    private String saleTimeEnd;
+    private String category;
+    private String sellerName;
+    private String sellerContact;
+    private String storeContact;
+
     private Double longitude;
     private Double latitude;
-    private List<String> eventList;
+    private String openTime;
+    private String closeTime;
+    private String saleTimeStart;
+    private String saleTimeEnd;
+    private String saleMatters;
+    private String promotion;
 
-    private List<Item> storeItems = new ArrayList<>();
+    private Boolean isOpen;
+    private String closedDay;
+
+    private List<Integer> starredUsers;
+
+    private String crNumber;
+
+    private List<Item> storeItems;
+
 }

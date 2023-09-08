@@ -14,9 +14,13 @@ public class GetStoreDto {
     private Long storeId;
 
     private String storeName;
-    private String category; // ex) 카페 / domain에 column 추가할 것.
+    private String storeImageUrl;
+    private String openTime;
+    private String closeTime;
     private String saleTimeStart;
     private String saleTimeEnd;
-    private String salePercent;    // "00%"
+
+    private String isOpen;
+    private String closeDay;
 
 }
