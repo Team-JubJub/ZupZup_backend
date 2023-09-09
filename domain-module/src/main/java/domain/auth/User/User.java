@@ -6,6 +6,9 @@ import dto.info.customer.request.PatchOptionalTermDto;
 import dto.info.customer.request.PatchPhoneNumberDto;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
+
+import java.util.List;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,6 +30,12 @@ public class User {
     @Column(nullable = false) private String nickName;  // 닉네임
     @Column(nullable = false) private String gender;    // 성별
     @Column(nullable = false) private String phoneNumber;   // 유저의 연락처
+
+    @Column(nullable = true)
+    @ElementCollection
+    @CollectionTable(name = "starredStores", joinColumns = @JoinColumn(name="userId", referencedColumnName="userId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Integer> starredStores;    // 찜한 가게 아이디들
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
