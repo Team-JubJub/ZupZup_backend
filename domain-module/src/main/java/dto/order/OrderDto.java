@@ -29,6 +29,10 @@ public class OrderDto {
     private String storeName;
     private String storeAddress;
     private String category;
+
     private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수
+
+    private Integer totalPrice;
+    private Integer savedMoney;
 
 }

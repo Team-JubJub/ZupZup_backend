@@ -15,6 +15,7 @@ import exception.NoSuchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
+import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -110,12 +111,39 @@ public class OrderService {
         return formattedOrderTime;
     }
 
-    private OrderDto postOrderDTOtoOrderDTO(User userEntity, Long storeId, PostOrderRequestDto postOrderRequestDto, String formattedNowTime) {
-        Store store = storeRepository.findById(storeId).get();
+    @NotNull
+    private static String makeOrderTitle(PostOrderRequestDto postOrderRequestDto) {
         OrderSpecific firstAtOrderSpecific = postOrderRequestDto.getOrderList().get(0);
+
         String firstAtOrderList = firstAtOrderSpecific.getItemName();
         int firstAtOrderListCount = firstAtOrderSpecific.getItemCount();    // 어차피 String이랑 concat 될 때 int로 unboxing된다고 함. 미리 unboxing.
         int orderListCount = postOrderRequestDto.getOrderList().size() - 1;    // -1이 붙어서 어차피 unboxing 거치니까 int로
+        String orderTitle = firstAtOrderList + " " + firstAtOrderListCount + "개 외 " + orderListCount + "건";
+
+        return orderTitle;
+    }
+
+    private int[] calcTotalPriceAndSavedMoney(List<OrderSpecific> orderList) {  // 할인 금액의 합계, 아낀 금액 계산
+        int totalPrice = 0; // 할인 금액의 합계(상품들 원래가격의 합 구한 후 아낀 금액 차감)
+        int savedMoney = 0; // 아낀 금액(totalItemPrice - totalPrice)
+        int[] totalPriceAndSavedMoney = new int[2]; // 0: 할인 금액의 합계, 1: 아낀 금액
+        for (int i = 0; i < orderList.size(); i++) {
+            totalPrice += orderList.get(i).getSalePrice();
+            savedMoney += orderList.get(i).getItemPrice();
+        }
+        savedMoney -= totalPrice;
+        totalPriceAndSavedMoney[0] = totalPrice;
+        totalPriceAndSavedMoney[1] = savedMoney;
+
+        return totalPriceAndSavedMoney;
+    }
+
+    private OrderDto postOrderDTOtoOrderDTO(User userEntity, Long storeId, PostOrderRequestDto postOrderRequestDto, String formattedNowTime) {
+        Store store = storeRepository.findById(storeId).get();
+        String orderTitle = makeOrderTitle(postOrderRequestDto);
+        int[] totalPriceAndSavedMoney = calcTotalPriceAndSavedMoney(postOrderRequestDto.getOrderList());
+        Integer totalPrice = totalPriceAndSavedMoney[0];
+        Integer savedMoney = totalPriceAndSavedMoney[1];
 
         OrderDto orderDto = new OrderDto();
         orderDto.setStoreId(storeId);
@@ -123,13 +151,15 @@ public class OrderService {
         orderDto.setOrderStatus(OrderStatus.NEW);
         orderDto.setUserName(userEntity.getUserName());
         orderDto.setPhoneNumber(userEntity.getPhoneNumber());
-        orderDto.setOrderTitle(firstAtOrderList + " " + firstAtOrderListCount + "개 외 " + orderListCount + "건");    // 크로플 3개 외 4건
+        orderDto.setOrderTitle(orderTitle);    // 크로플 3개 외 4건
         orderDto.setOrderTime(formattedNowTime);
         orderDto.setVisitTime(postOrderRequestDto.getVisitTime());
         orderDto.setStoreName(store.getStoreName());
         orderDto.setStoreAddress(store.getStoreAddress());
         orderDto.setCategory(store.getCategory());
         orderDto.setOrderList(postOrderRequestDto.getOrderList());
+        orderDto.setTotalPrice(totalPrice);
+        orderDto.setSavedMoney(savedMoney);
 
         return orderDto;
     }
