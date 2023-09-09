@@ -18,6 +18,7 @@ public class GetOrderDetailsDto { // 단건 GET에 mapping할 DTO
     private Long orderId;    // order ID
     private Long storeId;
     private Long userId;
+
     private OrderStatus orderStatus;
     private String userName; // 닉네임
     private String phoneNumber;
@@ -27,6 +28,7 @@ public class GetOrderDetailsDto { // 단건 GET에 mapping할 DTO
     private String storeName;
     private String storeAddress;
     private String category;
+
     private List<OrderSpecific> orderList;
 
 }
