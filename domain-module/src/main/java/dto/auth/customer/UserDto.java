@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -21,10 +23,14 @@ public class UserDto {
     private String nickName;
     private String gender;
     private String phoneNumber;
-    private Role role;
+
+    private List<Integer> starredStores;
+
     private Boolean essentialTerms;
     private Boolean optionalTerm1;
     private String registerTime;
     private int orderCount;
+
+    private Role role;
 
 }

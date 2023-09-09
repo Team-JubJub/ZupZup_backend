@@ -50,15 +50,16 @@ public class MobileOAuthService {
         UserDto userDto = userSignUpDtoToUserDto(provider, userSignUpDto);
 
         User userEntity = User.builder(userDto.getProviderUserId())
+                .provider(userDto.getProvider())
                 .userName(userDto.getUserName())
                 .nickName(userDto.getNickName())
                 .gender(userDto.getGender())
                 .phoneNumber(userDto.getPhoneNumber())
-                .role(userDto.getRole())
-                .provider(userDto.getProvider())
+                .starredStores(userDto.getStarredStores())
                 .essentialTerms(userDto.getEssentialTerms())
                 .optionalTerm1(userDto.getOptionalTerm1())
                 .registerTime(registerTimeSetter())
+                .role(userDto.getRole())
                 .build();
         userRepository.save(userEntity);
         userDto.setUserId(userEntity.getUserId());  // user id와 registertime은 user entity 생성 시점에 만들어지므로 다시 dto에 set
@@ -171,9 +172,10 @@ public class MobileOAuthService {
         userDto.setNickName(userSignUpDto.getNickName());
         userDto.setGender(userSignUpDto.getGender());
         userDto.setPhoneNumber(userSignUpDto.getPhoneNumber());
-        userDto.setRole(Role.ROLE_USER);
+        userDto.setStarredStores(null);
         userDto.setEssentialTerms(userSignUpDto.getEssentialTerms());
         userDto.setOptionalTerm1(userSignUpDto.getOptionalTerm1());
+        userDto.setRole(Role.ROLE_USER);
 
         return userDto;
     }

@@ -26,14 +26,6 @@ public class UserSignUpDto {
     @Schema(description = "줍줍에 회원가입 시 입력한 유저의 닉네임(특수문자, 공백 불가, 12bytes(한:2bytes, 영어&숫자: 1byte) 제한)", example = "S2줍줍화이팅")
     @NotBlank(message = "Nickname cannot be null or empty or space")
     private String nickName;
-    @AssertTrue(message = "Nickname should be in range 4bytes to 12bytes")
-    private boolean isNickNameValid() {
-        int bytes = getNickName().getBytes(Charset.forName("EUC-KR")).length;
-        if (bytes < 4 || bytes > 12) return false;
-
-        return true;
-    }
-
     @Schema(description = "성별", allowableValues = {"male", "female"})
     @NotNull(message = "Gender cannot be null")
     private String gender;
@@ -46,5 +38,13 @@ public class UserSignUpDto {
     @Schema(description = "선택 약관 1의 동의 여부", allowableValues = {"true", "false"})
     @NotNull(message = "Answer for optional terms cannot be null")
     private Boolean optionalTerm1;
+
+    @AssertTrue(message = "Nickname should be in range 4bytes to 12bytes")
+    private boolean isNickNameValid() {
+        int bytes = getNickName().getBytes(Charset.forName("EUC-KR")).length;
+        if (bytes < 4 || bytes > 12) return false;
+
+        return true;
+    }
 
 }
