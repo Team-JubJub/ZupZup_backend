@@ -18,15 +18,12 @@ public class GetOrderDto {
     private Long orderId;
     private Long storeId;
     private Long userId;
+
     private OrderStatus orderStatus;
-    private String userName; // 닉네임
-    private String phoneNumber; // 유저의 전화번호
     private String orderTitle;
-    private String orderTime;
-    private String visitTime;
     private String storeName;
-    private String storeAddress;
     private String category;
-    private List<OrderSpecific> orderList;
+
+    private Integer totalPrice;
 
 }

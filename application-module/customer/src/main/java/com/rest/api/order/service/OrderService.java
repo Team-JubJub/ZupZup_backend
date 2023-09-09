@@ -61,6 +61,8 @@ public class OrderService {
                 .storeAddress(orderDto.getStoreAddress())
                 .category(orderDto.getCategory())
                 .orderList(orderDto.getOrderList())
+                .totalPrice(orderDto.getTotalPrice())
+                .savedMoney(orderDto.getSavedMoney())
                 .build();
         orderRepository.save(orderEntity);
         GetOrderDetailsDto madeOrderDetailsDto = modelMapper.map(orderEntity, GetOrderDetailsDto.class);
