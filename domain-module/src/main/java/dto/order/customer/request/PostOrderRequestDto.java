@@ -17,6 +17,7 @@ public class PostOrderRequestDto {
 
     @Schema(example = "yyyy-MM-dd HH:mm, 24h 포맷( ex) 2023-09-28 19:30 )")
     private String visitTime;
+    @Schema(implementation = OrderSpecific.class)
     private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수
 
 }
