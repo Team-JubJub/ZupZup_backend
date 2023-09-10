@@ -48,7 +48,7 @@ public class OrderController {
     public ResponseEntity orderList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                     @PathVariable Long storeId) { // ResponseEntity의 type이 뭐가될지 몰라서 우선 Type 지정 없이 둠.
         GetOrderListDto getOrderListDto = orderService.orderList(storeId);
-        if(getOrderListDto.getOrderList().size() == 0) {
+        if(getOrderListDto.getOrders().size() == 0) {
             return new ResponseEntity(HttpStatus.NO_CONTENT); // NO_CONTENT 시 body가 빈 상태로 감. 204
         }
 

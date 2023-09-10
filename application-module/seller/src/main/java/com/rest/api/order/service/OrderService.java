@@ -52,7 +52,7 @@ public class OrderService {
                 .map(m -> modelMapper.map(m, GetOrderDetailsDto.class))
                 .collect(Collectors.toList());
         GetOrderListDto getOrderListDto = new GetOrderListDto();
-        getOrderListDto.setOrderList(orderList);
+        getOrderListDto.setOrders(orderList);
 
         return getOrderListDto;
     }
