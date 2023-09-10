@@ -113,8 +113,7 @@ public class OrderService {
         return formattedOrderTime;
     }
 
-    @NotNull
-    private static String makeOrderTitle(PostOrderRequestDto postOrderRequestDto) {
+    private String makeOrderTitle(PostOrderRequestDto postOrderRequestDto) {
         OrderSpecific firstAtOrderSpecific = postOrderRequestDto.getOrderList().get(0);
 
         String firstAtOrderList = firstAtOrderSpecific.getItemName();
