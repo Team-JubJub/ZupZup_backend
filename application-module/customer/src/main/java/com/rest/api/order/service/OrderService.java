@@ -130,8 +130,9 @@ public class OrderService {
         int savedMoney = 0; // 아낀 금액(totalItemPrice - totalPrice)
         int[] totalPriceAndSavedMoney = new int[2]; // 0: 할인 금액의 합계, 1: 아낀 금액
         for (int i = 0; i < orderList.size(); i++) {
-            totalPrice += orderList.get(i).getSalePrice();
-            savedMoney += orderList.get(i).getItemPrice();
+            OrderSpecific orderSpecific = orderList.get(i);
+            totalPrice += orderSpecific.getSalePrice() * orderSpecific.getItemCount();
+            savedMoney += orderSpecific.getItemPrice() * orderSpecific.getItemCount();
         }
         savedMoney -= totalPrice;
         totalPriceAndSavedMoney[0] = totalPrice;
