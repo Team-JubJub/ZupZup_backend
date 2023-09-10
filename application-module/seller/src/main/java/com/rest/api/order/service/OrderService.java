@@ -52,7 +52,7 @@ public class OrderService {
                 .map(m -> modelMapper.map(m, GetOrderDetailsDto.class))
                 .collect(Collectors.toList());
         GetOrderListDto getOrderListDto = new GetOrderListDto();
-        getOrderListDto.setOrderList(orderList);
+        getOrderListDto.setOrders(orderList);
 
         return getOrderListDto;
     }
@@ -142,17 +142,13 @@ public class OrderService {
         }
     }
 
-    private PatchOrderResponseDto saveUpdatedDataAndReturnResponse(Order orderEntity, OrderDto orderDto) {
+    private PatchOrderResponseDto updateOrderAndReturn(Order orderEntity, OrderDto orderDto) { // 신규 주문 취소, 확정 주문 완료일 때도 같이 처리함
         orderEntity.updateOrder(orderDto);
         orderRepository.save(orderEntity);
+
         GetOrderDetailsDto patchedOrderDetailsDto = modelMapper.map(orderEntity, GetOrderDetailsDto.class);
         PatchOrderResponseDto patchOrderResponseDto = new PatchOrderResponseDto();
         patchOrderResponseDto.setData(patchedOrderDetailsDto);
-        return patchOrderResponseDto;
-    }
-
-    private PatchOrderResponseDto updateOrderAndReturn(Order orderEntity, OrderDto orderDto) { // 신규 주문 취소, 확정 주문 완료일 때도 같이 처리함
-        PatchOrderResponseDto patchOrderResponseDto = saveUpdatedDataAndReturnResponse(orderEntity, orderDto);
 
         if(orderEntity.getOrderStatus().equals(OrderStatus.CANCEL)) patchOrderResponseDto.setMessage("주문이 취소되었습니다.");   // 주문 취소일 떄
         else if(orderEntity.getOrderStatus().equals(OrderStatus.COMPLETE)) patchOrderResponseDto.setMessage("주문이 완료되었습니다.");    // 주문 완료일 때
@@ -162,11 +158,12 @@ public class OrderService {
     }
 
     private PatchOrderResponseDto updateOrderDataAndReturn(Order orderEntity, PatchOrderDataDto patchOrderDataDto, OrderStatus sellerRequestedOrderStatus) {  // 신규 주문 확정, 확정 주문 취소에 대해 처리하는 함수
-        OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);
-        orderDto.setOrderList(patchOrderDataDto.getOrderList());
-        orderDto.setOrderStatus(sellerRequestedOrderStatus);    // CONFIRM or CANCEL
+        List<OrderSpecific> orderList = patchOrderDataDto.getOrderList();
 
-        List<OrderSpecific> orderList = orderDto.getOrderList();
+        OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);
+        orderDto.setOrderStatus(sellerRequestedOrderStatus);    // CONFIRM or CANCEL
+        orderDto.setOrderList(orderList);
+
         updateItemStock(sellerRequestedOrderStatus, orderList); // 주문한 개수만큼 재고에서 차감, 더하기
         PatchOrderResponseDto patchOrderResponseDto = updateOrderAndReturn(orderEntity, orderDto);
 

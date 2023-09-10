@@ -1,6 +1,7 @@
 package dto.order.seller.request;
 
 import domain.order.type.OrderSpecific;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.List;
 @Setter
 public class PatchOrderDataDto {
 
-    private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수
+    @Schema(implementation = OrderSpecific.class)
+    private List<OrderSpecific> orderList; // 주문 품목 이름, 판매가격, 할인가격, 개수
 
 }
