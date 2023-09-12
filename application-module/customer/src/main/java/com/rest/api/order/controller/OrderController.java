@@ -39,7 +39,7 @@ public class OrderController {
     @Operation(summary = "유저의 주문 요청", description = "유저의 주문 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "유저의 주문 성공",
-                    content = @Content(schema = @Schema(implementation = GetOrderDto.class))),
+                    content = @Content(schema = @Schema(implementation = PostOrderResponseDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
