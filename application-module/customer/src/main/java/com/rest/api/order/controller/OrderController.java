@@ -47,7 +47,7 @@ public class OrderController {
             @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
                     content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
-    @PostMapping("/store/{storeId}")    // url 수정하기
+    @PostMapping("/store/{storeId}")
     public ResponseEntity addOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                    @PathVariable Long storeId, @RequestBody @Valid PostOrderRequestDto postOrderRequestDto) {
         PostOrderResponseDto postOrderResponseDto = orderService.addOrder(accessToken, storeId, postOrderRequestDto);
