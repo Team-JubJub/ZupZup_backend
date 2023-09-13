@@ -64,7 +64,7 @@ public class  StoreService {
         return searchedStoreDtoList;
     }
 
-    public GetStoreDetailsDto storeDetail(Long storeId) {
+    public GetStoreDetailsDto storeDetails(Long storeId) {
 
         //store entity 가져와서 DTO로 변환
         Store storeEntity = storeRepository.findById(storeId).get();
