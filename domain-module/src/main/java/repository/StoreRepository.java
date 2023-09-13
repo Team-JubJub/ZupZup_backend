@@ -9,7 +9,9 @@ import java.util.List;
 
 @Repository
 public interface StoreRepository extends JpaRepository<Store, Long> {
-    Store findBySellerId(Long sellerId);
-    List<Store> findByStoreNameContaining(String keyword);
-    List<Store> findByCategory(String category);
+
+    Store findBySellerId(Long sellerId);    // 가게 주인 id를 통한 조회
+    List<Store> findByCategory(String category);    // 카테고리별 조회
+    List<Store> findByStoreNameContaining(String keyword);  // 가게 이름으로 검색
+
 }

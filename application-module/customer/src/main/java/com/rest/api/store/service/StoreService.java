@@ -29,6 +29,19 @@ public class  StoreService {
     private final ItemRepository itemRepository;
 
     // <-------------------- GET part -------------------->
+    public List<GetStoreDto> storeListByCategory(String category) {   // 현재는 예외처리할 것 없어 보임
+        List<Store> allStoreEntityByCategoryList = storeRepository.findByCategory(category); // 나중에는 위치기반 등으로 거르게 될 듯?
+        List<GetStoreDto> allStoreDtoByCategoryList = allStoreEntityByCategoryList.stream()
+                .map(m -> {
+                    GetStoreDto getStoreDto = modelMapper.map(m, GetStoreDto.class);
+                    getStoreDto.setStarredUserCount(m.getStarredUsers().size());
+                    return getStoreDto;
+                })
+                .collect(Collectors.toList());
+
+        return allStoreDtoByCategoryList;
+    }
+
     public List<GetStoreDto> storeList() {   // 현재는 예외처리할 것 없어 보임
         List<Store> allStoreEntityList = storeRepository.findAll(); // 나중에는 위치기반 등으로 거르게 될 듯?
         List<GetStoreDto> allStoreDtoList = allStoreEntityList.stream()
@@ -42,26 +55,13 @@ public class  StoreService {
         return allStoreDtoList;
     }
 
-    public List<GetStoreDto> searchedStoreList(String storeName) {
+    public List<GetStoreDto> searchedStoreList(String storeName) {  // 검색 함수인데, 혹시 몰라서 놔둠.
         List<Store> searchedStoreEntityList = storeRepository.findByStoreNameContaining(storeName);
         List<GetStoreDto> searchedStoreDtoList = searchedStoreEntityList.stream()
                 .map(m -> modelMapper.map(m, GetStoreDto.class))
                 .collect(Collectors.toList());
 
         return searchedStoreDtoList;
-    }
-
-    public List<GetStoreDto> storeListByCategory(String category) {   // 현재는 예외처리할 것 없어 보임
-        List<Store> allStoreEntityByCategoryList = storeRepository.findByCategory(category); // 나중에는 위치기반 등으로 거르게 될 듯?
-        List<GetStoreDto> allStoreDtoByCategoryList = allStoreEntityByCategoryList.stream()
-                .map(m -> {
-                    GetStoreDto getStoreDto = modelMapper.map(m, GetStoreDto.class);
-                    getStoreDto.setStarredUserCount(m.getStarredUsers().size());
-                    return getStoreDto;
-                })
-                .collect(Collectors.toList());
-
-        return allStoreDtoByCategoryList;
     }
 
     public GetStoreDetailsDto storeDetail(Long storeId) {

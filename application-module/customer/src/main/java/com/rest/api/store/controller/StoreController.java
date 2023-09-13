@@ -20,31 +20,22 @@ public class StoreController {
     private final StoreService storeService;
 
     // <-------------------- GET part -------------------->
-    @GetMapping("") // 가게들 list
-    public ResponseEntity storeList(@RequestParam(required = false) String storeName) {
-        if(storeName != null) { // 가게 검색건이 있을 경우
-            List<GetStoreDto> searchedStoreDtoList = storeService.searchedStoreList(storeName);
-            if (searchedStoreDtoList.size() == 0) {
+    @GetMapping("") // 카테고리별 가게 조회
+    public ResponseEntity storeList(@RequestParam(required = false) String category) {
+        if(category != null) { // 카테고리 선택 시(우리는 카테고리 선택을 통해 조회하는 것이 메인 기능임)
+            List<GetStoreDto> allStoreDtoByCategoryList = storeService.storeListByCategory(category);
+            if (allStoreDtoByCategoryList.size() == 0) {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity(searchedStoreDtoList, HttpStatus.OK);
+            return new ResponseEntity(allStoreDtoByCategoryList, HttpStatus.OK);
         }
-        else {  // 가게 검색건이 없는 경우
+        else {  // 카테고리 선택안했을 시, 전체 가게 리턴
             List<GetStoreDto> allStoreDtoList = storeService.storeList();
             if (allStoreDtoList.size() == 0) {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
             }
             return new ResponseEntity(allStoreDtoList, HttpStatus.OK);
         }
-    }
-
-    @GetMapping("/{category}") // 카테고리별 가게 조회
-    public ResponseEntity storeListByCategory(@PathVariable String category) {
-        List<GetStoreDto> allStoreDtoByCategoryList = storeService.storeListByCategory(category);
-        if (allStoreDtoByCategoryList.size() == 0) {
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity(allStoreDtoByCategoryList, HttpStatus.OK);
     }
 
     @GetMapping("/{storeId}") // 가게 상세 화면
