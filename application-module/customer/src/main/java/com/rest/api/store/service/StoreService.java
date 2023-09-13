@@ -1,5 +1,7 @@
 package com.rest.api.store.service;
 
+import com.rest.api.utils.AuthUtils;
+import domain.auth.User.User;
 import domain.item.Item;
 import domain.store.Store;
 import dto.item.customer.response.ItemResponseDto;
@@ -28,6 +30,7 @@ public class  StoreService {
     ModelMapper modelMapper;
     private final StoreRepository storeRepository;
     private final ItemRepository itemRepository;
+    private final AuthUtils authUtils;
 
     // <-------------------- GET part -------------------->
     public List<GetStoreDto> storeListByCategory(String category) {   // 현재는 예외처리할 것 없어 보임
@@ -57,7 +60,9 @@ public class  StoreService {
     }
 
     public List<GetStoreDto> starredStoreList(String accessToken) {
+        User userEntity = authUtils.getUserEntity(accessToken);
         List<GetStoreDto> allStoreDtoByStarredList = new ArrayList<>();
+
 
         return allStoreDtoByStarredList;
     }
