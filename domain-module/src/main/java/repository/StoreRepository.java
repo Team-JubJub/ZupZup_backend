@@ -11,4 +11,5 @@ import java.util.List;
 public interface StoreRepository extends JpaRepository<Store, Long> {
     Store findBySellerId(Long sellerId);
     List<Store> findByStoreNameContaining(String keyword);
+    List<Store> findByCategory(String category);
 }

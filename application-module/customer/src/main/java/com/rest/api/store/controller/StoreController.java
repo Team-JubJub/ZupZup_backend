@@ -38,6 +38,15 @@ public class StoreController {
         }
     }
 
+    @GetMapping("/{category}") // 카테고리별 가게 조회
+    public ResponseEntity storeListByCategory(@PathVariable String category) {
+        List<GetStoreDto> allStoreDtoByCategoryList = storeService.storeListByCategory(category);
+        if (allStoreDtoByCategoryList.size() == 0) {
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity(allStoreDtoByCategoryList, HttpStatus.OK);
+    }
+
     @GetMapping("/{storeId}") // 가게 상세 화면
     public ResponseEntity storeDetail(@PathVariable Long storeId) {
 

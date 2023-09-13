@@ -51,6 +51,19 @@ public class  StoreService {
         return searchedStoreDtoList;
     }
 
+    public List<GetStoreDto> storeListByCategory(String category) {   // 현재는 예외처리할 것 없어 보임
+        List<Store> allStoreEntityByCategoryList = storeRepository.findByCategory(category); // 나중에는 위치기반 등으로 거르게 될 듯?
+        List<GetStoreDto> allStoreDtoByCategoryList = allStoreEntityByCategoryList.stream()
+                .map(m -> {
+                    GetStoreDto getStoreDto = modelMapper.map(m, GetStoreDto.class);
+                    getStoreDto.setStarredUserCount(m.getStarredUsers().size());
+                    return getStoreDto;
+                })
+                .collect(Collectors.toList());
+
+        return allStoreDtoByCategoryList;
+    }
+
     public GetStoreDetailsDto storeDetail(Long storeId) {
 
         //store entity 가져와서 DTO로 변환
