@@ -56,7 +56,7 @@ public class  StoreService {
         return allStoreDtoList;
     }
 
-    public List<GetStoreDto> starredStoreList() {
+    public List<GetStoreDto> starredStoreList(String accessToken) {
         List<GetStoreDto> allStoreDtoByStarredList = new ArrayList<>();
 
         return allStoreDtoByStarredList;

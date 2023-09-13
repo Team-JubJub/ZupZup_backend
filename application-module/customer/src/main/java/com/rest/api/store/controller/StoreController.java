@@ -31,9 +31,9 @@ public class StoreController {
     private final StoreService storeService;
 
     // <-------------------- GET part -------------------->
-    @Operation(summary = "유저의 주문 요청", description = "유저의 주문 요청")
+    @Operation(summary = "카테고리 별 가게 조회 요청", description = "카테고리별 가게 조회 요청")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "가게 성공",
+            @ApiResponse(responseCode = "200", description = "가게 조회 성공",
                     content = @Content(schema = @Schema(implementation = PostOrderResponseDto.class))),
             @ApiResponse(responseCode = "204", description = "가게 조회 요청은 성공했으나 조회된 가게가 0개인 경우"),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
@@ -61,8 +61,20 @@ public class StoreController {
         }
     }
 
+    @Operation(summary = "찜한 가게 조회 요청", description = "찜한 가게 조회 요청")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "찜한 가게 조회 성공",
+                    content = @Content(schema = @Schema(implementation = PostOrderResponseDto.class))),
+            @ApiResponse(responseCode = "204", description = "가게 조회 요청은 성공했으나 조회된 가게가 0개인 경우"),
+            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
+                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 or 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
+                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n"
+                            + "or Sign-outed or deleted user. Please sign-in or sign-up again.")))
+    })
     @GetMapping("/starred")
-    public ResponseEntity starredStoreList() {
+    public ResponseEntity starredStoreList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
+        List<GetStoreDto> allStoreDtoByStarredList = storeService.starredStoreList(accessToken);
 
         return new ResponseEntity(HttpStatus.OK);
     }
