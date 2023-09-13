@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import repository.ItemRepository;
 import repository.StoreRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +54,12 @@ public class  StoreService {
                 .collect(Collectors.toList());
 
         return allStoreDtoList;
+    }
+
+    public List<GetStoreDto> starredStoreList() {
+        List<GetStoreDto> allStoreDtoByStarredList = new ArrayList<>();
+
+        return allStoreDtoByStarredList;
     }
 
     public List<GetStoreDto> searchedStoreList(String storeName) {  // 검색 함수인데, 혹시 몰라서 놔둠.
