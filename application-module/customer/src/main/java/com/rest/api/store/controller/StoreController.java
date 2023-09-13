@@ -61,6 +61,12 @@ public class StoreController {
         }
     }
 
+    @GetMapping("/starred")
+    public ResponseEntity starredStoreList() {
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
     @Operation(summary = "가게 상세 조회 요청", description = "가게 상세 조회 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가게 상세 조회 성공",
