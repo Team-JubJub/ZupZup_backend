@@ -40,7 +40,6 @@ public class StoreController {
 
     @GetMapping("/{storeId}") // 가게 상세 화면
     public ResponseEntity storeDetail(@PathVariable Long storeId) {
-
         GetStoreDetailsDto storeDetailDto = storeService.storeDetail(storeId);
 
         if(storeDetailDto.getItemDtoList().size() == 0) {
