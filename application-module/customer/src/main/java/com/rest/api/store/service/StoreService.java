@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import repository.ItemRepository;
 import repository.StoreRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,45 +30,42 @@ public class  StoreService {
 
     // <-------------------- GET part -------------------->
     public List<GetStoreDto> storeList() {   // 현재는 예외처리할 것 없어 보임
-        List<Store> allStoreListEntity = storeRepository.findAll(); // 나중에는 위치기반 등으로 거르게 될 듯?
-        List<GetStoreDto> allStoreListDto = allStoreListEntity.stream()
-                .map(m -> modelMapper.map(m, GetStoreDto.class))
+        List<Store> allStoreEntityList = storeRepository.findAll(); // 나중에는 위치기반 등으로 거르게 될 듯?
+        List<GetStoreDto> allStoreDtoList = allStoreEntityList.stream()
+                .map(m -> {
+                    GetStoreDto getStoreDto = modelMapper.map(m, GetStoreDto.class);
+                    getStoreDto.setStarredUserCount(m.getStarredUsers().size());
+                    return getStoreDto;
+                })
                 .collect(Collectors.toList());
 
-        return allStoreListDto;
+        return allStoreDtoList;
     }
 
     public List<GetStoreDto> searchedStoreList(String storeName) {
-        List<Store> searchedStoreListEntity = storeRepository.findByStoreNameContaining(storeName);
-        List<GetStoreDto> searchedStoreListDto = searchedStoreListEntity.stream()
+        List<Store> searchedStoreEntityList = storeRepository.findByStoreNameContaining(storeName);
+        List<GetStoreDto> searchedStoreDtoList = searchedStoreEntityList.stream()
                 .map(m -> modelMapper.map(m, GetStoreDto.class))
                 .collect(Collectors.toList());
 
-        return searchedStoreListDto;
+        return searchedStoreDtoList;
     }
 
     public GetStoreDetailsDto storeDetail(Long storeId) {
 
         //store entity 가져와서 DTO로 변환
         Store storeEntity = storeRepository.findById(storeId).get();
-
-        GetStoreDetailsDto storeDetailDto
-                = modelMapper.map(storeEntity, GetStoreDetailsDto.class);
+        GetStoreDetailsDto storeDetailsDto = modelMapper.map(storeEntity, GetStoreDetailsDto.class);
+        storeDetailsDto.setStarredUserCount(storeEntity.getStarredUsers().size());
 
         //item list 생성 및 StoreDto에 저장
-        List<Item> itemList = itemRepository.findAllByStore(storeEntity);
-        List<ItemResponseDto> itemDtoList = new ArrayList<>();
+        List<Item> itemEntityList = itemRepository.findAllByStore(storeEntity);
+        List<ItemResponseDto> itemDtoList = itemEntityList.stream()
+                .map(m -> modelMapper.map(m, ItemResponseDto.class))
+                .collect(Collectors.toList());
+        storeDetailsDto.setItemDtoList(itemDtoList);
 
-        for(Item item : itemList) {
-
-            ItemResponseDto itemResponseDto = new ItemResponseDto();
-            itemResponseDto.toItemResponseDto(item);
-            itemDtoList.add(itemResponseDto);
-        }
-
-        storeDetailDto.setItemDtoList(itemDtoList);
-
-        return storeDetailDto;
+        return storeDetailsDto;
     }
 
 }

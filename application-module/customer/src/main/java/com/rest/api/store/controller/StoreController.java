@@ -23,18 +23,18 @@ public class StoreController {
     @GetMapping("") // 가게들 list
     public ResponseEntity storeList(@RequestParam(required = false) String storeName) {
         if(storeName != null) { // 가게 검색건이 있을 경우
-            List<GetStoreDto> searchedStoreListDto = storeService.searchedStoreList(storeName);
-            if (searchedStoreListDto.size() == 0) {
+            List<GetStoreDto> searchedStoreDtoList = storeService.searchedStoreList(storeName);
+            if (searchedStoreDtoList.size() == 0) {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity(searchedStoreListDto, HttpStatus.OK);
+            return new ResponseEntity(searchedStoreDtoList, HttpStatus.OK);
         }
         else {  // 가게 검색건이 없는 경우
-            List<GetStoreDto> allStoreListDto = storeService.storeList();
-            if (allStoreListDto.size() == 0) {
+            List<GetStoreDto> allStoreDtoList = storeService.storeList();
+            if (allStoreDtoList.size() == 0) {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity(allStoreListDto, HttpStatus.OK);
+            return new ResponseEntity(allStoreDtoList, HttpStatus.OK);
         }
     }
 
