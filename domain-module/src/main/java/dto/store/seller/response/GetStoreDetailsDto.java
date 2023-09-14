@@ -35,7 +35,7 @@ public class GetStoreDetailsDto {
     private Boolean isOpen;
     private String closedDay;
 
-    private List<Integer> starredUsers;
+    private List<Long> starredUsers;
 
     private String crNumber;    // 사업자 등록번호
 

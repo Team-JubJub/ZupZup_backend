@@ -32,7 +32,7 @@ public class User {
     @ElementCollection
     @CollectionTable(name = "starredStores", joinColumns = @JoinColumn(name="userId", referencedColumnName="userId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<Integer> starredStores;    // 찜한 가게 아이디들
+    private List<Long> starredStores;    // 찜한 가게 아이디들
 
     @Column(nullable = false) private Boolean essentialTerms;   // 필수 약관 동의 여부
     @Column(nullable = false) private Boolean optionalTerm1;    // 선택 약관1 동의 여부
