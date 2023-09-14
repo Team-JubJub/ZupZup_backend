@@ -75,7 +75,7 @@ public class StoreController {
         List<GetStoreDto> allStoreDtoByStarredList = storeService.starredStoreList(accessToken);
         if (allStoreDtoByStarredList.size() == 0) return new ResponseEntity(HttpStatus.NO_CONTENT);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(allStoreDtoByStarredList, HttpStatus.OK);
     }
 
     @Operation(summary = "가게 상세 조회 요청", description = "가게 상세 조회 요청")

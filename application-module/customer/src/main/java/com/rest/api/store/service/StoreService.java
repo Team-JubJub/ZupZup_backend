@@ -63,7 +63,7 @@ public class  StoreService {
         User userEntity = authUtils.getUserEntity(accessToken);
         List<Long> starredStores = userEntity.getStarredStores();
         List<GetStoreDto> allStoreDtoByStarredList = new ArrayList<>();
-        for (int i = 0; i < starredStores.size(); i++) {
+        for (int i = 0; i < starredStores.size(); i++) {    // 찜목록 돌며 아이디로 db에서 조회, list에 add
             Long starredStoreId = starredStores.get(i);
             Store storeEntity = storeRepository.findById(starredStoreId).get();
             allStoreDtoByStarredList.add(modelMapper.map(storeEntity, GetStoreDto.class));
