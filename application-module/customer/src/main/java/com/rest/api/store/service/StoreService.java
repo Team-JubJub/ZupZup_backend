@@ -3,10 +3,12 @@ package com.rest.api.store.service;
 import com.rest.api.utils.AuthUtils;
 import domain.auth.User.User;
 import domain.item.Item;
+import domain.order.Order;
 import domain.store.Store;
 import dto.item.customer.response.ItemResponseDto;
 import dto.store.customer.response.GetStoreDetailsDto;
 import dto.store.customer.response.GetStoreDto;
+import exception.NoSuchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -18,6 +20,7 @@ import repository.StoreRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -84,7 +87,7 @@ public class  StoreService {
     public GetStoreDetailsDto storeDetails(Long storeId) {
 
         //store entity 가져와서 DTO로 변환
-        Store storeEntity = storeRepository.findById(storeId).get();
+        Store storeEntity = isStorePresent(storeId);
         GetStoreDetailsDto storeDetailsDto = modelMapper.map(storeEntity, GetStoreDetailsDto.class);
         storeDetailsDto.setStarredUserCount(storeEntity.getStarredUsers().size());
 
@@ -96,6 +99,17 @@ public class  StoreService {
         storeDetailsDto.setItemDtoList(itemDtoList);
 
         return storeDetailsDto;
+    }
+
+    // <-------------------- Common methods part -------------------->
+    // <--- Methods for error handling --->
+    private Store isStorePresent(Long storeId) {
+        try {
+            Store storeEntity = storeRepository.findById(storeId).get();
+            return storeEntity;
+        }   catch (NoSuchElementException e) {
+            throw new NoSuchException("해당 가게를 찾을 수 없습니다.");
+        }
     }
 
 }

@@ -86,7 +86,9 @@ public class StoreController {
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 or 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n"
-                            + "or Sign-outed or deleted user. Please sign-in or sign-up again.")))
+                            + "or Sign-outed or deleted user. Please sign-in or sign-up again."))),
+            @ApiResponse(responseCode = "404", description = "해당 가게를 찾을 수 없음",
+                    content = @Content(schema = @Schema(example = "해당 가게를 찾을 수 없습니다.")))
     })
     @GetMapping("/{storeId}") // 가게 상세 조회
     public ResponseEntity storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
