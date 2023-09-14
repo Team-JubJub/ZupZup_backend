@@ -23,4 +23,6 @@ public class GetStoreDto {
     private String isOpen;
     private String closeDay;
 
+    private Integer starredUserCount;   // 찜한 사용자의 수
+
 }

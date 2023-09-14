@@ -36,11 +36,8 @@ public class GetStoreDetailsDto {
     private Boolean isOpen;
     private String closedDay;
 
-    private List<Integer> starredUsers;
-
-    private String crNumber;    // 사업자 등록번호
+    private Integer starredUserCount;   // 찜한 사용자의 수
 
     private List<ItemResponseDto> itemDtoList;
-
 
 }

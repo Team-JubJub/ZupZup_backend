@@ -24,7 +24,7 @@ public class UserDto {
     private String gender;
     private String phoneNumber;
 
-    private List<Integer> starredStores;
+    private List<Long> starredStores;
 
     private Boolean essentialTerms;
     private Boolean optionalTerm1;
