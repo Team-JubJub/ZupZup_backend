@@ -65,7 +65,8 @@ public class  StoreService {
         List<GetStoreDto> allStoreDtoByStarredList = new ArrayList<>();
         for (int i = 0; i < starredStores.size(); i++) {
             Long starredStoreId = starredStores.get(i);
-            // store 객체, user 객체에서 starred - 필드 컬럼 타입 long으로 바꾸고 여기서부터 로직 구현하기
+            Store storeEntity = storeRepository.findById(starredStoreId).get();
+            allStoreDtoByStarredList.add(modelMapper.map(storeEntity, GetStoreDto.class));
         }
 
         return allStoreDtoByStarredList;
