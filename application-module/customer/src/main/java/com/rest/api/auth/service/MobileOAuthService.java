@@ -56,9 +56,11 @@ public class MobileOAuthService {
                 .gender(userDto.getGender())
                 .phoneNumber(userDto.getPhoneNumber())
                 .starredStores(userDto.getStarredStores())
+                .alertStores(userDto.getAlertStores())
                 .essentialTerms(userDto.getEssentialTerms())
                 .optionalTerm1(userDto.getOptionalTerm1())
                 .registerTime(registerTimeSetter())
+                .deviceToken(userDto.getDeviceToken())
                 .role(userDto.getRole())
                 .build();
         userRepository.save(userEntity);
@@ -173,8 +175,10 @@ public class MobileOAuthService {
         userDto.setGender(userSignUpDto.getGender());
         userDto.setPhoneNumber(userSignUpDto.getPhoneNumber());
         userDto.setStarredStores(null);
+        userDto.setAlertStores(null);
         userDto.setEssentialTerms(userSignUpDto.getEssentialTerms());
         userDto.setOptionalTerm1(userSignUpDto.getOptionalTerm1());
+        userDto.setDeviceToken(userSignUpDto.getDeviceToken());
         userDto.setRole(Role.ROLE_USER);
 
         return userDto;
