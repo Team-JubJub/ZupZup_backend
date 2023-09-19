@@ -47,9 +47,8 @@ public class StoreController {
     })
     @GetMapping("/{storeId}")
     public ResponseEntity storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                       @Parameter(name = "storeId", description = "조회할 가게 id", in = ParameterIn.PATH) @PathVariable Long storeId,
-                                       @Parameter(name = "deviceToken", description = "가게 운영자의 device token", in = ParameterIn.QUERY) @RequestParam String deviceToken) {
-        return new ResponseEntity(storeService.storeDetails(storeId, deviceToken), HttpStatus.OK);
+                                       @Parameter(name = "storeId", description = "조회할 가게 id", in = ParameterIn.PATH) @PathVariable Long storeId) {
+        return new ResponseEntity(storeService.storeDetails(storeId), HttpStatus.OK);
     }
 
     @Operation(summary = "영업/휴무 설정", description = "영업/휴무 변경")
