@@ -73,6 +73,12 @@ public class Store {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Long> alertUsers;    // 알림 설정한 유저 아이디들
 
+    @Column(nullable = true)
+    @ElementCollection
+    @CollectionTable(name = "deviceTokens", joinColumns = @JoinColumn(name="storeId", referencedColumnName="storeId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<String> deviceTokens;    // 알림 설정한 유저 아이디들
+
     @Column(nullable = false)
     private String crNumber;    // 사업자 등록번호
 
