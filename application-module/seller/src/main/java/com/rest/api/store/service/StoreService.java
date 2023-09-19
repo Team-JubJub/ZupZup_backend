@@ -4,6 +4,7 @@ import domain.auth.Seller.Seller;
 import domain.store.Store;
 import dto.auth.seller.test.SellerTestSignInDto;
 import dto.auth.seller.test.TestSignInResponseDto;
+import dto.store.StoreDto;
 import dto.store.seller.request.ModifyStoreDto;
 import dto.store.seller.response.GetStoreDetailsDto;
 import dto.store.seller.response.ModifyStoreResponse;
@@ -20,6 +21,7 @@ import repository.StoreRepository;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 @Service
 @Log
@@ -34,11 +36,20 @@ public class StoreService {
     ModelMapper modelMapper;
 
     // 가게 메인 페이지
-    public GetStoreDetailsDto storeDetails(Long storeId) {
+    public GetStoreDetailsDto storeDetails(Long storeId, String deviceToken) {
         Store store = isStorePresent(storeId);
+        modifyDeviceTokens(deviceToken, store);
+
         GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(store, GetStoreDetailsDto.class);
 
         return getStoreDetailsDto;
+    }
+
+    private void modifyDeviceTokens(String deviceToken, Store store) {  // device 토큰의 정보를 저장(Set 자료형을 이용, 중복 제거)
+        Set<String> deviceTokens = store.getDeviceTokens(); // 현재 가게의 deviceTokens
+        deviceTokens.add(deviceToken);  // 해당 set에 deivce token 추가
+        store.modifyDeviceTokens(deviceTokens); // entity 수정
+        storeRepository.save(store);    // db에 저장
     }
 
     // 가게 영업중 여부 전환

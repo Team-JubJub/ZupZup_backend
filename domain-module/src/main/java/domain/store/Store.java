@@ -1,6 +1,7 @@
 package domain.store;
 
 
+import dto.store.StoreDto;
 import dto.store.seller.request.ModifyStoreDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -90,7 +91,12 @@ public class Store {
         return StoreBuilder().storeName(storeName);
     }
 
-    // 가게 데이터를 업데이트 하는 로직
+    // 가게 deviceTokens를 업데이트하는 로직
+    public void modifyDeviceTokens(Set<String> deviceTokens) {
+        this.deviceTokens = deviceTokens;
+    }
+
+    // 가게 데이터를 업데이트하는 로직
     public void modifyStore(ModifyStoreDto modifyStoreDto) {
         this.storeImageUrl = modifyStoreDto.getStoreImageUrl();
         this.openTime = modifyStoreDto.getOpenTime();
