@@ -37,6 +37,7 @@ public class StoreDto {
     private String closedDay;
 
     private List<Long> starredUsers;
+    private List<Long> alertUsers;
 
     private String crNumber;
 

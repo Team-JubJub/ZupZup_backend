@@ -7,6 +7,7 @@ import lombok.*;
 import org.hibernate.annotations.Cascade;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "stores")
@@ -77,7 +78,7 @@ public class Store {
     @ElementCollection
     @CollectionTable(name = "deviceTokens", joinColumns = @JoinColumn(name="storeId", referencedColumnName="storeId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<String> deviceTokens;    // 알림 설정한 유저 아이디들
+    private Set<String> deviceTokens;    // 알림 설정한 유저 아이디들
 
     @Column(nullable = false)
     private String crNumber;    // 사업자 등록번호
