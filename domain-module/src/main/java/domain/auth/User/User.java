@@ -33,11 +33,18 @@ public class User {
     @CollectionTable(name = "starredStores", joinColumns = @JoinColumn(name="userId", referencedColumnName="userId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Long> starredStores;    // 찜한 가게 아이디들
+    @Column(nullable = true)
+    @ElementCollection
+    @CollectionTable(name = "alertStores", joinColumns = @JoinColumn(name="userId", referencedColumnName="userId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Long> alertStores;    // 알림 설정한 가게 아이디들
 
     @Column(nullable = false) private Boolean essentialTerms;   // 필수 약관 동의 여부
     @Column(nullable = false) private Boolean optionalTerm1;    // 선택 약관1 동의 여부
     @Column(nullable = false) private String registerTime;  // 가입 시간(LocalDateTime, 현재는 KST 기준)
     @Column(nullable = false) private int orderCount;   // 주문 횟수(바로바로 횟수 계산이 가능하게끔 primitive type으로)
+
+    @Column(nullable = true) private String deviceToken; //  푸시 알림을 위한 디바이스 토큰
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

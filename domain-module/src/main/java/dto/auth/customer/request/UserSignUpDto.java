@@ -39,6 +39,9 @@ public class UserSignUpDto {
     @NotNull(message = "Answer for optional terms cannot be null")
     private Boolean optionalTerm1;
 
+    @Schema(description = "푸시 알림을 위한 device token")
+    private String deviceToken;
+
     @AssertTrue(message = "Nickname should be in range 4bytes to 12bytes")
     private boolean isNickNameValid() {
         int bytes = getNickName().getBytes(Charset.forName("EUC-KR")).length;
