@@ -67,6 +67,11 @@ public class Store {
     @CollectionTable(name = "starredUsers", joinColumns = @JoinColumn(name="storeId", referencedColumnName="storeId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Long> starredUsers;    // 찜한 유저 아이디들
+    @Column(nullable = true)
+    @ElementCollection
+    @CollectionTable(name = "alertUsers", joinColumns = @JoinColumn(name="storeId", referencedColumnName="storeId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Long> alertUsers;    // 알림 설정한 유저 아이디들
 
     @Column(nullable = false)
     private String crNumber;    // 사업자 등록번호
