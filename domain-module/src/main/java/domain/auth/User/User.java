@@ -33,7 +33,6 @@ public class User {
     @CollectionTable(name = "starredStores", joinColumns = @JoinColumn(name="userId", referencedColumnName="userId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<Long> starredStores;    // 찜한 가게 아이디들
-
     @Column(nullable = true)
     @ElementCollection
     @CollectionTable(name = "alertStores", joinColumns = @JoinColumn(name="userId", referencedColumnName="userId"))
