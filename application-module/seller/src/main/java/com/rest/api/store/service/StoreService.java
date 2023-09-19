@@ -4,6 +4,7 @@ import domain.auth.Seller.Seller;
 import domain.store.Store;
 import dto.auth.seller.test.SellerTestSignInDto;
 import dto.auth.seller.test.TestSignInResponseDto;
+import dto.store.StoreDto;
 import dto.store.seller.request.ModifyStoreDto;
 import dto.store.seller.response.GetStoreDetailsDto;
 import dto.store.seller.response.ModifyStoreResponse;
@@ -20,6 +21,7 @@ import repository.StoreRepository;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 @Service
 @Log
@@ -36,6 +38,7 @@ public class StoreService {
     // 가게 메인 페이지
     public GetStoreDetailsDto storeDetails(Long storeId) {
         Store store = isStorePresent(storeId);
+
         GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(store, GetStoreDetailsDto.class);
 
         return getStoreDetailsDto;

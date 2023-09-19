@@ -1,12 +1,14 @@
 package domain.store;
 
 
+import dto.store.StoreDto;
 import dto.store.seller.request.ModifyStoreDto;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "stores")
@@ -66,7 +68,18 @@ public class Store {
     @ElementCollection
     @CollectionTable(name = "starredUsers", joinColumns = @JoinColumn(name="storeId", referencedColumnName="storeId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<Long> starredUsers;    // 찜한 유저 아이디들
+    private List<Long> starredUsers;    // 찜한 유저 아이디들 -> 사용자 앱에서 찜 설정 시 조작됨
+    @Column(nullable = true)
+    @ElementCollection
+    @CollectionTable(name = "alertUsers", joinColumns = @JoinColumn(name="storeId", referencedColumnName="storeId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private List<Long> alertUsers;    // 알림 설정한 유저 아이디들 -> 사용자 앱에서 알림 설정 시 조작됨
+
+    @Column(nullable = true)
+    @ElementCollection
+    @CollectionTable(name = "deviceTokens", joinColumns = @JoinColumn(name="storeId", referencedColumnName="storeId"))
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
+    private Set<String> deviceTokens;    // 알림 설정한 유저 아이디들
 
     @Column(nullable = false)
     private String crNumber;    // 사업자 등록번호
@@ -78,7 +91,12 @@ public class Store {
         return StoreBuilder().storeName(storeName);
     }
 
-    // 가게 데이터를 업데이트 하는 로직
+    // 가게 deviceTokens를 업데이트하는 로직
+    public void modifyDeviceTokens(Set<String> deviceTokens) {
+        this.deviceTokens = deviceTokens;
+    }
+
+    // 가게 데이터를 업데이트하는 로직
     public void modifyStore(ModifyStoreDto modifyStoreDto) {
         this.storeImageUrl = modifyStoreDto.getStoreImageUrl();
         this.openTime = modifyStoreDto.getOpenTime();

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -37,8 +38,11 @@ public class StoreDto {
     private String closedDay;
 
     private List<Long> starredUsers;
+    private List<Long> alertUsers;
 
     private String crNumber;
+
+    private Set<String> deviceTokens;
 
     private List<Item> storeItems;
 
