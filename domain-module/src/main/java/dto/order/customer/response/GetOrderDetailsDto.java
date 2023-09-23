@@ -2,6 +2,7 @@ package dto.order.customer.response;
 
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
+import domain.store.type.StoreCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,7 +28,7 @@ public class GetOrderDetailsDto {
     private String visitTime;
     private String storeName;
     private String storeAddress;
-    private String category;
+    private StoreCategory category;
 
     private List<OrderSpecific> orderList;
     private Integer totalPrice;

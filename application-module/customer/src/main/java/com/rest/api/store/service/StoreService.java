@@ -5,6 +5,7 @@ import domain.auth.User.User;
 import domain.item.Item;
 import domain.order.Order;
 import domain.store.Store;
+import domain.store.type.StoreCategory;
 import dto.item.customer.response.ItemResponseDto;
 import dto.store.customer.response.GetStoreDetailsDto;
 import dto.store.customer.response.GetStoreDto;
@@ -37,7 +38,9 @@ public class  StoreService {
 
     // <-------------------- GET part -------------------->
     public List<GetStoreDetailsDto> storeListByCategory(String category) {   // 현재는 예외처리할 것 없어 보임
-        List<Store> allStoreEntityByCategoryList = storeRepository.findByCategory(category); // 나중에는 위치기반 등으로 거르게 될 듯?
+        StoreCategory storeCategory = StoreCategory.valueOf(category.toUpperCase());
+        List<Store> allStoreEntityByCategoryList = storeRepository.findByCategory(storeCategory);
+
         List<GetStoreDetailsDto> allStoreDtoByCategoryList = allStoreEntityByCategoryList.stream()
                 .map(m -> {
                     GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(m, GetStoreDetailsDto.class);

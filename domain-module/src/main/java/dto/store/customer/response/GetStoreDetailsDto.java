@@ -1,5 +1,6 @@
 package dto.store.customer.response;
 
+import domain.store.type.StoreCategory;
 import dto.item.customer.response.ItemResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,7 +20,7 @@ public class GetStoreDetailsDto {
     private String storeName;
     private String storeImageUrl;
     private String storeAddress;
-    private String category;
+    private StoreCategory category;
     private String sellerName;
     private String sellerContact;
     private String storeContact;
