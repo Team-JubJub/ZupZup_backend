@@ -44,7 +44,7 @@ public class StoreController {
     })
     @GetMapping("") // 카테고리별 가게 조회
     public ResponseEntity storeList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                    @RequestParam(required = false) String category) {
+                                    @Parameter(name = "category", description = "조회할 카테고리(전체 조회할 시에는 쿼리 파트 없이 ~/store 로 요청)", in = ParameterIn.QUERY) @RequestParam(required = false) String category) {
         if(category != null) { // 카테고리 선택 시(우리는 카테고리 선택을 통해 조회하는 것이 메인 기능임)
             List<GetStoreDto> allStoreDtoByCategoryList = storeService.storeListByCategory(category);
             if (allStoreDtoByCategoryList.size() == 0) return new ResponseEntity(HttpStatus.NO_CONTENT);
