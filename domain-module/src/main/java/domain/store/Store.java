@@ -1,9 +1,11 @@
 package domain.store;
 
 
+import domain.store.type.StoreCategory;
 import dto.store.StoreDto;
 import dto.store.seller.request.ModifyStoreDto;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 
@@ -33,8 +35,8 @@ public class Store {
     private String storeImageUrl; // 가게 대표 이미지 url - 이미지 없을 시 기본이미지
     @Column(nullable = false, length = 1000)
     private String storeAddress; // 가게 주소
-    @Column(nullable = true)
-    private String category; // 카테고리
+    @Enumerated(EnumType.STRING) @Column(nullable = true)
+    private StoreCategory category; // 카테고리
     @Column(nullable = false)
     private String sellerName; // 대표자 이름
     @Column(nullable = false)
