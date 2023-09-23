@@ -22,6 +22,7 @@ public class GetOrderDto {
 
     private OrderStatus orderStatus;
     private String orderTitle;
+    private String orderTime;
     private String storeName;
     private StoreCategory category;
 

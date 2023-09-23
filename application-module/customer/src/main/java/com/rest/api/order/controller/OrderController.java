@@ -2,14 +2,15 @@ package com.rest.api.order.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.order.service.OrderService;
-import dto.info.customer.response.GetInfoResponseDto;
 import dto.order.customer.request.PostOrderRequestDto;
 import dto.order.customer.response.GetOrderDetailsDto;
 import dto.order.customer.response.GetOrderDto;
 import dto.order.customer.response.PostOrderResponseDto;
+import dto.store.customer.response.GetStoreDetailsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -58,7 +59,12 @@ public class OrderController {
     @Operation(summary = "유저의 주문 정보 반환", description = "유저의 주문 정보 반환 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "유저의 주문 정보(리스트) 반환 성공",
-                    content = @Content(schema = @Schema(implementation = GetOrderDto.class))),
+                    content = {
+                            @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = GetOrderDto.class)))
+                    }
+            ),
             @ApiResponse(responseCode = "204", description = "주문 정보 요청은 성공했으나 해당 유저의 주문이 0개인 경우"),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
