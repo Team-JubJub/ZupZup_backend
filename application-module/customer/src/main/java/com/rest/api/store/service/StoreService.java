@@ -5,6 +5,7 @@ import domain.auth.User.User;
 import domain.item.Item;
 import domain.order.Order;
 import domain.store.Store;
+import domain.store.type.StoreCategory;
 import dto.item.customer.response.ItemResponseDto;
 import dto.store.customer.response.GetStoreDetailsDto;
 import dto.store.customer.response.GetStoreDto;
@@ -36,55 +37,59 @@ public class  StoreService {
     private final AuthUtils authUtils;
 
     // <-------------------- GET part -------------------->
-    public List<GetStoreDto> storeListByCategory(String category) {   // 현재는 예외처리할 것 없어 보임
-        List<Store> allStoreEntityByCategoryList = storeRepository.findByCategory(category); // 나중에는 위치기반 등으로 거르게 될 듯?
-        List<GetStoreDto> allStoreDtoByCategoryList = allStoreEntityByCategoryList.stream()
+    public List<GetStoreDetailsDto> storeListByCategory(String category) {   // 현재는 예외처리할 것 없어 보임
+        StoreCategory storeCategory = StoreCategory.valueOf(category.toUpperCase());
+        List<Store> allStoreEntityByCategoryList = storeRepository.findByCategory(storeCategory);
+
+        List<GetStoreDetailsDto> allStoreDtoByCategoryList = allStoreEntityByCategoryList.stream()
                 .map(m -> {
-                    GetStoreDto getStoreDto = modelMapper.map(m, GetStoreDto.class);
-                    getStoreDto.setStarredUserCount(m.getStarredUsers().size());
-                    return getStoreDto;
+                    GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(m, GetStoreDetailsDto.class);
+                    getStoreDetailsDto.setStarredUserCount(m.getStarredUsers().size());
+                    return getStoreDetailsDto;
                 })
                 .collect(Collectors.toList());
 
         return allStoreDtoByCategoryList;
     }
 
-    public List<GetStoreDto> storeList() {   // 현재는 예외처리할 것 없어 보임
+    public List<GetStoreDetailsDto> storeList() {   // 현재는 예외처리할 것 없어 보임
         List<Store> allStoreEntityList = storeRepository.findAll(); // 나중에는 위치기반 등으로 거르게 될 듯?
-        List<GetStoreDto> allStoreDtoList = allStoreEntityList.stream()
+        List<GetStoreDetailsDto> allStoreDetailsDtoList = allStoreEntityList.stream()
                 .map(m -> {
-                    GetStoreDto getStoreDto = modelMapper.map(m, GetStoreDto.class);
-                    getStoreDto.setStarredUserCount(m.getStarredUsers().size());
-                    return getStoreDto;
+                    GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(m, GetStoreDetailsDto.class);
+                    getStoreDetailsDto.setStarredUserCount(m.getStarredUsers().size());
+                    return getStoreDetailsDto;
                 })
                 .collect(Collectors.toList());
 
-        return allStoreDtoList;
+        return allStoreDetailsDtoList;
     }
 
-    public List<GetStoreDto> starredStoreList(String accessToken) {
+    public List<GetStoreDetailsDto> starredStoreList(String accessToken) {
         User userEntity = authUtils.getUserEntity(accessToken);
         List<Long> starredStores = userEntity.getStarredStores();
-        List<GetStoreDto> allStoreDtoByStarredList = new ArrayList<>();
+        List<GetStoreDetailsDto> allStoreDtoByStarredList = new ArrayList<>();
         for (int i = 0; i < starredStores.size(); i++) {    // 찜목록 돌며 아이디로 db에서 조회, list에 add
             Long starredStoreId = starredStores.get(i);
             Store storeEntity = storeRepository.findById(starredStoreId).get();
-            allStoreDtoByStarredList.add(modelMapper.map(storeEntity, GetStoreDto.class));
+            allStoreDtoByStarredList.add(modelMapper.map(storeEntity, GetStoreDetailsDto.class));
+            allStoreDtoByStarredList.get(i).setStarredUserCount(storeEntity.getStarredUsers().size());  // 찜한 유저 수 추가
         }
 
         return allStoreDtoByStarredList;
     }
 
-    public List<GetStoreDto> searchedStoreList(String storeName) {  // 검색 함수인데, 혹시 몰라서 놔둠.
+    public List<GetStoreDetailsDto> searchedStoreList(String storeName) {  // 검색 함수인데, 혹시 몰라서 놔둠.
         List<Store> searchedStoreEntityList = storeRepository.findByStoreNameContaining(storeName);
-        List<GetStoreDto> searchedStoreDtoList = searchedStoreEntityList.stream()
-                .map(m -> modelMapper.map(m, GetStoreDto.class))
+        List<GetStoreDetailsDto> searchedStoreDtoList = searchedStoreEntityList.stream()
+                .map(m -> modelMapper.map(m, GetStoreDetailsDto.class))
                 .collect(Collectors.toList());
 
         return searchedStoreDtoList;
     }
 
-    public GetStoreDetailsDto storeDetails(Long storeId) {
+    public GetStoreDetailsDto storeDetails(String accessToken, Long storeId) {
+        User userEntity = authUtils.getUserEntity(accessToken);
 
         //store entity 가져와서 DTO로 변환
         Store storeEntity = isStorePresent(storeId);
@@ -97,6 +102,11 @@ public class  StoreService {
                 .map(m -> modelMapper.map(m, ItemResponseDto.class))
                 .collect(Collectors.toList());
         storeDetailsDto.setItemDtoList(itemDtoList);
+
+        if (userEntity.getStarredStores().contains(storeId)) storeDetailsDto.setIsStarred(true);    // 찜설정되었는지 여부 체크
+        else storeDetailsDto.setIsStarred(false);
+        if (userEntity.getAlertStores().contains(storeId)) storeDetailsDto.setIsAlerted(true);  // 알림설정되었는지 여부 체크
+        else storeDetailsDto.setIsAlerted(false);
 
         return storeDetailsDto;
     }

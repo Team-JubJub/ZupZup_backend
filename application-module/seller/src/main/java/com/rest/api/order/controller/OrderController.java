@@ -36,7 +36,7 @@ public class OrderController {
     @Operation(summary = "가게의 주문 정보 반환", description = "가게의 주문 정보 반환 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "주문 조회 성공",
-                    content = @Content(schema = @Schema(implementation = dto.order.seller.response.GetOrderListDto.class))),
+                    content = @Content(schema = @Schema(implementation = GetOrderListDto.class))),
             @ApiResponse(responseCode = "204", description = "주문 정보 요청은 성공했으나 해당 가게의 주문이 0개인 경우"),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),

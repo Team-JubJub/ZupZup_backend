@@ -1,5 +1,6 @@
 package dto.store.seller.response;
 
+import domain.store.type.StoreCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class GetStoreDetailsDto {
     private String storeName; //가게이름
     private String storeImageUrl;
     private String storeAddress;
-    private String category;
+    private StoreCategory category;
     private String sellerName;
     private String sellerContact;
     private String storeContact;

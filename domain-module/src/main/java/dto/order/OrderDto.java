@@ -3,6 +3,7 @@ package dto.order;
 import domain.order.type.OrderSpecific;
 import domain.order.type.OrderStatus;
 import domain.store.Store;
+import domain.store.type.StoreCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,7 +29,8 @@ public class OrderDto {
     private String visitTime; // 방문예정 시간
     private String storeName;
     private String storeAddress;
-    private String category;
+    private String storeContact;
+    private StoreCategory category;
 
     private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수
     private Integer totalPrice;
