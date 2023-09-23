@@ -37,6 +37,7 @@ public class Order {
     @Column(nullable = false) private String visitTime; // 방문예정 시간(LocalDateTime, 현재는 KST 기준)
     @Column(nullable = false) private String storeName; // 가게 이름
     @Column(nullable = false) private String storeAddress;  // 가게 주소
+    @Column(nullable = false) private String storeContact;  // 가게 연락처
     @Enumerated(EnumType.STRING) @Column(nullable = false) private StoreCategory category;  // 가게 카테고리
 
     @NotNull @ElementCollection

@@ -28,6 +28,7 @@ public class GetOrderDetailsDto {
     private String visitTime;
     private String storeName;
     private String storeAddress;
+    private String storeContact;
     private StoreCategory category;
 
     private List<OrderSpecific> orderList;

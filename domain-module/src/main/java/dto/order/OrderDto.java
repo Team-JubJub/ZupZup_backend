@@ -29,6 +29,7 @@ public class OrderDto {
     private String visitTime; // 방문예정 시간
     private String storeName;
     private String storeAddress;
+    private String storeContact;
     private StoreCategory category;
 
     private List<OrderSpecific> orderList; // 주문 품목 이름, 가격, 개수

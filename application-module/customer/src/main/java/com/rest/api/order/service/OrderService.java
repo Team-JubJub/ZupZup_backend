@@ -59,6 +59,7 @@ public class OrderService {
                 .visitTime(orderDto.getVisitTime())
                 .storeName(orderDto.getStoreName())
                 .storeAddress(orderDto.getStoreAddress())
+                .storeContact(orderDto.getStoreContact())
                 .category(orderDto.getCategory())
                 .orderList(orderDto.getOrderList())
                 .totalPrice(orderDto.getTotalPrice())
@@ -158,6 +159,7 @@ public class OrderService {
         orderDto.setVisitTime(postOrderRequestDto.getVisitTime());
         orderDto.setStoreName(store.getStoreName());
         orderDto.setStoreAddress(store.getStoreAddress());
+        orderDto.setStoreContact(store.getStoreContact());
         orderDto.setCategory(store.getCategory());
         orderDto.setOrderList(postOrderRequestDto.getOrderList());
         orderDto.setTotalPrice(totalPrice);
