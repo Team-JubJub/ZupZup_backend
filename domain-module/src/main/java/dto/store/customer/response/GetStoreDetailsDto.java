@@ -37,6 +37,9 @@ public class GetStoreDetailsDto {
     private Boolean isOpen;
     private String closedDay;
 
+    private Boolean isStarred;  // 찜했는지 여부
+    private Boolean isAlerted;  // 알림설정했는지 여부
+
     private Integer starredUserCount;   // 찜한 사용자의 수
 
     private List<ItemResponseDto> itemDtoList;

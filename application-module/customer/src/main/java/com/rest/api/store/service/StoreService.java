@@ -88,7 +88,8 @@ public class  StoreService {
         return searchedStoreDtoList;
     }
 
-    public GetStoreDetailsDto storeDetails(Long storeId) {
+    public GetStoreDetailsDto storeDetails(String accessToken, Long storeId) {
+        User userEntity = authUtils.getUserEntity(accessToken);
 
         //store entity 가져와서 DTO로 변환
         Store storeEntity = isStorePresent(storeId);
@@ -101,6 +102,11 @@ public class  StoreService {
                 .map(m -> modelMapper.map(m, ItemResponseDto.class))
                 .collect(Collectors.toList());
         storeDetailsDto.setItemDtoList(itemDtoList);
+
+        if (userEntity.getStarredStores().contains(storeId)) storeDetailsDto.setIsStarred(true);    // 찜설정되었는지 여부 체크
+        else storeDetailsDto.setIsStarred(false);
+        if (userEntity.getAlertStores().contains(storeId)) storeDetailsDto.setIsAlerted(true);  // 알림설정되었는지 여부 체크
+        else storeDetailsDto.setIsAlerted(false);
 
         return storeDetailsDto;
     }
