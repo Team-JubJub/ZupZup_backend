@@ -40,6 +40,8 @@ public class OrderController {
             @ApiResponse(responseCode = "204", description = "주문 정보 요청은 성공했으나 해당 가게의 주문이 0개인 경우"),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
+            @ApiResponse(responseCode = "403", description = "노출이 승인되지 않은 가게",
+                    content = @Content(schema = @Schema(example = "{\n\"\tmessage\": \"해당 가게는 아직 승인 대기중입니다. 관리자에게 연락해주세요.\"\n}"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
                             "Sign-outed or deleted user.")))
