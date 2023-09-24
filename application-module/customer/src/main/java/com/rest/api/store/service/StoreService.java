@@ -76,7 +76,7 @@ public class  StoreService {
         for (int i = 0; i < starredStores.size(); i++) {    // 찜목록 돌며 아이디로 db에서 조회, list에 add
             Long starredStoreId = starredStores.get(i);
             Store storeEntity = storeRepository.findById(starredStoreId).get();
-            if (!storeEntity.getEnterState().equals(EnterState.CONFIRM)) continue;  // CONFIRM 상태가 아닌 가게는 보여줄 리스트에 추가하지 않음.
+            if (!storeEntity.getEnterState().equals(EnterState.CONFIRM)) continue;  // CONFIRM 상태가 아닌 가게는 보여줄 리스트에 추가하지 않음.(찜은 이미 CONFIRM 상태이겠지만, 후에 WAIT 상태로 되돌릴 수도 있는 것을 고려해 추가해놓음)
             allStoreDtoByStarredList.add(modelMapper.map(storeEntity, GetStoreDetailsDto.class));
             allStoreDtoByStarredList.get(i).setStarredUserCount(storeEntity.getStarredUsers().size());  // 찜한 유저 수 추가
         }
