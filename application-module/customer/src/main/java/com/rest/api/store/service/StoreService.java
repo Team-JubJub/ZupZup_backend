@@ -145,7 +145,7 @@ public class  StoreService {
             starredStoreList.remove(Long.valueOf(storeId));
             starredUserList.remove(Long.valueOf(userEntity.getUserId()));
 
-            message = "가게의 찜을 해제하였습니다.";
+            message = "가게의 찜을 해제했정습니다.";
         }
         userDto.setStarredStores(starredStoreList); // 바꿔주고
         storeDto.setStarredUsers(starredUserList);
@@ -180,7 +180,7 @@ public class  StoreService {
             alertStoreList.remove(Long.valueOf(storeId));
             alertUserList.remove(Long.valueOf(userEntity.getUserId()));
 
-            message = "가게의 알림을 해제했습니다.";
+            message = "가게의 알림 설정을 해제했습니다.";
         }
         userDto.setAlertStores(alertStoreList); // 바꿔주고
         storeDto.setAlertUsers(alertUserList);
