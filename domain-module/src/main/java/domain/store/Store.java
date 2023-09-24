@@ -1,6 +1,5 @@
 package domain.store;
 
-
 import domain.store.type.EnterState;
 import domain.store.type.StoreCategory;
 import dto.store.StoreDto;
