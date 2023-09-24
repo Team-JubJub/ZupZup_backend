@@ -111,13 +111,4 @@ public class StoreController {
         return new ResponseEntity(isChanged, HttpStatus.OK);
     }
 
-    // For Test
-    @PostMapping("/test/sign-in")
-    public ResponseEntity testSignIn(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                     @RequestBody SellerTestSignInDto sellerTestSignInDto) {
-        TestSignInResponseDto testSignInResponseDto = storeService.testSignIn(sellerTestSignInDto);
-
-        return new ResponseEntity(testSignInResponseDto, HttpStatus.OK);
-    }
-
 }
