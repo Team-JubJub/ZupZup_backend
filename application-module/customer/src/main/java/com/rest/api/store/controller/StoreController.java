@@ -127,18 +127,19 @@ public class StoreController {
     @PatchMapping("/{storeId}/star")  // 가게 찜하기
     public ResponseEntity setStarStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                        @PathVariable Long storeId,
-                                       @Parameter(name = "action", description = "설정 여부(찜할 시 : set, 찜 해제 시 : unset)", in = ParameterIn.QUERY) @RequestParam(required = true) String action) {
-        String message = null;
-        if (action.equals("set")) message = storeService.setStarStore(accessToken, storeId);
-        else if (action.equals("unset")) message = storeService.unsetStarStore(accessToken, storeId);
+                                       @Parameter(name = "action", description = "설정 여부(찜할 시 : set, 찜 해제 시 : unset)", in = ParameterIn.QUERY) @RequestParam String action) {
+        String message = storeService.modifyAlertStore(accessToken, storeId, action);
 
         return new ResponseEntity(new MessageDto(message), HttpStatus.OK);
     }
 
     @GetMapping("/{storeId}/alert")  // 가게 알림설정하기
     public ResponseEntity setAlertStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                        @PathVariable Long storeId) {
-        String message = "temp";
+                                        @PathVariable Long storeId,
+                                        @Parameter(name = "action", description = "설정 여부(알림 설정할 시 : set, 알림설정 해제 시 : unset)", in = ParameterIn.QUERY) @RequestParam String action) {
+        String message = null;
+        if (action.equals("set")) message = "1";
+        else if (action.equals("unset")) message = "2";
 
         return new ResponseEntity(new MessageDto(message), HttpStatus.OK);
     }
