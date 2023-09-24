@@ -15,11 +15,9 @@ import exception.NoSuchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
-import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.ItemRepository;
 import repository.OrderRepository;
 import repository.StoreRepository;
 

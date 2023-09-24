@@ -3,10 +3,8 @@ package domain.store;
 
 import domain.store.type.EnterState;
 import domain.store.type.StoreCategory;
-import dto.store.StoreDto;
 import dto.store.seller.request.ModifyStoreDto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 
