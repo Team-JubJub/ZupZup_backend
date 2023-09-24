@@ -150,7 +150,7 @@ public class StoreController {
             @ApiResponse(responseCode = "412", description = "찜을 하지 않은 가게의 알림 설정을 시도함",
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"찜한 가게만 알림을 설정할 수 있습니다.\"\n}")))
     })
-    @GetMapping("/{storeId}/alert")  // 가게 알림설정하기
+    @PatchMapping("/{storeId}/alert")  // 가게 알림설정하기
     public ResponseEntity setAlertStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                         @PathVariable Long storeId,
                                         @Parameter(name = "action", description = "설정 여부(알림 설정할 시 : set, 알림설정 해제 시 : unset)", in = ParameterIn.QUERY) @RequestParam String action) {
