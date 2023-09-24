@@ -110,7 +110,7 @@ public class StoreController {
         return new ResponseEntity(storeDetailsDto, HttpStatus.OK);
     }
 
-    // <-------------------- GET part -------------------->
+    // <-------------------- PATCH part -------------------->
     @Operation(summary = "가게 찜(해제) 요청", description = "가게 찜 or 해제 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가게 찜 or 해제 성공",
