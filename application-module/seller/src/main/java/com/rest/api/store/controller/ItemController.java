@@ -45,7 +45,7 @@ public class ItemController {
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
                             "Sign-outed or deleted user."))),
             @ApiResponse(responseCode = "404", description = "해당 가게가 존재하지 않음",
-                    content = @Content(schema = @Schema(example = "해당 가게를 찾을 수 없습니다.")))
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @PostMapping("/{storeId}") // 상품 저장
     public ResponseEntity saveItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -66,7 +66,7 @@ public class ItemController {
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
                             "Sign-outed or deleted user."))),
             @ApiResponse(responseCode = "404", description = "해당 가게가 존재하지 않음",
-                    content = @Content(schema = @Schema(example = "해당 가게를 찾을 수 없습니다.")))
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     // 전체 제품 불러오기
     @GetMapping("/{storeId}/management")
@@ -86,7 +86,7 @@ public class ItemController {
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
                             "Sign-outed or deleted user."))),
             @ApiResponse(responseCode = "404", description = "해당 가게나 상품이 존재하지 않음",
-                    content = @Content(schema = @Schema(example = "해당 가게(or 상품)를 찾을 수 없습니다.")))
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게(or 상품)를 찾을 수 없습니다.\"\n}")))
     })
     @PatchMapping("/{storeId}/{itemId}")
     public ResponseEntity updateItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -108,7 +108,7 @@ public class ItemController {
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
                             "Sign-outed or deleted user."))),
             @ApiResponse(responseCode = "404", description = "수정하려는 상품 중 존재하지 않는 상품이 있는 경우",
-                    content = @Content(schema = @Schema(example = "해당 상품을 찾을 수 없습니다.")))
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 상품을 찾을 수 없습니다.\"\n}")))
     })
     // 제품 개수 수정하기
     @PatchMapping("/{storeId}/quantity")
@@ -129,7 +129,7 @@ public class ItemController {
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
                             "Sign-outed or deleted user."))),
             @ApiResponse(responseCode = "404", description = "해당 상품이 존재하지 않는 경우",
-                    content = @Content(schema = @Schema(example = "해당 상품을 찾을 수 없습니다.")))
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 상품을 찾을 수 없습니다.\"\n}")))
     })
     @DeleteMapping("/{storeId}/{itemId}")
     public ResponseEntity deleteItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,

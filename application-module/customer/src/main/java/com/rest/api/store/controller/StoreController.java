@@ -97,9 +97,9 @@ public class StoreController {
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n"
                             + "or Sign-outed or deleted user. Please sign-in or sign-up again."))),
             @ApiResponse(responseCode = "403", description = "노출이 승인되지 않은 가게",
-                    content = @Content(schema = @Schema(example = "{\n\"\tmessage\": \"사용자의 접근이 승인되지 않은 가게입니다.\"\n}"))),
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"사용자의 접근이 승인되지 않은 가게입니다.\"\n}"))),
             @ApiResponse(responseCode = "404", description = "해당 가게를 찾을 수 없음",
-                    content = @Content(schema = @Schema(example = "{\n\"\tmessage\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @GetMapping("/{storeId}") // 가게 상세 조회
     public ResponseEntity storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
