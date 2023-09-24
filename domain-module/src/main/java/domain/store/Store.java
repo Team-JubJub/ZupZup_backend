@@ -3,6 +3,7 @@ package domain.store;
 
 import domain.store.type.EnterState;
 import domain.store.type.StoreCategory;
+import dto.store.StoreDto;
 import dto.store.seller.request.ModifyStoreDto;
 import jakarta.persistence.*;
 import lombok.*;
@@ -108,6 +109,14 @@ public class Store {
         this.saleTimeStart = modifyStoreDto.getSaleTimeStart();
         this.saleTimeEnd = modifyStoreDto.getSaleTimeEnd();
         this.closedDay = modifyStoreDto.getClosedDay();
+    }
+
+    public void updateStarredUserList(StoreDto storeDto) {
+        this.starredUsers = storeDto.getStarredUsers();
+    }
+
+    public void updateAlertUserList(StoreDto storeDto) {
+        this.alertUsers = storeDto.getStarredUsers();
     }
 
 }

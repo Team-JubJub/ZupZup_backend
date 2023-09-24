@@ -6,7 +6,9 @@ import domain.item.Item;
 import domain.store.Store;
 import domain.store.type.EnterState;
 import domain.store.type.StoreCategory;
+import dto.auth.customer.UserDto;
 import dto.item.customer.response.ItemResponseDto;
+import dto.store.StoreDto;
 import dto.store.customer.response.GetStoreDetailsDto;
 import exception.NoSuchException;
 import exception.store.ForbiddenStoreException;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import repository.ItemRepository;
 import repository.StoreRepository;
+import repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,7 @@ public class  StoreService {
 
     @Autowired
     ModelMapper modelMapper;
+    private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final ItemRepository itemRepository;
     private final AuthUtils authUtils;
@@ -112,6 +116,98 @@ public class  StoreService {
         else storeDetailsDto.setIsAlerted(false);
 
         return storeDetailsDto;
+    }
+
+    public String setStarStore(String accessToken, Long storeId) {
+        User userEntity = authUtils.getUserEntity(accessToken);
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+        Store storeEntity = isStorePresent(storeId);
+        StoreDto storeDto = modelMapper.map(storeEntity, StoreDto.class);
+        // 사용자 찜한 가게 수정
+        List<Long> starredStoreList = userDto.getStarredStores();   // 가져오고, 더해주고, 다시 저장
+        if (starredStoreList == null) starredStoreList = new ArrayList<>(); // 값이 null이라면 새 list로 초기화
+        starredStoreList.add(storeId);
+        userDto.setStarredStores(starredStoreList);
+        userEntity.updateStarredStoreList(userDto);
+        // 가게 찜한 사용자 수정
+        List<Long> starredUserList = storeDto.getStarredUsers();
+        if (starredUserList == null) starredUserList = new ArrayList<>();
+        starredUserList.add(userEntity.getUserId());
+        storeDto.setStarredUsers(starredUserList);
+        storeEntity.updateStarredUserList(storeDto);
+
+        userRepository.save(userEntity);    // 최종 처리 후 db에 저장
+        storeRepository.save(storeEntity);
+
+        return "가게를 찜했습니다.";
+    }
+
+    public String unsetStarStore(String accessToken, Long storeId) {
+        User userEntity = authUtils.getUserEntity(accessToken);
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+        Store storeEntity = isStorePresent(storeId);
+        StoreDto storeDto = modelMapper.map(storeEntity, StoreDto.class);
+        // 사용자 찜한 가게 수정
+        List<Long> starredStoreList = userDto.getStarredStores();   // 가져오고, 빼주고, 다시 저장
+        starredStoreList.remove(Long.valueOf(storeId));
+        userDto.setStarredStores(starredStoreList);
+        userEntity.updateStarredStoreList(userDto);
+        // 가게 찜한 사용자 수정
+        List<Long> starredUserList = storeDto.getStarredUsers();
+        starredUserList.remove(Long.valueOf(userEntity.getUserId()));
+        storeDto.setStarredUsers(starredUserList);
+        storeEntity.updateStarredUserList(storeDto);
+
+        userRepository.save(userEntity);    // 최종 처리 후 db에 저장
+        storeRepository.save(storeEntity);
+
+        return "가게의 찜을 해제하였습니다.";
+    }
+
+    public String setAlertStore(String accessToken, Long storeId) {
+        User userEntity = authUtils.getUserEntity(accessToken);
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+        Store storeEntity = isStorePresent(storeId);
+        StoreDto storeDto = modelMapper.map(storeEntity, StoreDto.class);
+        // 사용자 찜한 가게 수정
+        List<Long> starredStoreList = userDto.getStarredStores();   // 가져오고, 더해주고, 다시 저장
+        if (starredStoreList == null) starredStoreList = new ArrayList<>(); // 값이 null이라면 새 list로 초기화
+        starredStoreList.add(storeId);
+        userDto.setStarredStores(starredStoreList);
+        userEntity.updateStarredStoreList(userDto);
+        // 가게 찜한 사용자 수정
+        List<Long> starredUserList = storeDto.getStarredUsers();
+        if (starredUserList == null) starredUserList = new ArrayList<>();
+        starredUserList.add(userEntity.getUserId());
+        storeDto.setStarredUsers(starredUserList);
+        storeEntity.updateStarredUserList(storeDto);
+
+        userRepository.save(userEntity);    // 최종 처리 후 db에 저장
+        storeRepository.save(storeEntity);
+
+        return "가게를 찜했습니다.";
+    }
+
+    public String unsetAlertStore(String accessToken, Long storeId) {
+        User userEntity = authUtils.getUserEntity(accessToken);
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+        Store storeEntity = isStorePresent(storeId);
+        StoreDto storeDto = modelMapper.map(storeEntity, StoreDto.class);
+        // 사용자 찜한 가게 수정
+        List<Long> starredStoreList = userDto.getStarredStores();   // 가져오고, 빼주고, 다시 저장
+        starredStoreList.remove(Long.valueOf(storeId));
+        userDto.setStarredStores(starredStoreList);
+        userEntity.updateStarredStoreList(userDto);
+        // 가게 찜한 사용자 수정
+        List<Long> starredUserList = storeDto.getStarredUsers();
+        starredUserList.remove(Long.valueOf(userEntity.getUserId()));
+        storeDto.setStarredUsers(starredUserList);
+        storeEntity.updateStarredUserList(storeDto);
+
+        userRepository.save(userEntity);    // 최종 처리 후 db에 저장
+        storeRepository.save(storeEntity);
+
+        return "가게의 찜을 해제하였습니다.";
     }
 
     // <-------------------- Common methods part -------------------->
