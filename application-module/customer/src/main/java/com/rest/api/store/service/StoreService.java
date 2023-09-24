@@ -12,6 +12,7 @@ import dto.store.StoreDto;
 import dto.store.customer.response.GetStoreDetailsDto;
 import exception.NoSuchException;
 import exception.store.ForbiddenStoreException;
+import exception.store.customer.StoreNotStarredException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -118,7 +119,8 @@ public class  StoreService {
         return storeDetailsDto;
     }
 
-    public String modifyAlertStore(String accessToken, Long storeId, String action) {
+    // <-------------------- PATCH part -------------------->
+    public String modifyStarStore(String accessToken, Long storeId, String action) {
         String message = "";
         User userEntity = authUtils.getUserEntity(accessToken);
         UserDto userDto = modelMapper.map(userEntity, UserDto.class);
@@ -152,6 +154,41 @@ public class  StoreService {
         return message;
     }
 
+    public String modifyAlertStore(String accessToken, Long storeId, String action) {
+        String message = "";
+        User userEntity = authUtils.getUserEntity(accessToken);
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+        Store storeEntity = isStorePresent(storeId);
+        StoreDto storeDto = modelMapper.map(storeEntity, StoreDto.class);
+
+        List<Long> alertStoreList = userDto.getAlertStores();   // 가져오고
+        List<Long> alertUserList = storeDto.getAlertUsers();
+        if (action.equals("set")) { // 설정의 경우, 찜했는지 안했는지 따져봐야 함.
+            if (!isStoreStarred(userEntity, storeId)) throw new StoreNotStarredException("찜한 가게만 알림을 설정을 할 수 있습니다."); // 예외 던지기
+
+            if (alertStoreList == null) alertStoreList = new ArrayList<>(); // 값이 null이라면 새 list로 초기화
+            if (alertUserList == null) alertUserList = new ArrayList<>();
+            alertStoreList.add(storeId);
+            alertUserList.add(userEntity.getUserId());
+
+            message = "가게의 알림 설정을 켰습니다.";
+        } else if (action.equals("unset")) {    // 해제의 경우는 바로 remove 처리 후 끝
+            alertStoreList.remove(Long.valueOf(storeId));
+            alertUserList.remove(Long.valueOf(userEntity.getUserId()));
+
+            message = "가게의 알림을 해제했습니다.";
+        }
+        userDto.setAlertStores(alertStoreList); // 바꿔주고
+        storeDto.setAlertUsers(alertUserList);
+        userEntity.updateAlertStoreList(userDto); // 저장
+        storeEntity.updateAlertUserList(storeDto);
+
+        userRepository.save(userEntity);    // 최종 처리 후 db에 저장
+        storeRepository.save(storeEntity);
+
+        return message;
+    }
+
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
     private Store isStorePresent(Long storeId) {
@@ -162,6 +199,17 @@ public class  StoreService {
         }   catch (NoSuchElementException e) {
             throw new NoSuchException("해당 가게를 찾을 수 없습니다.");
         }
+    }
+
+    private boolean isStoreStarred(User userEntity, Long storeId) {
+        List<Long> starredStores = userEntity.getStarredStores();
+        for (int i = 0; i < starredStores.size(); i++) {
+            if (starredStores.get(i) == storeId) {  // 찜 목록에 있으면 true 반환
+                return true;
+            }
+        }
+
+        return false;   // 없으면 false 반환
     }
 
 }

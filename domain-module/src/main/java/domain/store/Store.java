@@ -116,7 +116,7 @@ public class Store {
     }
 
     public void updateAlertUserList(StoreDto storeDto) {
-        this.alertUsers = storeDto.getStarredUsers();
+        this.alertUsers = storeDto.getAlertUsers();
     }
 
 }

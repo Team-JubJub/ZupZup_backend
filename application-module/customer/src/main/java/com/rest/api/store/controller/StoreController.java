@@ -110,6 +110,7 @@ public class StoreController {
         return new ResponseEntity(storeDetailsDto, HttpStatus.OK);
     }
 
+    // <-------------------- GET part -------------------->
     @Operation(summary = "가게 찜(해제) 요청", description = "가게 찜 or 해제 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가게 찜 or 해제 성공",
@@ -128,21 +129,34 @@ public class StoreController {
     public ResponseEntity setStarStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                        @PathVariable Long storeId,
                                        @Parameter(name = "action", description = "설정 여부(찜할 시 : set, 찜 해제 시 : unset)", in = ParameterIn.QUERY) @RequestParam String action) {
-        String message = storeService.modifyAlertStore(accessToken, storeId, action);
+        String message = storeService.modifyStarStore(accessToken, storeId, action);
 
         return new ResponseEntity(new MessageDto(message), HttpStatus.OK);
     }
 
+    @Operation(summary = "가게 알림(해제) 요청", description = "가게 알림 설정 or 해제 요청")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "가게 알림 설정 or 해제 성공",
+                    content = @Content(schema = @Schema(implementation = GetStoreDetailsDto.class))),
+            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
+                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
+            @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 or 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
+                    content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n"
+                            + "or Sign-outed or deleted user. Please sign-in or sign-up again."))),
+            @ApiResponse(responseCode = "403", description = "노출이 승인되지 않은 가게",
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"사용자의 접근이 승인되지 않은 가게입니다.\"\n}"))),
+            @ApiResponse(responseCode = "404", description = "해당 가게를 찾을 수 없음",
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}"))),
+            @ApiResponse(responseCode = "412", description = "찜을 하지 않은 가게의 알림 설정을 시도함",
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"찜한 가게만 알림을 설정할 수 있습니다.\"\n}")))
+    })
     @GetMapping("/{storeId}/alert")  // 가게 알림설정하기
     public ResponseEntity setAlertStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                         @PathVariable Long storeId,
                                         @Parameter(name = "action", description = "설정 여부(알림 설정할 시 : set, 알림설정 해제 시 : unset)", in = ParameterIn.QUERY) @RequestParam String action) {
-        String message = null;
-        if (action.equals("set")) message = "1";
-        else if (action.equals("unset")) message = "2";
+        String message = storeService.modifyAlertStore(accessToken, storeId, action);
 
         return new ResponseEntity(new MessageDto(message), HttpStatus.OK);
     }
-
 
 }
