@@ -5,6 +5,7 @@ import exception.NoSuchException;
 import exception.auth.customer.AlreadySignUppedException;
 import exception.auth.customer.NoUserPresentsException;
 import exception.store.ForbiddenStoreException;
+import exception.store.customer.StoreNotStarredException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -63,5 +64,10 @@ public class CustomerControllerAdvice {
     public ResponseEntity noSuchStoreOrOrder(NoSuchException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageDto(e.getMessage()));
     }   // 후에 수정(이름 등) 필요할 듯
+
+    @ExceptionHandler(value = StoreNotStarredException.class)    // 찜하지 않은 가게의 알림을 설정할 경우
+    public ResponseEntity storeNotStarred(StoreNotStarredException e) {
+        return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body(new MessageDto(e.getMessage()));
+    }
 
 }

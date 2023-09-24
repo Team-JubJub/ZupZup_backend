@@ -1,6 +1,7 @@
 package domain.auth.User;
 
 import domain.auth.Role;
+import dto.auth.customer.UserDto;
 import dto.info.customer.request.PatchNickNameDto;
 import dto.info.customer.request.PatchOptionalTermDto;
 import dto.info.customer.request.PatchPhoneNumberDto;
@@ -67,6 +68,15 @@ public class User {
 
     public void updateOptionalTerm1(PatchOptionalTermDto patchOptionalTermDto) {
         this.optionalTerm1 = patchOptionalTermDto.getOptionalTerm1();
+    }
+
+    public void updateStarredStoreList(UserDto userDto) {
+        this.starredStores = userDto.getStarredStores();
+        this.alertStores = userDto.getAlertStores();
+    }
+
+    public void updateAlertStoreList(UserDto userDto) {
+        this.alertStores  = userDto.getAlertStores();
     }
 
 }
