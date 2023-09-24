@@ -1,6 +1,7 @@
 package dto.store;
 
 import domain.item.Item;
+import domain.store.type.EnterState;
 import domain.store.type.StoreCategory;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -46,5 +47,7 @@ public class StoreDto {
     private Set<String> deviceTokens;
 
     private List<Item> storeItems;
+
+    private EnterState enterState;
 
 }

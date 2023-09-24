@@ -4,7 +4,6 @@ import domain.auth.Seller.Seller;
 import domain.store.Store;
 import dto.auth.seller.test.SellerTestSignInDto;
 import dto.auth.seller.test.TestSignInResponseDto;
-import dto.store.StoreDto;
 import dto.store.seller.request.ModifyStoreDto;
 import dto.store.seller.response.GetStoreDetailsDto;
 import dto.store.seller.response.ModifyStoreResponse;
@@ -21,7 +20,6 @@ import repository.StoreRepository;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 @Service
 @Log

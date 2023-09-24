@@ -5,6 +5,7 @@ import domain.auth.User.User;
 import domain.item.Item;
 import domain.order.Order;
 import domain.store.Store;
+import domain.store.type.EnterState;
 import domain.store.type.StoreCategory;
 import dto.item.customer.response.ItemResponseDto;
 import dto.store.customer.response.GetStoreDetailsDto;
@@ -116,10 +117,15 @@ public class  StoreService {
     private Store isStorePresent(Long storeId) {
         try {
             Store storeEntity = storeRepository.findById(storeId).get();
+            if (!storeEntity.getEnterState().equals(EnterState.CONFIRM)) ;    // CONFIRM 상태인 가게가 아니면 조회 불가(가게 리스트 반환에서 안보이게 처리하지만, 혹시 모를 접근을 한 번 더 막는 용도)
             return storeEntity;
         }   catch (NoSuchElementException e) {
             throw new NoSuchException("해당 가게를 찾을 수 없습니다.");
         }
+    }
+
+    private void isStoreConfirmed(Long storeId) {   // 가게 상세 조회에서 사용됨. CONFIRM 상태가 아니라면 error 발생시킨 후 403 반환하도록
+
     }
 
 }
