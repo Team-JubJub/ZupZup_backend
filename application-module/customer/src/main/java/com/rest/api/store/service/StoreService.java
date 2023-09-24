@@ -44,7 +44,7 @@ public class  StoreService {
         List<Store> allStoreEntityByCategoryList = storeRepository.findByCategory(storeCategory);
 
         List<GetStoreDetailsDto> allStoreDtoByCategoryList = allStoreEntityByCategoryList.stream()
-                .filter(m -> !m.getEnterState().equals(EnterState.CONFIRM))  // EnterState가 CONFIRM이 아닌 것은 거름.
+                .filter(m -> m.getEnterState().equals(EnterState.CONFIRM))  // EnterState가 CONFIRM이 아닌 것은 거름.
                 .map(m -> {
                     GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(m, GetStoreDetailsDto.class);
                     getStoreDetailsDto.setStarredUserCount(m.getStarredUsers().size());
@@ -58,7 +58,7 @@ public class  StoreService {
     public List<GetStoreDetailsDto> storeList() {   // 현재는 예외처리할 것 없어 보임
         List<Store> allStoreEntityList = storeRepository.findAll(); // 나중에는 위치기반 등으로 거르게 될 듯?
         List<GetStoreDetailsDto> allStoreDetailsDtoList = allStoreEntityList.stream()
-                .filter(m -> !m.getEnterState().equals(EnterState.CONFIRM))  // EnterState가 CONFIRM이 아닌 것은 거름.
+                .filter(m -> m.getEnterState().equals(EnterState.CONFIRM))  // EnterState가 CONFIRM이 아닌 것은 거름.
                 .map(m -> {
                     GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(m, GetStoreDetailsDto.class);
                     getStoreDetailsDto.setStarredUserCount(m.getStarredUsers().size());
