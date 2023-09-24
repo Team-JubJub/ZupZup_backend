@@ -72,6 +72,7 @@ public class User {
 
     public void updateStarredStoreList(UserDto userDto) {
         this.starredStores = userDto.getStarredStores();
+        this.alertStores = userDto.getAlertStores();
     }
 
     public void updateAlertStoreList(UserDto userDto) {

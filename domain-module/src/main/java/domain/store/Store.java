@@ -112,6 +112,7 @@ public class Store {
 
     public void updateStarredUserList(StoreDto storeDto) {
         this.starredUsers = storeDto.getStarredUsers();
+        this.alertUsers = storeDto.getAlertUsers();
     }
 
     public void updateAlertUserList(StoreDto storeDto) {

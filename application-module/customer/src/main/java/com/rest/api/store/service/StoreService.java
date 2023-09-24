@@ -138,6 +138,10 @@ public class  StoreService {
             message = "가게를 찜했습니다.";
         }
         else if (action.equals("unset")) {  // 빼주고
+            if (isStoreAlerted(userEntity, storeId)) {  // 찜 해제 시 알림 설정도 해제해줘야 함
+                userDto.setAlertStores(removeAlertElement(userDto.getAlertStores(), storeId));
+                storeDto.setAlertUsers(removeAlertElement(storeDto.getAlertUsers(), storeId));
+            }
             starredStoreList.remove(Long.valueOf(storeId));
             starredUserList.remove(Long.valueOf(userEntity.getUserId()));
 
@@ -210,6 +214,24 @@ public class  StoreService {
         }
 
         return false;   // 없으면 false 반환
+    }
+
+    private boolean isStoreAlerted(User userEntity, Long storeId) { // 찜 해제 시 알림 설정도 같이 끄기 위해, 알림 설정 여부 판단
+        List<Long> alertStores = userEntity.getAlertStores();
+        for (int i = 0; i < alertStores.size(); i++) {
+            if (alertStores.get(i) == storeId) {  // 알림 목록에 있으면 true 반환
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private List<Long> removeAlertElement(List<Long> ogList, Long id) { // 찜 해제 시 알림 설정도 해제해줄 때의 중복 작업 처리 함수
+        List<Long> retList = ogList;
+        retList.remove(Long.valueOf(id));
+
+        return retList;
     }
 
 }
