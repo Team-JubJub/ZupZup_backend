@@ -42,8 +42,10 @@ public class StoreController {
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
                             "Sign-outed or deleted user."))),
+            @ApiResponse(responseCode = "403", description = "노출이 승인되지 않은 가게",
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게는 아직 승인 대기중입니다. 관리자에게 연락해주세요.\"\n}"))),
             @ApiResponse(responseCode = "404", description = "해당 가게가 존재하지 않음",
-                    content = @Content(schema = @Schema(example = "해당 가게를 찾을 수 없습니다.")))
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @GetMapping("/{storeId}")
     public ResponseEntity storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -59,8 +61,10 @@ public class StoreController {
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
                             "Sign-outed or deleted user."))),
+            @ApiResponse(responseCode = "403", description = "노출이 승인되지 않은 가게",
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게는 아직 승인 대기중입니다. 관리자에게 연락해주세요.\"\n}"))),
             @ApiResponse(responseCode = "404", description = "해당 가게가 존재하지 않음",
-                    content = @Content(schema = @Schema(example = "해당 가게를 찾을 수 없습니다.")))
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @PatchMapping("/open/{storeId}")
     public ResponseEntity changeIsOpened(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -78,8 +82,10 @@ public class StoreController {
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
                             "Sign-outed or deleted user."))),
+            @ApiResponse(responseCode = "403", description = "노출이 승인되지 않은 가게",
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게는 아직 승인 대기중입니다. 관리자에게 연락해주세요.\"\n}"))),
             @ApiResponse(responseCode = "404", description = "해당 가게가 존재하지 않음",
-                    content = @Content(schema = @Schema(example = "해당 가게를 찾을 수 없습니다.")))
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @PatchMapping("/modification/{storeId}")
     public ResponseEntity modifyStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -99,8 +105,10 @@ public class StoreController {
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n or \n" +
                             "Sign-outed or deleted user."))),
+            @ApiResponse(responseCode = "403", description = "노출이 승인되지 않은 가게",
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게는 아직 승인 대기중입니다. 관리자에게 연락해주세요.\"\n}"))),
             @ApiResponse(responseCode = "404", description = "해당 가게가 존재하지 않음",
-                    content = @Content(schema = @Schema(example = "해당 가게를 찾을 수 없습니다.")))
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @PostMapping("/notice/{storeId}")
     public ResponseEntity changeNotification(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
@@ -109,15 +117,6 @@ public class StoreController {
 
         String isChanged = storeService.changeNotification(storeId, storeMatters);
         return new ResponseEntity(isChanged, HttpStatus.OK);
-    }
-
-    // For Test
-    @PostMapping("/test/sign-in")
-    public ResponseEntity testSignIn(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                     @RequestBody SellerTestSignInDto sellerTestSignInDto) {
-        TestSignInResponseDto testSignInResponseDto = storeService.testSignIn(sellerTestSignInDto);
-
-        return new ResponseEntity(testSignInResponseDto, HttpStatus.OK);
     }
 
 }

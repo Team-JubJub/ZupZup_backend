@@ -2,10 +2,7 @@ package com.rest.api.store.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.store.service.StoreService;
-import dto.order.customer.response.GetOrderDetailsDto;
-import dto.order.customer.response.PostOrderResponseDto;
 import dto.store.customer.response.GetStoreDetailsDto;
-import dto.store.customer.response.GetStoreDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -99,8 +96,10 @@ public class StoreController {
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 or 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n"
                             + "or Sign-outed or deleted user. Please sign-in or sign-up again."))),
+            @ApiResponse(responseCode = "403", description = "노출이 승인되지 않은 가게",
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"사용자의 접근이 승인되지 않은 가게입니다.\"\n}"))),
             @ApiResponse(responseCode = "404", description = "해당 가게를 찾을 수 없음",
-                    content = @Content(schema = @Schema(example = "해당 가게를 찾을 수 없습니다.")))
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @GetMapping("/{storeId}") // 가게 상세 조회
     public ResponseEntity storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,

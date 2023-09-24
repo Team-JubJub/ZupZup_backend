@@ -1,13 +1,11 @@
 package com.rest.api.store.service;
 
-import domain.auth.Seller.Seller;
 import domain.store.Store;
-import dto.auth.seller.test.SellerTestSignInDto;
-import dto.auth.seller.test.TestSignInResponseDto;
-import dto.store.StoreDto;
+import domain.store.type.EnterState;
 import dto.store.seller.request.ModifyStoreDto;
 import dto.store.seller.response.GetStoreDetailsDto;
 import dto.store.seller.response.ModifyStoreResponse;
+import exception.store.ForbiddenStoreException;
 import exception.store.seller.NoSuchStoreException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -16,12 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import repository.SellerRepository;
 import repository.StoreRepository;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import java.util.Set;
 
 @Service
 @Log
@@ -30,7 +26,6 @@ import java.util.Set;
 public class StoreService {
 
     private final S3Uploader s3Uploader;
-    private final SellerRepository sellerRepository;
     private final StoreRepository storeRepository;
     @Autowired
     ModelMapper modelMapper;
@@ -82,29 +77,12 @@ public class StoreService {
         return "공지사항이 수정되었습니다.";
     }
 
-    //For Test
-    public TestSignInResponseDto testSignIn(SellerTestSignInDto sellerTestSignInDto) {
-        String loginId = sellerTestSignInDto.getLoginId();
-        String loginPwd = sellerTestSignInDto.getLoginPwd();
-        Seller seller = sellerRepository.findSellerByLoginId(loginId);
-        Long sellerId = seller.getSellerId();
-        Store store = storeRepository.findBySellerId(sellerId);
-        TestSignInResponseDto testSignInResponseDto = new TestSignInResponseDto();
-        testSignInResponseDto.setMessage("success");
-        testSignInResponseDto.setStoreId(store.getStoreId());
-
-        if (loginPwd.equals(seller.getLoginPwd())) {
-            return testSignInResponseDto;
-        }
-
-        return new TestSignInResponseDto();
-    }
-
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
     private Store isStorePresent(Long storeId) {
         try {
             Store store = storeRepository.findById(storeId).get();
+            if (store.getEnterState().equals(EnterState.NEW)) throw new ForbiddenStoreException("해당 가게는 아직 승인 대기중입니다. 관리자에게 연락해주세요.");
             return store;
         } catch (NoSuchElementException e) {
             throw new NoSuchStoreException("해당 가게를 찾을 수 없습니다.");

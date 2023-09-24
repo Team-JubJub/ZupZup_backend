@@ -1,5 +1,6 @@
 package dto.store.customer.response;
 
+import domain.store.type.EnterState;
 import domain.store.type.StoreCategory;
 import dto.item.customer.response.ItemResponseDto;
 import lombok.AllArgsConstructor;

@@ -1,11 +1,10 @@
 package domain.store;
 
 
+import domain.store.type.EnterState;
 import domain.store.type.StoreCategory;
-import dto.store.StoreDto;
 import dto.store.seller.request.ModifyStoreDto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 
@@ -85,6 +84,9 @@ public class Store {
 
     @Column(nullable = false)
     private String crNumber;    // 사업자 등록번호
+
+    @Enumerated(EnumType.STRING) @Column(nullable = true)
+    private EnterState enterState;  // 등록 상태(NEW, WAIT, CONFIRM)
 
     public static StoreBuilder builder(String storeName) {   // 필수 파라미터 고려해볼 것
         if(storeName == null) {

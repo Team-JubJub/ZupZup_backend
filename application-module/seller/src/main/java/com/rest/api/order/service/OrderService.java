@@ -1,10 +1,12 @@
 package com.rest.api.order.service;
 
+import domain.store.type.EnterState;
 import dto.item.seller.response.GetDtoWithStore;
 import dto.order.seller.request.PatchOrderDataDto;
 import dto.order.seller.response.GetOrderDetailsDto;
 import dto.order.seller.response.GetOrderListDto;
 import dto.order.seller.response.PatchOrderResponseDto;
+import exception.store.ForbiddenStoreException;
 import org.modelmapper.ModelMapper;
 import repository.ItemRepository;
 import repository.StoreRepository;
@@ -90,7 +92,7 @@ public class OrderService {
     private Store isStorePresent(Long storeId) {
         try {
             Store storeEntity = storeRepository.findById(storeId).get();    // 이 부분 entity 안받아와도 할 수 있는 방법 있는지 찾아볼 것.
-            System.out.println("Store Found with ID: " + storeId + ", name: " + storeEntity.getStoreName());    // 확인용
+            if (storeEntity.getEnterState().equals(EnterState.NEW)) throw new ForbiddenStoreException("해당 가게는 아직 승인 대기중입니다. 관리자에게 연락해주세요.");
 
             return storeEntity;
         }   catch (NoSuchElementException e) {

@@ -4,8 +4,7 @@ import dto.MessageDto;
 import exception.NoSuchException;
 import exception.auth.customer.AlreadySignUppedException;
 import exception.auth.customer.NoUserPresentsException;
-import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.Path;
+import exception.store.ForbiddenStoreException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -16,13 +15,8 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 @RestControllerAdvice
 public class CustomerControllerAdvice {
@@ -60,9 +54,13 @@ public class CustomerControllerAdvice {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
+    @ExceptionHandler(value = ForbiddenStoreException.class)
+    public ResponseEntity forbiddenStoreException(ForbiddenStoreException e) {  // 접근이 불가한 가게(사용자 앱 : CONFIRM 상태가 아닌 가게)
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new MessageDto(e.getMessage()));
+    }
+
     @ExceptionHandler(value = NoSuchException.class)    // 가게, 주문이 존재하지 않는 경우
     public ResponseEntity noSuchStoreOrOrder(NoSuchException e) {
-
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageDto(e.getMessage()));
     }   // 후에 수정(이름 등) 필요할 듯
 

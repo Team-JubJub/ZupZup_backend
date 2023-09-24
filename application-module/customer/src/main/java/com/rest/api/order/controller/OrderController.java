@@ -91,7 +91,7 @@ public class OrderController {
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)\n"
                             + "or Sign-outed or deleted user. Please sign-in or sign-up again."))),
             @ApiResponse(responseCode = "404", description = "해당 주문을 찾을 수 없음",
-                    content = @Content(schema = @Schema(example = "해당 주문을 찾을 수 없습니다.")))
+                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 주문을 찾을 수 없습니다.\"\n}")))
     })
     @GetMapping("/{orderId}")
     public ResponseEntity orderDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken, @PathVariable Long orderId) {
