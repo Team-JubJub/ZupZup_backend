@@ -42,7 +42,6 @@ public class MobileOAuthController {
      */
     private final MobileOAuthService mobileOAuthService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final RedisService redisService;
 
     // < -------------- Sign-up part -------------- >
     @Operation(summary = "회원가입", description = "회원가입 요청")

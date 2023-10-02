@@ -40,8 +40,8 @@ public class MobileOAuthService {
     @Autowired
     ModelMapper modelMapper;
     private final UserRepository userRepository;
-    private final RedisService redisService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RedisService redisService;
     private final AuthUtils authUtils;
 
     final static public String NO_USER_FOUND = "No user found";
