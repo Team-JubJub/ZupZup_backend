@@ -32,7 +32,7 @@ public class StoreController {
     private final StoreService storeService;
 
     // <-------------------- GET part -------------------->
-    @Operation(summary = "카테고리 별 가게 조회 요청", description = "카테고리별 가게 조회 요청")
+    @Operation(summary = "카테고리 별 가게 조회 요청", description = "카테고리별 가게 조회 요청 / 현재 요청 url에 명시할 수 있는 category : { bakery, cafe, salad, yogurt, others }")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가게 조회 성공",
                     content = {
