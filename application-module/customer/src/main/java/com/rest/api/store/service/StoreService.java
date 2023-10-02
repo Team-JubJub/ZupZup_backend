@@ -123,8 +123,8 @@ public class  StoreService {
     }
 
     // <-------------------- PATCH part -------------------->
-    public String modifyStarStore(String accessToken, Long storeId, String action) {
-        String message = "";
+    public boolean modifyStarStore(String accessToken, Long storeId, String action) {
+        boolean result = false;
         User userEntity = authUtils.getUserEntity(accessToken);
         UserDto userDto = modelMapper.map(userEntity, UserDto.class);
         Store storeEntity = isStorePresent(storeId);
@@ -138,7 +138,7 @@ public class  StoreService {
             starredStoreList.add(storeId);
             starredUserList.add(userEntity.getUserId());
 
-            message = "가게를 찜했습니다.";
+            result = true;
         }
         else if (action.equals("unset")) {  // 빼주고
             if (isStoreAlerted(userEntity, storeId)) {  // 찜 해제 시 알림 설정도 해제해줘야 함
@@ -148,7 +148,7 @@ public class  StoreService {
             starredStoreList.remove(Long.valueOf(storeId));
             starredUserList.remove(Long.valueOf(userEntity.getUserId()));
 
-            message = "가게의 찜을 해제했정습니다.";
+            result = false;
         }
         userDto.setStarredStores(starredStoreList); // 바꿔주고
         storeDto.setStarredUsers(starredUserList);
@@ -158,11 +158,11 @@ public class  StoreService {
         userRepository.save(userEntity);    // 최종 처리 후 db에 저장
         storeRepository.save(storeEntity);
 
-        return message;
+        return result;
     }
 
-    public String modifyAlertStore(String accessToken, Long storeId, String action) {
-        String message = "";
+    public boolean modifyAlertStore(String accessToken, Long storeId, String action) {
+        boolean result = false;
         User userEntity = authUtils.getUserEntity(accessToken);
         UserDto userDto = modelMapper.map(userEntity, UserDto.class);
         Store storeEntity = isStorePresent(storeId);
@@ -178,12 +178,12 @@ public class  StoreService {
             alertStoreList.add(storeId);
             alertUserList.add(userEntity.getUserId());
 
-            message = "가게의 알림 설정을 켰습니다.";
+            result = true;
         } else if (action.equals("unset")) {    // 해제의 경우는 바로 remove 처리 후 끝
             alertStoreList.remove(Long.valueOf(storeId));
             alertUserList.remove(Long.valueOf(userEntity.getUserId()));
 
-            message = "가게의 알림 설정을 해제했습니다.";
+            result = false;
         }
         userDto.setAlertStores(alertStoreList); // 바꿔주고
         storeDto.setAlertUsers(alertUserList);
@@ -193,7 +193,7 @@ public class  StoreService {
         userRepository.save(userEntity);    // 최종 처리 후 db에 저장
         storeRepository.save(storeEntity);
 
-        return message;
+        return result;
     }
 
     // <-------------------- Common methods part -------------------->
