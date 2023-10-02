@@ -51,6 +51,7 @@ public class  StoreService {
                 .map(m -> {
                     GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(m, GetStoreDetailsDto.class);
                     getStoreDetailsDto.setStarredUserCount(m.getStarredUsers().size());
+                    setItemDtoList(m, getStoreDetailsDto);
                     return getStoreDetailsDto;
                 })
                 .collect(Collectors.toList());
@@ -65,6 +66,7 @@ public class  StoreService {
                 .map(m -> {
                     GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(m, GetStoreDetailsDto.class);
                     getStoreDetailsDto.setStarredUserCount(m.getStarredUsers().size());
+                    setItemDtoList(m, getStoreDetailsDto);
                     return getStoreDetailsDto;
                 })
                 .collect(Collectors.toList());
@@ -80,8 +82,10 @@ public class  StoreService {
             Long starredStoreId = starredStores.get(i);
             Store storeEntity = storeRepository.findById(starredStoreId).get();
             if (!storeEntity.getEnterState().equals(EnterState.CONFIRM)) continue;  // CONFIRM 상태가 아닌 가게는 보여줄 리스트에 추가하지 않음.(찜은 이미 CONFIRM 상태이겠지만, 후에 WAIT 상태로 되돌릴 수도 있는 것을 고려해 추가해놓음)
-            allStoreDtoByStarredList.add(modelMapper.map(storeEntity, GetStoreDetailsDto.class));
-            allStoreDtoByStarredList.get(i).setStarredUserCount(storeEntity.getStarredUsers().size());  // 찜한 유저 수 추가
+            GetStoreDetailsDto storeDetailsDto = modelMapper.map(storeEntity, GetStoreDetailsDto.class);
+            storeDetailsDto.setStarredUserCount(storeEntity.getStarredUsers().size());  // 찜한 유저 수 추가
+            setItemDtoList(storeEntity, storeDetailsDto);   // item 추가
+            allStoreDtoByStarredList.add(storeDetailsDto);
         }
 
         return allStoreDtoByStarredList;
@@ -90,7 +94,12 @@ public class  StoreService {
     public List<GetStoreDetailsDto> searchedStoreList(String storeName) {  // 검색 함수인데, 혹시 몰라서 놔둠.
         List<Store> searchedStoreEntityList = storeRepository.findByStoreNameContaining(storeName);
         List<GetStoreDetailsDto> searchedStoreDtoList = searchedStoreEntityList.stream()
-                .map(m -> modelMapper.map(m, GetStoreDetailsDto.class))
+                .map(m -> {
+                    GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(m, GetStoreDetailsDto.class);
+                    getStoreDetailsDto.setStarredUserCount(m.getStarredUsers().size());
+                    setItemDtoList(m, getStoreDetailsDto);
+                    return getStoreDetailsDto;
+                })
                 .collect(Collectors.toList());
 
         return searchedStoreDtoList;
@@ -103,13 +112,7 @@ public class  StoreService {
         Store storeEntity = isStorePresent(storeId);
         GetStoreDetailsDto storeDetailsDto = modelMapper.map(storeEntity, GetStoreDetailsDto.class);
         storeDetailsDto.setStarredUserCount(storeEntity.getStarredUsers().size());
-
-        //item list 생성 및 StoreDto에 저장
-        List<Item> itemEntityList = itemRepository.findAllByStore(storeEntity);
-        List<ItemResponseDto> itemDtoList = itemEntityList.stream()
-                .map(m -> modelMapper.map(m, ItemResponseDto.class))
-                .collect(Collectors.toList());
-        storeDetailsDto.setItemDtoList(itemDtoList);
+        setItemDtoList(storeEntity, storeDetailsDto);
 
         if (userEntity.getStarredStores().contains(storeId)) storeDetailsDto.setIsStarred(true);    // 찜설정되었는지 여부 체크
         else storeDetailsDto.setIsStarred(false);
@@ -225,6 +228,16 @@ public class  StoreService {
         }
 
         return false;
+    }
+
+    // <--- Methods for readability --->
+    private void setItemDtoList(Store storeEntity, GetStoreDetailsDto storeDetailsDto) {
+        //item list 생성 및 StoreDto에 저장
+        List<Item> itemEntityList = itemRepository.findAllByStore(storeEntity);
+        List<ItemResponseDto> itemDtoList = itemEntityList.stream()
+                .map(m -> modelMapper.map(m, ItemResponseDto.class))
+                .collect(Collectors.toList());
+        storeDetailsDto.setItemDtoList(itemDtoList);
     }
 
     private List<Long> removeAlertElement(List<Long> ogList, Long id) { // 찜 해제 시 알림 설정도 해제해줄 때의 중복 작업 처리 함수
