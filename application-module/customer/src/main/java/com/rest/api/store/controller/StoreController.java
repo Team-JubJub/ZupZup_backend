@@ -102,7 +102,7 @@ public class StoreController {
             @ApiResponse(responseCode = "404", description = "해당 가게를 찾을 수 없음",
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
-    @GetMapping("/{storeId}") // 가게 상세
+    @GetMapping("/{storeId}") // 가게 상세 조회
     public ResponseEntity storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                       @PathVariable Long storeId) {
         GetStoreDetailsDto storeDetailsDto = storeService.storeDetails(accessToken, storeId);
