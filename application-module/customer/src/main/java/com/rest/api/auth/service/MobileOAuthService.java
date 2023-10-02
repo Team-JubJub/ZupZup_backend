@@ -60,7 +60,6 @@ public class MobileOAuthService {
                 .essentialTerms(userDto.getEssentialTerms())
                 .optionalTerm1(userDto.getOptionalTerm1())
                 .registerTime(registerTimeSetter())
-                .deviceToken(userDto.getDeviceToken())
                 .role(userDto.getRole())
                 .build();
         userRepository.save(userEntity);
@@ -112,10 +111,15 @@ public class MobileOAuthService {
 
     public CustomerTokenInfoDto signInWithProviderUserId(String provider, UserSignInDto userSignInDto) {
         String userUniqueId = userSignInDto.getUserUniqueId();
-        CustomerTokenInfoDto customerTokenInfoDto = new CustomerTokenInfoDto();
+        String deviceToken = userSignInDto.getDeviceToken();
+        CustomerTokenInfoDto customerTokenInfoDto = null;
         try {
             User userEntity = userRepository.findByProviderUserId(provider.toUpperCase() + "_" + userUniqueId).get();
             UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+            userDto.setDeviceToken(deviceToken);    // 로그인 시마다 FCM device token 받아와서 수정
+            userEntity.updateDeviceToken(userDto);
+            userRepository.save(userEntity);
+            
             customerTokenInfoDto = generateTokens(userDto, "Token refreshed");
         } catch (NoSuchElementException e) {
             throw new NoUserPresentsException();
@@ -178,7 +182,6 @@ public class MobileOAuthService {
         userDto.setAlertStores(null);
         userDto.setEssentialTerms(userSignUpDto.getEssentialTerms());
         userDto.setOptionalTerm1(userSignUpDto.getOptionalTerm1());
-        userDto.setDeviceToken(userSignUpDto.getDeviceToken());
         userDto.setRole(Role.ROLE_USER);
 
         return userDto;

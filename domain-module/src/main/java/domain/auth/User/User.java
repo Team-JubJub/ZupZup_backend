@@ -75,6 +75,10 @@ public class User {
         this.alertStores = userDto.getAlertStores();
     }
 
+    public void updateDeviceToken(UserDto userDto) {
+        this.deviceToken = userDto.getDeviceToken();
+    }
+
     public void updateAlertStoreList(UserDto userDto) {
         this.alertStores  = userDto.getAlertStores();
     }
