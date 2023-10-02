@@ -52,7 +52,7 @@ public class OrderController {
                                     @Parameter(name = "deviceToken", description = "가게 운영자의 device token", in = ParameterIn.QUERY) @RequestParam String deviceToken) { // ResponseEntity의 type이 뭐가될지 몰라서 우선 Type 지정 없이 둠.
         GetOrderListDto getOrderListDto = orderService.orderList(storeId, deviceToken);
         if(getOrderListDto.getOrders().size() == 0) {
-            return new ResponseEntity(HttpStatus.NO_CONTENT); // NO_CONTENT 시 body가 빈 상태로 감. 204
+            return new ResponseEntity(getOrderListDto, HttpStatus.NO_CONTENT); // NO_CONTENT 시 body가 빈 상태로 감. 204
         }
 
         return new ResponseEntity(getOrderListDto, HttpStatus.OK); // order들의 dto list 반환, 200
