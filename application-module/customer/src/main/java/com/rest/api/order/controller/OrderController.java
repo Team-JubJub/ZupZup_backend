@@ -6,7 +6,6 @@ import dto.order.customer.request.PostOrderRequestDto;
 import dto.order.customer.response.GetOrderDetailsDto;
 import dto.order.customer.response.GetOrderDto;
 import dto.order.customer.response.PostOrderResponseDto;
-import dto.store.customer.response.GetStoreDetailsDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -65,7 +64,6 @@ public class OrderController {
                                     array = @ArraySchema(schema = @Schema(implementation = GetOrderDto.class)))
                     }
             ),
-            @ApiResponse(responseCode = "204", description = "주문 정보 요청은 성공했으나 해당 유저의 주문이 0개인 경우"),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 or 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
@@ -75,9 +73,7 @@ public class OrderController {
     @GetMapping("")
     public ResponseEntity orderList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
         List<GetOrderDto> allOrderListDto = orderService.orderList(accessToken);
-        if(allOrderListDto.size() == 0) {
-            return new ResponseEntity(allOrderListDto, HttpStatus.NO_CONTENT);
-        }
+        
         return new ResponseEntity(allOrderListDto, HttpStatus.OK);
     }
 
