@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -87,6 +88,9 @@ public class Store {
 
     @Enumerated(EnumType.STRING) @Column(nullable = true)
     private EnterState enterState;  // 등록 상태(NEW, WAIT, CONFIRM)
+
+    private String waitStatusTimestamp;  // NEW -> WAIT (CONFIRM -> WAIT) 으로 변경된 시간
+    private String confirmStatusTimestamp;   // WAIT -> CONFIRM 으로 변경된 시간
 
     public static StoreBuilder builder(String storeName) {   // 필수 파라미터 고려해볼 것
         if(storeName == null) {

@@ -43,5 +43,8 @@ out/
 ### Key File ###
 *.p8
 
+### FCM ###
+firebase
+
 ### mac OS ###
 .DS_Store

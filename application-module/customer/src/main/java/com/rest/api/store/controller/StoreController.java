@@ -4,6 +4,7 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.store.service.StoreService;
 import dto.MessageDto;
 import dto.store.customer.response.GetStoreDetailsDto;
+import dto.store.customer.response.StarAlertResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -31,7 +32,7 @@ public class StoreController {
     private final StoreService storeService;
 
     // <-------------------- GET part -------------------->
-    @Operation(summary = "카테고리 별 가게 조회 요청", description = "카테고리별 가게 조회 요청")
+    @Operation(summary = "카테고리 별 가게 조회 요청", description = "카테고리별 가게 조회 요청 / 현재 요청 url에 명시할 수 있는 category : { bakery, cafe, salad, yogurt, others }")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가게 조회 성공",
                     content = {
@@ -114,7 +115,7 @@ public class StoreController {
     @Operation(summary = "가게 찜(해제) 요청", description = "가게 찜 or 해제 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가게 찜 or 해제 성공",
-                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"가게를 찜했습니다 or 가게의 찜을 해제했습니다.\"\n}"))),
+                    content = @Content(schema = @Schema(example = "{\n\t\"result\": true(가게를 찜할 시) or false(가게의 찜을 해제 시)\n}"))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 or 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
@@ -129,15 +130,15 @@ public class StoreController {
     public ResponseEntity setStarStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                        @PathVariable Long storeId,
                                        @Parameter(name = "action", description = "설정 여부(찜할 시 : set, 찜 해제 시 : unset)", in = ParameterIn.QUERY) @RequestParam String action) {
-        String message = storeService.modifyStarStore(accessToken, storeId, action);
+        boolean result = storeService.modifyStarStore(accessToken, storeId, action);
 
-        return new ResponseEntity(new MessageDto(message), HttpStatus.OK);
+        return new ResponseEntity(new StarAlertResponseDto(result), HttpStatus.OK);
     }
 
     @Operation(summary = "가게 알림(해제) 요청", description = "가게 알림 설정 or 해제 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "가게 알림 설정 or 해제 성공",
-                    content = @Content(schema = @Schema(example = "{\n\t\"message\": \"가게의 알림 설정을 켰습니다. or 가게의 알림 설정을 해제했습니다.\"\n}"))),
+                    content = @Content(schema = @Schema(example = "{\n\t\"result\": true(가게의 알림 설정을 켰을 시) or false(가게의 알림 설정을 해제했을 시)\n}"))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료 or 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
@@ -154,9 +155,9 @@ public class StoreController {
     public ResponseEntity setAlertStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                         @PathVariable Long storeId,
                                         @Parameter(name = "action", description = "설정 여부(알림 설정할 시 : set, 알림설정 해제 시 : unset)", in = ParameterIn.QUERY) @RequestParam String action) {
-        String message = storeService.modifyAlertStore(accessToken, storeId, action);
+        boolean result = storeService.modifyAlertStore(accessToken, storeId, action);
 
-        return new ResponseEntity(new MessageDto(message), HttpStatus.OK);
+        return new ResponseEntity(new StarAlertResponseDto(result), HttpStatus.OK);
     }
 
 }
