@@ -16,4 +16,7 @@ public class UserSignInDto {
     @NotBlank(message = "User unique id cannot be null or empty or space")
     private String userUniqueId;    // 클라이언트에서 제공한 소셜 플랫폼의 user unique ID
 
+    @Schema(description = "푸시 알림을 위한 device token")
+    private String deviceToken;
+
 }
