@@ -23,9 +23,7 @@ import repository.ItemRepository;
 import repository.StoreRepository;
 import repository.UserRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -76,7 +74,7 @@ public class  StoreService {
 
     public List<GetStoreDetailsDto> starredStoreList(String accessToken) {
         User userEntity = authUtils.getUserEntity(accessToken);
-        List<Long> starredStores = userEntity.getStarredStores();
+        List<Long> starredStores = new ArrayList<>(userEntity.getStarredStores());
         List<GetStoreDetailsDto> allStoreDtoByStarredList = new ArrayList<>();
         for (int i = 0; i < starredStores.size(); i++) {    // 찜목록 돌며 아이디로 db에서 조회, list에 add
             Long starredStoreId = starredStores.get(i);
@@ -130,11 +128,11 @@ public class  StoreService {
         Store storeEntity = isStorePresent(storeId);
         StoreDto storeDto = modelMapper.map(storeEntity, StoreDto.class);
 
-        List<Long> starredStoreList = userDto.getStarredStores();   // 가져오고
-        List<Long> starredUserList = storeDto.getStarredUsers();
+        Set<Long> starredStoreList = userDto.getStarredStores();   // 가져오고
+        Set<Long> starredUserList = storeDto.getStarredUsers();
         if (action.equals("set")) { // 더해주고
-            if (starredStoreList == null) starredStoreList = new ArrayList<>(); // 값이 null이라면 새 list로 초기화
-            if (starredUserList == null) starredUserList = new ArrayList<>();
+            if (starredStoreList == null) starredStoreList = new HashSet<>(); // 값이 null이라면 새 list로 초기화
+            if (starredUserList == null) starredUserList = new HashSet<>();
             starredStoreList.add(storeId);
             starredUserList.add(userEntity.getUserId());
 
@@ -168,13 +166,13 @@ public class  StoreService {
         Store storeEntity = isStorePresent(storeId);
         StoreDto storeDto = modelMapper.map(storeEntity, StoreDto.class);
 
-        List<Long> alertStoreList = userDto.getAlertStores();   // 가져오고
-        List<Long> alertUserList = storeDto.getAlertUsers();
+        Set<Long> alertStoreList = userDto.getAlertStores();   // 가져오고
+        Set<Long> alertUserList = storeDto.getAlertUsers();
         if (action.equals("set")) { // 설정의 경우, 찜했는지 안했는지 따져봐야 함.
             if (!isStoreStarred(userEntity, storeId)) throw new StoreNotStarredException("찜한 가게만 알림을 설정을 할 수 있습니다."); // 예외 던지기
 
-            if (alertStoreList == null) alertStoreList = new ArrayList<>(); // 값이 null이라면 새 list로 초기화
-            if (alertUserList == null) alertUserList = new ArrayList<>();
+            if (alertStoreList == null) alertStoreList = new HashSet<>(); // 값이 null이라면 새 list로 초기화
+            if (alertUserList == null) alertUserList = new HashSet<>();
             alertStoreList.add(storeId);
             alertUserList.add(userEntity.getUserId());
 
@@ -209,7 +207,7 @@ public class  StoreService {
     }
 
     private boolean isStoreStarred(User userEntity, Long storeId) {
-        List<Long> starredStores = userEntity.getStarredStores();
+        List<Long> starredStores = new ArrayList<>(userEntity.getStarredStores());
         for (int i = 0; i < starredStores.size(); i++) {
             if (starredStores.get(i) == storeId) {  // 찜 목록에 있으면 true 반환
                 return true;
@@ -220,7 +218,7 @@ public class  StoreService {
     }
 
     private boolean isStoreAlerted(User userEntity, Long storeId) { // 찜 해제 시 알림 설정도 같이 끄기 위해, 알림 설정 여부 판단
-        List<Long> alertStores = userEntity.getAlertStores();
+        List<Long> alertStores = new ArrayList<>(userEntity.getAlertStores());
         for (int i = 0; i < alertStores.size(); i++) {
             if (alertStores.get(i) == storeId) {  // 알림 목록에 있으면 true 반환
                 return true;
@@ -240,11 +238,11 @@ public class  StoreService {
         storeDetailsDto.setItemDtoList(itemDtoList);
     }
 
-    private List<Long> removeAlertElement(List<Long> ogList, Long id) { // 찜 해제 시 알림 설정도 해제해줄 때의 중복 작업 처리 함수
-        List<Long> retList = ogList;
-        retList.remove(Long.valueOf(id));
+    private Set<Long> removeAlertElement(Set<Long> ogSet, Long id) { // 찜 해제 시 알림 설정도 해제해줄 때의 중복 작업 처리 함수
+        Set<Long> retSet = ogSet;
+        retSet.remove(Long.valueOf(id));
 
-        return retList;
+        return retSet;
     }
 
 }

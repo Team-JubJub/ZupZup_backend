@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,8 +24,8 @@ public class UserDto {
     private String gender;
     private String phoneNumber;
 
-    private List<Long> starredStores;
-    private List<Long> alertStores;
+    private Set<Long> starredStores;
+    private Set<Long> alertStores;
 
     private Boolean essentialTerms;
     private Boolean optionalTerm1;

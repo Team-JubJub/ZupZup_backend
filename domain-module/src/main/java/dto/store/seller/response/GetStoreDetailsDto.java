@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,7 +36,7 @@ public class GetStoreDetailsDto {
     private Boolean isOpen;
     private String closedDay;
 
-    private List<Long> starredUsers;
+    private Set<Long> starredUsers;
 
     private String crNumber;    // 사업자 등록번호
 

@@ -9,7 +9,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,12 +33,12 @@ public class User {
     @ElementCollection
     @CollectionTable(name = "starredStores", joinColumns = @JoinColumn(name="userId", referencedColumnName="userId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<Long> starredStores;    // 찜한 가게 아이디들
+    private Set<Long> starredStores;    // 찜한 가게 아이디들
     @Column(nullable = true)
     @ElementCollection
     @CollectionTable(name = "alertStores", joinColumns = @JoinColumn(name="userId", referencedColumnName="userId"))
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
-    private List<Long> alertStores;    // 알림 설정한 가게 아이디들
+    private Set<Long> alertStores;    // 알림 설정한 가게 아이디들
 
     @Column(nullable = false) private Boolean essentialTerms;   // 필수 약관 동의 여부
     @Column(nullable = false) private Boolean optionalTerm1;    // 선택 약관1 동의 여부
