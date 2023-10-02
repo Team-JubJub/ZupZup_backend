@@ -5,6 +5,7 @@ import com.rest.api.auth.redis.RedisService;
 import domain.auth.Role;
 import domain.auth.Seller.Seller;
 import domain.store.Store;
+import dto.MessageDto;
 import dto.auth.seller.SellerDto;
 import dto.auth.seller.request.SellerSignInDto;
 import dto.auth.seller.test.SellerTestSignUpDto;
@@ -15,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import repository.SellerRepository;
@@ -63,6 +66,18 @@ public class MobileAuthService {
         sellerTokenInfoDto = generateTokens(sellerDto, "Token generated");
 
         return sellerTokenInfoDto;
+    }
+
+    // < -------------- Sign-out part -------------- >
+    public String signOut(String accessToken, String refreshToken) {
+        Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
+        if (remainExpiration >= 1) {
+            redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
+            redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
+            return "succees";
+        }
+
+        return "fail";
     }
 
     // <-------------------- Account recovery part -------------------->

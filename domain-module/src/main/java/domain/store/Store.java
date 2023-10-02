@@ -123,4 +123,6 @@ public class Store {
         this.alertUsers = storeDto.getAlertUsers();
     }
 
+    public void updateDeviceTokens(StoreDto storeDto) { this.deviceTokens = storeDto.getDeviceTokens(); }
+
 }
