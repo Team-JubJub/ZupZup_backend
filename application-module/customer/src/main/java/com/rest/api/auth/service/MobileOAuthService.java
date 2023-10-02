@@ -21,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import repository.UserRepository;
 
@@ -119,13 +121,32 @@ public class MobileOAuthService {
             userDto.setDeviceToken(deviceToken);    // 로그인 시마다 FCM device token 받아와서 수정
             userEntity.updateDeviceToken(userDto);
             userRepository.save(userEntity);
-            
+
             customerTokenInfoDto = generateTokens(userDto, "Token refreshed");
         } catch (NoSuchElementException e) {
             throw new NoUserPresentsException();
         }
 
         return customerTokenInfoDto;
+    }
+
+    // < -------------- Sign-out part -------------- >
+    public String signOut(String accessToken, String refreshToken) {
+        User userEntity = authUtils.getUserEntity(accessToken);
+        UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+
+        Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
+        if (remainExpiration >= 1) {
+            userDto.setDeviceToken(null);   // 로그아웃 시 알림을 안보내기 위해 device token 삭제
+            userEntity.updateDeviceToken(userDto);
+            userRepository.save(userEntity);
+            redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
+            redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
+
+            return "success";
+        }
+
+        return "fail";
     }
 
     // <-------------------- Account recovery part -------------------->
