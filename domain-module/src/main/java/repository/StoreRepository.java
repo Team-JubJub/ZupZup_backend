@@ -18,6 +18,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findByCategory(StoreCategory category);    // 카테고리별 조회
     List<Store> findByStoreNameContaining(String keyword);  // 가게 이름으로 검색
     List<Store> findByEnterState(EnterState enterState); // 등록 상태로 조회
-    @Query("SELECT e FROM Enter e WHERE e.storeName LIKE %:storeName% AND e.state = :state")
+    @Query(value = "SELECT e FROM Enter e WHERE e.storeName LIKE %:storeName% AND e.state = :state", nativeQuery = true)
     List<Store> searchByStoreNameContainingAndEnterState(@Param("storeName") String storeName, @Param("state") EnterState state); // 가게 이름 및 등록 상태로 조회
 }
