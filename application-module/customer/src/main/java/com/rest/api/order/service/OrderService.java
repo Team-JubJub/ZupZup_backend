@@ -1,5 +1,7 @@
 package com.rest.api.order.service;
 
+import FCM.dto.FCMAlertDto;
+import FCM.service.FCMService;
 import com.rest.api.utils.AuthUtils;
 import domain.auth.User.User;
 import domain.order.Order;
@@ -24,8 +26,7 @@ import repository.StoreRepository;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,6 +41,7 @@ public class OrderService {
     private final StoreRepository storeRepository;
     private final OrderRepository orderRepository;
     private final AuthUtils authUtils;
+    private final FCMService fcmService;
 
     // <-------------------- POST part -------------------->
     public PostOrderResponseDto addOrder(String accessToken, Long storeId, PostOrderRequestDto postOrderRequestDto) {
@@ -64,8 +66,9 @@ public class OrderService {
                 .savedMoney(orderDto.getSavedMoney())
                 .build();
         orderRepository.save(orderEntity);
-        GetOrderDetailsDto madeOrderDetailsDto = modelMapper.map(orderEntity, GetOrderDetailsDto.class);
+        sendMessage(storeId, "신규 주문 접수", "신규 주문(" + orderDto.getOrderTitle() + ")이 접수되었습니다.");  // 푸시 알림 보내기
 
+        GetOrderDetailsDto madeOrderDetailsDto = modelMapper.map(orderEntity, GetOrderDetailsDto.class);
         PostOrderResponseDto postOrderResponseDto = new PostOrderResponseDto();
         postOrderResponseDto.setData(madeOrderDetailsDto);
         postOrderResponseDto.setHref(":8090/order/"+madeOrderDetailsDto.getOrderId());
@@ -164,6 +167,17 @@ public class OrderService {
         orderDto.setSavedMoney(savedMoney);
 
         return orderDto;
+    }
+
+    public void sendMessage(Long storeId, String title, String message) {
+        Store storeEntity = storeRepository.findById(storeId).get();
+        List<String> deviceTokens = new ArrayList<>(storeEntity.getDeviceTokens());
+        for (int i = 0; i < deviceTokens.size(); i++) {
+            String deviceToken = deviceTokens.get(i);
+            FCMAlertDto fcmAlertDto = new FCMAlertDto(deviceToken, title, message);
+            String result = fcmService.sendMessage(fcmAlertDto);
+            System.out.println("사장님 앱에 보낸 알림, 디바이스 토큰 " + deviceToken + "'s result : " + result);
+        }
     }
 
 }
