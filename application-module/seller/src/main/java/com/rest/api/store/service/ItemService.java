@@ -1,5 +1,7 @@
 package com.rest.api.store.service;
 
+import FCM.service.FCMService;
+import com.rest.api.utils.FCMUtils;
 import dto.item.seller.request.PatchItemCountDto;
 import dto.item.seller.request.PostItemDto;
 import dto.item.seller.response.GetDto;
@@ -33,6 +35,7 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final StoreRepository storeRepository;
     private final S3Uploader s3Uploader;
+    private final FCMUtils fcmUtils;
     @Autowired
     ModelMapper modelMapper;
 
@@ -67,6 +70,9 @@ public class ItemService {
 
         //3. 상품 저장
         itemRepository.save(item);
+
+        //4. 푸시 알림 전송
+        fcmUtils.sendMessageToAlertUsers(storeId, "신규 상품 등록 알림", store.getStoreName() + "에 신규 상품 " + requestDto.getItemName() + "이 등록되었습니다.");
 
         return modelMapper.map(item, ItemResponseDto.class);
     }
