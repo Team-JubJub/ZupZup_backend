@@ -1,5 +1,7 @@
 package com.rest.api.order.service;
 
+import com.rest.api.utils.FCMUtils;
+import domain.auth.User.User;
 import domain.store.type.EnterState;
 import dto.item.seller.response.GetDtoWithStore;
 import dto.order.seller.request.PatchOrderDataDto;
@@ -26,6 +28,7 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import repository.UserRepository;
 
 
 import java.util.List;
@@ -44,6 +47,9 @@ public class OrderService {
     private final StoreRepository storeRepository;  // Used for check presence of store(At GET(all) request)
     private final ItemRepository itemRepository;    // Used for patch count of items(At PATCH request)
     private final OrderRepository orderRepository;
+    private final UserRepository userRepository;
+
+    private final FCMUtils fcmUtils;    // 푸시 알림 보낼 용도
 
     // <-------------------- GET part -------------------->
 //    @Cacheable(cacheNames = "sellerOrders", key = "#storeId + #page")    // 리스트 캐시(sellerOrders::storeId+pageNo 형식, 페이지 별로 캐시함.) -> 캐시 관련한 것 일단 사용자 앱 만들어지기 전까지 주석처리
@@ -75,6 +81,7 @@ public class OrderService {
         OrderDto orderDto = modelMapper.map(orderEntity, OrderDto.class);
         orderDto.setOrderStatus(requestedOrderStatus);  // 신규 주문 취소 시 = CANCEL, 확정 주문 완료 시 = COMPLETE -> 한 함수에서 다 처리하려고 했으나, CANCEL의 신규 주문과 확정 주문 여부를 확인할 방법이 없음.
         PatchOrderResponseDto patchOrderResponseDto = updateOrderAndReturn(orderEntity, orderDto);
+        sendOrderMessage(orderId, requestedOrderStatus);    // 푸시 알림 보내기
 
         return patchOrderResponseDto;
     }
@@ -82,6 +89,7 @@ public class OrderService {
     public PatchOrderResponseDto updateOrderData(Long storeId, Long orderId, PatchOrderDataDto patchOrderDataDto, OrderStatus requestedOrderStatus) { // 신규 주문 확정 시, 확정 주문 취소 시
         Order orderEntity = exceptionCheckAndGetOrderEntity(storeId, orderId);
         PatchOrderResponseDto patchOrderResponseDto = updateOrderDataAndReturn(orderEntity, patchOrderDataDto, requestedOrderStatus);
+        sendOrderMessage(orderId, requestedOrderStatus);    // 푸시 알림 보내기
 
         return patchOrderResponseDto;
     }
@@ -181,6 +189,18 @@ public class OrderService {
         PatchOrderResponseDto patchOrderResponseDto = updateOrderAndReturn(orderEntity, orderDto);
 
         return patchOrderResponseDto;
+    }
+
+    private void sendOrderMessage(Long orderId, OrderStatus requestedOrderStatus) { // 주문 당사자에게 푸시 알림을 보내는 함수
+        Order orderEntity = orderRepository.findById(orderId).get();
+        User userEntity = userRepository.findById(orderEntity.getUserId()).get();
+        String deviceToken = userEntity.getDeviceToken();
+
+        if (requestedOrderStatus.equals(OrderStatus.CONFIRM)) { // 주문 확정 시
+            fcmUtils.sendMessageToOrderedUser(deviceToken, "주문 확정 알림", orderEntity.getStoreName() + " 가게의 주문(" + orderEntity.getOrderTitle() + ")이 확정되었습니다.");
+        } else if (requestedOrderStatus.equals(OrderStatus.CANCEL)) {   // 주문 취소(신규 주문, 확정 주문 모두) 시
+            fcmUtils.sendMessageToOrderedUser(deviceToken, "주문 취소 알림", orderEntity.getStoreName() + " 가게의 주문(" + orderEntity.getOrderTitle() + ")이 취소되었습니다.");
+        }
     }
 
 }
