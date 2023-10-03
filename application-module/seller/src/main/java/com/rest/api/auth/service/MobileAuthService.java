@@ -64,9 +64,7 @@ public class MobileAuthService {
             return sellerTokenInfoDto;
         }
         SellerDto sellerDto = modelMapper.map(sellerEntity, SellerDto.class);
-        Store store = storeRepository.findBySellerId(sellerEntity.getSellerId());   // device token add 시작
-        StoreDto storeDto = modelMapper.map(store, StoreDto.class);
-        storeDto.getDeviceTokens().add(sellerSignInDto.getDeviceToken());   // 해당 device token 추가
+        updateStoreDeviceTokens(sellerSignInDto.getDeviceToken(), sellerEntity, "add");
 
         sellerTokenInfoDto = generateTokens(sellerDto, "Token generated");
 
@@ -77,9 +75,7 @@ public class MobileAuthService {
     public String signOut(String accessToken, String refreshToken, String deviceToken) {
         String sellerLoginId = jwtTokenProvider.getLoginId(accessToken);
         Seller sellerEntity = sellerRepository.findSellerByLoginId(sellerLoginId);
-        Store store = storeRepository.findBySellerId(sellerEntity.getSellerId());   // device token remove 시작
-        StoreDto storeDto = modelMapper.map(store, StoreDto.class);
-        storeDto.getDeviceTokens().remove(String.valueOf(deviceToken)); // 해당 device token 삭제
+        updateStoreDeviceTokens(deviceToken, sellerEntity, "remove");
 
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
         if (remainExpiration >= 1) {
@@ -109,6 +105,15 @@ public class MobileAuthService {
         if (!passwordEncoder.matches(loginPwd, sellerEntity.getLoginPwd())) return false;
 
         return true;
+    }
+
+    private void updateStoreDeviceTokens(String deviceToken, Seller sellerEntity, String mode) {
+        Store store = storeRepository.findBySellerId(sellerEntity.getSellerId());   // device token update 시작
+        StoreDto storeDto = modelMapper.map(store, StoreDto.class);
+        if (mode.equals("add")) storeDto.getDeviceTokens().add(deviceToken); // 해당 device token add
+        else if (mode.equals("remove")) storeDto.getDeviceTokens().remove(String.valueOf(deviceToken)); // 해당 device token remove
+        store.updateDeviceTokens(storeDto);
+        storeRepository.save(store);    // device token update 종료
     }
 
     private SellerTokenInfoDto generateTokens(SellerDto sellerDto, String message) {
