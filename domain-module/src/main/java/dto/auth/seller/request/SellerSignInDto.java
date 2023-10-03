@@ -18,5 +18,7 @@ public class SellerSignInDto {
     @Schema(description = "사장님의 로그인 PW", example = "test1234")
     @NotBlank(message = "PW cannot be null or empty or space")
     private String loginPwd;    // 사장님의 로그인 pwd
+    @Schema(description = "가게 관리인의 FCM device token")
+    private String deviceToken;    // 사장님의 로그인 pwd
 
 }

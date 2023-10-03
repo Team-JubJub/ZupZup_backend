@@ -10,6 +10,7 @@ import dto.auth.seller.SellerDto;
 import dto.auth.seller.request.SellerSignInDto;
 import dto.auth.seller.test.SellerTestSignUpDto;
 import dto.auth.token.seller.SellerTokenInfoDto;
+import dto.store.StoreDto;
 import exception.auth.seller.NoSellerPresentsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -63,18 +64,28 @@ public class MobileAuthService {
             return sellerTokenInfoDto;
         }
         SellerDto sellerDto = modelMapper.map(sellerEntity, SellerDto.class);
+        Store store = storeRepository.findBySellerId(sellerEntity.getSellerId());   // device token add 시작
+        StoreDto storeDto = modelMapper.map(store, StoreDto.class);
+        storeDto.getDeviceTokens().add(sellerSignInDto.getDeviceToken());   // 해당 device token 추가
+
         sellerTokenInfoDto = generateTokens(sellerDto, "Token generated");
 
         return sellerTokenInfoDto;
     }
 
     // < -------------- Sign-out part -------------- >
-    public String signOut(String accessToken, String refreshToken) {
+    public String signOut(String accessToken, String refreshToken, String deviceToken) {
+        String sellerLoginId = jwtTokenProvider.getLoginId(accessToken);
+        Seller sellerEntity = sellerRepository.findSellerByLoginId(sellerLoginId);
+        Store store = storeRepository.findBySellerId(sellerEntity.getSellerId());   // device token remove 시작
+        StoreDto storeDto = modelMapper.map(store, StoreDto.class);
+        storeDto.getDeviceTokens().remove(String.valueOf(deviceToken)); // 해당 device token 삭제
+
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
         if (remainExpiration >= 1) {
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
-            return "succees";
+            return "success";
         }
 
         return "fail";

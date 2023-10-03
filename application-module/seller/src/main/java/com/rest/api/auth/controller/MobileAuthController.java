@@ -109,8 +109,9 @@ public class MobileAuthController {
     })
     @PostMapping("/sign-out")
     public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        String result = mobileAuthService.signOut(accessToken, refreshToken);
+                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
+                                  @RequestBody String deviceToken) {
+        String result = mobileAuthService.signOut(accessToken, refreshToken, deviceToken);
         if (result.equals("success")) return new ResponseEntity(new MessageDto("Sign-out successful"), HttpStatus.OK);
 
         return new ResponseEntity("redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)", HttpStatus.UNAUTHORIZED);
