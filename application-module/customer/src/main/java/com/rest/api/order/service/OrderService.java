@@ -1,7 +1,7 @@
 package com.rest.api.order.service;
 
-import FCM.dto.FCMAlertDto;
-import FCM.service.FCMService;
+import com.rest.api.FCM.dto.FCMAlertDto;
+import com.rest.api.FCM.service.FCMService;
 import com.rest.api.utils.AuthUtils;
 import domain.auth.User.User;
 import domain.order.Order;

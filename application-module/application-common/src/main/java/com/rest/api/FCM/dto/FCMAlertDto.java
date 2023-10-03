@@ -1,4 +1,4 @@
-package FCM.dto;
+package com.rest.api.FCM.dto;
 
 import lombok.Builder;
 import lombok.Getter;

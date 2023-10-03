@@ -1,6 +1,5 @@
 package com.rest.api.store.service;
 
-import FCM.service.FCMService;
 import com.rest.api.utils.FCMUtils;
 import dto.item.seller.request.PatchItemCountDto;
 import dto.item.seller.request.PostItemDto;
