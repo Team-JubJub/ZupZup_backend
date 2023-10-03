@@ -5,16 +5,20 @@ import com.rest.api.auth.redis.RedisService;
 import domain.auth.Role;
 import domain.auth.Seller.Seller;
 import domain.store.Store;
+import dto.MessageDto;
 import dto.auth.seller.SellerDto;
 import dto.auth.seller.request.SellerSignInDto;
 import dto.auth.seller.test.SellerTestSignUpDto;
 import dto.auth.token.seller.SellerTokenInfoDto;
+import dto.store.StoreDto;
 import exception.auth.seller.NoSellerPresentsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import repository.SellerRepository;
@@ -60,9 +64,27 @@ public class MobileAuthService {
             return sellerTokenInfoDto;
         }
         SellerDto sellerDto = modelMapper.map(sellerEntity, SellerDto.class);
+        updateStoreDeviceTokens(sellerSignInDto.getDeviceToken(), sellerEntity, "add");
+
         sellerTokenInfoDto = generateTokens(sellerDto, "Token generated");
 
         return sellerTokenInfoDto;
+    }
+
+    // < -------------- Sign-out part -------------- >
+    public String signOut(String accessToken, String refreshToken, String deviceToken) {
+        String sellerLoginId = jwtTokenProvider.getLoginId(accessToken);
+        Seller sellerEntity = sellerRepository.findSellerByLoginId(sellerLoginId);
+        updateStoreDeviceTokens(deviceToken, sellerEntity, "remove");
+
+        Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
+        if (remainExpiration >= 1) {
+            redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
+            redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
+            return "success";
+        }
+
+        return "fail";
     }
 
     // <-------------------- Account recovery part -------------------->
@@ -83,6 +105,15 @@ public class MobileAuthService {
         if (!passwordEncoder.matches(loginPwd, sellerEntity.getLoginPwd())) return false;
 
         return true;
+    }
+
+    private void updateStoreDeviceTokens(String deviceToken, Seller sellerEntity, String mode) {
+        Store store = storeRepository.findBySellerId(sellerEntity.getSellerId());   // device token update 시작
+        StoreDto storeDto = modelMapper.map(store, StoreDto.class);
+        if (mode.equals("add")) storeDto.getDeviceTokens().add(deviceToken); // 해당 device token add
+        else if (mode.equals("remove")) storeDto.getDeviceTokens().remove(String.valueOf(deviceToken)); // 해당 device token remove
+        store.updateDeviceTokens(storeDto);
+        storeRepository.save(store);    // device token update 종료
     }
 
     private SellerTokenInfoDto generateTokens(SellerDto sellerDto, String message) {
