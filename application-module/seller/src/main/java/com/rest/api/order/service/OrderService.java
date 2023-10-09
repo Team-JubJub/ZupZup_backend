@@ -53,9 +53,8 @@ public class OrderService {
 
     // <-------------------- GET part -------------------->
 //    @Cacheable(cacheNames = "sellerOrders", key = "#storeId + #page")    // 리스트 캐시(sellerOrders::storeId+pageNo 형식, 페이지 별로 캐시함.) -> 캐시 관련한 것 일단 사용자 앱 만들어지기 전까지 주석처리
-    public GetOrderListDto orderList(Long storeId, String deviceToken) {
+    public GetOrderListDto orderList(Long storeId) {
         Store storeEntity = isStorePresent(storeId);    // Check presence of store
-        modifyDeviceTokens(storeEntity, deviceToken);
 
         List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId);
         List<GetOrderDetailsDto> orderList = allOrderListEntity.stream()   // Entity -> Dto
@@ -137,13 +136,6 @@ public class OrderService {
     }
 
     // <--- Methods for readability --->
-    private void modifyDeviceTokens(Store store, String deviceToken) {  // device 토큰의 정보를 저장(Set 자료형을 이용, 중복 제거)
-        Set<String> deviceTokens = store.getDeviceTokens(); // 현재 가게의 deviceTokens
-        deviceTokens.add(deviceToken);  // 해당 set에 deivce token 추가
-        store.modifyDeviceTokens(deviceTokens); // entity 수정
-        storeRepository.save(store);    // db에 저장
-    }
-
     private void updateItemStock(OrderStatus orderStatus, List<OrderSpecific> orderList) {  // 주문 후 아이템 재고를 수정하는 함수
         for (int i = 0; i < orderList.size(); i++) {
             Long itemId = orderList.get(i).getItemId();
