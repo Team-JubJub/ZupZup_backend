@@ -30,7 +30,7 @@ public class SecurityConfig {
             web.ignoring()
                     .requestMatchers( "", "/", "/error/**", "http://localhost:8082/**", "/swagger-ui/**", "/v3/api-docs/**") // H2, swagger permit all
                     .requestMatchers(
-                            "/mobile/account", "/mobile/account/", "/mobile/account/{provider}", "/mobile/account/nickname-check",
+                            "/mobile/account", "/mobile/account/", "/mobile/account/{provider}", "/mobile/account/apple/cancel-signup", "/mobile/account/nickname-check",
                             "/mobile/sign-in/**",
                             "/mobile/account-recovery"
                     );
