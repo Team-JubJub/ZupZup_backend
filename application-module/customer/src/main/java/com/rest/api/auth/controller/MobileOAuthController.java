@@ -79,8 +79,8 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원탈퇴 성공",
                     content = @Content(schema = @Schema(implementation = MessageDto.class))),
-            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰, 리프레시 토큰)가 없음",
-                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
+            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰, 리프레시 토큰)가 없음 or 애플과 유저의 연결 끊기 실패",
+                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits \n or Withdraw with apple's response is 400"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
             @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
@@ -104,7 +104,9 @@ public class MobileOAuthController {
     @Operation(summary = "회원탈퇴 중 뒤로가기 시 애플 회원탈퇴", description = "애플과 사용자의 요청을 끊음")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "애플과 연결끊기 성공",
-                    content = @Content(schema = @Schema(implementation = MessageDto.class)))
+                    content = @Content(schema = @Schema(implementation = MessageDto.class))),
+            @ApiResponse(responseCode = "400", description = "애플과 유저의 연결 끊기 실패",
+                    content = @Content(schema = @Schema(example = "Withdraw with apple's response is 400"))),
     })
     @DeleteMapping("/account/apple/cancel-signup")   // 회원탈퇴 요청
     public ResponseEntity deleteAppleUser(@RequestBody String authCode) {

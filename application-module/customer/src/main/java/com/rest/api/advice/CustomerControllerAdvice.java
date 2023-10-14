@@ -3,6 +3,7 @@ package com.rest.api.advice;
 import dto.MessageDto;
 import exception.NoSuchException;
 import exception.auth.customer.AlreadySignUppedException;
+import exception.auth.customer.AppleWithdrawException;
 import exception.auth.customer.NoUserPresentsException;
 import exception.store.ForbiddenStoreException;
 import exception.store.customer.StoreNotStarredException;
@@ -48,6 +49,11 @@ public class CustomerControllerAdvice {
     @ExceptionHandler(value = AlreadySignUppedException.class)
     public ResponseEntity alreadySignUpped(AlreadySignUppedException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = AppleWithdrawException.class)
+    public ResponseEntity appleWithdrawFailed(AppleWithdrawException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
     @ExceptionHandler(value = NoUserPresentsException.class)

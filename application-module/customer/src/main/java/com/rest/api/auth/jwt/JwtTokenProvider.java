@@ -4,6 +4,7 @@ import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.CustomUserDetailsService;
 import com.rest.api.auth.dto.LoginInfoDto;
 import dto.auth.token.customer.CustomerRefreshResultDto;
+import exception.auth.customer.AppleWithdrawException;
 import io.jsonwebtoken.*;
 
 import jakarta.annotation.PostConstruct;
@@ -234,7 +235,7 @@ public class JwtTokenProvider {
 
             JSONParser parser = new JSONParser();
             JSONObject jsonObjP = (JSONObject) parser.parse(getResponse.body());    // 애플에서 준 리스폰스 바디를 json 객체화
-            refreshToken =jsonObjP.get("refresh_token").toString();
+            refreshToken = jsonObjP.get("refresh_token").toString();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -243,7 +244,7 @@ public class JwtTokenProvider {
         return refreshToken; // 생성된 refreshToken
     }
 
-    public void withDrawApple(String clientSecret, String refreshToken) {   // 애플 회원탈퇴 함수
+    public void withDrawApple(String clientSecret, String refreshToken) throws AppleWithdrawException {   // 애플 회원탈퇴 함수
         String uriStr = "https://appleid.apple.com/auth/revoke";
 
         Map<String, String> params = new HashMap<>();
@@ -259,7 +260,8 @@ public class JwtTokenProvider {
                     .build();
 
             HttpClient httpClient = HttpClient.newHttpClient();
-            httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+            int getResponseCode = httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString()).statusCode();
+            if (getResponseCode == 400) throw new AppleWithdrawException();
         } catch (Exception e) {
             e.printStackTrace();
         }
