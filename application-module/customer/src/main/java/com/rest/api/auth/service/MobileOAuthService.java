@@ -73,12 +73,16 @@ public class MobileOAuthService {
         return customerTokenInfoDto;
     }
 
-    public MessageDto deleteUser(String accessToken, String refreshToken) {
+    public MessageDto deleteUser(String accessToken, String refreshToken, String provider, String authCode) {
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
         MessageDto deleteUserDto = new MessageDto(null);
         if (remainExpiration >= 1) {   // 만료 직전 혹은 만료된 토큰이 아니라면
             deleteUserDto.setMessage(jwtTokenProvider.SUCCESS_STRING);
+            if (provider.equals("apple")) { // 애플은 서버에서 앱과 연결끊기도 처리
+                deleteAppleUser(authCode);
 
+                return deleteUserDto;
+            }
             String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);
             User userEntity = userRepository.findByProviderUserId(providerUserId).get();    // delete()와 deleteById() 모두 findBy로 유저 엔티티 찾는 과정은 거침. 예외 처리를 직접 하는 것이냐 아니냐의 차이인데, 일단 이렇게 적용하고 delete()가 더 나을지 고민해볼 것.
             userRepository.deleteById(userEntity.getUserId());  // RDB에서 유저 삭제
@@ -88,6 +92,17 @@ public class MobileOAuthService {
             return deleteUserDto;
         }
         deleteUserDto.setMessage(jwtTokenProvider.EXPIRED_ACCESS_TOKEN);
+
+        return deleteUserDto;   // 만료된 access token인 경우
+    }
+
+    public MessageDto deleteAppleUser (String authCode) {
+        String clientSecret = jwtTokenProvider.generateAppleClientSecret();
+        String refreshToken = jwtTokenProvider.getRefreshToken(clientSecret, authCode);
+        jwtTokenProvider.withDrawApple(clientSecret, refreshToken); // 애플로 회원의 연결끊기 요청
+
+        MessageDto deleteUserDto = new MessageDto(null);
+        deleteUserDto.setMessage(jwtTokenProvider.SUCCESS_STRING);
 
         return deleteUserDto;   // 만료된 access token인 경우
     }
@@ -219,6 +234,7 @@ public class MobileOAuthService {
 
         return customerTokenInfoDto;
     }
+
 
 
     // <-------------------- Test part -------------------->

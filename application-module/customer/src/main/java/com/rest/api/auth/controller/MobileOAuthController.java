@@ -90,14 +90,28 @@ public class MobileOAuthController {
     public ResponseEntity deleteUser(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
                                      @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                     @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        MessageDto deleteUserDto = mobileOAuthService.deleteUser(accessToken, refreshToken);
+                                     @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
+                                     @RequestBody String authCode) {
+        MessageDto deleteUserDto = mobileOAuthService.deleteUser(accessToken, refreshToken, provider, authCode);
         if (deleteUserDto.getMessage().equals(jwtTokenProvider.SUCCESS_STRING)) {
             deleteUserDto.setMessage("Delete user successful");
             return new ResponseEntity(deleteUserDto, HttpStatus.OK);
         }
 
         return new ResponseEntity("redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)", HttpStatus.UNAUTHORIZED);
+    }
+
+    @Operation(summary = "회원탈퇴 중 뒤로가기 시 애플 회원탈퇴", description = "애플과 사용자의 요청을 끊음")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "애플과 연결끊기 성공",
+                    content = @Content(schema = @Schema(implementation = MessageDto.class)))
+    })
+    @DeleteMapping("/account/apple/cancel-signup")   // 회원탈퇴 요청
+    public ResponseEntity deleteAppleUser(@RequestBody String authCode) {
+        MessageDto deleteUserDto = mobileOAuthService.deleteAppleUser(authCode);
+        deleteUserDto.setMessage("Successfully disconnect user with apple");
+
+        return new ResponseEntity(deleteUserDto, HttpStatus.OK);
     }
 
     @Operation(summary = "닉네임 중복 체크", description = "닉네임 중복 체크(중복 시 true, 사용 가능 시 false 반환)")
