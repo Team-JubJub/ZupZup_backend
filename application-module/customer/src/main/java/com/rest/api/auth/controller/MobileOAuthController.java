@@ -5,6 +5,7 @@ import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.MobileOAuthService;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.AccountRecoveryDto;
+import dto.auth.customer.request.DeleteUserDto;
 import dto.auth.customer.request.UserSignInDto;
 import dto.auth.customer.request.UserSignUpDto;
 import dto.auth.customer.response.AppleClientSecretDto;
@@ -65,7 +66,7 @@ public class MobileOAuthController {
     })
     @PostMapping("/account/{provider}")    // 회원가입 요청
     public ResponseEntity signUp(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
-            content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
+            content = @Content(schema = @Schema(type = "string", allowableValues = {"kakao", "google", "apple"}))) @PathVariable String provider,
                                  @Valid @RequestBody UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         CustomerTokenInfoDto signUpResult = mobileOAuthService.signUp(provider, userSignUpDto); // service layer에서 user 정보 저장, refresh token redis에 저장까지
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -91,11 +92,11 @@ public class MobileOAuthController {
             content = @Content(schema = @Schema(type = "string", allowableValues = {"kakao", "google", "apple"}))) @PathVariable String provider,
                                      @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
-                                     @RequestBody String authCode) {
-        MessageDto deleteUserDto = mobileOAuthService.deleteUser(accessToken, refreshToken, provider, authCode);
-        if (deleteUserDto.getMessage().equals(jwtTokenProvider.SUCCESS_STRING)) {
-            deleteUserDto.setMessage("Delete user successful");
-            return new ResponseEntity(deleteUserDto, HttpStatus.OK);
+                                     @RequestBody DeleteUserDto deleteUserDto) {
+        MessageDto deleteUserMessageDto = mobileOAuthService.deleteUser(accessToken, refreshToken, provider, deleteUserDto.getAuthCode());
+        if (deleteUserMessageDto.getMessage().equals(jwtTokenProvider.SUCCESS_STRING)) {
+            deleteUserMessageDto.setMessage("Delete user successful");
+            return new ResponseEntity(deleteUserMessageDto, HttpStatus.OK);
         }
 
         return new ResponseEntity("redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)", HttpStatus.UNAUTHORIZED);
@@ -109,11 +110,11 @@ public class MobileOAuthController {
                     content = @Content(schema = @Schema(example = "Withdraw with apple's response is 400"))),
     })
     @DeleteMapping("/account/apple/cancel-signup")   // 회원탈퇴 요청
-    public ResponseEntity deleteAppleUser(@RequestBody String authCode) {
-        MessageDto deleteUserDto = mobileOAuthService.deleteAppleUser(authCode);
-        deleteUserDto.setMessage("Successfully disconnect user with apple");
+    public ResponseEntity deleteAppleUser(@RequestBody DeleteUserDto deleteUserDto) {
+        MessageDto deleteUserMessageDto = mobileOAuthService.deleteAppleUser(deleteUserDto.getAuthCode());
+        deleteUserMessageDto.setMessage("Successfully disconnect user with apple");
 
-        return new ResponseEntity(deleteUserDto, HttpStatus.OK);
+        return new ResponseEntity(deleteUserMessageDto, HttpStatus.OK);
     }
 
     @Operation(summary = "닉네임 중복 체크", description = "닉네임 중복 체크(중복 시 true, 사용 가능 시 false 반환)")
