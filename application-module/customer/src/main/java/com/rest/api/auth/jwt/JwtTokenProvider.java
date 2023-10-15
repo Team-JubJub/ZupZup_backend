@@ -221,7 +221,7 @@ public class JwtTokenProvider {
         params.put("client_secret", clientSecret); // 생성한 clientSecret
         params.put("code", authCode); // 애플 로그인 시, 응답값으로 받은 authrizationCode
         params.put("grant_type", "authorization_code");
-        params.put("client_id", "com.mytest.app"); // app bundle id
+        params.put("client_id", APPLE_BUNDLE_ID); // app bundle id
 
         try {
             HttpRequest getRequest = HttpRequest.newBuilder()
@@ -250,7 +250,7 @@ public class JwtTokenProvider {
         Map<String, String> params = new HashMap<>();
         params.put("client_secret", clientSecret); // 생성한 client_secret
         params.put("token", refreshToken); // 생성한 refresh_token
-        params.put("client_id", "com.mytest.app"); // app bundle id
+        params.put("client_id", APPLE_BUNDLE_ID); // app bundle id
 
         try {
             HttpRequest getRequest = HttpRequest.newBuilder()
