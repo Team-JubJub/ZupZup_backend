@@ -79,8 +79,8 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "회원탈퇴 성공",
                     content = @Content(schema = @Schema(implementation = MessageDto.class))),
-            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰, 리프레시 토큰)가 없음 or 애플과 유저의 연결 끊기 실패",
-                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits \n or Withdraw with apple's response is 400"))),
+            @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰, 리프레시 토큰)가 없음",
+                    content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료",
                     content = @Content(schema = @Schema(example = "redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)"))),
             @ApiResponse(responseCode = "401", description = "로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",
@@ -90,9 +90,8 @@ public class MobileOAuthController {
     public ResponseEntity deleteUser(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"kakao", "google", "apple"}))) @PathVariable String provider,
                                      @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                     @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
-                                     @RequestBody DeleteAppleUserDto deleteAppleUserDto) {
-        MessageDto deleteUserMessageDto = mobileOAuthService.deleteUser(accessToken, refreshToken, provider, deleteAppleUserDto.getAuthCode());
+                                     @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+        MessageDto deleteUserMessageDto = mobileOAuthService.deleteUser(accessToken, refreshToken, provider);
         if (deleteUserMessageDto.getMessage().equals(jwtTokenProvider.SUCCESS_STRING)) {
             deleteUserMessageDto.setMessage("Delete user successful");
             return new ResponseEntity(deleteUserMessageDto, HttpStatus.OK);
