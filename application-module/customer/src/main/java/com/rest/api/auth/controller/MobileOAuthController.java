@@ -4,7 +4,7 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.service.MobileOAuthService;
 import dto.auth.customer.UserDto;
 import dto.auth.customer.request.*;
-import dto.auth.customer.response.AppleClientSecretDto;
+import dto.auth.customer.response.AppleRefreshTokenDto;
 import dto.MessageDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
 import dto.auth.token.customer.CustomerRefreshResultDto;
@@ -62,7 +62,7 @@ public class MobileOAuthController {
     })
     @PostMapping("/account/{provider}")    // 회원가입 요청
     public ResponseEntity signUp(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
-            content = @Content(schema = @Schema(type = "string", allowableValues = {"kakao", "google", "apple"}))) @PathVariable String provider,
+            content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
                                  @Valid @RequestBody UserSignUpDto userSignUpDto) {   // ex) ~/sign-in/naver?access_token=...&refresh_token=... + body: { userUniqueId: "naver에서 준 ID" }
         CustomerTokenInfoDto signUpResult = mobileOAuthService.signUp(provider, userSignUpDto); // service layer에서 user 정보 저장, refresh token redis에 저장까지
         HttpHeaders responseHeaders = new HttpHeaders();
@@ -85,10 +85,10 @@ public class MobileOAuthController {
     })
     @DeleteMapping("/account/{provider}")   // 회원탈퇴 요청
     public ResponseEntity deleteUser(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
-            content = @Content(schema = @Schema(type = "string", allowableValues = {"kakao", "google", "apple"}))) @PathVariable String provider,
+            content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
                                      @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
-        MessageDto deleteUserMessageDto = mobileOAuthService.deleteUser(accessToken, refreshToken, provider);
+        MessageDto deleteUserMessageDto = mobileOAuthService.deleteUser(accessToken, refreshToken);
         if (deleteUserMessageDto.getMessage().equals(jwtTokenProvider.SUCCESS_STRING)) {
             deleteUserMessageDto.setMessage("Delete user successful");
             return new ResponseEntity(deleteUserMessageDto, HttpStatus.OK);
@@ -97,7 +97,7 @@ public class MobileOAuthController {
         return new ResponseEntity("redirect: /mobile/sign-in/refresh (Access token expired. Renew it with refresh token.)", HttpStatus.UNAUTHORIZED);
     }
 
-    @Operation(summary = "회원탈퇴 중 뒤로가기 시 애플 회원탈퇴", description = "애플과 사용자의 요청을 끊음")
+    @Operation(summary = "사용자와 애플의 연결 끊기", description = "애플과 사용자의 요청을 끊음")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "애플과 연결끊기 성공",
                     content = @Content(schema = @Schema(implementation = MessageDto.class))),
@@ -235,16 +235,13 @@ public class MobileOAuthController {
     // < -------------- Apple part -------------- >
     @Operation(summary = "애플 refresh_token", description = "애플 유저의 refresh_token 리턴")
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "애플 유저의 refresh_token 리턴",
-                    content = @Content(schema = @Schema(implementation = AppleClientSecretDto.class))),
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 authCode, 애플로 부터의 응답이 400",
-                    content = @Content(schema = @Schema(example = "Apple's response of get refresh_token is 400")))
+            @ApiResponse(responseCode = "200", description = "애플 유저의 refresh_token 리턴")
     })
     @GetMapping("/account/apple/refresh-token")
     public ResponseEntity getAppleRefreshToken(GetAppleRefreshTokenDto getAppleRefreshTokenDto) {
         String appleRefreshToken = mobileOAuthService.getAppleRefreshToken(getAppleRefreshTokenDto.getAuthCode());
 
-        return new ResponseEntity(new AppleClientSecretDto(appleRefreshToken), HttpStatus.OK);
+        return new ResponseEntity(new AppleRefreshTokenDto(appleRefreshToken), HttpStatus.OK);
     }
 
     // <----------- Test Controller ----------->

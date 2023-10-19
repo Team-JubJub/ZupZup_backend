@@ -6,14 +6,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Schema(description = "애플의 client-secret을 담은 DTO")
+@Schema(description = "애플의 refreshToken을 담은 DTO")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class AppleClientSecretDto {
+public class AppleRefreshTokenDto {
 
-    @Schema(description = "애플 회원탈퇴에 필요한 client secret(jwt)", example = "jwt token")
-    private String clientSecret;
+    @Schema(description = "키체인에 저장 될 애플의 refresh token")
+    private String appleRefreshToken;
 
 }
