@@ -237,8 +237,8 @@ public class MobileOAuthController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "애플 유저의 refresh_token 리턴")
     })
-    @GetMapping("/account/apple/refresh-token")
-    public ResponseEntity getAppleRefreshToken(GetAppleRefreshTokenDto getAppleRefreshTokenDto) {
+    @PostMapping("/account/apple/refresh-token")
+    public ResponseEntity getAppleRefreshToken(@RequestBody GetAppleRefreshTokenDto getAppleRefreshTokenDto) {
         String appleRefreshToken = mobileOAuthService.getAppleRefreshToken(getAppleRefreshTokenDto.getAuthCode());
 
         return new ResponseEntity(new AppleRefreshTokenDto(appleRefreshToken), HttpStatus.OK);
