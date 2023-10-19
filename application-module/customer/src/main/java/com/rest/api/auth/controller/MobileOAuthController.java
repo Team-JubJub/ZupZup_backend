@@ -109,7 +109,7 @@ public class MobileOAuthController {
     })
     @DeleteMapping("/account/apple/cancel-signup")   // 회원탈퇴 요청
     public ResponseEntity deleteAppleUser(@RequestBody DeleteAppleUserDto deleteAppleUserDto) {
-        MessageDto deleteUserMessageDto = mobileOAuthService.deleteAppleUser(deleteAppleUserDto.getAuthCode());
+        MessageDto deleteUserMessageDto = mobileOAuthService.deleteAppleUser(deleteAppleUserDto.getRefreshToken());
         deleteUserMessageDto.setMessage("Successfully disconnect user with apple");
 
         return new ResponseEntity(deleteUserMessageDto, HttpStatus.OK);

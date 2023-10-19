@@ -91,15 +91,14 @@ public class MobileOAuthService {
         return deleteUserMessageDto;   // 만료된 access token인 경우
     }
 
-    public MessageDto deleteAppleUser (String authCode) {
+    public MessageDto deleteAppleUser (String refreshToken) {
         String clientSecret = jwtTokenProvider.generateAppleClientSecret();
-        String refreshToken = jwtTokenProvider.getRefreshToken(clientSecret, authCode);
         jwtTokenProvider.withDrawApple(clientSecret, refreshToken); // 애플로 회원의 연결끊기 요청(이 함수 내부에서 애플에서 400을 주면 예외처리해놨음)
 
-        MessageDto deleteUserDto = new MessageDto(null);
-        deleteUserDto.setMessage(jwtTokenProvider.SUCCESS_STRING);
+        MessageDto deleteUserMessageDto = new MessageDto(null);
+        deleteUserMessageDto.setMessage(jwtTokenProvider.SUCCESS_STRING);
 
-        return deleteUserDto;   // 만료된 access token인 경우
+        return deleteUserMessageDto;
     }
 
     public Boolean nickNameCheck(String nickName) {
