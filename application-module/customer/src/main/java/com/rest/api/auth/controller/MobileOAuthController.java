@@ -104,7 +104,7 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "400", description = "애플과 유저의 연결 끊기 실패",
                     content = @Content(schema = @Schema(example = "Withdraw with apple's response is 400"))),
     })
-    @DeleteMapping("/account/apple/cancel-signup")   // 회원탈퇴 요청
+    @DeleteMapping("/account/apple/withdraw")   // 회원탈퇴 요청
     public ResponseEntity deleteAppleUser(@RequestBody DeleteAppleUserDto deleteAppleUserDto) {
         MessageDto deleteUserMessageDto = mobileOAuthService.deleteAppleUser(deleteAppleUserDto.getRefreshToken());
         deleteUserMessageDto.setMessage("Successfully disconnect user with apple");
@@ -240,7 +240,7 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "400", description = "유효하지 않은 authCode, 애플로 부터의 응답이 400",
                     content = @Content(schema = @Schema(example = "Apple's response of get refresh_token is 400")))
     })
-    @GetMapping("/apple/refresh-token")
+    @GetMapping("/account/apple/refresh-token")
     public ResponseEntity getAppleRefreshToken(GetAppleRefreshTokenDto getAppleRefreshTokenDto) {
         String appleRefreshToken = mobileOAuthService.getAppleRefreshToken(getAppleRefreshTokenDto.getAuthCode());
 
