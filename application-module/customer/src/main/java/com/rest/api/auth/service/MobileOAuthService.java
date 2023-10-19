@@ -73,6 +73,13 @@ public class MobileOAuthService {
         return customerTokenInfoDto;
     }
 
+    public String getAppleRefreshToken(String authCode) {
+        String appleClientSecret = jwtTokenProvider.generateAppleClientSecret();
+        String appleRefreshToken = jwtTokenProvider.getAppleRefreshToken(appleClientSecret, authCode);
+
+        return appleRefreshToken;
+    }
+
     public MessageDto deleteUser(String accessToken, String refreshToken, String provider) {
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
         MessageDto deleteUserMessageDto = new MessageDto(null);

@@ -3,10 +3,7 @@ package com.rest.api.auth.controller;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.service.MobileOAuthService;
 import dto.auth.customer.UserDto;
-import dto.auth.customer.request.AccountRecoveryDto;
-import dto.auth.customer.request.DeleteAppleUserDto;
-import dto.auth.customer.request.UserSignInDto;
-import dto.auth.customer.request.UserSignUpDto;
+import dto.auth.customer.request.*;
 import dto.auth.customer.response.AppleClientSecretDto;
 import dto.MessageDto;
 import dto.auth.token.customer.CustomerTokenInfoDto;
@@ -243,11 +240,11 @@ public class MobileOAuthController {
             @ApiResponse(responseCode = "400", description = "유효하지 않은 authCode, 애플로 부터의 응답이 400",
                     content = @Content(schema = @Schema(example = "Apple's response of get refresh_token is 400")))
     })
-    @GetMapping("/client-secret")
-    public ResponseEntity getClientSecret() {
-        String appleClientSecret = jwtTokenProvider.generateAppleClientSecret();
+    @GetMapping("/apple/refresh-token")
+    public ResponseEntity getAppleRefreshToken(GetAppleRefreshTokenDto getAppleRefreshTokenDto) {
+        String appleRefreshToken = mobileOAuthService.getAppleRefreshToken(getAppleRefreshTokenDto.getAuthCode());
 
-        return new ResponseEntity(new AppleClientSecretDto(appleClientSecret), HttpStatus.OK);
+        return new ResponseEntity(new AppleClientSecretDto(appleRefreshToken), HttpStatus.OK);
     }
 
     // <----------- Test Controller ----------->

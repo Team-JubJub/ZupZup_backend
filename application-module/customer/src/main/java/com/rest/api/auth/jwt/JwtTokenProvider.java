@@ -211,7 +211,7 @@ public class JwtTokenProvider {
         return HttpRequest.BodyPublishers.ofString(urlEncoded);
     }
 
-    public String getRefreshToken(String clientSecret, String authCode) {
+    public String getAppleRefreshToken(String clientSecret, String authCode) {
 
         String refreshToken = "";
 
