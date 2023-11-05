@@ -2,7 +2,7 @@ package com.rest.api.utils;
 
 import com.rest.api.FCM.dto.FCMAlertDto;
 import com.rest.api.FCM.service.FCMService;
-import com.zupzup.untact.domain.auth.User.User;
+import com.zupzup.untact.domain.auth.user.User;
 import com.zupzup.untact.domain.store.Store;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;

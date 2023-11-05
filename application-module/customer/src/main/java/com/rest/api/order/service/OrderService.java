@@ -3,7 +3,7 @@ package com.rest.api.order.service;
 import com.rest.api.FCM.dto.FCMAlertDto;
 import com.rest.api.FCM.service.FCMService;
 import com.rest.api.utils.AuthUtils;
-import com.zupzup.untact.domain.auth.User.User;
+import com.zupzup.untact.domain.auth.user.User;
 import com.zupzup.untact.domain.order.Order;
 import com.zupzup.untact.domain.order.type.OrderSpecific;
 import com.zupzup.untact.domain.order.type.OrderStatus;

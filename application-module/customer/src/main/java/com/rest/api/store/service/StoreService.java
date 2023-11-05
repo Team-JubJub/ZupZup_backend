@@ -1,7 +1,7 @@
 package com.rest.api.store.service;
 
 import com.rest.api.utils.AuthUtils;
-import com.zupzup.untact.domain.auth.User.User;
+import com.zupzup.untact.domain.auth.user.User;
 import com.zupzup.untact.domain.enums.EnterState;
 import com.zupzup.untact.domain.enums.StoreCategory;
 import com.zupzup.untact.domain.item.Item;

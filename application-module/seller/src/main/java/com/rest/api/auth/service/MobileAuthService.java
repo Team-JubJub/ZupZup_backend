@@ -3,7 +3,7 @@ package com.rest.api.auth.service;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import com.zupzup.untact.domain.auth.Role;
-import com.zupzup.untact.domain.auth.Seller.Seller;
+import com.zupzup.untact.domain.auth.seller.Seller;
 import com.zupzup.untact.domain.store.Store;
 import com.zupzup.untact.dto.auth.seller.SellerDto;
 import com.zupzup.untact.dto.auth.seller.request.SellerSignInDto;

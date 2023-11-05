@@ -1,6 +1,6 @@
 package com.rest.api.auth.dto;
 
-import com.zupzup.untact.domain.auth.Seller.Seller;
+import com.zupzup.untact.domain.auth.seller.Seller;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;

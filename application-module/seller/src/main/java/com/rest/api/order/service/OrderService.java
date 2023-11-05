@@ -1,7 +1,7 @@
 package com.rest.api.order.service;
 
 import com.rest.api.utils.FCMUtils;
-import com.zupzup.untact.domain.auth.User.User;
+import com.zupzup.untact.domain.auth.user.User;
 import com.zupzup.untact.domain.enums.EnterState;
 import com.zupzup.untact.domain.item.Item;
 import com.zupzup.untact.domain.order.Order;
