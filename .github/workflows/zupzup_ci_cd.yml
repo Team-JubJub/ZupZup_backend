@@ -13,7 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        submodules: 'true' # 서브모듈을 체크아웃하도록 설정
+        submodules: 'recursive' # 서브모듈을 체크아웃하도록 설정
+        token: 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
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
