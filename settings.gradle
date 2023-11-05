@@ -2,12 +2,12 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
     }
-
 }
+
 rootProject.name = 'back_end'
-include 'spring-module-base'
-include 'spring-module-common'
-include 'application-module'
+include ':spring-module-base'
+include ':spring-module-common'
+include ':application-module'
 
 include 'application-module:application-common'
 findProject(':application-module:application-common')?.name = 'application-common'

@@ -1,6 +1,5 @@
 package exception.auth.customer;
 
-
 import com.zupzup.untact.domain.auth.User.Provider;
 import exception.auth.AuthRuntimeException;
 import org.springframework.http.HttpStatus;
