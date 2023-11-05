@@ -1,13 +1,14 @@
 package com.rest.api.store.service;
 
 import com.rest.api.utils.AuthUtils;
-import domain.auth.User.User;
-import domain.item.Item;
-import domain.order.Order;
-import domain.store.Store;
-import dto.item.customer.response.ItemResponseDto;
-import dto.store.customer.response.GetStoreDetailsDto;
-import dto.store.customer.response.GetStoreDto;
+import com.zupzup.untact.domain.auth.User.User;
+import com.zupzup.untact.domain.item.Item;
+import com.zupzup.untact.domain.store.Store;
+import com.zupzup.untact.dto.item.customer.response.ItemResponseDto;
+import com.zupzup.untact.dto.store.customer.response.GetStoreDetailsDto;
+import com.zupzup.untact.dto.store.customer.response.GetStoreDto;
+import com.zupzup.untact.repository.ItemRepository;
+import com.zupzup.untact.repository.StoreRepository;
 import exception.NoSuchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +16,6 @@ import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.ItemRepository;
-import repository.StoreRepository;
 
 import java.util.ArrayList;
 import java.util.List;

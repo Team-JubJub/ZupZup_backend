@@ -1,0 +1,3 @@
+rootProject.name = 'application-module'
+include 'spring-module-base'
+include 'spring-module-common'

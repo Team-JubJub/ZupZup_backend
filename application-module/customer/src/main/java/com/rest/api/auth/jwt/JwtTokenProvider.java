@@ -1,11 +1,10 @@
 package com.rest.api.auth.jwt;
 
+import com.rest.api.auth.dto.LoginInfoDto;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.CustomUserDetailsService;
-import com.rest.api.auth.dto.LoginInfoDto;
-import dto.auth.token.customer.CustomerRefreshResultDto;
+import com.zupzup.untact.dto.auth.token.customer.CustomerRefreshResultDto;
 import io.jsonwebtoken.*;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;

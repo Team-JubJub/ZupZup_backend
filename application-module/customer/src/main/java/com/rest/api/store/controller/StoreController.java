@@ -2,9 +2,8 @@ package com.rest.api.store.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.store.service.StoreService;
-import dto.order.customer.response.PostOrderResponseDto;
-import dto.store.customer.response.GetStoreDetailsDto;
-import dto.store.customer.response.GetStoreDto;
+import com.zupzup.untact.dto.store.customer.response.GetStoreDetailsDto;
+import com.zupzup.untact.dto.store.customer.response.GetStoreDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

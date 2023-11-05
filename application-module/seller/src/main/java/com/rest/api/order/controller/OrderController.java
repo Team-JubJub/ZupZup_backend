@@ -1,11 +1,12 @@
 package com.rest.api.order.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
-import domain.order.type.OrderStatus;
-import dto.order.seller.request.PatchOrderDataDto;
-import dto.order.seller.response.GetOrderDetailsDto;
-import dto.order.seller.response.GetOrderListDto;
-import dto.order.seller.response.PatchOrderResponseDto;
+import com.rest.api.order.service.OrderService;
+import com.zupzup.untact.domain.order.type.OrderStatus;
+import com.zupzup.untact.dto.order.seller.request.PatchOrderDataDto;
+import com.zupzup.untact.dto.order.seller.response.GetOrderDetailsDto;
+import com.zupzup.untact.dto.order.seller.response.GetOrderListDto;
+import com.zupzup.untact.dto.order.seller.response.PatchOrderResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -20,7 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import com.rest.api.order.service.OrderService;
 
 @Tag(name = "Order", description = "주문과 관련된 API")
 @RestController
@@ -36,7 +36,7 @@ public class OrderController {
     @Operation(summary = "가게의 주문 정보 반환", description = "가게의 주문 정보 반환 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "주문 조회 성공",
-                    content = @Content(schema = @Schema(implementation = dto.order.seller.response.GetOrderListDto.class))),
+                    content = @Content(schema = @Schema(implementation = GetOrderListDto.class))),
             @ApiResponse(responseCode = "204", description = "주문 정보 요청은 성공했으나 해당 가게의 주문이 0개인 경우"),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
@@ -59,7 +59,7 @@ public class OrderController {
     @Operation(summary = "주문의 상세 정보 반환", description = "주문의 상세 정보 반환 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "주문의 상세 정보 반환 성공",
-                    content = @Content(schema = @Schema(implementation = dto.order.seller.response.GetOrderDetailsDto.class))),
+                    content = @Content(schema = @Schema(implementation = GetOrderDetailsDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits"))),
             @ApiResponse(responseCode = "401", description = "액세스 토큰 만료, 로그아웃 혹은 회원탈퇴한 회원의 액세스 토큰",

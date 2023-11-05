@@ -1,20 +1,20 @@
 package com.rest.api.info.service;
 
 import com.rest.api.utils.AuthUtils;
-import domain.auth.User.User;
-import dto.auth.customer.UserDto;
-import dto.info.customer.request.PatchNickNameDto;
-import dto.info.customer.request.PatchOptionalTermDto;
-import dto.info.customer.request.PatchPhoneNumberDto;
-import dto.info.customer.response.GetInfoResponseDto;
-import dto.info.customer.response.PatchInfoResponseDto;
+import com.zupzup.untact.domain.auth.User.User;
+import com.zupzup.untact.dto.auth.customer.UserDto;
+import com.zupzup.untact.dto.info.customer.request.PatchNickNameDto;
+import com.zupzup.untact.dto.info.customer.request.PatchOptionalTermDto;
+import com.zupzup.untact.dto.info.customer.request.PatchPhoneNumberDto;
+import com.zupzup.untact.dto.info.customer.response.GetInfoResponseDto;
+import com.zupzup.untact.dto.info.customer.response.PatchInfoResponseDto;
+import com.zupzup.untact.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repository.UserRepository;
 
 @Service
 @RequiredArgsConstructor
