@@ -1,0 +1,6 @@
+[submodule "spring-module-base"]
+	path = spring-module-base
+	url = https://github.com/Team-JubJub/spring-module-base.git
+[submodule "spring-module-common"]
+	path = spring-module-common
+	url = https://github.com/Team-JubJub/spring-module-common.git

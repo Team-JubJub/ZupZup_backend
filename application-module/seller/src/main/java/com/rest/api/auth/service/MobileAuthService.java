@@ -2,31 +2,27 @@ package com.rest.api.auth.service;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
-import domain.auth.Role;
-import domain.auth.Seller.Seller;
-import domain.store.Store;
-import dto.MessageDto;
-import dto.auth.seller.SellerDto;
-import dto.auth.seller.request.SellerSignInDto;
-import dto.auth.seller.test.SellerTestSignUpDto;
-import dto.auth.token.seller.SellerTokenInfoDto;
-import dto.store.StoreDto;
+import com.zupzup.untact.domain.auth.Role;
+import com.zupzup.untact.domain.auth.seller.Seller;
+import com.zupzup.untact.domain.store.Store;
+import com.zupzup.untact.dto.auth.seller.SellerDto;
+import com.zupzup.untact.dto.auth.seller.request.SellerSignInDto;
+import com.zupzup.untact.dto.auth.seller.test.SellerTestSignUpDto;
+import com.zupzup.untact.dto.auth.token.seller.SellerTokenInfoDto;
+import com.zupzup.untact.dto.store.StoreDto;
+import com.zupzup.untact.repository.SellerRepository;
+import com.zupzup.untact.repository.StoreRepository;
 import exception.auth.seller.NoSellerPresentsException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import repository.SellerRepository;
-import repository.StoreRepository;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor

@@ -1,11 +1,10 @@
 package com.rest.api.store.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
-import dto.auth.seller.test.SellerTestSignInDto;
-import dto.auth.seller.test.TestSignInResponseDto;
-import dto.store.seller.request.ModifyStoreDto;
-import dto.store.seller.response.GetStoreDetailsDto;
-import dto.store.seller.response.ModifyStoreResponse;
+import com.rest.api.store.service.StoreService;
+import com.zupzup.untact.dto.store.seller.request.ModifyStoreDto;
+import com.zupzup.untact.dto.store.seller.response.GetStoreDetailsDto;
+import com.zupzup.untact.dto.store.seller.response.ModifyStoreResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -19,7 +18,6 @@ import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.rest.api.store.service.StoreService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

@@ -1,11 +1,12 @@
 package com.rest.api.store.service;
 
 import com.rest.api.utils.FCMUtils;
-import domain.store.Store;
-import domain.store.type.EnterState;
-import dto.store.seller.request.ModifyStoreDto;
-import dto.store.seller.response.GetStoreDetailsDto;
-import dto.store.seller.response.ModifyStoreResponse;
+import com.zupzup.untact.domain.enums.EnterState;
+import com.zupzup.untact.domain.store.Store;
+import com.zupzup.untact.dto.store.seller.request.ModifyStoreDto;
+import com.zupzup.untact.dto.store.seller.response.GetStoreDetailsDto;
+import com.zupzup.untact.dto.store.seller.response.ModifyStoreResponse;
+import com.zupzup.untact.repository.StoreRepository;
 import exception.store.ForbiddenStoreException;
 import exception.store.seller.NoSuchStoreException;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import repository.StoreRepository;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
