@@ -5,9 +5,10 @@ pluginManagement {
 
 }
 rootProject.name = 'back_end'
-include 'core-module'
-include 'domain-module'
+include 'spring-module-base'
+include 'spring-module-common'
 include 'application-module'
+
 include 'application-module:application-common'
 findProject(':application-module:application-common')?.name = 'application-common'
 include 'application-module:seller'

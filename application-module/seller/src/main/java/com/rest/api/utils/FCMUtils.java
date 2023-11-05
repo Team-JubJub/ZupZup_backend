@@ -2,12 +2,12 @@ package com.rest.api.utils;
 
 import com.rest.api.FCM.dto.FCMAlertDto;
 import com.rest.api.FCM.service.FCMService;
-import domain.auth.User.User;
-import domain.store.Store;
+import com.zupzup.untact.domain.auth.User.User;
+import com.zupzup.untact.domain.store.Store;
+import com.zupzup.untact.repository.StoreRepository;
+import com.zupzup.untact.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import repository.StoreRepository;
-import repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
