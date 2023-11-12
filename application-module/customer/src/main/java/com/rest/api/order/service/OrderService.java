@@ -4,6 +4,7 @@ import com.rest.api.FCM.dto.FCMAlertDto;
 import com.rest.api.FCM.service.FCMService;
 import com.rest.api.utils.AuthUtils;
 import com.zupzup.untact.domain.auth.user.User;
+import com.zupzup.untact.domain.data.FirstOrderData;
 import com.zupzup.untact.domain.order.Order;
 import com.zupzup.untact.domain.order.type.OrderSpecific;
 import com.zupzup.untact.domain.order.type.OrderStatus;
@@ -13,6 +14,7 @@ import com.zupzup.untact.dto.order.customer.request.PostOrderRequestDto;
 import com.zupzup.untact.dto.order.customer.response.GetOrderDetailsDto;
 import com.zupzup.untact.dto.order.customer.response.GetOrderDto;
 import com.zupzup.untact.dto.order.customer.response.PostOrderResponseDto;
+import com.zupzup.untact.repository.FirstOrderDataRepository;
 import com.zupzup.untact.repository.OrderRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import exception.NoSuchException;
@@ -42,6 +44,7 @@ public class OrderService {
 
     private final StoreRepository storeRepository;
     private final OrderRepository orderRepository;
+    private final FirstOrderDataRepository firstOrderDataRepository;
     private final AuthUtils authUtils;
     private final FCMService fcmService;
 
@@ -50,6 +53,7 @@ public class OrderService {
         User userEntity = authUtils.getUserEntity(accessToken);
         String formattedOrderTime = orderTimeSetter();
         OrderDto orderDto = postOrderDTOtoOrderDTO(userEntity, storeId, postOrderRequestDto, formattedOrderTime);
+        if (userEntity.getOrderCount() == 0) saveFirstOrderData(userEntity.getRegisterTime(), orderDto.getOrderTime());
 
         Order orderEntity = Order.builder(orderDto.getStoreId())
                 .userId(orderDto.getUserId()) // user id 테스트 값임
@@ -169,6 +173,14 @@ public class OrderService {
         orderDto.setSavedMoney(savedMoney);
 
         return orderDto;
+    }
+
+    public void saveFirstOrderData(String registerTime, String orderTime) {
+        FirstOrderData firstOrderData = FirstOrderData.builder(orderTime)
+                .registerTime(registerTime)
+                .build();
+
+        firstOrderDataRepository.save(firstOrderData);
     }
 
     public void sendMessage(Long storeId, String title, String message) {
