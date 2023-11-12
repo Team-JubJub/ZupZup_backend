@@ -88,8 +88,9 @@ public class OrderService {
         User userEntity = authUtils.getUserEntity(accessToken);
         List<Order> userOrderListEntity = orderRepository.findByUserId(userEntity.getUserId());
         List<GetOrderDto> userOrderListDto = userOrderListEntity.stream()
-            .map(m -> modelMapper.map(m, GetOrderDto.class))
-            .collect(Collectors.toList());
+                .filter(m -> !m.getOrderStatus().equals(OrderStatus.WITHDREW))
+                .map(m -> modelMapper.map(m, GetOrderDto.class))
+                .collect(Collectors.toList());
 
         return userOrderListDto;
     }
