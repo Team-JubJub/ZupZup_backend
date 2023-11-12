@@ -6,6 +6,8 @@ import com.rest.api.utils.AuthUtils;
 import com.zupzup.untact.domain.auth.Role;
 import com.zupzup.untact.domain.auth.user.Provider;
 import com.zupzup.untact.domain.auth.user.User;
+import com.zupzup.untact.domain.order.Order;
+import com.zupzup.untact.domain.order.type.OrderStatus;
 import com.zupzup.untact.dto.MessageDto;
 import com.zupzup.untact.dto.auth.customer.UserDto;
 import com.zupzup.untact.dto.auth.customer.request.AccountRecoveryDto;
@@ -13,6 +15,7 @@ import com.zupzup.untact.dto.auth.customer.request.UserSignInDto;
 import com.zupzup.untact.dto.auth.customer.request.UserSignUpDto;
 import com.zupzup.untact.dto.auth.token.customer.CustomerRefreshResultDto;
 import com.zupzup.untact.dto.auth.token.customer.CustomerTokenInfoDto;
+import com.zupzup.untact.repository.OrderRepository;
 import com.zupzup.untact.repository.UserRepository;
 import exception.auth.customer.AlreadySignUppedException;
 import exception.auth.customer.NoUserPresentsException;
@@ -40,6 +43,7 @@ public class MobileOAuthService {
     @Autowired
     ModelMapper modelMapper;
     private final UserRepository userRepository;
+    private final OrderRepository orderRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
     private final AuthUtils authUtils;
@@ -90,6 +94,7 @@ public class MobileOAuthService {
             userRepository.deleteById(userEntity.getUserId());  // RDB에서 유저 삭제
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "deleted-user", remainExpiration); // access token 저장(key: acc_token, value: "deleted-user")
+            changeOrderStatusWithdrew(userEntity.getUserId());  // 탈퇴하는 유저의 주문 상태를 변경
 
             return deleteUserMessageDto;
         }
@@ -236,7 +241,14 @@ public class MobileOAuthService {
         return customerTokenInfoDto;
     }
 
-
+    private void changeOrderStatusWithdrew(Long userId) {  // 사용자 회원탈퇴 시 해당 사용자의 주문 상태 변경하는 함수
+        List<Order> userOrderList = orderRepository.findByUserId(userId);
+        for (int i = 0; i < userOrderList.size(); i++) {
+            Order userOrder = userOrderList.get(i);
+            userOrder.updateOrder(OrderStatus.WITHDREW);    // 주문 상태 변경
+            orderRepository.save(userOrder);
+        }
+    }
 
     // <-------------------- Test part -------------------->
     public UserDto signInTestToken(String accessToken, String refreshToken) {
