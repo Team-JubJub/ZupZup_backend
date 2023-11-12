@@ -55,6 +55,7 @@ public class OrderService {
 
         List<Order> allOrderListEntity = orderRepository.findByStoreId(storeId);
         List<GetOrderDetailsDto> orderList = allOrderListEntity.stream()   // Entity -> Dto
+                .filter(m -> !m.getOrderStatus().equals(OrderStatus.WITHDREW))
                 .map(m -> modelMapper.map(m, GetOrderDetailsDto.class))
                 .collect(Collectors.toList());
         GetOrderListDto getOrderListDto = new GetOrderListDto();
