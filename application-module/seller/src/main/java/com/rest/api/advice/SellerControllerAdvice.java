@@ -5,6 +5,7 @@ import exception.NoSuchException;
 import exception.OrderNotInStoreException;
 import exception.RequestedCountExceedStockException;
 import exception.auth.seller.NoSellerPresentsException;
+import exception.auth.seller.NotEnteredException;
 import exception.item.seller.NoSuchItemException;
 import exception.store.ForbiddenStoreException;
 import exception.store.seller.NoSuchStoreException;
@@ -27,6 +28,11 @@ public class SellerControllerAdvice {
     @ExceptionHandler(value = NoSellerPresentsException.class)
     public ResponseEntity noSellerWithLoginId(NoSellerPresentsException e) { // 해당 id를 가진 사장님이 없는 경우
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = NotEnteredException.class)
+    public ResponseEntity notEntered(NotEnteredException e) {   // 아직 입점하지 않은 사장님이 앱에 로그인 시 401 리턴
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
 
     // < ---------------- 가게 파트 ---------------- >
