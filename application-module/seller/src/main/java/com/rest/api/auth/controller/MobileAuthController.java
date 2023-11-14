@@ -47,6 +47,8 @@ public class MobileAuthController {
                             "{\n" +
                             "\t\"userUniqueId\": \"User unique id cannot be null or empty or space\"\n" +
                             "}"))),
+            @ApiResponse(responseCode = "401", description = "아직 입점처리되지 않은 사장님이 앱에 로그인할 경우",
+                    content = @Content(schema = @Schema(example = "Seller not entered yet."))),
             @ApiResponse(responseCode = "403", description = "아이디를 통한 로그인 시 비밀번호가 틀린 경우",
                     content = @Content(schema = @Schema(example = "{\n" +
                             "\t\"result\": \"Login fails\",\n" +

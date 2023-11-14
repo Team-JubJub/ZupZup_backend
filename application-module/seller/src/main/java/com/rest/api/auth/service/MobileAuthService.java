@@ -13,6 +13,7 @@ import com.zupzup.untact.dto.store.StoreDto;
 import com.zupzup.untact.repository.SellerRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import exception.auth.seller.NoSellerPresentsException;
+import exception.auth.seller.NotEnteredException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -105,6 +106,8 @@ public class MobileAuthService {
 
     private void updateStoreDeviceTokens(String deviceToken, Seller sellerEntity, String mode) {
         Store store = storeRepository.findBySellerId(sellerEntity.getSellerId());   // device token update 시작
+        if (store == null) throw new NotEnteredException(); // 아직 입점하지 않은 사장님이면 401 처리
+
         StoreDto storeDto = modelMapper.map(store, StoreDto.class);
         if (mode.equals("add")) storeDto.getDeviceTokens().add(deviceToken); // 해당 device token add
         else if (mode.equals("remove")) storeDto.getDeviceTokens().remove(String.valueOf(deviceToken)); // 해당 device token remove
