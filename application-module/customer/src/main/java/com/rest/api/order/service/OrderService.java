@@ -17,6 +17,7 @@ import com.zupzup.untact.dto.order.customer.response.PostOrderResponseDto;
 import com.zupzup.untact.repository.FirstOrderDataRepository;
 import com.zupzup.untact.repository.OrderRepository;
 import com.zupzup.untact.repository.StoreRepository;
+import com.zupzup.untact.repository.UserRepository;
 import exception.NoSuchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class OrderService {
     @Autowired
     ModelMapper modelMapper;
 
+    private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final OrderRepository orderRepository;
     private final FirstOrderDataRepository firstOrderDataRepository;
@@ -54,6 +56,8 @@ public class OrderService {
         String formattedOrderTime = orderTimeSetter();
         OrderDto orderDto = postOrderDTOtoOrderDTO(userEntity, storeId, postOrderRequestDto, formattedOrderTime);
         if (userEntity.getOrderCount() == 0) saveFirstOrderData(userEntity.getRegisterTime(), orderDto.getOrderTime());
+        userEntity.updateOrderCount();
+        userRepository.save(userEntity);
 
         Order orderEntity = Order.builder(orderDto.getStoreId())
                 .userId(orderDto.getUserId()) // user id 테스트 값임
