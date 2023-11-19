@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Log
-@Transactional
 public class OrderService {
 
     @Autowired
@@ -51,6 +50,7 @@ public class OrderService {
     private final FCMService fcmService;
 
     // <-------------------- POST part -------------------->
+    @Transactional
     public PostOrderResponseDto addOrder(String accessToken, Long storeId, PostOrderRequestDto postOrderRequestDto) {
         User userEntity = authUtils.getUserEntity(accessToken);
         String formattedOrderTime = orderTimeSetter();
