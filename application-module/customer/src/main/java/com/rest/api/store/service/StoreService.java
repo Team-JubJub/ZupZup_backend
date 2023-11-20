@@ -141,7 +141,7 @@ public class  StoreService {
         else if (action.equals("unset")) {  // 빼주고
             if (isStoreAlerted(userEntity, storeId)) {  // 찜 해제 시 알림 설정도 해제해줘야 함
                 userDto.setAlertStores(removeAlertElement(userDto.getAlertStores(), storeId));
-                storeDto.setAlertUsers(removeAlertElement(storeDto.getAlertUsers(), storeId));
+                storeDto.setAlertUsers(removeAlertElement(storeDto.getAlertUsers(), userEntity.getUserId()));
             }
             starredStoreList.remove(Long.valueOf(storeId));
             starredUserList.remove(Long.valueOf(userEntity.getUserId()));
