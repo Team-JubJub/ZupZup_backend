@@ -76,7 +76,7 @@ public class OrderService {
                 .savedMoney(orderDto.getSavedMoney())
                 .build();
         orderRepository.save(orderEntity);
-        sendMessage(storeId, "신규 주문 접수", "신규 주문(" + orderDto.getOrderTitle() + ")이 접수되었습니다.");  // 푸시 알림 보내기
+        sendMessage(storeId, "신규 주문 접수", "신규 주문(" + orderDto.getOrderTitle() + ")이 접수되었어요!");  // 푸시 알림 보내기
 
         GetOrderDetailsDto madeOrderDetailsDto = modelMapper.map(orderEntity, GetOrderDetailsDto.class);
         PostOrderResponseDto postOrderResponseDto = new PostOrderResponseDto();
@@ -132,7 +132,9 @@ public class OrderService {
         String firstAtOrderList = firstAtOrderSpecific.getItemName();
         int firstAtOrderListCount = firstAtOrderSpecific.getItemCount();    // 어차피 String이랑 concat 될 때 int로 unboxing된다고 함. 미리 unboxing.
         int orderListCount = postOrderRequestDto.getOrderList().size() - 1;    // -1이 붙어서 어차피 unboxing 거치니까 int로
-        String orderTitle = firstAtOrderList + " " + firstAtOrderListCount + "개 외 " + orderListCount + "건";
+        String orderTitle = "";
+        if (orderListCount == 0) orderTitle = firstAtOrderList + " " + firstAtOrderListCount + "개";
+        else orderTitle = firstAtOrderList + " " + firstAtOrderListCount + "개 외 " + orderListCount + "건";
 
         return orderTitle;
     }

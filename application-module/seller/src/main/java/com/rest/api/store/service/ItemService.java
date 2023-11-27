@@ -71,7 +71,7 @@ public class ItemService {
         itemRepository.save(item);
 
         //4. 푸시 알림 전송
-        fcmUtils.sendMessageToAlertUsers(storeId, "신규 상품 등록 알림", store.getStoreName() + "에 신규 상품 " + requestDto.getItemName() + "이 등록되었습니다.");
+        fcmUtils.sendMessageToAlertUsers(storeId, "신규 상품 등록 알림", store.getStoreName() + "에 신규 상품 " + requestDto.getItemName() + "이/가 등록되었어요!");
 
         return modelMapper.map(item, ItemResponseDto.class);
     }
