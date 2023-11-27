@@ -76,7 +76,7 @@ public class OrderService {
                 .savedMoney(orderDto.getSavedMoney())
                 .build();
         orderRepository.save(orderEntity);
-        sendMessage(storeId, "신규 주문 접수", "신규 주문(" + orderDto.getOrderTitle() + ")이 접수되었어요!.");  // 푸시 알림 보내기
+        sendMessage(storeId, "신규 주문 접수", "신규 주문(" + orderDto.getOrderTitle() + ")이 접수되었어요!");  // 푸시 알림 보내기
 
         GetOrderDetailsDto madeOrderDetailsDto = modelMapper.map(orderEntity, GetOrderDetailsDto.class);
         PostOrderResponseDto postOrderResponseDto = new PostOrderResponseDto();

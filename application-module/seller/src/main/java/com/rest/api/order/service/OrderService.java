@@ -187,9 +187,9 @@ public class OrderService {
         String deviceToken = userEntity.getDeviceToken();
 
         if (requestedOrderStatus.equals(OrderStatus.CONFIRM)) { // 주문 확정 시
-            fcmUtils.sendMessageToOrderedUser(deviceToken, "주문 확정 알림", orderEntity.getStoreName() + " 가게의 주문(" + orderEntity.getOrderTitle() + ")이 확정되었습니다.");
+            fcmUtils.sendMessageToOrderedUser(deviceToken, "주문 확정 알림", orderEntity.getStoreName() + " 가게의 주문(" + orderEntity.getOrderTitle() + ")이 확정되었어요!");
         } else if (requestedOrderStatus.equals(OrderStatus.CANCEL)) {   // 주문 취소(신규 주문, 확정 주문 모두) 시
-            fcmUtils.sendMessageToOrderedUser(deviceToken, "주문 취소 알림", orderEntity.getStoreName() + " 가게의 주문(" + orderEntity.getOrderTitle() + ")이 취소되었습니다.");
+            fcmUtils.sendMessageToOrderedUser(deviceToken, "주문 취소 알림", orderEntity.getStoreName() + " 가게의 주문(" + orderEntity.getOrderTitle() + ")이 취소되었어요.");
         }
     }
 
