@@ -4,7 +4,6 @@ import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.order.service.OrderService;
 import com.zupzup.untact.dto.order.customer.request.PostOrderRequestDto;
 import com.zupzup.untact.dto.order.customer.response.GetOrderDetailsDto;
-import com.zupzup.untact.dto.order.customer.response.GetOrderDto;
 import com.zupzup.untact.dto.order.customer.response.PostOrderResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -61,7 +60,7 @@ public class OrderController {
                     content = {
                             @Content(
                                     mediaType = "application/json",
-                                    array = @ArraySchema(schema = @Schema(implementation = GetOrderDto.class)))
+                                    array = @ArraySchema(schema = @Schema(implementation = GetOrderDetailsDto.class)))
                     }
             ),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(액세스 토큰)가 없음",
@@ -72,7 +71,7 @@ public class OrderController {
     })
     @GetMapping("")
     public ResponseEntity orderList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
-        List<GetOrderDto> allOrderListDto = orderService.orderList(accessToken);
+        List<GetOrderDetailsDto> allOrderListDto = orderService.orderList(accessToken);
         
         return new ResponseEntity(allOrderListDto, HttpStatus.OK);
     }

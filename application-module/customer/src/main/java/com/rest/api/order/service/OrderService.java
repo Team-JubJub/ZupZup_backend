@@ -12,7 +12,6 @@ import com.zupzup.untact.domain.store.Store;
 import com.zupzup.untact.dto.order.OrderDto;
 import com.zupzup.untact.dto.order.customer.request.PostOrderRequestDto;
 import com.zupzup.untact.dto.order.customer.response.GetOrderDetailsDto;
-import com.zupzup.untact.dto.order.customer.response.GetOrderDto;
 import com.zupzup.untact.dto.order.customer.response.PostOrderResponseDto;
 import com.zupzup.untact.repository.FirstOrderDataRepository;
 import com.zupzup.untact.repository.OrderRepository;
@@ -88,12 +87,12 @@ public class OrderService {
     }
 
     // <-------------------- GET part -------------------->
-    public List<GetOrderDto> orderList(String accessToken) {
+    public List<GetOrderDetailsDto> orderList(String accessToken) {
         User userEntity = authUtils.getUserEntity(accessToken);
         List<Order> userOrderListEntity = orderRepository.findByUserId(userEntity.getUserId());
-        List<GetOrderDto> userOrderListDto = userOrderListEntity.stream()
+        List<GetOrderDetailsDto> userOrderListDto = userOrderListEntity.stream()
                 .filter(m -> !m.getOrderStatus().equals(OrderStatus.WITHDREW))
-                .map(m -> modelMapper.map(m, GetOrderDto.class))
+                .map(m -> modelMapper.map(m, GetOrderDetailsDto.class))
                 .collect(Collectors.toList());
 
         return userOrderListDto;
