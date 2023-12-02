@@ -8,6 +8,7 @@ import com.zupzup.untact.domain.auth.user.Provider;
 import com.zupzup.untact.domain.auth.user.User;
 import com.zupzup.untact.domain.order.Order;
 import com.zupzup.untact.domain.order.type.OrderStatus;
+import com.zupzup.untact.domain.store.Store;
 import com.zupzup.untact.dto.MessageDto;
 import com.zupzup.untact.dto.auth.customer.UserDto;
 import com.zupzup.untact.dto.auth.customer.request.AccountRecoveryDto;
@@ -15,7 +16,9 @@ import com.zupzup.untact.dto.auth.customer.request.UserSignInDto;
 import com.zupzup.untact.dto.auth.customer.request.UserSignUpDto;
 import com.zupzup.untact.dto.auth.token.customer.CustomerRefreshResultDto;
 import com.zupzup.untact.dto.auth.token.customer.CustomerTokenInfoDto;
+import com.zupzup.untact.dto.store.StoreDto;
 import com.zupzup.untact.repository.OrderRepository;
+import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
 import exception.auth.customer.AlreadySignUppedException;
 import exception.auth.customer.NoUserPresentsException;
@@ -29,10 +32,7 @@ import org.springframework.stereotype.Service;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +44,7 @@ public class MobileOAuthService {
     ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
+    private final StoreRepository storeRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
     private final AuthUtils authUtils;
@@ -95,6 +96,7 @@ public class MobileOAuthService {
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "deleted-user", remainExpiration); // access token 저장(key: acc_token, value: "deleted-user")
             changeOrderStatusWithdrew(userEntity.getUserId());  // 탈퇴하는 유저의 주문 상태를 변경
+            deleteUserStarAlertAtStore(userEntity); // 탈퇴하는 유저가 찜한 가게의 찜, 알림 설정 유저 목록에서 해당 유저의 id를 뺌
 
             return deleteUserMessageDto;
         }
@@ -221,8 +223,8 @@ public class MobileOAuthService {
         userDto.setNickName(userSignUpDto.getNickName());
         userDto.setGender(userSignUpDto.getGender());
         userDto.setPhoneNumber(userSignUpDto.getPhoneNumber());
-        userDto.setStarredStores(null);
-        userDto.setAlertStores(null);
+        userDto.setStarredStores(new HashSet<>());
+        userDto.setAlertStores(new HashSet<>());
         userDto.setEssentialTerms(userSignUpDto.getEssentialTerms());
         userDto.setOptionalTerm1(userSignUpDto.getOptionalTerm1());
         userDto.setDeviceToken(userSignUpDto.getDeviceToken());
@@ -247,6 +249,33 @@ public class MobileOAuthService {
             Order userOrder = userOrderList.get(i);
             userOrder.updateOrder(OrderStatus.WITHDREW);    // 주문 상태 변경
             orderRepository.save(userOrder);
+        }
+    }
+
+    private void modifyStoreStarAlert(Long userId, Long starredStoreId) {   // 회원탈퇴를 진행하는 유저가 찜한 가게에 대해 수행
+        Store storeEntity = storeRepository.findById(starredStoreId).get();
+        StoreDto storeDto = modelMapper.map(storeEntity, StoreDto.class);
+
+        Set<Long> starredUserList = storeDto.getStarredUsers();
+        Set<Long> alertUserList = storeDto.getAlertUsers();
+        if (starredUserList.contains(userId)) starredUserList.remove(Long.valueOf(userId)); // 해당 유저의 아이디를 가지고 있으면 삭제
+        if (alertUserList.contains(userId)) alertUserList.remove(Long.valueOf(userId));
+        storeDto.setStarredUsers(starredUserList);  // dto에 바뀐 set 저장
+        storeDto.setAlertUsers(alertUserList);
+
+        storeEntity.updateStarredUserList(storeDto);
+        storeRepository.save(storeEntity);
+    }
+
+    private void deleteUserStarAlertAtStore(User userEntity) {
+        Long userId = userEntity.getUserId();
+        Set<Long> starredStoresSet = userEntity.getStarredStores();
+        if (starredStoresSet != null) { // 찜한 가게가 null이 아닐 때만 수행, 혹시 모르는 null 체크
+            List<Long> starredStores = new ArrayList<>(starredStoresSet);
+            for (int i = 0; i < starredStores.size(); i++) {    // 유저가 찜한 가게에 대해 수행
+                Long starredStoreId = starredStores.get(i);
+                modifyStoreStarAlert(userId, starredStoreId);
+            }
         }
     }
 
