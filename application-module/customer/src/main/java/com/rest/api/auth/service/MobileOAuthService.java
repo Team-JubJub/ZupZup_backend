@@ -16,6 +16,7 @@ import com.zupzup.untact.dto.auth.customer.request.UserSignUpDto;
 import com.zupzup.untact.dto.auth.token.customer.CustomerRefreshResultDto;
 import com.zupzup.untact.dto.auth.token.customer.CustomerTokenInfoDto;
 import com.zupzup.untact.repository.OrderRepository;
+import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
 import exception.auth.customer.AlreadySignUppedException;
 import exception.auth.customer.NoUserPresentsException;
@@ -29,10 +30,7 @@ import org.springframework.stereotype.Service;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +42,7 @@ public class MobileOAuthService {
     ModelMapper modelMapper;
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
+    private final StoreRepository storeRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final RedisService redisService;
     private final AuthUtils authUtils;
@@ -95,6 +94,7 @@ public class MobileOAuthService {
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "deleted-user", remainExpiration); // access token 저장(key: acc_token, value: "deleted-user")
             changeOrderStatusWithdrew(userEntity.getUserId());  // 탈퇴하는 유저의 주문 상태를 변경
+            deleteUserStarAlertAtStore(userEntity);
 
             return deleteUserMessageDto;
         }
@@ -221,8 +221,8 @@ public class MobileOAuthService {
         userDto.setNickName(userSignUpDto.getNickName());
         userDto.setGender(userSignUpDto.getGender());
         userDto.setPhoneNumber(userSignUpDto.getPhoneNumber());
-        userDto.setStarredStores(null);
-        userDto.setAlertStores(null);
+        userDto.setStarredStores(new HashSet<>());
+        userDto.setAlertStores(new HashSet<>());
         userDto.setEssentialTerms(userSignUpDto.getEssentialTerms());
         userDto.setOptionalTerm1(userSignUpDto.getOptionalTerm1());
         userDto.setDeviceToken(userSignUpDto.getDeviceToken());
@@ -247,6 +247,17 @@ public class MobileOAuthService {
             Order userOrder = userOrderList.get(i);
             userOrder.updateOrder(OrderStatus.WITHDREW);    // 주문 상태 변경
             orderRepository.save(userOrder);
+        }
+    }
+
+    private void deleteUserStarAlertAtStore(User userEntity) {
+        Set<Long> starredStoresSet = userEntity.getStarredStores();
+        if (starredStoresSet != null) { // 찜한 가게가 null이 아닐 때만 수행
+            List<Long> starredStores = new ArrayList<>(starredStoresSet);
+
+            for (int i = 0; i < starredStores.size(); i++) {
+
+            }
         }
     }
 
