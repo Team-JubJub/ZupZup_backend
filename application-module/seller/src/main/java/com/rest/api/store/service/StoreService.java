@@ -75,7 +75,7 @@ public class StoreService {
     public String changeNotification(Long storeId, String storeMatters) {
         Store store = isStorePresent(storeId);
         store.setSaleMatters(storeMatters);
-        fcmUtils.sendMessageToAlertUsers(storeId, "신규 공지 알림", store.getStoreName() + "에 신규 공지가 등록되었습니다.");
+        fcmUtils.sendMessageToAlertUsers(storeId, "신규 공지 알림", store.getStoreName() + "에 신규 공지가 등록되었어요!");
 
         return "공지사항이 수정되었습니다.";
     }
