@@ -6,6 +6,7 @@ import exception.OrderNotInStoreException;
 import exception.RequestedCountExceedStockException;
 import exception.auth.seller.NoSellerPresentsException;
 import exception.auth.seller.NotEnteredException;
+import exception.auth.seller.WantDeletionSellerException;
 import exception.item.seller.NoSuchItemException;
 import exception.store.ForbiddenStoreException;
 import exception.store.seller.NoSuchStoreException;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.lang.invoke.WrongMethodTypeException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,7 +29,12 @@ public class SellerControllerAdvice {
 
     @ExceptionHandler(value = NoSellerPresentsException.class)
     public ResponseEntity noSellerWithLoginId(NoSellerPresentsException e) { // 해당 id를 가진 사장님이 없는 경우
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(value = WantDeletionSellerException.class)
+    public ResponseEntity wantDeletionSeller(WantDeletionSellerException e) { // 해당 id를 가진 사장님이 없는 경우
+        return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
     }
 
     @ExceptionHandler(value = NotEnteredException.class)
