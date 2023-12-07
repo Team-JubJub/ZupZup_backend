@@ -32,7 +32,7 @@ public class SellerControllerAdvice {
     }
 
     @ExceptionHandler(value = WantDeletionSellerException.class)
-    public ResponseEntity wantDeletionSeller(WantDeletionSellerException e) { // 해당 id를 가진 사장님이 없는 경우
+    public ResponseEntity wantDeletionSeller(WantDeletionSellerException e) { // 회원탈퇴를 진행 중인 사장님의 경우
         return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
     }
 
