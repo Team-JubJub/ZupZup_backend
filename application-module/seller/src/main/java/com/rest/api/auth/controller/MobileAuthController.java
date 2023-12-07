@@ -58,7 +58,9 @@ public class MobileAuthController {
                             "\t\"storeId\": null\n" +
                             "}"))),
             @ApiResponse(responseCode = "404", description = "제공된 login ID를 가진 사장님 조회가 불가능한 경우(login ID가 잘못된 경우)",
-                    content = @Content(schema = @Schema(example = "Seller with ID doesn't present")))
+                    content = @Content(schema = @Schema(example = "Seller with ID doesn't present"))),
+            @ApiResponse(responseCode = "451", description = "회원탈퇴가 진행 중인 사장님의 경우(로그인 방지)",
+                    content = @Content(schema = @Schema(example = "This seller is in deletion state")))
     })
     @PostMapping("/sign-in")  // 로그인 요청(access, refresh token 모두 만료일 경우)
     public ResponseEntity signInWithSellerLoginId(@Valid @RequestBody SellerSignInDto sellerSignInDto) {

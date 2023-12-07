@@ -14,6 +14,7 @@ import com.zupzup.untact.repository.SellerRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import exception.auth.seller.NoSellerPresentsException;
 import exception.auth.seller.NotEnteredException;
+import exception.auth.seller.WantDeletionSellerException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -52,6 +53,7 @@ public class MobileAuthService {
         SellerTokenInfoDto sellerTokenInfoDto = new SellerTokenInfoDto();
         Seller sellerEntity = sellerRepository.findSellerByLoginId(sellerLoginId);
         if (sellerEntity == null) throw new NoSellerPresentsException();    // 로그인 아이디가 잘못됐을 경우
+        else if (sellerEntity.getWantDeletion()) throw new WantDeletionSellerException();   // 회원탈퇴를 진행 중인 사장님의 경우
         if (!isValidPassword(sellerEntity, sellerLoginPwd)) {   // 비밀번호가 잘못됐을 경우
             sellerTokenInfoDto.setResult(LOGIN_FAILS);
             sellerTokenInfoDto.setMessage("Wrong password");

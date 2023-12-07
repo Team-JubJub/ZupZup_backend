@@ -1,7 +1,9 @@
 package exception.store;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
 public class StoreRuntimeException extends RuntimeException {
 
     private final HttpStatus httpStatus;
