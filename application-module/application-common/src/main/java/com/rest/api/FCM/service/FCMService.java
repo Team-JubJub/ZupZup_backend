@@ -14,6 +14,7 @@ public class FCMService {
 
     private final FirebaseMessaging firebaseMessaging;
 
+
     public String sendMessage(FCMAlertDto fcmAlertDto) {
         Notification notification = Notification.builder()
                 .setTitle(fcmAlertDto.getTitle())
