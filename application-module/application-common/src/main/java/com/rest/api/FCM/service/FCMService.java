@@ -2,7 +2,6 @@ package com.rest.api.FCM.service;
 
 import com.google.firebase.messaging.*;
 import com.rest.api.FCM.dto.FCMAlertDto;
-import com.rest.api.FCM.dto.NotificationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
