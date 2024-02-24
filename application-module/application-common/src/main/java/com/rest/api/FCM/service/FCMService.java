@@ -20,7 +20,7 @@ public class FCMService {
         Message message = Message.builder()
                 .setToken(fcmAlertDto.getTargetToken())
                 .setNotification(notification)
-                .setApnsConfig(ApnsConfig.builder()
+                .setApnsConfig(ApnsConfig.builder() // iOS에서 푸시 알림 시 진동, 소리 등을 동반하도록 설정해줌.
                         .setAps(Aps.builder().setSound("default").build()).build())
                 .build();
         try {
