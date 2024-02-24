@@ -42,7 +42,6 @@ public class NotificationRequest {
     public static class Notification {
         private String title;
         private String body;
-        private String image;
     }
 
 }
