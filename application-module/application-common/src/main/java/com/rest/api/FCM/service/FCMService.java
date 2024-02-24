@@ -20,6 +20,8 @@ public class FCMService {
                 .setTitle(fcmAlertDto.getTitle())
                 .setBody(fcmAlertDto.getBody())
                 .build();
+
+
         Message message = Message.builder()
                 .setToken(fcmAlertDto.getTargetToken())
                 .setNotification(notification)
