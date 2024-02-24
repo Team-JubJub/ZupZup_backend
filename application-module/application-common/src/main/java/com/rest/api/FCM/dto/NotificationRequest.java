@@ -4,7 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+@Builder
+@AllArgsConstructor
+@Getter
 public class NotificationRequest {
+
+    private Message message;
 
     @Builder
     @AllArgsConstructor
