@@ -3,20 +3,20 @@ package com.rest.api.auth.service;
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.utils.AuthUtils;
-import com.zupzup.untact.domain.auth.Role;
-import com.zupzup.untact.domain.auth.user.Provider;
-import com.zupzup.untact.domain.auth.user.User;
-import com.zupzup.untact.domain.order.Order;
-import com.zupzup.untact.domain.order.type.OrderStatus;
-import com.zupzup.untact.domain.store.Store;
-import com.zupzup.untact.dto.MessageDto;
-import com.zupzup.untact.dto.auth.customer.UserDto;
-import com.zupzup.untact.dto.auth.customer.request.AccountRecoveryDto;
-import com.zupzup.untact.dto.auth.customer.request.UserSignInDto;
-import com.zupzup.untact.dto.auth.customer.request.UserSignUpDto;
-import com.zupzup.untact.dto.auth.token.customer.CustomerRefreshResultDto;
-import com.zupzup.untact.dto.auth.token.customer.CustomerTokenInfoDto;
-import com.zupzup.untact.dto.store.StoreDto;
+import com.zupzup.untact.model.domain.auth.Role;
+import com.zupzup.untact.model.domain.auth.user.Provider;
+import com.zupzup.untact.model.domain.auth.user.User;
+import com.zupzup.untact.model.domain.order.Order;
+import com.zupzup.untact.model.domain.order.type.OrderStatus;
+import com.zupzup.untact.model.domain.store.Store;
+import com.zupzup.untact.model.dto.MessageDto;
+import com.zupzup.untact.model.dto.auth.customer.UserDto;
+import com.zupzup.untact.model.dto.auth.customer.request.AccountRecoveryDto;
+import com.zupzup.untact.model.dto.auth.customer.request.UserSignInDto;
+import com.zupzup.untact.model.dto.auth.customer.request.UserSignUpDto;
+import com.zupzup.untact.model.dto.auth.token.customer.CustomerRefreshResultDto;
+import com.zupzup.untact.model.dto.auth.token.customer.CustomerTokenInfoDto;
+import com.zupzup.untact.model.dto.store.StoreDto;
 import com.zupzup.untact.repository.OrderRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
@@ -56,7 +56,8 @@ public class MobileOAuthService {
         checkIsSignUpped(userSignUpDto.getPhoneNumber());
         UserDto userDto = userSignUpDtoToUserDto(provider, userSignUpDto);
 
-        User userEntity = User.builder(userDto.getProviderUserId())
+        User userEntity = User.builder()
+                .providerUserId(userDto.getProviderUserId())
                 .provider(userDto.getProvider())
                 .userName(userDto.getUserName())
                 .nickName(userDto.getNickName())
@@ -71,7 +72,7 @@ public class MobileOAuthService {
                 .role(userDto.getRole())
                 .build();
         userRepository.save(userEntity);
-        userDto.setUserId(userEntity.getUserId());  // user id와 registertime은 user entity 생성 시점에 만들어지므로 다시 dto에 set
+        userDto.setUserId(userEntity.getId());  // user id와 registertime은 user entity 생성 시점에 만들어지므로 다시 dto에 set
         userDto.setRegisterTime(userEntity.getRegisterTime());
         CustomerTokenInfoDto customerTokenInfoDto = generateTokens(userDto, "Create user success");
 
@@ -92,10 +93,10 @@ public class MobileOAuthService {
             deleteUserMessageDto.setMessage(jwtTokenProvider.SUCCESS_STRING);
             String providerUserId = jwtTokenProvider.getProviderUserId(accessToken);
             User userEntity = userRepository.findByProviderUserId(providerUserId).get();    // delete()와 deleteById() 모두 findBy로 유저 엔티티 찾는 과정은 거침. 예외 처리를 직접 하는 것이냐 아니냐의 차이인데, 일단 이렇게 적용하고 delete()가 더 나을지 고민해볼 것.
-            userRepository.deleteById(userEntity.getUserId());  // RDB에서 유저 삭제
+            userRepository.deleteById(userEntity.getId());  // RDB에서 유저 삭제
             redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
             redisService.setStringValue(accessToken, "deleted-user", remainExpiration); // access token 저장(key: acc_token, value: "deleted-user")
-            changeOrderStatusWithdrew(userEntity.getUserId());  // 탈퇴하는 유저의 주문 상태를 변경
+            changeOrderStatusWithdrew(userEntity.getId());  // 탈퇴하는 유저의 주문 상태를 변경
             deleteUserStarAlertAtStore(userEntity); // 탈퇴하는 유저가 찜한 가게의 찜, 알림 설정 유저 목록에서 해당 유저의 id를 뺌
 
             return deleteUserMessageDto;
@@ -268,7 +269,7 @@ public class MobileOAuthService {
     }
 
     private void deleteUserStarAlertAtStore(User userEntity) {
-        Long userId = userEntity.getUserId();
+        Long userId = userEntity.getId();
         Set<Long> starredStoresSet = userEntity.getStarredStores();
         if (starredStoresSet != null) { // 찜한 가게가 null이 아닐 때만 수행, 혹시 모르는 null 체크
             List<Long> starredStores = new ArrayList<>(starredStoresSet);

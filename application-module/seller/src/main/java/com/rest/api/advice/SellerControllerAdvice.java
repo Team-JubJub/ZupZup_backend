@@ -1,6 +1,6 @@
 package com.rest.api.advice;
 
-import com.zupzup.untact.dto.MessageDto;
+import com.zupzup.untact.model.dto.MessageDto;
 import exception.NoSuchException;
 import exception.OrderNotInStoreException;
 import exception.RequestedCountExceedStockException;

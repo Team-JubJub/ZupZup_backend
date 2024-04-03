@@ -2,9 +2,9 @@ package com.rest.api.store.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.store.service.StoreService;
-import com.zupzup.untact.dto.store.seller.request.ModifyStoreDto;
-import com.zupzup.untact.dto.store.seller.response.GetStoreDetailsDto;
-import com.zupzup.untact.dto.store.seller.response.ModifyStoreResponse;
+import com.zupzup.untact.model.dto.store.seller.request.ModifyStoreDto;
+import com.zupzup.untact.model.dto.store.seller.response.GetStoreDetailsDto;
+import com.zupzup.untact.model.dto.store.seller.response.ModifyStoreResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

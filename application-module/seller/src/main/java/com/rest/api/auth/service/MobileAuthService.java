@@ -2,14 +2,14 @@ package com.rest.api.auth.service;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.auth.redis.RedisService;
-import com.zupzup.untact.domain.auth.Role;
-import com.zupzup.untact.domain.auth.seller.Seller;
-import com.zupzup.untact.domain.store.Store;
-import com.zupzup.untact.dto.auth.seller.SellerDto;
-import com.zupzup.untact.dto.auth.seller.request.SellerSignInDto;
-import com.zupzup.untact.dto.auth.seller.test.SellerTestSignUpDto;
-import com.zupzup.untact.dto.auth.token.seller.SellerTokenInfoDto;
-import com.zupzup.untact.dto.store.StoreDto;
+import com.zupzup.untact.model.domain.auth.Role;
+import com.zupzup.untact.model.domain.auth.seller.Seller;
+import com.zupzup.untact.model.domain.store.Store;
+import com.zupzup.untact.model.dto.auth.seller.SellerDto;
+import com.zupzup.untact.model.dto.auth.seller.request.SellerSignInDto;
+import com.zupzup.untact.model.dto.auth.seller.test.SellerTestSignUpDto;
+import com.zupzup.untact.model.dto.auth.token.seller.SellerTokenInfoDto;
+import com.zupzup.untact.model.dto.store.StoreDto;
 import com.zupzup.untact.repository.SellerRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import exception.auth.seller.NoSellerPresentsException;
@@ -107,7 +107,7 @@ public class MobileAuthService {
     }
 
     private void updateStoreDeviceTokens(String deviceToken, Seller sellerEntity, String mode) {
-        Store store = storeRepository.findBySellerId(sellerEntity.getSellerId());   // device token update 시작
+        Store store = storeRepository.findBySellerId(sellerEntity.getId());   // device token update 시작
         if (store == null) throw new NotEnteredException(); // 아직 입점하지 않은 사장님이면 401 처리
 
         StoreDto storeDto = modelMapper.map(store, StoreDto.class);
@@ -119,7 +119,7 @@ public class MobileAuthService {
 
     private SellerTokenInfoDto generateTokens(SellerDto sellerDto, String message) {
         Store storeEntity = storeRepository.findBySellerId(sellerDto.getSellerId());
-        Long storeId = storeEntity.getStoreId();
+        Long storeId = storeEntity.getId();
         List<String> roles = Arrays.asList(sellerDto.getRole().getRole());
         String accessToken = jwtTokenProvider.generateAccessToken(sellerDto.getLoginId(), roles);
         String refreshToken = jwtTokenProvider.generateRefreshToken();
@@ -132,7 +132,7 @@ public class MobileAuthService {
 
     // < ---------- Test part ---------- >
     public Seller testSignUp(SellerTestSignUpDto sellerTestSignUpDto) {
-        Seller sellerEntity = Seller.SellerBuilder()
+        Seller sellerEntity = Seller.builder()
                 .loginId(sellerTestSignUpDto.getLoginId())
                 .loginPwd(passwordEncoder.encode(sellerTestSignUpDto.getLoginPwd()))
                 .name(sellerTestSignUpDto.getName())

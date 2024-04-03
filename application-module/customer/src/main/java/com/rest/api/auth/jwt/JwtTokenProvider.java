@@ -3,7 +3,7 @@ package com.rest.api.auth.jwt;
 import com.rest.api.auth.dto.LoginInfoDto;
 import com.rest.api.auth.redis.RedisService;
 import com.rest.api.auth.service.CustomUserDetailsService;
-import com.zupzup.untact.dto.auth.token.customer.CustomerRefreshResultDto;
+import com.zupzup.untact.model.dto.auth.token.customer.CustomerRefreshResultDto;
 import exception.auth.customer.AppleWithdrawException;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;

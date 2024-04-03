@@ -1,11 +1,11 @@
 package com.rest.api.store.service;
 
 import com.rest.api.utils.FCMUtils;
-import com.zupzup.untact.domain.enums.EnterState;
-import com.zupzup.untact.domain.store.Store;
-import com.zupzup.untact.dto.store.seller.request.ModifyStoreDto;
-import com.zupzup.untact.dto.store.seller.response.GetStoreDetailsDto;
-import com.zupzup.untact.dto.store.seller.response.ModifyStoreResponse;
+import com.zupzup.untact.model.domain.enums.EnterState;
+import com.zupzup.untact.model.domain.store.Store;
+import com.zupzup.untact.model.dto.store.seller.request.ModifyStoreDto;
+import com.zupzup.untact.model.dto.store.seller.response.GetStoreDetailsDto;
+import com.zupzup.untact.model.dto.store.seller.response.ModifyStoreResponse;
 import com.zupzup.untact.repository.StoreRepository;
 import exception.store.ForbiddenStoreException;
 import exception.store.seller.NoSuchStoreException;

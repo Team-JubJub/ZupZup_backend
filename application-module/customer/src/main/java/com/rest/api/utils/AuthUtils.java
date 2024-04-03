@@ -1,7 +1,7 @@
 package com.rest.api.utils;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
-import com.zupzup.untact.domain.auth.user.User;
+import com.zupzup.untact.model.domain.auth.user.User;
 import com.zupzup.untact.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -3,12 +3,12 @@ package com.rest.api.info.controller;
 
 import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.info.service.InfoService;
-import com.zupzup.untact.dto.MessageDto;
-import com.zupzup.untact.dto.info.customer.request.PatchNickNameDto;
-import com.zupzup.untact.dto.info.customer.request.PatchOptionalTermDto;
-import com.zupzup.untact.dto.info.customer.request.PatchPhoneNumberDto;
-import com.zupzup.untact.dto.info.customer.response.GetInfoResponseDto;
-import com.zupzup.untact.dto.info.customer.response.PatchInfoResponseDto;
+import com.zupzup.untact.model.dto.MessageDto;
+import com.zupzup.untact.model.dto.info.customer.request.PatchNickNameDto;
+import com.zupzup.untact.model.dto.info.customer.request.PatchOptionalTermDto;
+import com.zupzup.untact.model.dto.info.customer.request.PatchPhoneNumberDto;
+import com.zupzup.untact.model.dto.info.customer.response.GetInfoResponseDto;
+import com.zupzup.untact.model.dto.info.customer.response.PatchInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

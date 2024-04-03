@@ -1,6 +1,6 @@
 package com.rest.api.auth.dto;
 
-import com.zupzup.untact.domain.auth.seller.Seller;
+import com.zupzup.untact.model.domain.auth.seller.Seller;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,7 +29,7 @@ public class LoginInfoDto implements UserDetails { // Token validation에 사용
     }
 
     public LoginInfoDto(Seller seller) {
-        this.number = seller.getSellerId();
+        this.number = seller.getId();
         this.loginId = seller.getLoginId();
         this.name = seller.getName();
         this.phoneNumber = seller.getPhoneNumber();
