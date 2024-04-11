@@ -1,6 +1,6 @@
 package com.rest.api.info.service;
 
-import com.rest.api.utils.AuthUtils;
+import com.zupzup.untact.social.utils.AuthUtils;
 import com.zupzup.untact.model.domain.auth.user.User;
 import com.zupzup.untact.model.dto.auth.customer.UserDto;
 import com.zupzup.untact.model.dto.info.customer.request.PatchNickNameDto;

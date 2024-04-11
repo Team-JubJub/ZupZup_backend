@@ -7,6 +7,7 @@ pluginManagement {
 rootProject.name = 'back_end'
 include ':spring-module-base'
 include ':spring-module-common'
+include ':spring-module-auth'
 include ':application-module'
 
 include 'application-module:application-common'

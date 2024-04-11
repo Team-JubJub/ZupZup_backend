@@ -12,6 +12,7 @@ subprojects {   // Applied to application-common, seller, customer
     dependencies {
         implementation(project(":spring-module-base"))
         implementation(project(":spring-module-common"))
+        implementation(project(":spring-module-auth"))
         implementation 'org.springframework.boot:spring-boot-starter-webflux'   // WebClient 의존성 주입
 
         // swagger

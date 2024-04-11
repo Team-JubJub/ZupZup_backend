@@ -1,7 +1,7 @@
 package com.rest.api.order.controller;
 
-import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.order.service.OrderService;
+import com.zupzup.untact.auth.jwt.JwtTokenProvider;
 import com.zupzup.untact.model.domain.order.type.OrderStatus;
 import com.zupzup.untact.model.dto.order.seller.request.PatchOrderDataDto;
 import com.zupzup.untact.model.dto.order.seller.response.GetOrderDetailsDto;

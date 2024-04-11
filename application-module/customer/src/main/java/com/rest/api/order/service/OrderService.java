@@ -2,7 +2,7 @@ package com.rest.api.order.service;
 
 import com.rest.api.FCM.dto.FCMAlertDto;
 import com.rest.api.FCM.service.FCMService;
-import com.rest.api.utils.AuthUtils;
+import com.zupzup.untact.social.utils.AuthUtils;
 import com.zupzup.untact.model.domain.auth.user.User;
 import com.zupzup.untact.model.domain.data.FirstOrderData;
 import com.zupzup.untact.model.domain.order.Order;
@@ -17,7 +17,7 @@ import com.zupzup.untact.repository.FirstOrderDataRepository;
 import com.zupzup.untact.repository.OrderRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
-import exception.NoSuchException;
+import com.zupzup.untact.exception.exception.NoSuchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;

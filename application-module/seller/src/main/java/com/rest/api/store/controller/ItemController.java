@@ -1,7 +1,7 @@
 package com.rest.api.store.controller;
 
-import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.store.service.ItemService;
+import com.zupzup.untact.auth.jwt.JwtTokenProvider;
 import com.zupzup.untact.model.dto.item.seller.request.PatchItemCountDto;
 import com.zupzup.untact.model.dto.item.seller.request.PostItemDto;
 import com.zupzup.untact.model.dto.item.seller.request.UpdateRequestDto;

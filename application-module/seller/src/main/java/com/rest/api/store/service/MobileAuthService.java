@@ -1,7 +1,10 @@
-package com.rest.api.auth.service;
+package com.rest.api.store.service;
 
-import com.rest.api.auth.jwt.JwtTokenProvider;
-import com.rest.api.auth.redis.RedisService;
+import com.zupzup.untact.auth.jwt.JwtTokenProvider;
+import com.zupzup.untact.custom.redis.CustomRedisService;
+import com.zupzup.untact.exception.exception.auth.seller.NoSellerPresentsException;
+import com.zupzup.untact.exception.exception.auth.seller.NotEnteredException;
+import com.zupzup.untact.exception.exception.auth.seller.WantDeletionSellerException;
 import com.zupzup.untact.model.domain.auth.Role;
 import com.zupzup.untact.model.domain.auth.seller.Seller;
 import com.zupzup.untact.model.domain.store.Store;
@@ -12,9 +15,6 @@ import com.zupzup.untact.model.dto.auth.token.seller.SellerTokenInfoDto;
 import com.zupzup.untact.model.dto.store.StoreDto;
 import com.zupzup.untact.repository.SellerRepository;
 import com.zupzup.untact.repository.StoreRepository;
-import exception.auth.seller.NoSellerPresentsException;
-import exception.auth.seller.NotEnteredException;
-import exception.auth.seller.WantDeletionSellerException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -39,7 +39,7 @@ public class MobileAuthService {
 
     private final SellerRepository sellerRepository;
     private final StoreRepository storeRepository;
-    private final RedisService redisService;
+    private final CustomRedisService customRedisService;
     private final JwtTokenProvider jwtTokenProvider;
 
     final static public String LOGIN_FAILS = "Login fails";
@@ -78,8 +78,8 @@ public class MobileAuthService {
 
         Long remainExpiration = jwtTokenProvider.remainExpiration(accessToken); // 남은 expiration을 계산함.
         if (remainExpiration >= 1) {
-            redisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
-            redisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
+            customRedisService.deleteKey(refreshToken); // refreshToken을 key로 하는 데이터 redis에서 삭제
+            customRedisService.setStringValue(accessToken, "sign-out", remainExpiration); // access token 저장(key: acc_token, value: "sign-out")
             return "success";
         }
 
@@ -123,7 +123,7 @@ public class MobileAuthService {
         List<String> roles = Arrays.asList(sellerDto.getRole().getRole());
         String accessToken = jwtTokenProvider.generateAccessToken(sellerDto.getLoginId(), roles);
         String refreshToken = jwtTokenProvider.generateRefreshToken();
-        redisService.setStringValue(refreshToken, sellerDto.getLoginId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
+        customRedisService.setStringValue(refreshToken, sellerDto.getLoginId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
         SellerTokenInfoDto sellerTokenInfoDto = new SellerTokenInfoDto(LOGIN_SUCCESS, message, accessToken, refreshToken, storeId);
 
         return sellerTokenInfoDto;

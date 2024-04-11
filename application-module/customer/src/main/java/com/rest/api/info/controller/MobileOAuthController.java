@@ -1,7 +1,7 @@
-package com.rest.api.auth.controller;
+package com.rest.api.info.controller;
 
-import com.rest.api.auth.jwt.JwtTokenProvider;
-import com.rest.api.auth.service.MobileOAuthService;
+import com.zupzup.untact.social.jwt.SocialJwtTokenProvider;
+import com.rest.api.info.service.MobileOAuthService;
 import com.zupzup.untact.model.dto.MessageDto;
 import com.zupzup.untact.model.dto.auth.customer.UserDto;
 import com.zupzup.untact.model.dto.auth.customer.request.*;
@@ -38,14 +38,14 @@ public class MobileOAuthController {
         /account-recovery : 계정 찾기(가입한 플랫폼 리턴)
      */
     private final MobileOAuthService mobileOAuthService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final SocialJwtTokenProvider jwtTokenProvider;
 
     // < -------------- Sign-up part -------------- >
     @Operation(summary = "회원가입", description = "회원가입 요청")
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "회원가입 성공",
-                    headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
-                            @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
+                    headers = {@Header(name = SocialJwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
+                            @Header(name = SocialJwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
                     content = @Content(schema = @Schema(implementation = CustomerTokenInfoDto.class))),
             @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우",
                     content = @Content(schema = @Schema(example = "Required request body is missing"))),
@@ -86,8 +86,8 @@ public class MobileOAuthController {
     @DeleteMapping("/account/{provider}")   // 회원탈퇴 요청
     public ResponseEntity deleteUser(@Parameter(name = "provider", description = "소셜 플랫폼 종류(소문자)", in = ParameterIn.PATH,
             content = @Content(schema = @Schema(type = "string", allowableValues = {"naver", "kakao", "google", "apple"}))) @PathVariable String provider,
-                                     @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                     @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+                                     @Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                     @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         MessageDto deleteUserMessageDto = mobileOAuthService.deleteUser(accessToken, refreshToken);
         if (deleteUserMessageDto.getMessage().equals(jwtTokenProvider.SUCCESS_STRING)) {
             deleteUserMessageDto.setMessage("Delete user successful");
@@ -136,8 +136,8 @@ public class MobileOAuthController {
     @Operation(summary = "로그인(리프레시 토큰 유효 시)", description = "리프레시 토큰을 이용한 액세스 토큰 갱신")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
-                    headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
-                            @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
+                    headers = {@Header(name = SocialJwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
+                            @Header(name = SocialJwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
                     content = @Content(schema = @Schema(implementation = CustomerRefreshResultDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
@@ -145,7 +145,7 @@ public class MobileOAuthController {
                     content = @Content(schema = @Schema(example = "Refresh token validation failed. Login required")))
     })
     @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우), refresh token만 받아옴
-    public ResponseEntity signInWithRefreshToken(@Parameter(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+    public ResponseEntity signInWithRefreshToken(@Parameter(name = SocialJwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         CustomerRefreshResultDto refreshResult = mobileOAuthService.signInWithRefreshToken(refreshToken);
         if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
             HttpHeaders responseHeaders = new HttpHeaders();
@@ -161,8 +161,8 @@ public class MobileOAuthController {
     @Operation(summary = "로그인(모든 토큰 만료 시)", description = "소셜 플랫폼에 재로그인을 통해 받아온 user unique ID를 이용, 액세스와 리프레시 토큰 재발급")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스, 리프레시 토큰 재발급(로그인) 성공",
-                    headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
-                            @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
+                    headers = {@Header(name = SocialJwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
+                            @Header(name = SocialJwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
                     content = @Content(schema = @Schema(implementation = CustomerTokenInfoDto.class))),
             @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우",
                     content = @Content(schema = @Schema(example = "Required request body is missing"))),
@@ -198,8 +198,8 @@ public class MobileOAuthController {
                     content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
     @PostMapping("/sign-out")
-    public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+    public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         String signOutResult = mobileOAuthService.signOut(accessToken, refreshToken);
         if (signOutResult.equals("success")) {
             return new ResponseEntity(new MessageDto("Sign-out successful"), HttpStatus.OK);
@@ -247,8 +247,8 @@ public class MobileOAuthController {
     // <----------- Test Controller ----------->
     @Operation(summary = "김영후의 테스트용 컨트롤러")
     @GetMapping("/test/sign-in")
-    public ResponseEntity signInTestPage(@RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                         @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+    public ResponseEntity signInTestPage(@RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                         @RequestHeader(SocialJwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         System.out.println("Sign in test start");
         UserDto userDto = mobileOAuthService.signInTestToken(accessToken, refreshToken);
 

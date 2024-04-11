@@ -1,8 +1,9 @@
-package com.rest.api.auth.controller;
+package com.rest.api.store.controller;
 
-import com.rest.api.auth.jwt.JwtTokenProvider;
-import com.rest.api.auth.redis.RedisService;
-import com.rest.api.auth.service.MobileAuthService;
+import com.zupzup.untact.auth.jwt.JwtTokenProvider;
+import com.zupzup.untact.custom.jwt.CustomJwtTokenProvider;
+import com.zupzup.untact.custom.redis.CustomRedisService;
+import com.rest.api.store.service.MobileAuthService;
 import com.zupzup.untact.model.domain.auth.seller.Seller;
 import com.zupzup.untact.model.dto.MessageDto;
 import com.zupzup.untact.model.dto.auth.seller.request.SellerSignInDto;
@@ -31,8 +32,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MobileAuthController {
 
-    private final JwtTokenProvider jwtTokenProvider;
-    private final RedisService redisService;
+    private final CustomJwtTokenProvider jwtTokenProvider;
+    private final CustomRedisService customRedisService;
     private final MobileAuthService mobileAuthService;
 
     // < -------------- Sign-in part -------------- >
@@ -151,6 +152,5 @@ public class MobileAuthController {
 
         return new ResponseEntity(sellerEntity, HttpStatus.OK);
     }
-
 
 }

@@ -1,6 +1,6 @@
 package com.rest.api.store.service;
 
-import com.rest.api.utils.AuthUtils;
+import com.zupzup.untact.social.utils.AuthUtils;
 import com.zupzup.untact.model.domain.auth.user.User;
 import com.zupzup.untact.model.domain.enums.EnterState;
 import com.zupzup.untact.model.domain.enums.StoreCategory;
@@ -13,9 +13,9 @@ import com.zupzup.untact.model.dto.store.customer.response.GetStoreDetailsDto;
 import com.zupzup.untact.repository.ItemRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
-import exception.NoSuchException;
-import exception.store.ForbiddenStoreException;
-import exception.store.customer.StoreNotStarredException;
+import com.zupzup.untact.exception.exception.NoSuchException;
+import com.zupzup.untact.exception.exception.store.ForbiddenStoreException;
+import com.zupzup.untact.exception.exception.store.customer.StoreNotStarredException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;

@@ -1,8 +1,8 @@
 package com.rest.api.config;
 
-import com.rest.api.auth.jwt.JwtAuthenticationFilter;
-import com.rest.api.auth.jwt.JwtExceptionFilter;
-import com.rest.api.auth.jwt.JwtTokenProvider;
+import com.zupzup.untact.social.jwt.SocialJwtAuthenticationFilter;
+import com.zupzup.untact.social.jwt.SocialJwtExceptionFilter;
+import com.zupzup.untact.social.jwt.SocialJwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +22,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final SocialJwtTokenProvider jwtTokenProvider;
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
@@ -64,9 +64,9 @@ public class SecurityConfig {
                     .requestMatchers( "/", "http://localhost:8082/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll() // H2, swagger permit all
                     .requestMatchers("/mobile/sign-up/**", "/mobile/sign-in/**", "/mobile/account-recovery").permitAll()    // 회원가입, 로그인, 계정 찾기 permit all
                     .anyRequest().authenticated()   // permitAll() 이외의 모든 request authenticated 처리
-                .and()  // Filter로 JwtAuthenticationFilter 적용, 그 앞에 Exception handle 위해 JwtExceptionFilter 추가
-                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                    .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
+                .and()  // Filter로 CustomJwtAuthenticationFilter 적용, 그 앞에 Exception handle 위해 SocialJwtExceptionFilter 추가
+                    .addFilterBefore(new SocialJwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(new SocialJwtExceptionFilter(), SocialJwtAuthenticationFilter.class);
 
         return http.build();
     }

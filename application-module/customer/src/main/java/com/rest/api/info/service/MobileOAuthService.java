@@ -1,8 +1,7 @@
-package com.rest.api.auth.service;
+package com.rest.api.info.service;
 
-import com.rest.api.auth.jwt.JwtTokenProvider;
-import com.rest.api.auth.redis.RedisService;
-import com.rest.api.utils.AuthUtils;
+import com.zupzup.untact.exception.exception.auth.customer.AlreadySignUppedException;
+import com.zupzup.untact.exception.exception.auth.customer.NoUserPresentsException;
 import com.zupzup.untact.model.domain.auth.Role;
 import com.zupzup.untact.model.domain.auth.user.Provider;
 import com.zupzup.untact.model.domain.auth.user.User;
@@ -20,8 +19,9 @@ import com.zupzup.untact.model.dto.store.StoreDto;
 import com.zupzup.untact.repository.OrderRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
-import exception.auth.customer.AlreadySignUppedException;
-import exception.auth.customer.NoUserPresentsException;
+import com.zupzup.untact.social.jwt.SocialJwtTokenProvider;
+import com.zupzup.untact.social.redis.SocialRedisService;
+import com.zupzup.untact.social.utils.AuthUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -45,8 +45,8 @@ public class MobileOAuthService {
     private final UserRepository userRepository;
     private final OrderRepository orderRepository;
     private final StoreRepository storeRepository;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final RedisService redisService;
+    private final SocialJwtTokenProvider jwtTokenProvider;
+    private final SocialRedisService redisService;
     private final AuthUtils authUtils;
 
     final static public String NO_USER_FOUND = "No user found";
@@ -130,7 +130,7 @@ public class MobileOAuthService {
         CustomerRefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
         if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
             redisService.deleteKey(refreshToken);   // 기존 리프레시 토큰 삭제
-            redisService.setStringValue(refreshResult.getRefreshToken(), refreshResult.getProviderUserId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);   // 새 리프레시 토큰 저장
+            redisService.setStringValue(refreshResult.getRefreshToken(), refreshResult.getProviderUserId(), SocialJwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);   // 새 리프레시 토큰 저장
         }
 
         return refreshResult;
@@ -238,7 +238,7 @@ public class MobileOAuthService {
         List<String> roles = Arrays.asList(userDto.getRole().getRole());
         String accessToken = jwtTokenProvider.generateAccessToken(userDto.getProviderUserId(), roles);
         String refreshToken = jwtTokenProvider.generateRefreshToken();
-        redisService.setStringValue(refreshToken, userDto.getProviderUserId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
+        redisService.setStringValue(refreshToken, userDto.getProviderUserId(), SocialJwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
         CustomerTokenInfoDto customerTokenInfoDto = new CustomerTokenInfoDto("success", message, accessToken, refreshToken, userDto);
 
         return customerTokenInfoDto;
