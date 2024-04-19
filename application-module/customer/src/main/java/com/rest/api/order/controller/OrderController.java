@@ -1,10 +1,10 @@
 package com.rest.api.order.controller;
 
-import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.order.service.OrderService;
-import com.zupzup.untact.dto.order.customer.request.PostOrderRequestDto;
-import com.zupzup.untact.dto.order.customer.response.GetOrderDetailsDto;
-import com.zupzup.untact.dto.order.customer.response.PostOrderResponseDto;
+import com.zupzup.untact.model.dto.order.customer.request.PostOrderRequestDto;
+import com.zupzup.untact.model.dto.order.customer.response.GetOrderDetailsDto;
+import com.zupzup.untact.model.dto.order.customer.response.PostOrderResponseDto;
+import com.zupzup.untact.social.jwt.SocialJwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -46,7 +46,7 @@ public class OrderController {
                             + "or Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
     @PostMapping("/store/{storeId}")
-    public ResponseEntity addOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity addOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                    @PathVariable Long storeId, @RequestBody @Valid PostOrderRequestDto postOrderRequestDto) {
         PostOrderResponseDto postOrderResponseDto = orderService.addOrder(accessToken, storeId, postOrderRequestDto);
 
@@ -70,7 +70,7 @@ public class OrderController {
                             + "or Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
     @GetMapping("")
-    public ResponseEntity orderList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
+    public ResponseEntity orderList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
         List<GetOrderDetailsDto> allOrderListDto = orderService.orderList(accessToken);
         
         return new ResponseEntity(allOrderListDto, HttpStatus.OK);
@@ -89,7 +89,7 @@ public class OrderController {
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 주문을 찾을 수 없습니다.\"\n}")))
     })
     @GetMapping("/{orderId}")
-    public ResponseEntity orderDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken, @PathVariable Long orderId) {
+    public ResponseEntity orderDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken, @PathVariable Long orderId) {
         GetOrderDetailsDto orderDetailsDto = orderService.orderDetails(orderId);
 
         return new ResponseEntity(orderDetailsDto, HttpStatus.OK);

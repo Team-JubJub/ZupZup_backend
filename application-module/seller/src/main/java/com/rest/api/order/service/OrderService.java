@@ -1,27 +1,27 @@
 package com.rest.api.order.service;
 
 import com.rest.api.utils.FCMUtils;
-import com.zupzup.untact.domain.auth.user.User;
-import com.zupzup.untact.domain.enums.EnterState;
-import com.zupzup.untact.domain.item.Item;
-import com.zupzup.untact.domain.order.Order;
-import com.zupzup.untact.domain.order.type.OrderSpecific;
-import com.zupzup.untact.domain.order.type.OrderStatus;
-import com.zupzup.untact.domain.store.Store;
-import com.zupzup.untact.dto.item.seller.response.GetDtoWithStore;
-import com.zupzup.untact.dto.order.OrderDto;
-import com.zupzup.untact.dto.order.seller.request.PatchOrderDataDto;
-import com.zupzup.untact.dto.order.seller.response.GetOrderDetailsDto;
-import com.zupzup.untact.dto.order.seller.response.GetOrderListDto;
-import com.zupzup.untact.dto.order.seller.response.PatchOrderResponseDto;
+import com.zupzup.untact.model.domain.auth.user.User;
+import com.zupzup.untact.model.domain.enums.EnterState;
+import com.zupzup.untact.model.domain.item.Item;
+import com.zupzup.untact.model.domain.order.Order;
+import com.zupzup.untact.model.domain.order.type.OrderSpecific;
+import com.zupzup.untact.model.domain.order.type.OrderStatus;
+import com.zupzup.untact.model.domain.store.Store;
+import com.zupzup.untact.model.dto.item.seller.response.GetDtoWithStore;
+import com.zupzup.untact.model.dto.order.OrderDto;
+import com.zupzup.untact.model.dto.order.seller.request.PatchOrderDataDto;
+import com.zupzup.untact.model.dto.order.seller.response.GetOrderDetailsDto;
+import com.zupzup.untact.model.dto.order.seller.response.GetOrderListDto;
+import com.zupzup.untact.model.dto.order.seller.response.PatchOrderResponseDto;
 import com.zupzup.untact.repository.ItemRepository;
 import com.zupzup.untact.repository.OrderRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
-import exception.NoSuchException;
-import exception.OrderNotInStoreException;
-import exception.RequestedCountExceedStockException;
-import exception.store.ForbiddenStoreException;
+import com.zupzup.untact.exception.exception.NoSuchException;
+import com.zupzup.untact.exception.exception.OrderNotInStoreException;
+import com.zupzup.untact.exception.exception.RequestedCountExceedStockException;
+import com.zupzup.untact.exception.exception.store.ForbiddenStoreException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
@@ -129,7 +129,7 @@ public class OrderService {
     private void isRequestedCountNotExceedStock(Long sellerRequestedItemId, Integer sellerRequestedItemCount) {
         Item itemEntity = itemRepository.findById(sellerRequestedItemId).get();
         if(sellerRequestedItemCount.compareTo(itemEntity.getItemCount()) > 0) { // sellerReq - 가 itemEntity.get-보다 크면
-            throw new RequestedCountExceedStockException(itemEntity.getItemId(), itemEntity.getItemName());
+            throw new RequestedCountExceedStockException(itemEntity.getId(), itemEntity.getItemName());
         }
     }
 

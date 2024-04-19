@@ -1,12 +1,12 @@
 package com.rest.api.advice;
 
-import com.zupzup.untact.dto.MessageDto;
-import exception.NoSuchException;
-import exception.auth.customer.AlreadySignUppedException;
-import exception.auth.customer.AppleWithdrawException;
-import exception.auth.customer.NoUserPresentsException;
-import exception.store.ForbiddenStoreException;
-import exception.store.customer.StoreNotStarredException;
+import com.zupzup.untact.model.dto.MessageDto;
+import com.zupzup.untact.exception.exception.NoSuchException;
+import com.zupzup.untact.exception.exception.auth.customer.AlreadySignUppedException;
+import com.zupzup.untact.exception.exception.auth.customer.AppleWithdrawException;
+import com.zupzup.untact.exception.exception.auth.customer.NoUserPresentsException;
+import com.zupzup.untact.exception.exception.store.ForbiddenStoreException;
+import com.zupzup.untact.exception.exception.store.customer.StoreNotStarredException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

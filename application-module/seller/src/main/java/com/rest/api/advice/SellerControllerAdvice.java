@@ -1,15 +1,15 @@
 package com.rest.api.advice;
 
-import com.zupzup.untact.dto.MessageDto;
-import exception.NoSuchException;
-import exception.OrderNotInStoreException;
-import exception.RequestedCountExceedStockException;
-import exception.auth.seller.NoSellerPresentsException;
-import exception.auth.seller.NotEnteredException;
-import exception.auth.seller.WantDeletionSellerException;
-import exception.item.seller.NoSuchItemException;
-import exception.store.ForbiddenStoreException;
-import exception.store.seller.NoSuchStoreException;
+import com.zupzup.untact.exception.exception.NoSuchException;
+import com.zupzup.untact.exception.exception.OrderNotInStoreException;
+import com.zupzup.untact.exception.exception.RequestedCountExceedStockException;
+import com.zupzup.untact.exception.exception.auth.seller.NoSellerPresentsException;
+import com.zupzup.untact.exception.exception.auth.seller.NotEnteredException;
+import com.zupzup.untact.exception.exception.auth.seller.WantDeletionSellerException;
+import com.zupzup.untact.exception.exception.item.seller.NoSuchItemException;
+import com.zupzup.untact.exception.exception.store.ForbiddenStoreException;
+import com.zupzup.untact.exception.exception.store.seller.NoSuchStoreException;
+import com.zupzup.untact.model.dto.MessageDto;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Path;
 import org.springframework.http.HttpStatus;

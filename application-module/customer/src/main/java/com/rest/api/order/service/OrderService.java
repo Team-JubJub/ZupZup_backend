@@ -2,22 +2,22 @@ package com.rest.api.order.service;
 
 import com.rest.api.FCM.dto.FCMAlertDto;
 import com.rest.api.FCM.service.FCMService;
-import com.rest.api.utils.AuthUtils;
-import com.zupzup.untact.domain.auth.user.User;
-import com.zupzup.untact.domain.data.FirstOrderData;
-import com.zupzup.untact.domain.order.Order;
-import com.zupzup.untact.domain.order.type.OrderSpecific;
-import com.zupzup.untact.domain.order.type.OrderStatus;
-import com.zupzup.untact.domain.store.Store;
-import com.zupzup.untact.dto.order.OrderDto;
-import com.zupzup.untact.dto.order.customer.request.PostOrderRequestDto;
-import com.zupzup.untact.dto.order.customer.response.GetOrderDetailsDto;
-import com.zupzup.untact.dto.order.customer.response.PostOrderResponseDto;
+import com.zupzup.untact.social.utils.AuthUtils;
+import com.zupzup.untact.model.domain.auth.user.User;
+import com.zupzup.untact.model.domain.data.FirstOrderData;
+import com.zupzup.untact.model.domain.order.Order;
+import com.zupzup.untact.model.domain.order.type.OrderSpecific;
+import com.zupzup.untact.model.domain.order.type.OrderStatus;
+import com.zupzup.untact.model.domain.store.Store;
+import com.zupzup.untact.model.dto.order.OrderDto;
+import com.zupzup.untact.model.dto.order.customer.request.PostOrderRequestDto;
+import com.zupzup.untact.model.dto.order.customer.response.GetOrderDetailsDto;
+import com.zupzup.untact.model.dto.order.customer.response.PostOrderResponseDto;
 import com.zupzup.untact.repository.FirstOrderDataRepository;
 import com.zupzup.untact.repository.OrderRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
-import exception.NoSuchException;
+import com.zupzup.untact.exception.exception.NoSuchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -58,7 +58,8 @@ public class OrderService {
         userEntity.updateOrderCount();
         userRepository.save(userEntity);
 
-        Order orderEntity = Order.builder(orderDto.getStoreId())
+        Order orderEntity = Order.builder()
+                .storeId(orderDto.getStoreId())
                 .userId(orderDto.getUserId()) // user id 테스트 값임
                 .orderStatus(OrderStatus.NEW)
                 .userName(orderDto.getUserName())
@@ -89,7 +90,7 @@ public class OrderService {
     // <-------------------- GET part -------------------->
     public List<GetOrderDetailsDto> orderList(String accessToken) {
         User userEntity = authUtils.getUserEntity(accessToken);
-        List<Order> userOrderListEntity = orderRepository.findByUserId(userEntity.getUserId());
+        List<Order> userOrderListEntity = orderRepository.findByUserId(userEntity.getId());
         List<GetOrderDetailsDto> userOrderListDto = userOrderListEntity.stream()
                 .filter(m -> !m.getOrderStatus().equals(OrderStatus.WITHDREW))
                 .map(m -> modelMapper.map(m, GetOrderDetailsDto.class))
@@ -163,7 +164,7 @@ public class OrderService {
 
         OrderDto orderDto = new OrderDto();
         orderDto.setStoreId(storeId);
-        orderDto.setUserId(userEntity.getUserId());
+        orderDto.setUserId(userEntity.getId());
         orderDto.setOrderStatus(OrderStatus.NEW);
         orderDto.setUserName(userEntity.getUserName());
         orderDto.setPhoneNumber(userEntity.getPhoneNumber());

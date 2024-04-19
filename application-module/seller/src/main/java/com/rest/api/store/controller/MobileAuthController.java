@@ -1,14 +1,15 @@
-package com.rest.api.auth.controller;
+package com.rest.api.store.controller;
 
-import com.rest.api.auth.jwt.JwtTokenProvider;
-import com.rest.api.auth.redis.RedisService;
-import com.rest.api.auth.service.MobileAuthService;
-import com.zupzup.untact.domain.auth.seller.Seller;
-import com.zupzup.untact.dto.MessageDto;
-import com.zupzup.untact.dto.auth.seller.request.SellerSignInDto;
-import com.zupzup.untact.dto.auth.seller.test.SellerTestSignUpDto;
-import com.zupzup.untact.dto.auth.token.seller.SellerRefreshResultDto;
-import com.zupzup.untact.dto.auth.token.seller.SellerTokenInfoDto;
+import com.zupzup.untact.auth.jwt.JwtTokenProvider;
+import com.zupzup.untact.custom.jwt.CustomJwtTokenProvider;
+import com.zupzup.untact.custom.redis.CustomRedisService;
+import com.rest.api.store.service.MobileAuthService;
+import com.zupzup.untact.model.domain.auth.seller.Seller;
+import com.zupzup.untact.model.dto.MessageDto;
+import com.zupzup.untact.model.dto.auth.seller.request.SellerSignInDto;
+import com.zupzup.untact.model.dto.auth.seller.test.SellerTestSignUpDto;
+import com.zupzup.untact.model.dto.auth.token.seller.SellerRefreshResultDto;
+import com.zupzup.untact.model.dto.auth.token.seller.SellerTokenInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -31,8 +32,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MobileAuthController {
 
-    private final JwtTokenProvider jwtTokenProvider;
-    private final RedisService redisService;
+    private final CustomJwtTokenProvider jwtTokenProvider;
+    private final CustomRedisService customRedisService;
     private final MobileAuthService mobileAuthService;
 
     // < -------------- Sign-in part -------------- >
@@ -151,6 +152,5 @@ public class MobileAuthController {
 
         return new ResponseEntity(sellerEntity, HttpStatus.OK);
     }
-
 
 }

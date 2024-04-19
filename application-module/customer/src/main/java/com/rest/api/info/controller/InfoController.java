@@ -1,14 +1,14 @@
 package com.rest.api.info.controller;
 
 
-import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.info.service.InfoService;
-import com.zupzup.untact.dto.MessageDto;
-import com.zupzup.untact.dto.info.customer.request.PatchNickNameDto;
-import com.zupzup.untact.dto.info.customer.request.PatchOptionalTermDto;
-import com.zupzup.untact.dto.info.customer.request.PatchPhoneNumberDto;
-import com.zupzup.untact.dto.info.customer.response.GetInfoResponseDto;
-import com.zupzup.untact.dto.info.customer.response.PatchInfoResponseDto;
+import com.zupzup.untact.model.dto.MessageDto;
+import com.zupzup.untact.model.dto.info.customer.request.PatchNickNameDto;
+import com.zupzup.untact.model.dto.info.customer.request.PatchOptionalTermDto;
+import com.zupzup.untact.model.dto.info.customer.request.PatchPhoneNumberDto;
+import com.zupzup.untact.model.dto.info.customer.response.GetInfoResponseDto;
+import com.zupzup.untact.model.dto.info.customer.response.PatchInfoResponseDto;
+import com.zupzup.untact.social.jwt.SocialJwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -44,7 +44,7 @@ public class InfoController {
                     content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
     @GetMapping("")
-    public ResponseEntity getUserInfo(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
+    public ResponseEntity getUserInfo(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
         GetInfoResponseDto userInfoDto = infoService.getUserInfo(accessToken);
 
         return new ResponseEntity(userInfoDto, HttpStatus.OK);
@@ -64,7 +64,7 @@ public class InfoController {
                     content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
     @PatchMapping("/phone-number")
-    public ResponseEntity updatePhoneNumber(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity updatePhoneNumber(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                             @Valid @RequestBody PatchPhoneNumberDto patchPhoneNumberDto) {
         PatchInfoResponseDto patchPhoneNumberResponseDto = infoService.updatePhoneNumber(accessToken, patchPhoneNumberDto);
 
@@ -86,7 +86,7 @@ public class InfoController {
                     content = @Content(schema = @Schema(example = "{\n\"message\" : \"Nickname conflicted.\"\n}")))
     })
     @PatchMapping("/nickname")
-    public ResponseEntity updateNickName(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity updateNickName(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                          @RequestBody PatchNickNameDto patchNickNameDto) {
 
         PatchInfoResponseDto patchNicknameResponseDto = infoService.updateNickName(accessToken, patchNickNameDto);
@@ -107,7 +107,7 @@ public class InfoController {
                     content = @Content(schema = @Schema(example = "Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
     @PatchMapping("/optional-term")
-    public ResponseEntity updateOptionalTerm(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity updateOptionalTerm(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                             @Valid @RequestBody PatchOptionalTermDto patchOptionalTermDto) {
         PatchInfoResponseDto patchOptionalResponseTermDto = infoService.updateOptionalTerm(accessToken, patchOptionalTermDto);
 

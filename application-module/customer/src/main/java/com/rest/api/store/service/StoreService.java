@@ -1,21 +1,21 @@
 package com.rest.api.store.service;
 
-import com.rest.api.utils.AuthUtils;
-import com.zupzup.untact.domain.auth.user.User;
-import com.zupzup.untact.domain.enums.EnterState;
-import com.zupzup.untact.domain.enums.StoreCategory;
-import com.zupzup.untact.domain.item.Item;
-import com.zupzup.untact.domain.store.Store;
-import com.zupzup.untact.dto.auth.customer.UserDto;
-import com.zupzup.untact.dto.item.customer.response.ItemResponseDto;
-import com.zupzup.untact.dto.store.StoreDto;
-import com.zupzup.untact.dto.store.customer.response.GetStoreDetailsDto;
+import com.zupzup.untact.social.utils.AuthUtils;
+import com.zupzup.untact.model.domain.auth.user.User;
+import com.zupzup.untact.model.domain.enums.EnterState;
+import com.zupzup.untact.model.domain.enums.StoreCategory;
+import com.zupzup.untact.model.domain.item.Item;
+import com.zupzup.untact.model.domain.store.Store;
+import com.zupzup.untact.model.dto.auth.customer.UserDto;
+import com.zupzup.untact.model.dto.item.customer.response.ItemResponseDto;
+import com.zupzup.untact.model.dto.store.StoreDto;
+import com.zupzup.untact.model.dto.store.customer.response.GetStoreDetailsDto;
 import com.zupzup.untact.repository.ItemRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
-import exception.NoSuchException;
-import exception.store.ForbiddenStoreException;
-import exception.store.customer.StoreNotStarredException;
+import com.zupzup.untact.exception.exception.NoSuchException;
+import com.zupzup.untact.exception.exception.store.ForbiddenStoreException;
+import com.zupzup.untact.exception.exception.store.customer.StoreNotStarredException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -134,17 +134,17 @@ public class  StoreService {
             if (starredStoreList == null) starredStoreList = new HashSet<>(); // 값이 null이라면 새 list로 초기화
             if (starredUserList == null) starredUserList = new HashSet<>();
             starredStoreList.add(storeId);
-            starredUserList.add(userEntity.getUserId());
+            starredUserList.add(userEntity.getId());
 
             result = true;
         }
         else if (action.equals("unset")) {  // 빼주고
             if (isStoreAlerted(userEntity, storeId)) {  // 찜 해제 시 알림 설정도 해제해줘야 함
                 userDto.setAlertStores(removeAlertElement(userDto.getAlertStores(), storeId));
-                storeDto.setAlertUsers(removeAlertElement(storeDto.getAlertUsers(), userEntity.getUserId()));
+                storeDto.setAlertUsers(removeAlertElement(storeDto.getAlertUsers(), userEntity.getId()));
             }
             starredStoreList.remove(Long.valueOf(storeId));
-            starredUserList.remove(Long.valueOf(userEntity.getUserId()));
+            starredUserList.remove(Long.valueOf(userEntity.getId()));
 
             result = false;
         }
@@ -174,12 +174,12 @@ public class  StoreService {
             if (alertStoreList == null) alertStoreList = new HashSet<>(); // 값이 null이라면 새 list로 초기화
             if (alertUserList == null) alertUserList = new HashSet<>();
             alertStoreList.add(storeId);
-            alertUserList.add(userEntity.getUserId());
+            alertUserList.add(userEntity.getId());
 
             result = true;
         } else if (action.equals("unset")) {    // 해제의 경우는 바로 remove 처리 후 끝
             alertStoreList.remove(Long.valueOf(storeId));
-            alertUserList.remove(Long.valueOf(userEntity.getUserId()));
+            alertUserList.remove(Long.valueOf(userEntity.getId()));
 
             result = false;
         }

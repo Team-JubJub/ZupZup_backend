@@ -1,8 +1,9 @@
 package com.rest.api.config;
 
-import com.rest.api.auth.jwt.JwtAuthenticationFilter;
-import com.rest.api.auth.jwt.JwtExceptionFilter;
-import com.rest.api.auth.jwt.JwtTokenProvider;
+import com.zupzup.untact.auth.jwt.JwtAuthenticationFilter;
+import com.zupzup.untact.auth.jwt.JwtTokenProvider;
+import com.zupzup.untact.custom.jwt.CustomJwtAuthenticationFilter;
+import com.zupzup.untact.custom.jwt.CustomJwtExceptionFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -64,9 +65,9 @@ public class SecurityConfig {
                     .requestMatchers("/seller/test/sign-in").permitAll()    // test login 헤더 없이도 되게
 //                .requestMatchers("/seller/**").permitAll() // 원래 있던 파트 로그인 없이 테스트할 수 있게 임시 처리
                     .anyRequest().authenticated()   // permitAll() 이외의 모든 request authenticated 처리
-                .and()  // Filter로 JwtAuthenticationFilter 적용, 그 앞에 Exception handle 위해 JwtExceptionFilter 추가
+                .and()  // Filter로 CustomJwtAuthenticationFilter 적용, 그 앞에 Exception handle 위해 SocialJwtExceptionFilter 추가
                     .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                    .addFilterBefore(new JwtExceptionFilter(), JwtAuthenticationFilter.class);
+                    .addFilterBefore(new CustomJwtExceptionFilter(), CustomJwtAuthenticationFilter.class);
 
         return http.build();
     }

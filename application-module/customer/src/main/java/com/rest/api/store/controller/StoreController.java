@@ -1,9 +1,9 @@
 package com.rest.api.store.controller;
 
-import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.store.service.StoreService;
-import com.zupzup.untact.dto.store.customer.response.GetStoreDetailsDto;
-import com.zupzup.untact.dto.store.customer.response.StarAlertResponseDto;
+import com.zupzup.untact.model.dto.store.customer.response.GetStoreDetailsDto;
+import com.zupzup.untact.model.dto.store.customer.response.StarAlertResponseDto;
+import com.zupzup.untact.social.jwt.SocialJwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -47,7 +47,7 @@ public class StoreController {
                             + "or Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
     @GetMapping("") // 카테고리별 가게 조회
-    public ResponseEntity storeList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity storeList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                     @Parameter(name = "category", description = "조회할 카테고리(전체 조회할 시에는 쿼리 파트 없이 ~/store 로 요청)", in = ParameterIn.QUERY) @RequestParam(required = false) String category) {
         if(category != null) { // 카테고리 선택 시(우리는 카테고리 선택을 통해 조회하는 것이 메인 기능임)
             List<GetStoreDetailsDto> allStoreDtoByCategoryList = storeService.storeListByCategory(category);
@@ -77,7 +77,7 @@ public class StoreController {
                             + "or Sign-outed or deleted user. Please sign-in or sign-up again.")))
     })
     @GetMapping("/starred")
-    public ResponseEntity starredStoreList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
+    public ResponseEntity starredStoreList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
         List<GetStoreDetailsDto> allStoreDtoByStarredList = storeService.starredStoreList(accessToken);
 
         return new ResponseEntity(allStoreDtoByStarredList, HttpStatus.OK);
@@ -98,7 +98,7 @@ public class StoreController {
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @GetMapping("/{storeId}") // 가게 상세 조회
-    public ResponseEntity storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                       @PathVariable Long storeId) {
         GetStoreDetailsDto storeDetailsDto = storeService.storeDetails(accessToken, storeId);
 
@@ -121,7 +121,7 @@ public class StoreController {
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @PatchMapping("/{storeId}/star")  // 가게 찜하기
-    public ResponseEntity setStarStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity setStarStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                        @PathVariable Long storeId,
                                        @Parameter(name = "action", description = "설정 여부(찜할 시 : set, 찜 해제 시 : unset)", in = ParameterIn.QUERY) @RequestParam String action) {
         boolean result = storeService.modifyStarStore(accessToken, storeId, action);
@@ -146,7 +146,7 @@ public class StoreController {
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"찜한 가게만 알림을 설정할 수 있습니다.\"\n}")))
     })
     @PatchMapping("/{storeId}/alert")  // 가게 알림설정하기
-    public ResponseEntity setAlertStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity setAlertStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                         @PathVariable Long storeId,
                                         @Parameter(name = "action", description = "설정 여부(알림 설정할 시 : set, 알림설정 해제 시 : unset)", in = ParameterIn.QUERY) @RequestParam String action) {
         boolean result = storeService.modifyAlertStore(accessToken, storeId, action);

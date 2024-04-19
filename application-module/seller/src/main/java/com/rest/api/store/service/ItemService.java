@@ -1,18 +1,18 @@
 package com.rest.api.store.service;
 
 import com.rest.api.utils.FCMUtils;
-import com.zupzup.untact.domain.item.Item;
-import com.zupzup.untact.domain.store.Store;
-import com.zupzup.untact.dto.item.seller.request.PatchItemCountDto;
-import com.zupzup.untact.dto.item.seller.request.PostItemDto;
-import com.zupzup.untact.dto.item.seller.request.UpdateRequestDto;
-import com.zupzup.untact.dto.item.seller.response.GetDto;
-import com.zupzup.untact.dto.item.seller.response.GetDtoWithStore;
-import com.zupzup.untact.dto.item.seller.response.ItemResponseDto;
+import com.zupzup.untact.model.domain.item.Item;
+import com.zupzup.untact.model.domain.store.Store;
+import com.zupzup.untact.model.dto.item.seller.request.PatchItemCountDto;
+import com.zupzup.untact.model.dto.item.seller.request.PostItemDto;
+import com.zupzup.untact.model.dto.item.seller.request.UpdateRequestDto;
+import com.zupzup.untact.model.dto.item.seller.response.GetDto;
+import com.zupzup.untact.model.dto.item.seller.response.GetDtoWithStore;
+import com.zupzup.untact.model.dto.item.seller.response.ItemResponseDto;
 import com.zupzup.untact.repository.ItemRepository;
 import com.zupzup.untact.repository.StoreRepository;
-import exception.item.seller.NoSuchItemException;
-import exception.store.seller.NoSuchStoreException;
+import com.zupzup.untact.exception.exception.item.seller.NoSuchItemException;
+import com.zupzup.untact.exception.exception.store.seller.NoSuchStoreException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -133,7 +133,7 @@ public class ItemService {
 
         Item item = isItemPresent(itemId);
 
-        itemRepository.deleteById(item.getItemId());
+        itemRepository.deleteById(item.getId());
 
         return "상품 삭제가 완료되었습니다.";
     }

@@ -1,12 +1,12 @@
 package com.rest.api.order.controller;
 
-import com.rest.api.auth.jwt.JwtTokenProvider;
 import com.rest.api.order.service.OrderService;
-import com.zupzup.untact.domain.order.type.OrderStatus;
-import com.zupzup.untact.dto.order.seller.request.PatchOrderDataDto;
-import com.zupzup.untact.dto.order.seller.response.GetOrderDetailsDto;
-import com.zupzup.untact.dto.order.seller.response.GetOrderListDto;
-import com.zupzup.untact.dto.order.seller.response.PatchOrderResponseDto;
+import com.zupzup.untact.auth.jwt.JwtTokenProvider;
+import com.zupzup.untact.model.domain.order.type.OrderStatus;
+import com.zupzup.untact.model.dto.order.seller.request.PatchOrderDataDto;
+import com.zupzup.untact.model.dto.order.seller.response.GetOrderDetailsDto;
+import com.zupzup.untact.model.dto.order.seller.response.GetOrderListDto;
+import com.zupzup.untact.model.dto.order.seller.response.PatchOrderResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
