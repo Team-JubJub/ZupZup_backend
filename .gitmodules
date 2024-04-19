@@ -4,3 +4,6 @@
 [submodule "spring-module-common"]
 	path = spring-module-common
 	url = https://github.com/Team-JubJub/spring-module-common.git
+[submodule "spring-module-auth"]
+	path = spring-module-auth
+	url = https://github.com/Team-JubJub/spring-module-auth.git
