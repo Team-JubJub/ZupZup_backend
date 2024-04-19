@@ -5,6 +5,7 @@ import com.zupzup.untact.custom.redis.CustomRedisService;
 import com.zupzup.untact.exception.exception.auth.seller.NoSellerPresentsException;
 import com.zupzup.untact.exception.exception.auth.seller.NotEnteredException;
 import com.zupzup.untact.exception.exception.auth.seller.WantDeletionSellerException;
+import com.zupzup.untact.exception.exception.store.seller.NoSuchStoreException;
 import com.zupzup.untact.model.domain.auth.Role;
 import com.zupzup.untact.model.domain.auth.seller.Seller;
 import com.zupzup.untact.model.domain.store.Store;
@@ -107,8 +108,10 @@ public class MobileAuthService {
     }
 
     private void updateStoreDeviceTokens(String deviceToken, Seller sellerEntity, String mode) {
-        Store store = storeRepository.findBySellerId(sellerEntity.getId());   // device token update 시작
-        if (store == null) throw new NotEnteredException(); // 아직 입점하지 않은 사장님이면 401 처리
+
+        // device token update 시작
+        Store store = storeRepository.findById(sellerEntity.getId())
+                .orElseThrow(() -> new NotEnteredException()); // 아직 입점하지 않은 사장님이면 401 처리
 
         StoreDto storeDto = modelMapper.map(store, StoreDto.class);
         if (mode.equals("add")) storeDto.getDeviceTokens().add(deviceToken); // 해당 device token add
@@ -118,7 +121,8 @@ public class MobileAuthService {
     }
 
     private SellerTokenInfoDto generateTokens(SellerDto sellerDto, String message) {
-        Store storeEntity = storeRepository.findBySellerId(sellerDto.getSellerId());
+        Store storeEntity = storeRepository.findById(sellerDto.getSellerId())
+                .orElseThrow(() -> new NoSuchStoreException("해당 가게를 찾을 수 없습니다."));
         Long storeId = storeEntity.getId();
         List<String> roles = Arrays.asList(sellerDto.getRole().getRole());
         String accessToken = jwtTokenProvider.generateAccessToken(sellerDto.getLoginId(), roles);
