@@ -1,4 +1,4 @@
-package com.rest.api.store.service;
+package com.rest.api.AWS;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;

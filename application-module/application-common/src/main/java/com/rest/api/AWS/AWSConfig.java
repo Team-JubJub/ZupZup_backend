@@ -1,4 +1,4 @@
-package com.rest.api.config;
+package com.rest.api.AWS;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
