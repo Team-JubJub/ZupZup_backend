@@ -2,9 +2,11 @@ package com.rest.api.store.service;
 
 import com.rest.api.AWS.S3Uploader;
 import com.rest.api.utils.FCMUtils;
+import com.zupzup.untact.exception.store.StoreException;
 import com.zupzup.untact.model.domain.enums.EnterState;
 import com.zupzup.untact.model.domain.store.Store;
 import com.zupzup.untact.model.dto.store.seller.request.ModifyStoreDto;
+import com.zupzup.untact.model.dto.store.seller.request.ReviewAnnouncementRequest;
 import com.zupzup.untact.model.dto.store.seller.response.GetStoreDetailsDto;
 import com.zupzup.untact.model.dto.store.seller.response.ModifyStoreResponse;
 import com.zupzup.untact.repository.StoreRepository;
@@ -20,6 +22,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
+
+import static com.zupzup.untact.exception.store.StoreExceptionType.NO_MATCH_STORE;
+import static com.zupzup.untact.exception.store.StoreExceptionType.SEVER_ERR;
 
 @Service
 @Log
@@ -81,15 +86,32 @@ public class StoreService {
         return "공지사항이 수정되었습니다.";
     }
 
+    // 리뷰 관련 공지사항 작성
+    public String setReviewAnnouncement(ReviewAnnouncementRequest reviewAnnouncementRequest,
+                                        Long storeId) {
+
+        Store store = isStorePresent(storeId);
+
+        // 리뷰 공지사항 저장
+        store.setReviewAnnouncement(reviewAnnouncementRequest.getReviewAnnouncement());
+        storeRepository.save(store);
+
+        // 처음 저장 시에 저장하지 않기 때문에 저장과 수정을 같은 메소드로 사용
+        return "리뷰 공지사항이 작성(수정) 되었습니다.";
+    }
+
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
     private Store isStorePresent(Long storeId) {
         try {
-            Store store = storeRepository.findById(storeId).get();
+            Store store = storeRepository.findById(storeId)
+                    .orElseThrow(() -> new StoreException(NO_MATCH_STORE));
             if (store.getEnterState().equals(EnterState.NEW)) throw new ForbiddenStoreException("해당 가게는 아직 승인 대기중입니다. 관리자에게 연락해주세요.");
             return store;
-        } catch (NoSuchElementException e) {
-            throw new NoSuchStoreException("해당 가게를 찾을 수 없습니다.");
+        } catch (Exception e) {
+
+            // 위에 발생하는 에러 외의 에러 발생 시 서버 에러로 처리
+            throw new StoreException(SEVER_ERR);
         }
     }
 

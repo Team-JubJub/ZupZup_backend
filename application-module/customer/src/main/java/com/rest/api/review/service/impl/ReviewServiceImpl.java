@@ -57,7 +57,7 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
     @Autowired
     ModelMapper modelMapper;
 
-    private static final int PAGE_SIZE = 3;
+    private static final int PAGE_SIZE = 10;
 
     /**
      * 리뷰 저장
