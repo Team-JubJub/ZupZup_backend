@@ -12,4 +12,5 @@ public class ReviewListResponse {
     private String imageURL; // 이미지 URL
     private String menu; // 구매한 메뉴
     private String comment; // 사장님댓글
+    private String createdAt; // 리뷰 작성 날짜
 }

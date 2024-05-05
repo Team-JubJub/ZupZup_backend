@@ -1,6 +1,6 @@
 package com.rest.api.store.service;
 
-import com.zupzup.untact.auth.jwt.JwtTokenProvider;
+import com.zupzup.untact.custom.jwt.CustomJwtTokenProvider;
 import com.zupzup.untact.custom.redis.CustomRedisService;
 import com.zupzup.untact.exception.exception.auth.seller.NoSellerPresentsException;
 import com.zupzup.untact.exception.exception.auth.seller.NotEnteredException;
@@ -41,7 +41,7 @@ public class MobileAuthService {
     private final SellerRepository sellerRepository;
     private final StoreRepository storeRepository;
     private final CustomRedisService customRedisService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final CustomJwtTokenProvider jwtTokenProvider;
 
     final static public String LOGIN_FAILS = "Login fails";
     final static public String LOGIN_SUCCESS = "Login success";
@@ -127,7 +127,7 @@ public class MobileAuthService {
         List<String> roles = Arrays.asList(sellerDto.getRole().getRole());
         String accessToken = jwtTokenProvider.generateAccessToken(sellerDto.getLoginId(), roles);
         String refreshToken = jwtTokenProvider.generateRefreshToken();
-        customRedisService.setStringValue(refreshToken, sellerDto.getLoginId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
+        customRedisService.setStringValue(refreshToken, sellerDto.getLoginId(), CustomJwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
         SellerTokenInfoDto sellerTokenInfoDto = new SellerTokenInfoDto(LOGIN_SUCCESS, message, accessToken, refreshToken, storeId);
 
         return sellerTokenInfoDto;

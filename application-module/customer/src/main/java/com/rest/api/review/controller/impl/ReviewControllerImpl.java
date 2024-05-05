@@ -36,8 +36,9 @@ public class ReviewControllerImpl implements ReviewController {
     @Override
     @GetMapping("/{providerUserID}")
     public ResponseEntity findAll(@RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                  @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
                                   @PathVariable String providerUserID) throws Exception {
-        List<ReviewListResponse> reviewList = reviewService.findAll(providerUserID);
+        List<ReviewListResponse> reviewList = reviewService.findAll(pageNo, providerUserID);
         return new ResponseEntity<>(reviewList, HttpStatus.OK);
     }
 

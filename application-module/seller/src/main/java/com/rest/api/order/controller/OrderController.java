@@ -1,7 +1,7 @@
 package com.rest.api.order.controller;
 
 import com.rest.api.order.service.OrderService;
-import com.zupzup.untact.auth.jwt.JwtTokenProvider;
+import com.zupzup.untact.custom.jwt.CustomJwtTokenProvider;
 import com.zupzup.untact.model.domain.order.type.OrderStatus;
 import com.zupzup.untact.model.dto.order.seller.request.PatchOrderDataDto;
 import com.zupzup.untact.model.dto.order.seller.response.GetOrderDetailsDto;
@@ -47,7 +47,7 @@ public class OrderController {
                             "Sign-outed or deleted user.")))
     })
     @GetMapping("")  // order에 대한 GET(주문 항목 모두), ex) ~/seller/1/order?page=1 포맷
-    public ResponseEntity orderList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity orderList(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                     @PathVariable Long storeId) { // ResponseEntity의 type이 뭐가될지 몰라서 우선 Type 지정 없이 둠.
         GetOrderListDto getOrderListDto = orderService.orderList(storeId);
         if(getOrderListDto.getOrders().size() == 0) {
@@ -70,7 +70,7 @@ public class OrderController {
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 주문을 찾을 수 없습니다.\"\n}")))
     })
     @GetMapping("/{orderId}")  // 각 order에 대한 단건 GET    -> 일단 안쓰일 듯
-    public ResponseEntity orderDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity orderDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                        @PathVariable Long storeId, @PathVariable Long orderId) {
         GetOrderDetailsDto getOrderDetailsDto = orderService.orderDetails(storeId, orderId);
 
@@ -89,7 +89,7 @@ public class OrderController {
                             "Sign-outed or deleted user.")))
     })
     @PatchMapping("/new-order/{orderId}/cancel")  // 신규 주문 취소 시
-    public ResponseEntity cancelNewOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity cancelNewOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                          @PathVariable Long storeId, @PathVariable Long orderId) {
         PatchOrderResponseDto patchOrderStatusResponseDto = orderService.updateOrderStatus(storeId, orderId, OrderStatus.CANCEL);
 
@@ -107,7 +107,7 @@ public class OrderController {
                             "Sign-outed or deleted user.")))
     })
     @PatchMapping("/new-order/{orderId}/confirm")  // 신규 주문 확정 시
-    public ResponseEntity confirmNewOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity confirmNewOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                           @PathVariable Long storeId, @PathVariable Long orderId, @RequestBody PatchOrderDataDto patchOrderDataDto) {
         PatchOrderResponseDto patchOrderResponseDto = orderService.updateOrderData(storeId, orderId, patchOrderDataDto, OrderStatus.CONFIRM);
 
@@ -125,7 +125,7 @@ public class OrderController {
                             "Sign-outed or deleted user.")))
     })
     @PatchMapping("/confirmed-order/{orderId}/cancel")    // 확정 주문 취소 시
-    public ResponseEntity cancelConfirmedOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity cancelConfirmedOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                                @PathVariable Long storeId, @PathVariable Long orderId, @RequestBody PatchOrderDataDto patchOrderDataDto) {
         PatchOrderResponseDto completeOrderDto = orderService.updateOrderData(storeId, orderId, patchOrderDataDto, OrderStatus.CANCEL);
 
@@ -143,7 +143,7 @@ public class OrderController {
                             "Sign-outed or deleted user.")))
     })
     @PatchMapping("/confirmed-order/{orderId}/complete")  // 확정 주문 완료 시
-    public ResponseEntity completeConfirmedOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity completeConfirmedOrder(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                                  @PathVariable Long storeId, @PathVariable Long orderId) {
         PatchOrderResponseDto patchOrderStatusResponseDto = orderService.updateOrderStatus(storeId, orderId, OrderStatus.COMPLETE);
 

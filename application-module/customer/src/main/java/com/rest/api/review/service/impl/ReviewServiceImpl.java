@@ -19,6 +19,10 @@ import com.zupzup.untact.repository.UserRepository;
 import com.zupzup.untact.service.BaseServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,7 +35,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, ReviewResponse, ReviewRepository> implements ReviewService {
 
     public ReviewServiceImpl(ReviewRepository repository, ReviewRepository reviewRepository, UserRepository userRepository, StoreRepository storeRepository, OrderRepository orderRepository, S3Uploader s3Uploader, FCMService fcmService) {
@@ -54,9 +57,13 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
     @Autowired
     ModelMapper modelMapper;
 
+    private static final int PAGE_SIZE = 3;
+
     /**
      * 리뷰 저장
      */
+    @Override
+    @Transactional
     public ReviewResponse save(ReviewRequest reviewRequest, MultipartFile reviewImage, String providerUserID) throws Exception {
 
         // 이미지 있을 시 이미지 저장, 없을 시 빈 문자열 저장
@@ -90,7 +97,7 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
                 .menu(menuList)
                 .orderID(reviewRequest.getOrderID())
                 .providerUserID(providerUserID)
-                .created_at(timeSetter())
+                .createdAt(timeSetter())
                 .build();
 
         reviewRepository.save(review);
@@ -102,12 +109,16 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
     }
 
     @Override
-    public List<ReviewListResponse> findAll(String providerUserID) throws Exception {
+    @Transactional(readOnly = true)
+    public List<ReviewListResponse> findAll(int pageNo,
+                                            String providerUserID) throws Exception {
 
         // 자신이 쓴 리뷰만 모아보기
-        List<Review> reviewList = reviewRepository.findAllByProviderUserID(providerUserID);
+        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by(Sort.Direction.ASC, "createdAt"));
+        Page<Review> reviewList = reviewRepository.findAllByProviderUserID(providerUserID, pageable);
 
-        return reviewList.stream()
+        return reviewList.getContent()
+                .stream()
                 .map(entity -> modelMapper.map(entity, ReviewListResponse.class))
                 .collect(Collectors.toList());
     }
