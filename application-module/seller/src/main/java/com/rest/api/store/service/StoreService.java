@@ -1,5 +1,6 @@
 package com.rest.api.store.service;
 
+import com.rest.api.AWS.S3Uploader;
 import com.rest.api.utils.FCMUtils;
 import com.zupzup.untact.model.domain.enums.EnterState;
 import com.zupzup.untact.model.domain.store.Store;
