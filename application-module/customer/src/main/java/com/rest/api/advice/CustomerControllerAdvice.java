@@ -1,7 +1,7 @@
 package com.rest.api.advice;
 
 import com.zupzup.untact.model.dto.MessageDto;
-import com.zupzup.untact.exception.exception.NoSuchException;
+import com.zupzup.untact.exception.exception.store.order.NoSuchException;
 import com.zupzup.untact.exception.exception.auth.customer.AlreadySignUppedException;
 import com.zupzup.untact.exception.exception.auth.customer.AppleWithdrawException;
 import com.zupzup.untact.exception.exception.auth.customer.NoUserPresentsException;

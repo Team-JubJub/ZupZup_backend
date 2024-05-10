@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface ReviewRepository extends BaseRepository<Review> {
 
-    Page<Review> findAllByProviderUserID(String providerUserID, Pageable pageable); //providerUserID로 작성된 리뷰 찾기
+    Page<Review> findAllByUserID(Long userID, Pageable pageable); //providerUserID로 작성된 리뷰 찾기
 }

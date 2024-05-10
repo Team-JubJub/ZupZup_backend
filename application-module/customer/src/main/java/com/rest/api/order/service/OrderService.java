@@ -17,7 +17,7 @@ import com.zupzup.untact.repository.FirstOrderDataRepository;
 import com.zupzup.untact.repository.OrderRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
-import com.zupzup.untact.exception.exception.NoSuchException;
+import com.zupzup.untact.exception.exception.store.order.NoSuchException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;

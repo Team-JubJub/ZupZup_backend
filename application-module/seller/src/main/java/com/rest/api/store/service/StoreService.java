@@ -1,6 +1,6 @@
 package com.rest.api.store.service;
 
-import com.rest.api.AWS.S3Uploader;
+import com.rest.api.aws.S3Uploader;
 import com.rest.api.utils.FCMUtils;
 import com.zupzup.untact.exception.store.StoreException;
 import com.zupzup.untact.model.domain.enums.EnterState;
@@ -11,7 +11,6 @@ import com.zupzup.untact.model.dto.store.seller.response.GetStoreDetailsDto;
 import com.zupzup.untact.model.dto.store.seller.response.ModifyStoreResponse;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.exception.exception.store.ForbiddenStoreException;
-import com.zupzup.untact.exception.exception.store.seller.NoSuchStoreException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.modelmapper.ModelMapper;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.NoSuchElementException;
 
 import static com.zupzup.untact.exception.store.StoreExceptionType.NO_MATCH_STORE;
 import static com.zupzup.untact.exception.store.StoreExceptionType.SEVER_ERR;

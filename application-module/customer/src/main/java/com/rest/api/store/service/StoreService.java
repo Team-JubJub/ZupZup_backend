@@ -13,7 +13,7 @@ import com.zupzup.untact.model.dto.store.customer.response.GetStoreDetailsDto;
 import com.zupzup.untact.repository.ItemRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
-import com.zupzup.untact.exception.exception.NoSuchException;
+import com.zupzup.untact.exception.exception.store.order.NoSuchException;
 import com.zupzup.untact.exception.exception.store.ForbiddenStoreException;
 import com.zupzup.untact.exception.exception.store.customer.StoreNotStarredException;
 import jakarta.transaction.Transactional;

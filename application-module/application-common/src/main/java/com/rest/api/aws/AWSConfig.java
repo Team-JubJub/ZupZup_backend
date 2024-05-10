@@ -1,4 +1,4 @@
-package com.rest.api.AWS;
+package com.rest.api.aws;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -13,10 +13,12 @@ public class AWSConfig {
 
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;
+
     @Value("${cloud.aws.credentials.secret-key}")
     private String secretKey;
 
-    private String region = "ap-northeast-2";
+    @Value("${cloud.aws.region.static}")
+    private String region;
 
     @Bean
     public BasicAWSCredentials basicAWSCredentials() {

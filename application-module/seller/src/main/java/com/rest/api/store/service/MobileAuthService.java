@@ -111,7 +111,7 @@ public class MobileAuthService {
 
         // device token update 시작
         Store store = storeRepository.findById(sellerEntity.getId())
-                .orElseThrow(() -> new NotEnteredException()); // 아직 입점하지 않은 사장님이면 401 처리
+                .orElseThrow(NotEnteredException::new); // 아직 입점하지 않은 사장님이면 401 처리
 
         StoreDto storeDto = modelMapper.map(store, StoreDto.class);
         if (mode.equals("add")) storeDto.getDeviceTokens().add(deviceToken); // 해당 device token add

@@ -1,0 +1,29 @@
+= REVIEW API 1.0.0
+
+== SAVE (리뷰 저장)
+=== 성공 (201)
+
+**Request**
+include::{snippets}/success-save-review/http-request.adoc[]
+- multipart/form-data (데이터 전체 형식)
+include::{snippets}/success-save-review/request-parts.adoc[]
+- review (리뷰 value 형식)
+include::{snippets}/success-save-review/request-part-review-fields.adoc[]
+
+**Response**
+include::{snippets}/success-save-review/http-response.adoc[]
+- response 형식
+include::{snippets}/success-save-review/response-fields.adoc[]
+
+== GET (리뷰 조회)
+=== 성공 (200)
+
+**Request**
+include::{snippets}/success-findAll-review/http-request.adoc[]
+- parameter
+include::{snippets}/success-findAll-review/query-parameters.adoc[]
+
+**Response**
+include::{snippets}/success-findAll-review/http-response.adoc[]
+- response 형식
+include::{snippets}/success-findAll-review/response-fields.adoc[]

@@ -1,8 +1,8 @@
 package com.rest.api.advice;
 
-import com.zupzup.untact.exception.exception.NoSuchException;
-import com.zupzup.untact.exception.exception.OrderNotInStoreException;
-import com.zupzup.untact.exception.exception.RequestedCountExceedStockException;
+import com.zupzup.untact.exception.exception.store.order.NoSuchException;
+import com.zupzup.untact.exception.exception.store.order.OrderNotInStoreException;
+import com.zupzup.untact.exception.exception.store.order.RequestedCountExceedStockException;
 import com.zupzup.untact.exception.exception.auth.seller.NoSellerPresentsException;
 import com.zupzup.untact.exception.exception.auth.seller.NotEnteredException;
 import com.zupzup.untact.exception.exception.auth.seller.WantDeletionSellerException;

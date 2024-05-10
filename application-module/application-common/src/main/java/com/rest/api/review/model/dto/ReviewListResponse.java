@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter @Setter
 public class ReviewListResponse {
 
+    private Long reviewID; // 리뷰 ID
     private String nickname; // 닉네임
     private float starRate; // 별점
     private String content; // 리뷰
