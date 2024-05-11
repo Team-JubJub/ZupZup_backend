@@ -6,8 +6,6 @@ import com.rest.api.review.model.dto.ReviewListResponse;
 import com.rest.api.review.model.dto.ReviewRequest;
 import com.rest.api.review.model.dto.ReviewResponse;
 import com.rest.api.review.service.impl.ReviewServiceImpl;
-import com.zupzup.untact.repository.OrderRepository;
-import com.zupzup.untact.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,14 +30,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -228,6 +227,34 @@ public class ReviewApiTest {
                                         fieldWithPath("[].comment").type(JsonFieldType.STRING).description("사장님 댓글"),
                                         fieldWithPath("[].createdAt").type(JsonFieldType.STRING).description("리뷰 작성 날짜")
                                 )
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제 - 성공")
+    public void success_review_delete() throws Exception {
+
+        // given
+        Long reviewID = 1L;
+        when(reviewService.delete(reviewID)).thenReturn(reviewID);
+
+        // when
+        mockMvc.perform(
+                        RestDocumentationRequestBuilders.delete("/review/{reviewID}", reviewID)
+                                .header("accessToken", accessToken)
+                )
+                // then
+                .andExpect(status().isOk())
+                .andDo(
+                        document(
+                                "success-delete-review",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(
+                                        parameterWithName("reviewID").description("삭제하고자 하는 리뷰 ID")
+                                ),
+                                responseBody()
                         )
                 );
     }

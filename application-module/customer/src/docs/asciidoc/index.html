@@ -729,10 +729,65 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_delete_리뷰_삭제">DELETE (리뷰 삭제)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_성공_200_2">성공 (200)</h3>
+<div class="paragraph">
+<p><strong>Request</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="http">DELETE /review/{reviewID}
+accessToken: 123456 (required, user access token)
+Port : 8080</code></pre>
+</div>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 1. /review/{reviewID}</caption>
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Parameter</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewID</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">삭제하고자 하는 리뷰 ID</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><strong>Response</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="http">200 OK
+Content-Type: application/json;charset=UTF-8
+
+1</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>삭제된 리뷰 아이디</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-10 22:46:39 +0900
+Last updated 2024-05-11 23:23:07 +0900
 </div>
 </div>
 </body>

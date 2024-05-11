@@ -27,3 +27,14 @@ include::{snippets}/success-findAll-review/query-parameters.adoc[]
 include::{snippets}/success-findAll-review/http-response.adoc[]
 - response 형식
 include::{snippets}/success-findAll-review/response-fields.adoc[]
+
+== DELETE (리뷰 삭제)
+=== 성공 (200)
+
+**Request**
+include::{snippets}/success-delete-review/http-request.adoc[]
+include::{snippets}/success-delete-review/path-parameters.adoc[]
+
+**Response**
+include::{snippets}/success-delete-review/http-response.adoc[]
+- 삭제된 리뷰 아이디
