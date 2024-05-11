@@ -9,7 +9,6 @@ import com.rest.api.review.model.dto.ReviewRequest;
 import com.rest.api.review.model.dto.ReviewResponse;
 import com.rest.api.review.repository.ReviewRepository;
 import com.rest.api.review.service.ReviewService;
-import com.zupzup.untact.exception.exception.store.order.NoSuchException;
 import com.zupzup.untact.exception.exception.auth.customer.NoUserPresentsException;
 import com.zupzup.untact.exception.exception.store.order.NoSuchOrderException;
 import com.zupzup.untact.exception.store.StoreException;

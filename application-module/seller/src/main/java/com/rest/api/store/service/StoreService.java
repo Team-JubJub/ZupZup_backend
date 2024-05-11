@@ -6,7 +6,6 @@ import com.zupzup.untact.exception.store.StoreException;
 import com.zupzup.untact.model.domain.enums.EnterState;
 import com.zupzup.untact.model.domain.store.Store;
 import com.zupzup.untact.model.dto.store.seller.request.ModifyStoreDto;
-import com.zupzup.untact.model.dto.store.seller.request.ReviewAnnouncementRequest;
 import com.zupzup.untact.model.dto.store.seller.response.GetStoreDetailsDto;
 import com.zupzup.untact.model.dto.store.seller.response.ModifyStoreResponse;
 import com.zupzup.untact.repository.StoreRepository;
@@ -40,9 +39,7 @@ public class StoreService {
     public GetStoreDetailsDto storeDetails(Long storeId) {
         Store store = isStorePresent(storeId);
 
-        GetStoreDetailsDto getStoreDetailsDto = modelMapper.map(store, GetStoreDetailsDto.class);
-
-        return getStoreDetailsDto;
+        return modelMapper.map(store, GetStoreDetailsDto.class);
     }
 
     // 가게 영업중 여부 전환
@@ -70,9 +67,7 @@ public class StoreService {
         store.modifyStore(modifyStoreDto);
         storeRepository.save(store);
 
-        ModifyStoreResponse modifyStoreResponse = modelMapper.map(store, ModifyStoreResponse.class);
-
-        return modifyStoreResponse;
+        return modelMapper.map(store, ModifyStoreResponse.class);
     }
 
     // 공지사항 수정
@@ -85,18 +80,18 @@ public class StoreService {
     }
 
     // 리뷰 관련 공지사항 작성
-    public String setReviewAnnouncement(ReviewAnnouncementRequest reviewAnnouncementRequest,
-                                        Long storeId) {
-
-        Store store = isStorePresent(storeId);
-
-        // 리뷰 공지사항 저장
-        store.setReviewAnnouncement(reviewAnnouncementRequest.getReviewAnnouncement());
-        storeRepository.save(store);
-
-        // 처음 저장 시에 저장하지 않기 때문에 저장과 수정을 같은 메소드로 사용
-        return "리뷰 공지사항이 작성(수정) 되었습니다.";
-    }
+//    public String setReviewAnnouncement(ReviewAnnouncementRequest reviewAnnouncementRequest,
+//                                        Long storeId) {
+//
+//        Store store = isStorePresent(storeId);
+//
+//        // 리뷰 공지사항 저장
+//        store.setReviewAnnouncement(reviewAnnouncementRequest.getReviewAnnouncement());
+//        storeRepository.save(store);
+//
+//        // 처음 저장 시에 저장하지 않기 때문에 저장과 수정을 같은 메소드로 사용
+//        return "리뷰 공지사항이 작성(수정) 되었습니다.";
+//    }
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->

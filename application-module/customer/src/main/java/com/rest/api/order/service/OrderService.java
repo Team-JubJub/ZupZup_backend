@@ -2,7 +2,7 @@ package com.rest.api.order.service;
 
 import com.rest.api.FCM.dto.FCMAlertDto;
 import com.rest.api.FCM.service.FCMService;
-import com.zupzup.untact.social.utils.AuthUtils;
+import com.zupzup.untact.exception.exception.store.order.NoSuchException;
 import com.zupzup.untact.model.domain.auth.user.User;
 import com.zupzup.untact.model.domain.data.FirstOrderData;
 import com.zupzup.untact.model.domain.order.Order;
@@ -17,7 +17,7 @@ import com.zupzup.untact.repository.FirstOrderDataRepository;
 import com.zupzup.untact.repository.OrderRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
-import com.zupzup.untact.exception.exception.store.order.NoSuchException;
+import com.zupzup.untact.social.utils.AuthUtils;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
@@ -91,27 +91,24 @@ public class OrderService {
     public List<GetOrderDetailsDto> orderList(String accessToken) {
         User userEntity = authUtils.getUserEntity(accessToken);
         List<Order> userOrderListEntity = orderRepository.findByUserId(userEntity.getId());
-        List<GetOrderDetailsDto> userOrderListDto = userOrderListEntity.stream()
+
+        return userOrderListEntity.stream()
                 .filter(m -> !m.getOrderStatus().equals(OrderStatus.WITHDREW))
                 .map(m -> modelMapper.map(m, GetOrderDetailsDto.class))
                 .collect(Collectors.toList());
-
-        return userOrderListDto;
     }
 
     public GetOrderDetailsDto orderDetails(Long orderId) {
         Order orderDetailsEntity = isOrderPresent(orderId);
-        GetOrderDetailsDto getOrderDetailsDto = modelMapper.map(orderDetailsEntity, GetOrderDetailsDto.class);
 
-        return getOrderDetailsDto;
+        return modelMapper.map(orderDetailsEntity, GetOrderDetailsDto.class);
     }
 
     // <-------------------- Common methods part -------------------->
     // <--- Methods for error handling --->
     private Order isOrderPresent(Long orderId) {
         try {
-            Order orderEntity = orderRepository.findById(orderId).get();
-            return orderEntity;
+            return orderRepository.findById(orderId).get();
         }   catch (NoSuchElementException e) {
             throw new NoSuchException("해당 주문을 찾을 수 없습니다.");
         }
@@ -121,9 +118,8 @@ public class OrderService {
     private String orderTimeSetter() {
         ZonedDateTime nowTime = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));    // 주문한 시간
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");   // ex) 2023-07-26 21:54
-        String formattedOrderTime = nowTime.format(formatter);
 
-        return formattedOrderTime;
+        return nowTime.format(formatter);
     }
 
     private String makeOrderTitle(PostOrderRequestDto postOrderRequestDto) {
@@ -193,8 +189,7 @@ public class OrderService {
     public void sendMessage(Long storeId, String title, String message) {
         Store storeEntity = storeRepository.findById(storeId).get();
         List<String> deviceTokens = new ArrayList<>(storeEntity.getDeviceTokens());
-        for (int i = 0; i < deviceTokens.size(); i++) {
-            String deviceToken = deviceTokens.get(i);
+        for (String deviceToken : deviceTokens) {
             FCMAlertDto fcmAlertDto = new FCMAlertDto(deviceToken, title, message);
             String result = fcmService.sendMessage(fcmAlertDto);
             System.out.println("사장님 앱에 보낸 알림, 디바이스 토큰 " + deviceToken + "'s result : " + result);

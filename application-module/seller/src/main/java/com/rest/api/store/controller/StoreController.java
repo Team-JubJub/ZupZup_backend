@@ -3,7 +3,6 @@ package com.rest.api.store.controller;
 import com.rest.api.store.service.StoreService;
 import com.zupzup.untact.custom.jwt.CustomJwtTokenProvider;
 import com.zupzup.untact.model.dto.store.seller.request.ModifyStoreDto;
-import com.zupzup.untact.model.dto.store.seller.request.ReviewAnnouncementRequest;
 import com.zupzup.untact.model.dto.store.seller.response.GetStoreDetailsDto;
 import com.zupzup.untact.model.dto.store.seller.response.ModifyStoreResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -118,14 +117,14 @@ public class StoreController {
         return new ResponseEntity(isChanged, HttpStatus.OK);
     }
 
-    @PatchMapping("/reviewAnnouncement/{storeId}")
-    public ResponseEntity setReviewAnnouncement(@RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                                ReviewAnnouncementRequest reviewAnnouncementRequest,
-                                                @PathVariable Long storeId) {
-
-        String response = storeService.setReviewAnnouncement(reviewAnnouncementRequest, storeId);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+//    @PatchMapping("/reviewAnnouncement/{storeId}")
+//    public ResponseEntity setReviewAnnouncement(@RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+//                                                ReviewAnnouncementRequest reviewAnnouncementRequest,
+//                                                @PathVariable Long storeId) {
+//
+//        String response = storeService.setReviewAnnouncement(reviewAnnouncementRequest, storeId);
+//
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
 
 }
