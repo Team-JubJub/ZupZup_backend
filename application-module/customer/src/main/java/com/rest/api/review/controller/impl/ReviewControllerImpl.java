@@ -3,7 +3,6 @@ package com.rest.api.review.controller.impl;
 import com.rest.api.review.controller.ReviewController;
 import com.rest.api.review.model.dto.ReviewListResponse;
 import com.rest.api.review.model.dto.ReviewRequest;
-import com.rest.api.review.model.dto.ReviewResponse;
 import com.rest.api.review.service.impl.ReviewServiceImpl;
 import com.zupzup.untact.social.jwt.SocialJwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -23,29 +22,31 @@ public class ReviewControllerImpl implements ReviewController {
 
     @Override
     @PostMapping("")
-    public ResponseEntity save(@RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity<Long> save(@RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                @RequestPart(value = "review") ReviewRequest reviewRequest,
                                @RequestPart(value = "image", required = false) MultipartFile reviewImage) throws Exception {
 
-        ReviewResponse response = reviewService.save(reviewRequest, reviewImage, accessToken);
-
-        return new ResponseEntity(response, HttpStatus.CREATED);
+        // reviewID 리턴
+        Long response = reviewService.save(reviewRequest, reviewImage, accessToken);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @Override
     @GetMapping("")
-    public ResponseEntity findAll(@RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                  @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) throws Exception {
+    public ResponseEntity<List<ReviewListResponse>> findAll(@RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                  @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) {
+
         List<ReviewListResponse> reviewList = reviewService.findAll(pageNo, accessToken);
-        return new ResponseEntity<>(reviewList, HttpStatus.OK);
+        return ResponseEntity.ok(reviewList);
     }
 
     @Override
     @DeleteMapping("/{reviewID}")
-    public ResponseEntity delete(@RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                 @PathVariable Long reviewID) throws Exception {
+    public ResponseEntity<Long> delete(@RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                 @PathVariable Long reviewID) {
+
         Long deletedID = reviewService.delete(reviewID);
-        return new ResponseEntity<>(deletedID, HttpStatus.OK);
+        return ResponseEntity.ok(deletedID);
     }
 
 }

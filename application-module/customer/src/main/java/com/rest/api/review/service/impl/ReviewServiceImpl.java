@@ -62,14 +62,14 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
     private final AuthUtils authUtils;
     private final ModelMapper modelMapper;
 
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 20;
 
     /**
      * 리뷰 저장
      */
     @Override
     @Transactional
-    public ReviewResponse save(ReviewRequest reviewRequest, MultipartFile reviewImage, String accessToken) throws Exception {
+    public Long save(ReviewRequest reviewRequest, MultipartFile reviewImage, String accessToken) throws Exception {
 
         User userEntity = authUtils.getUserEntity(accessToken);
 
@@ -105,7 +105,7 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
         // 사장님한테 푸시 알림 전송
         sendMessage(storeID, "리뷰 작성", menuList + "에 대한 리뷰가 작성되었습니다!");
 
-        return modelMapper.map(review, ReviewResponse.class);
+        return review.getId();
     }
 
     @Override
@@ -116,7 +116,7 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
         User userEntity = authUtils.getUserEntity(accessToken);
 
         // 자신이 쓴 리뷰만 모아보기
-        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by(Sort.Direction.ASC, "createdAt"));
+        Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Review> reviewList = reviewRepository.findAllByUserID(userEntity.getId(), pageable);
 
         List<ReviewListResponse> reviewResponse = new ArrayList<>();

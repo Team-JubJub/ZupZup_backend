@@ -4,13 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest.api.document.RestDocsConfig;
 import com.rest.api.review.model.dto.ReviewListResponse;
 import com.rest.api.review.model.dto.ReviewRequest;
-import com.rest.api.review.model.dto.ReviewResponse;
 import com.rest.api.review.service.impl.ReviewServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -38,7 +37,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -82,23 +80,17 @@ public class ReviewApiTest {
         rq.setOrderID(1L);
 
         // Response 설정
-        ReviewResponse rs = new ReviewResponse();
-        rs.setMenu("test menu");
+        Long reviewID = 1L;
 
         String jsonRq = objectMapper.writeValueAsString(rq);
-
-        given(reviewService.save(any(ReviewRequest.class), any(MultipartFile.class), anyString())).will((Answer<ReviewResponse>) invocation -> {
-
-            // reviewService 에서 save 메소드 통과시에 id 추가
-            rs.setReviewID(1L);
-            return rs;
-        });
 
         // 'image' 파트
         MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image content".getBytes());
 
         // 'review' 파트
         MockMultipartFile reviewPart = new MockMultipartFile("review", "", "application/json", jsonRq.getBytes());
+
+        given(reviewService.save(any(ReviewRequest.class), any(MultipartFile.class), anyString())).willReturn(reviewID);
 
         // when
         mockMvc.perform(
@@ -110,8 +102,6 @@ public class ReviewApiTest {
                 )
                 // then
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("reviewID").value(1L))
-                .andExpect(jsonPath("menu").value("test menu"))
                 .andDo(
                         document(
                                 "success-save-review",
@@ -125,10 +115,6 @@ public class ReviewApiTest {
                                         fieldWithPath("content").type(JsonFieldType.STRING).description("리뷰 내용"),
                                         fieldWithPath("starRate").type(JsonFieldType.NUMBER).description("별점"),
                                         fieldWithPath("orderID").type(JsonFieldType.NUMBER).description("주문 ID")
-                                ),
-                                responseFields(
-                                        fieldWithPath("reviewID").type(JsonFieldType.NUMBER).description("review id"),
-                                        fieldWithPath("menu").type(JsonFieldType.STRING).description("메뉴명")
                                 )
                         )
                 );
@@ -177,7 +163,7 @@ public class ReviewApiTest {
         rs.setImageURL("test url");
         rs.setMenu("test menu");
         rs.setComment("");
-        rs.setCreatedAt("2021-05-01 12:00:00");
+        rs.setCreatedAt("2021-05-01 08:00:00");
 
         ReviewListResponse rs2 = new ReviewListResponse();
         rs2.setReviewID(2L);
@@ -187,7 +173,7 @@ public class ReviewApiTest {
         rs2.setImageURL("");
         rs2.setMenu("test menu2, test menu2-1, test menu2-2");
         rs2.setComment("test comment2");
-        rs2.setCreatedAt("2021-05-02 12:00:00");
+        rs2.setCreatedAt("2021-05-02 22:00:00");
 
         ReviewListResponse rs3 = new ReviewListResponse();
         rs3.setReviewID(3L);
@@ -197,7 +183,7 @@ public class ReviewApiTest {
         rs3.setImageURL("test url3");
         rs3.setMenu("test menu3, test menu3-1");
         rs3.setComment("");
-        rs3.setCreatedAt("2021-05-03 12:00:00");
+        rs3.setCreatedAt("2021-05-03 10:00:00");
 
         given(reviewService.findAll(0, accessToken)).willReturn(List.of(rs, rs2, rs3));
 
