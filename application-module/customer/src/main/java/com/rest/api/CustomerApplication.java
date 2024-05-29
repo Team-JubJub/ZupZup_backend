@@ -12,7 +12,7 @@ import org.springframework.web.filter.HiddenHttpMethodFilter;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.zupzup.untact", "com.rest.api"})
-@EntityScan(basePackages = {"com.zupzup.untact.model", "com.rest.api"})
+@EntityScan(basePackages = {"com.zupzup.untact.model.domain", "com.rest.api"})
 @EnableJpaRepositories(basePackages = {"com.zupzup.untact.repository", "com.rest.api"})
 @OpenAPIDefinition(servers = {@Server(url = "https://zupzuptest.com:8090", description = "Default Server URL")})
 public class CustomerApplication {

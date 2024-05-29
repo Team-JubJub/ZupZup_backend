@@ -2,11 +2,11 @@ package com.rest.api.store.controller;
 
 import com.rest.api.store.service.ItemService;
 import com.zupzup.untact.custom.jwt.CustomJwtTokenProvider;
-import com.zupzup.untact.model.dto.item.seller.request.PatchItemCountDto;
-import com.zupzup.untact.model.dto.item.seller.request.PostItemDto;
-import com.zupzup.untact.model.dto.item.seller.request.UpdateRequestDto;
-import com.zupzup.untact.model.dto.item.seller.response.GetDto;
-import com.zupzup.untact.model.dto.item.seller.response.ItemResponseDto;
+import com.zupzup.untact.dto.item.seller.request.PatchItemCountDto;
+import com.zupzup.untact.dto.item.seller.request.PostItemDto;
+import com.zupzup.untact.dto.item.seller.request.UpdateRequestDto;
+import com.zupzup.untact.dto.item.seller.response.GetDto;
+import com.zupzup.untact.dto.item.seller.response.ItemResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

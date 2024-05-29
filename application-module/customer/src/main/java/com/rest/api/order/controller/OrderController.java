@@ -1,9 +1,9 @@
 package com.rest.api.order.controller;
 
 import com.rest.api.order.service.OrderService;
-import com.zupzup.untact.model.dto.order.customer.request.PostOrderRequestDto;
-import com.zupzup.untact.model.dto.order.customer.response.GetOrderDetailsDto;
-import com.zupzup.untact.model.dto.order.customer.response.PostOrderResponseDto;
+import com.zupzup.untact.dto.order.customer.request.PostOrderRequestDto;
+import com.zupzup.untact.dto.order.customer.response.GetOrderDetailsDto;
+import com.zupzup.untact.dto.order.customer.response.PostOrderResponseDto;
 import com.zupzup.untact.social.jwt.SocialJwtTokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

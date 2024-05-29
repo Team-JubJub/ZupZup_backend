@@ -1,0 +1,10 @@
+= REVIEW API 1.0.0
+
+== 리뷰 공지 작성
+=== 성공 (200)
+**Request**
+include::{snippets}/success-save-reviewAnnouncement/http-request.adoc[]
+include::{snippets}/success-save-reviewAnnouncement/request-fields.adoc[]
+
+**Response**
+include::{snippets}/success-save-reviewAnnouncement/http-response.adoc[]

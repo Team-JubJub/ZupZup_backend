@@ -2,12 +2,12 @@ package com.rest.api.info.service;
 
 import com.zupzup.untact.social.utils.AuthUtils;
 import com.zupzup.untact.model.domain.auth.user.User;
-import com.zupzup.untact.model.dto.auth.customer.UserDto;
-import com.zupzup.untact.model.dto.info.customer.request.PatchNickNameDto;
-import com.zupzup.untact.model.dto.info.customer.request.PatchOptionalTermDto;
-import com.zupzup.untact.model.dto.info.customer.request.PatchPhoneNumberDto;
-import com.zupzup.untact.model.dto.info.customer.response.GetInfoResponseDto;
-import com.zupzup.untact.model.dto.info.customer.response.PatchInfoResponseDto;
+import com.zupzup.untact.dto.auth.customer.UserDto;
+import com.zupzup.untact.dto.info.customer.request.PatchNickNameDto;
+import com.zupzup.untact.dto.info.customer.request.PatchOptionalTermDto;
+import com.zupzup.untact.dto.info.customer.request.PatchPhoneNumberDto;
+import com.zupzup.untact.dto.info.customer.response.GetInfoResponseDto;
+import com.zupzup.untact.dto.info.customer.response.PatchInfoResponseDto;
 import com.zupzup.untact.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
