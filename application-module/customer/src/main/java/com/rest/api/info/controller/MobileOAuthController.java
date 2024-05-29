@@ -1,13 +1,13 @@
 package com.rest.api.info.controller;
 
+import com.zupzup.untact.dto.auth.customer.request.*;
 import com.zupzup.untact.social.jwt.SocialJwtTokenProvider;
 import com.rest.api.info.service.MobileOAuthService;
-import com.zupzup.untact.model.dto.MessageDto;
-import com.zupzup.untact.model.dto.auth.customer.UserDto;
-import com.zupzup.untact.model.dto.auth.customer.request.*;
-import com.zupzup.untact.model.dto.auth.customer.response.AppleRefreshTokenDto;
-import com.zupzup.untact.model.dto.auth.token.customer.CustomerRefreshResultDto;
-import com.zupzup.untact.model.dto.auth.token.customer.CustomerTokenInfoDto;
+import com.zupzup.untact.dto.MessageDto;
+import com.zupzup.untact.dto.auth.customer.UserDto;
+import com.zupzup.untact.dto.auth.customer.response.AppleRefreshTokenDto;
+import com.zupzup.untact.dto.auth.token.customer.CustomerRefreshResultDto;
+import com.zupzup.untact.dto.auth.token.customer.CustomerTokenInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;

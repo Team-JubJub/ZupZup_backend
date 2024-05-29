@@ -1,12 +1,12 @@
 package com.rest.api.store.controller;
 
 import com.rest.api.store.service.ItemService;
-import com.zupzup.untact.auth.jwt.JwtTokenProvider;
-import com.zupzup.untact.model.dto.item.seller.request.PatchItemCountDto;
-import com.zupzup.untact.model.dto.item.seller.request.PostItemDto;
-import com.zupzup.untact.model.dto.item.seller.request.UpdateRequestDto;
-import com.zupzup.untact.model.dto.item.seller.response.GetDto;
-import com.zupzup.untact.model.dto.item.seller.response.ItemResponseDto;
+import com.zupzup.untact.custom.jwt.CustomJwtTokenProvider;
+import com.zupzup.untact.dto.item.seller.request.PatchItemCountDto;
+import com.zupzup.untact.dto.item.seller.request.PostItemDto;
+import com.zupzup.untact.dto.item.seller.request.UpdateRequestDto;
+import com.zupzup.untact.dto.item.seller.response.GetDto;
+import com.zupzup.untact.dto.item.seller.response.ItemResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -48,7 +48,7 @@ public class ItemController {
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @PostMapping("/{storeId}") // 상품 저장
-    public ResponseEntity saveItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity saveItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                    @RequestPart(value = "item") PostItemDto requestDto,
                                    @RequestPart(value = "image", required = false) MultipartFile itemImg,
                                    @PathVariable Long storeId) throws Exception {
@@ -70,7 +70,7 @@ public class ItemController {
     })
     // 전체 제품 불러오기
     @GetMapping("/{storeId}/management")
-    public ResponseEntity readItems(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity readItems(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                     @PathVariable Long storeId) {
         List<GetDto> dtoList = itemService.readItems(storeId);
 
@@ -89,7 +89,7 @@ public class ItemController {
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게(or 상품)를 찾을 수 없습니다.\"\n}")))
     })
     @PatchMapping("/{storeId}/{itemId}")
-    public ResponseEntity updateItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity updateItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @PathVariable Long itemId,
                                      @PathVariable Long storeId,
                                      @RequestPart(value = "item") UpdateRequestDto updateDto,
@@ -112,7 +112,7 @@ public class ItemController {
     })
     // 제품 개수 수정하기
     @PatchMapping("/{storeId}/quantity")
-    public ResponseEntity modifyQuantity(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity modifyQuantity(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                          @PathVariable Long storeId,
                                          @RequestPart(name = "quantity") List<PatchItemCountDto> quantityList) {
         String result = itemService.modifyQuantity(storeId, quantityList);
@@ -132,7 +132,7 @@ public class ItemController {
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 상품을 찾을 수 없습니다.\"\n}")))
     })
     @DeleteMapping("/{storeId}/{itemId}")
-    public ResponseEntity deleteItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity deleteItem(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                      @PathVariable Long itemId, @PathVariable String storeId) {
         String response = itemService.deleteItem(itemId);
 

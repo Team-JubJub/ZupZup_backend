@@ -22,22 +22,21 @@ public class ReviewControllerImpl implements ReviewController {
     private final ReviewServiceImpl reviewService;
 
     @Override
-    @PostMapping("/{providerUserID}")
+    @PostMapping("")
     public ResponseEntity save(@RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                @RequestPart(value = "review") ReviewRequest reviewRequest,
-                               @RequestPart(value = "image", required = false) MultipartFile reviewImage,
-                               @PathVariable String providerUserID) throws Exception {
+                               @RequestPart(value = "image", required = false) MultipartFile reviewImage) throws Exception {
 
-        ReviewResponse response = reviewService.save(reviewRequest, reviewImage, providerUserID);
+        ReviewResponse response = reviewService.save(reviewRequest, reviewImage, accessToken);
 
         return new ResponseEntity(response, HttpStatus.CREATED);
     }
 
     @Override
-    @GetMapping("/{providerUserID}")
+    @GetMapping("")
     public ResponseEntity findAll(@RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                  @PathVariable String providerUserID) throws Exception {
-        List<ReviewListResponse> reviewList = reviewService.findAll(providerUserID);
+                                  @RequestParam(required = false, defaultValue = "0", value = "page") int pageNo) throws Exception {
+        List<ReviewListResponse> reviewList = reviewService.findAll(pageNo, accessToken);
         return new ResponseEntity<>(reviewList, HttpStatus.OK);
     }
 

@@ -1,19 +1,19 @@
 package com.rest.api.store.service;
 
-import com.zupzup.untact.auth.jwt.JwtTokenProvider;
+import com.zupzup.untact.custom.jwt.CustomJwtTokenProvider;
 import com.zupzup.untact.custom.redis.CustomRedisService;
-import com.zupzup.untact.exception.exception.auth.seller.NoSellerPresentsException;
-import com.zupzup.untact.exception.exception.auth.seller.NotEnteredException;
-import com.zupzup.untact.exception.exception.auth.seller.WantDeletionSellerException;
-import com.zupzup.untact.exception.exception.store.seller.NoSuchStoreException;
-import com.zupzup.untact.model.domain.auth.Role;
+import com.zupzup.untact.exception.auth.seller.NoSellerPresentsException;
+import com.zupzup.untact.exception.auth.seller.NotEnteredException;
+import com.zupzup.untact.exception.auth.seller.WantDeletionSellerException;
+import com.zupzup.untact.exception.store.seller.NoSuchStoreException;
+import com.zupzup.untact.model.enums.auth.Role;
 import com.zupzup.untact.model.domain.auth.seller.Seller;
 import com.zupzup.untact.model.domain.store.Store;
-import com.zupzup.untact.model.dto.auth.seller.SellerDto;
-import com.zupzup.untact.model.dto.auth.seller.request.SellerSignInDto;
-import com.zupzup.untact.model.dto.auth.seller.test.SellerTestSignUpDto;
-import com.zupzup.untact.model.dto.auth.token.seller.SellerTokenInfoDto;
-import com.zupzup.untact.model.dto.store.StoreDto;
+import com.zupzup.untact.dto.auth.seller.SellerDto;
+import com.zupzup.untact.dto.auth.seller.request.SellerSignInDto;
+import com.zupzup.untact.dto.auth.seller.test.SellerTestSignUpDto;
+import com.zupzup.untact.dto.auth.token.seller.SellerTokenInfoDto;
+import com.zupzup.untact.dto.store.StoreDto;
 import com.zupzup.untact.repository.SellerRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import jakarta.transaction.Transactional;
@@ -41,7 +41,7 @@ public class MobileAuthService {
     private final SellerRepository sellerRepository;
     private final StoreRepository storeRepository;
     private final CustomRedisService customRedisService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final CustomJwtTokenProvider jwtTokenProvider;
 
     final static public String LOGIN_FAILS = "Login fails";
     final static public String LOGIN_SUCCESS = "Login success";
@@ -111,7 +111,7 @@ public class MobileAuthService {
 
         // device token update 시작
         Store store = storeRepository.findById(sellerEntity.getId())
-                .orElseThrow(() -> new NotEnteredException()); // 아직 입점하지 않은 사장님이면 401 처리
+                .orElseThrow(NotEnteredException::new); // 아직 입점하지 않은 사장님이면 401 처리
 
         StoreDto storeDto = modelMapper.map(store, StoreDto.class);
         if (mode.equals("add")) storeDto.getDeviceTokens().add(deviceToken); // 해당 device token add
@@ -127,7 +127,7 @@ public class MobileAuthService {
         List<String> roles = Arrays.asList(sellerDto.getRole().getRole());
         String accessToken = jwtTokenProvider.generateAccessToken(sellerDto.getLoginId(), roles);
         String refreshToken = jwtTokenProvider.generateRefreshToken();
-        customRedisService.setStringValue(refreshToken, sellerDto.getLoginId(), JwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
+        customRedisService.setStringValue(refreshToken, sellerDto.getLoginId(), CustomJwtTokenProvider.REFRESH_TOKEN_VALIDITY_IN_MILLISECONDS);
         SellerTokenInfoDto sellerTokenInfoDto = new SellerTokenInfoDto(LOGIN_SUCCESS, message, accessToken, refreshToken, storeId);
 
         return sellerTokenInfoDto;

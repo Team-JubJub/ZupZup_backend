@@ -1,15 +1,14 @@
 package com.rest.api.store.controller;
 
-import com.zupzup.untact.auth.jwt.JwtTokenProvider;
 import com.zupzup.untact.custom.jwt.CustomJwtTokenProvider;
 import com.zupzup.untact.custom.redis.CustomRedisService;
 import com.rest.api.store.service.MobileAuthService;
 import com.zupzup.untact.model.domain.auth.seller.Seller;
-import com.zupzup.untact.model.dto.MessageDto;
-import com.zupzup.untact.model.dto.auth.seller.request.SellerSignInDto;
-import com.zupzup.untact.model.dto.auth.seller.test.SellerTestSignUpDto;
-import com.zupzup.untact.model.dto.auth.token.seller.SellerRefreshResultDto;
-import com.zupzup.untact.model.dto.auth.token.seller.SellerTokenInfoDto;
+import com.zupzup.untact.dto.MessageDto;
+import com.zupzup.untact.dto.auth.seller.request.SellerSignInDto;
+import com.zupzup.untact.dto.auth.seller.test.SellerTestSignUpDto;
+import com.zupzup.untact.dto.auth.token.seller.SellerRefreshResultDto;
+import com.zupzup.untact.dto.auth.token.seller.SellerTokenInfoDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -40,8 +39,8 @@ public class MobileAuthController {
     @Operation(summary = "로그인(모든 토큰 만료 시)", description = "Login ID를 이용, 액세스와 리프레시 토큰 재발급")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스, 리프레시 토큰 재발급(로그인) 성공",
-                    headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
-                            @Header(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
+                    headers = {@Header(name = CustomJwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰"),
+                            @Header(name = CustomJwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰")},
                     content = @Content(schema = @Schema(implementation = SellerTokenInfoDto.class))),
             @ApiResponse(responseCode = "400", description = "Request body 파라미터가 잘못된 경우, Request body의 값이 유효셩에 어긋나는 경우",
                     content = @Content(schema = @Schema(example = "Required request body is missing\n or \n" +
@@ -78,7 +77,7 @@ public class MobileAuthController {
     @Operation(summary = "로그인(리프레시 토큰 유효 시)", description = "리프레시 토큰을 이용한 액세스 토큰 갱신")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "액세스 토큰 갱신 성공",
-                    headers = {@Header(name = JwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰")},
+                    headers = {@Header(name = CustomJwtTokenProvider.ACCESS_TOKEN_NAME, description = "액세스 토큰")},
                     content = @Content(schema = @Schema(implementation = SellerRefreshResultDto.class))),
             @ApiResponse(responseCode = "400", description = "요청에 필요한 헤더(리프레시 토큰)가 없음",
                     content = @Content(schema = @Schema(example = "Required request header 'refreshToken' for method parameter type String is not present"))),
@@ -86,7 +85,7 @@ public class MobileAuthController {
                     content = @Content(schema = @Schema(example = "Refresh token validation failed. Login required")))
     })
     @PostMapping("/sign-in/refresh")    // 로그인 요청(access token 만료, refresh token 유효할 경우), refresh token만 받아옴
-    public ResponseEntity signInWithRefreshToken(@Parameter(name = JwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
+    public ResponseEntity signInWithRefreshToken(@Parameter(name = CustomJwtTokenProvider.REFRESH_TOKEN_NAME, description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken) {
         SellerRefreshResultDto refreshResult = jwtTokenProvider.validateRefreshToken(refreshToken);   // refresh token 유효성 검증
         if (refreshResult.getResult().equals(jwtTokenProvider.SUCCESS_STRING)) {    // Refresh token 유효성 검증 성공 시 헤더에 액세스 토큰, 바디에 result, message, id, 토큰 전달
             HttpHeaders responseHeaders = new HttpHeaders();
@@ -112,8 +111,8 @@ public class MobileAuthController {
                     content = @Content(schema = @Schema(example = "Required header parameter(accessToken) does not exits")))
     })
     @PostMapping("/sign-out")
-    public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
-                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
+    public ResponseEntity signOut(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+                                  @Parameter(name = "refreshToken", description = "리프레시 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.REFRESH_TOKEN_NAME) String refreshToken,
                                   @RequestBody String deviceToken) {
         String result = mobileAuthService.signOut(accessToken, refreshToken, deviceToken);
         if (result.equals("success")) return new ResponseEntity(new MessageDto("Sign-out successful"), HttpStatus.OK);

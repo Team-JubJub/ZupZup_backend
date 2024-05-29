@@ -1,10 +1,10 @@
 package com.rest.api.store.controller;
 
 import com.rest.api.store.service.StoreService;
-import com.zupzup.untact.auth.jwt.JwtTokenProvider;
-import com.zupzup.untact.model.dto.store.seller.request.ModifyStoreDto;
-import com.zupzup.untact.model.dto.store.seller.response.GetStoreDetailsDto;
-import com.zupzup.untact.model.dto.store.seller.response.ModifyStoreResponse;
+import com.zupzup.untact.custom.jwt.CustomJwtTokenProvider;
+import com.zupzup.untact.dto.store.seller.request.ModifyStoreDto;
+import com.zupzup.untact.dto.store.seller.response.GetStoreDetailsDto;
+import com.zupzup.untact.dto.store.seller.response.ModifyStoreResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -46,7 +46,7 @@ public class StoreController {
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @GetMapping("/{storeId}")
-    public ResponseEntity storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity storeDetails(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                        @Parameter(name = "storeId", description = "조회할 가게 id", in = ParameterIn.PATH) @PathVariable Long storeId) {
         return new ResponseEntity(storeService.storeDetails(storeId), HttpStatus.OK);
     }
@@ -65,7 +65,7 @@ public class StoreController {
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @PatchMapping("/open/{storeId}")
-    public ResponseEntity changeIsOpened(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity changeIsOpened(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                          @Parameter(name = "storeId", description = "수정할 가게 id", in = ParameterIn.PATH) @PathVariable Long storeId,
                                          Boolean isOpened) {
         String isClosed = storeService.changeIsOpened(storeId, isOpened);
@@ -86,7 +86,7 @@ public class StoreController {
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @PatchMapping("/modification/{storeId}")
-    public ResponseEntity modifyStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity modifyStore(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                       @Parameter(name = "storeId", description = "수정할 가게 id", in = ParameterIn.PATH) @PathVariable Long storeId,
                                       @Schema(name = "patchDto", type = "form-data, Content-type = application/json", description = "수정할 사항") @RequestPart(name = "data") ModifyStoreDto modifyStoreDto,
                                       @Schema(name = "image", type = "form-data, Content-type = multipart/form-data", description = "수정할 가게 이미지") @RequestPart(name = "image", required = false) MultipartFile storeImg) throws IOException {
@@ -109,12 +109,22 @@ public class StoreController {
                     content = @Content(schema = @Schema(example = "{\n\t\"message\": \"해당 가게를 찾을 수 없습니다.\"\n}")))
     })
     @PostMapping("/notice/{storeId}")
-    public ResponseEntity changeNotification(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(JwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+    public ResponseEntity changeNotification(@Parameter(name = "accessToken", description = "액세스 토큰", in = ParameterIn.HEADER) @RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
                                              @Parameter(name = "storeId", description = "수정할 가게 id", in = ParameterIn.PATH) @PathVariable Long storeId,
                                              String storeMatters) {
 
         String isChanged = storeService.changeNotification(storeId, storeMatters);
         return new ResponseEntity(isChanged, HttpStatus.OK);
     }
+
+//    @PatchMapping("/reviewAnnouncement/{storeId}")
+//    public ResponseEntity setReviewAnnouncement(@RequestHeader(CustomJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken,
+//                                                ReviewAnnouncementRequest reviewAnnouncementRequest,
+//                                                @PathVariable Long storeId) {
+//
+//        String response = storeService.setReviewAnnouncement(reviewAnnouncementRequest, storeId);
+//
+//        return new ResponseEntity<>(response, HttpStatus.OK);
+//    }
 
 }

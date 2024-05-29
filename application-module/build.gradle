@@ -45,6 +45,11 @@ subprojects {   // Applied to application-common, seller, customer
         implementation("org.springframework.boot:spring-boot-starter-cache")
         // pageable
         implementation("org.springframework.boot:spring-boot-starter-web")
+
+        // test
+        implementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+        // mockito
+        implementation 'org.mockito:mockito-core'
     }
 }
 project(':application-module:application-common') {

@@ -16,8 +16,6 @@ import org.hibernate.annotations.Where;
 public class Review extends BaseEntity {
 
     @Column(nullable = false)
-    private String nickname; // 닉네임
-    @Column(nullable = false)
     private float starRate; // 별점
     @Column(nullable = false, length = 200)
     private String content; // 리뷰
@@ -25,12 +23,10 @@ public class Review extends BaseEntity {
     private String imageURL; // 이미지 URL
     @Column(length = 300)
     private String comment; // 사장님 댓글
-    @Column(nullable = false)
-    private String menu; // 구매한 메뉴
 
     @Column(nullable = false)
     private Long orderID; // order ID
     @Column(nullable = false)
-    private String providerUserID; // userID
+    private Long userID; // userID
 
 }
