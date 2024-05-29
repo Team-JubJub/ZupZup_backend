@@ -1,6 +1,10 @@
 package com.rest.api.review.service.impl;
 
+import com.rest.api.review.exception.ReviewException;
+import com.rest.api.review.model.domain.Review;
 import com.rest.api.review.model.dto.ReviewAnnouncementRequest;
+import com.rest.api.review.model.dto.ReviewCommentRequest;
+import com.rest.api.review.repository.ReviewRepository;
 import com.rest.api.review.service.ReviewService;
 import com.zupzup.untact.custom.jwt.CustomJwtTokenProvider;
 import com.zupzup.untact.exception.store.ForbiddenStoreException;
@@ -11,11 +15,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.rest.api.review.exception.ReviewExceptionType.NO_MATCH_REVIEW;
+
 @Service
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
 
     private final StoreRepository storeRepository;
+    private final ReviewRepository reviewRepository;
     private final CustomJwtTokenProvider customJwtTokenProvider;
 
     @Override
@@ -41,5 +48,22 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         return storeID;
+    }
+
+    @Override
+    @Transactional
+    public Long writeReviewComment(Long reviewID, String accessToken, ReviewCommentRequest reviewComment) {
+
+        // accessToken 유효성 검증
+        if (customJwtTokenProvider.validateToken(accessToken)) {
+            Review review = reviewRepository.findById(reviewID)
+                    .orElseThrow(() -> new ReviewException(NO_MATCH_REVIEW));
+
+            review.setComment(reviewComment.getReviewComment());
+
+        } else {
+            throw new ForbiddenStoreException("해당 가게에 대한 권한이 없습니다.");
+        }
+        return reviewID;
     }
 }
