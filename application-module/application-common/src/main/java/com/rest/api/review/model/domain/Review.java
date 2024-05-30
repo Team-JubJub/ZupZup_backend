@@ -1,8 +1,11 @@
 package com.rest.api.review.model.domain;
 
 import com.zupzup.untact.model.BaseEntity;
+import com.zupzup.untact.model.domain.order.Order;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToOne;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.Where;
@@ -25,7 +28,8 @@ public class Review extends BaseEntity {
     private String comment; // 사장님 댓글
 
     @Column(nullable = false)
-    private Long orderID; // order ID
+    @OneToOne(cascade = CascadeType.ALL)
+    private Order order;
     @Column(nullable = false)
     private Long userID; // userID
 

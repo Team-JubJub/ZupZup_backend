@@ -95,7 +95,7 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
                 .starRate(reviewRequest.getStarRate())
                 .content(reviewRequest.getContent())
                 .imageURL(imageURL)
-                .orderID(reviewRequest.getOrderID())
+                .order(order)
                 .userID(userEntity.getId())
                 .createdAt(timeSetter())
                 .build();
@@ -130,8 +130,7 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
                     .getNickName());
 
             // 메뉴 추가
-            Order order = orderRepository.findById(review.getOrderID())
-                    .orElseThrow(NoSuchOrderException::new);
+            Order order = review.getOrder();
             reviewListResponse.setMenu(menuList(order));
 
             reviewResponse.add(reviewListResponse);
@@ -158,6 +157,9 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
         }
     }
 
+    /**
+     * 리뷰에 보일 메뉴 리스트화
+     */
     public String menuList(Order order) {
 
         StringBuilder menuList = new StringBuilder();
