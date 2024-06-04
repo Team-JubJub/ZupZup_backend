@@ -10,12 +10,12 @@ import com.rest.api.review.model.dto.ReviewResponse;
 import com.rest.api.review.repository.ReviewRepository;
 import com.rest.api.review.service.ReviewService;
 import com.zupzup.untact.exception.auth.customer.NoUserPresentsException;
-import com.zupzup.untact.exception.store.order.NoSuchOrderException;
 import com.zupzup.untact.exception.store.StoreException;
+import com.zupzup.untact.exception.store.order.NoSuchOrderException;
 import com.zupzup.untact.model.domain.auth.user.User;
 import com.zupzup.untact.model.domain.order.Order;
-import com.zupzup.untact.model.enums.OrderSpecific;
 import com.zupzup.untact.model.domain.store.Store;
+import com.zupzup.untact.model.enums.OrderSpecific;
 import com.zupzup.untact.repository.OrderRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
@@ -102,12 +102,20 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
 
         reviewRepository.save(review);
 
+        // 가게 리뷰 개수 추가
+        Store store = storeRepository.findById(storeID)
+                .orElseThrow(() -> new StoreException(NO_MATCH_STORE));
+        store.addReviewCount();
+
         // 사장님한테 푸시 알림 전송
         sendMessage(storeID, "리뷰 작성", menuList + "에 대한 리뷰가 작성되었습니다!");
 
         return review.getId();
     }
 
+    /**
+     * 자신이 쓴 리뷰 전체보기
+     */
     @Override
     @Transactional(readOnly = true)
     public List<ReviewListResponse> findAll(int pageNo,
@@ -137,6 +145,41 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
         }
 
         return reviewResponse;
+    }
+
+    /**
+     * 리뷰 삭제
+     */
+    @Transactional
+    public Long delete(Long reviewID, String accessToken) {
+
+        User userEntity = authUtils.getUserEntity(accessToken);
+
+        // 유저가 존재하지 않으면 에러 발생
+        if (userEntity == null) {
+            throw new NoUserPresentsException();
+        }
+
+        Review review = reviewRepository.findById(reviewID)
+                .orElseThrow(NoSuchOrderException::new);
+
+        // 주문 내역 통해서 StoreID, 가게 메뉴 가져오기
+        Order order = review.getOrder();
+        Long storeID = order.getStoreId();
+        String menuList = menuList(order);
+
+        // 리뷰 삭제
+        reviewRepository.delete(review);
+
+        // 가게 리뷰 개수 감소
+        Store store = storeRepository.findById(storeID)
+                .orElseThrow(() -> new StoreException(NO_MATCH_STORE));
+        store.subtractReviewCount();
+
+        // 사장님한테 푸시 알림 전송
+        sendMessage(storeID, "리뷰 삭제", menuList + "에 대한 리뷰가 삭제되었습니다!");
+
+        return reviewID;
     }
 
     //<--------- incidental method ---------->
