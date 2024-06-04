@@ -107,6 +107,9 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
                 .orElseThrow(() -> new StoreException(NO_MATCH_STORE));
         store.addReviewCount();
 
+        // 가게 별점 업데이트
+        store.calculateStarRate(store.getReviewCount(), review.getStarRate());
+
         // 사장님한테 푸시 알림 전송
         sendMessage(storeID, "리뷰 작성", menuList + "에 대한 리뷰가 작성되었습니다!");
 
@@ -175,6 +178,9 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
         Store store = storeRepository.findById(storeID)
                 .orElseThrow(() -> new StoreException(NO_MATCH_STORE));
         store.subtractReviewCount();
+
+        // 가게 별점 업데이트
+        store.calculateStarRate(store.getReviewCount(), 0);
 
         // 사장님한테 푸시 알림 전송
         sendMessage(storeID, "리뷰 삭제", menuList + "에 대한 리뷰가 삭제되었습니다!");
