@@ -29,6 +29,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.naming.NoInitialContextException;
 import java.util.List;
 
 import static com.zupzup.untact.exception.store.StoreExceptionType.NO_MATCH_STORE;
@@ -212,7 +213,7 @@ public class ReviewApiTest {
                                         partWithName("image").description("리뷰 이미지").optional()
                                 ),
                                 responseFields(
-                                        fieldWithPath("message").type(JsonFieldType.STRING).description("해당 주문을 찾을 수 없습니다.")
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("에러 메시지")
                                 )
                         )
                 );
@@ -350,6 +351,95 @@ public class ReviewApiTest {
                 .andDo(
                         document(
                                 "success-delete-review",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(
+                                        parameterWithName("reviewID").description("삭제하고자 하는 리뷰 ID")
+                                ),
+                                responseBody()
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제 - 실패 (accessToken 에러)")
+    public void fail_review_delete_cannot_find_user() throws Exception {
+
+        // given
+        Long reviewID = 1L;
+        when(reviewService.delete(reviewID, accessToken))
+                .thenThrow(new NoUserPresentsException());
+
+        // when
+        mockMvc.perform(
+                        RestDocumentationRequestBuilders.delete("/review/{reviewID}", reviewID)
+                                .header("accessToken", accessToken)
+                )
+                // then
+                .andExpect(status().isUnauthorized())
+                .andDo(
+                        document(
+                                "fail-delete-review-cannot-find-user",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(
+                                        parameterWithName("reviewID").description("삭제하고자 하는 리뷰 ID")
+                                ),
+                                responseBody()
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제 - 실패 (accessToken 에러)")
+    public void fail_review_delete_cannot_find_review() throws Exception {
+
+        // given
+        Long reviewID = 1L;
+        when(reviewService.delete(reviewID, accessToken))
+                .thenThrow(new NoSuchException("해당 리뷰를 찾을 수 없습니다."));
+
+        // when
+        mockMvc.perform(
+                        RestDocumentationRequestBuilders.delete("/review/{reviewID}", reviewID)
+                                .header("accessToken", accessToken)
+                )
+                // then
+                .andExpect(status().isNotFound())
+                .andDo(
+                        document(
+                                "fail-delete-review-cannot-find-review",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                pathParameters(
+                                        parameterWithName("reviewID").description("삭제하고자 하는 리뷰 ID")
+                                ),
+                                responseFields(
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("에러 메시지")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("리뷰 삭제 - 실패 (accessToken 에러)")
+    public void fail_review_delete_cannot_find_store() throws Exception {
+
+        // given
+        Long reviewID = 1L;
+        when(reviewService.delete(reviewID, accessToken))
+                .thenThrow(new StoreException(NO_MATCH_STORE));
+
+        // when
+        mockMvc.perform(
+                        RestDocumentationRequestBuilders.delete("/review/{reviewID}", reviewID)
+                                .header("accessToken", accessToken)
+                )
+                // then
+                .andExpect(status().isBadRequest())
+                .andDo(
+                        document(
+                                "fail-delete-review-cannot-find-store",
                                 preprocessRequest(prettyPrint()),
                                 preprocessResponse(prettyPrint()),
                                 pathParameters(

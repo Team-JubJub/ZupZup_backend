@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.20">
-<title>REVIEW API 1.0.0</title>
+<title>CUSTOMER REVIEW API 1.0.0</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -433,40 +433,62 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
-<h1>REVIEW API 1.0.0</h1>
+<h1>CUSTOMER REVIEW API 1.0.0</h1>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_save_리뷰_저장">SAVE (리뷰 저장)</a>
+<ul class="sectlevel2">
+<li><a href="#_성공_201">성공 (201)</a></li>
+<li><a href="#_실패_401">실패 (401)</a></li>
+<li><a href="#_실패_404">실패 (404)</a></li>
+<li><a href="#_실패_400">실패 (400)</a></li>
+</ul>
+</li>
+<li><a href="#_get_리뷰_조회">GET (리뷰 조회)</a>
+<ul class="sectlevel2">
+<li><a href="#_성공_200">성공 (200)</a></li>
+</ul>
+</li>
+<li><a href="#_delete_리뷰_삭제">DELETE (리뷰 삭제)</a>
+<ul class="sectlevel2">
+<li><a href="#_성공_200_2">성공 (200)</a></li>
+<li><a href="#_실패_401_2">실패 (401)</a></li>
+<li><a href="#_실패_404_2">실패 (404)</a></li>
+<li><a href="#_실패_400_2">실패 (400)</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_save_리뷰_저장">SAVE (리뷰 저장)</h2>
+<h2 id="_save_리뷰_저장"><a class="link" href="#_save_리뷰_저장">SAVE (리뷰 저장)</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_성공_201">성공 (201)</h3>
+<h3 id="_성공_201"><a class="link" href="#_성공_201">성공 (201)</a></h3>
 <div class="paragraph">
 <p><strong>Request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">POST /review
-Content-Type: multipart/form-data;charset=UTF-8;
-accessToken: 123456 (header에 추가, required, user 로그인 시 발급받은 accessToken)
-Port : 8080
+Content-Type: multipart/form-data
+accessToken: user 액세스 토큰
+Port: 8080
 
------
-MultiPart Form Data
+---
+form-data; name=image
+Content-Type: image/jpeg
 
-key=image; value=test.jpg
-Content-Type: image/jpeg (png도 가능)
-
-key=review; value=
-{
-    &quot;orderID&quot;:1,
-    &quot;content&quot;:&quot;test content&quot;,
-    &quot;starRate&quot;:4.5
-}
+---
+form-data; name=review
 Content-Type: application/json
------</code></pre>
+
+{&quot;orderID&quot;:1,&quot;content&quot;:&quot;test content&quot;,&quot;starRate&quot;:4.5}
+---</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -490,7 +512,7 @@ Content-Type: application/json
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>review</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 작성 데이터</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">리뷰 요청 데이터</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>image</code></p></td>
@@ -542,10 +564,80 @@ Content-Type: application/json
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">201 Created
-Content-Type: application/json;charset=UTF-8
+Content-Type: application/json
+
+1</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>response 형식</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성된 review ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_실패_401"><a class="link" href="#_실패_401">실패 (401)</a></h3>
+<div class="sect3">
+<h4 id="_accesstoken_통해_유저_찾지_못함"><a class="link" href="#_accesstoken_통해_유저_찾지_못함">accessToken 통해 유저 찾지 못함</a></h4>
+<div class="paragraph">
+<p><strong>Request</strong></p>
+</div>
+<div class="paragraph">
+<p>위 형식과 동일</p>
+</div>
+<div class="paragraph">
+<p><strong>Response</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="http">401 Unauthorized
+Content-Type: text/plain
+
+User with provided unique ID doesn't present</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_실패_404"><a class="link" href="#_실패_404">실패 (404)</a></h3>
+<div class="sect3">
+<h4 id="_id에_해당하는_주문_존재하지_않음"><a class="link" href="#_id에_해당하는_주문_존재하지_않음">ID에 해당하는 주문 존재하지 않음</a></h4>
+<div class="paragraph">
+<p><strong>Request</strong></p>
+</div>
+<div class="paragraph">
+<p>위 형식과 동일</p>
+</div>
+<div class="paragraph">
+<p><strong>Response</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="http">404 Not Found
+Content-Type: application/json
+
 {
-  &quot;reviewID&quot; : 1,
-  &quot;menu&quot; : &quot;test menu&quot;
+  &quot;message&quot; : &quot;해당 주문을 찾을 수 없습니다.&quot;
 }</code></pre>
 </div>
 </div>
@@ -571,33 +663,52 @@ Content-Type: application/json;charset=UTF-8
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>reviewID</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Long</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">review id</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>menu</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">메뉴명</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">에러 메시지</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_실패_400"><a class="link" href="#_실패_400">실패 (400)</a></h3>
+<div class="sect3">
+<h4 id="_id에_해당하는_가게_존재하지_않음"><a class="link" href="#_id에_해당하는_가게_존재하지_않음">ID에 해당하는 가게 존재하지 않음</a></h4>
+<div class="paragraph">
+<p><strong>Request</strong></p>
+</div>
+<div class="paragraph">
+<p>위 형식과 동일</p>
+</div>
+<div class="paragraph">
+<p><strong>Response</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="http">400 Bad Request
+Content-Type: text/plain
+
+Store with provided unique ID doesn't present.</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="sect1">
-<h2 id="_get_리뷰_조회">GET (리뷰 조회)</h2>
+<h2 id="_get_리뷰_조회"><a class="link" href="#_get_리뷰_조회">GET (리뷰 조회)</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_성공_200">성공 (200)</h3>
+<h3 id="_성공_200"><a class="link" href="#_성공_200">성공 (200)</a></h3>
 <div class="paragraph">
 <p><strong>Request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">GET /review?page=0
-accessToken: 123456 (required, user access token)
-Port : 8080</code></pre>
+accessToken: user 액세스 토큰
+Port: 8080</code></pre>
 </div>
 </div>
 <div class="ulist">
@@ -621,7 +732,7 @@ Port : 8080</code></pre>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호 (기본값: 0, 10개씩 끊어서 가져옴)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">페이지 번호</p></td>
 </tr>
 </tbody>
 </table>
@@ -631,7 +742,7 @@ Port : 8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">200 OK
-Content-Type: application/json;charset=UTF-8
+Content-Type: application/json
 
 [ {
   &quot;reviewID&quot; : 1,
@@ -641,7 +752,7 @@ Content-Type: application/json;charset=UTF-8
   &quot;imageURL&quot; : &quot;test url&quot;,
   &quot;menu&quot; : &quot;test menu&quot;,
   &quot;comment&quot; : &quot;&quot;,
-  &quot;createdAt&quot; : &quot;2021-05-01 12:00:00&quot;
+  &quot;createdAt&quot; : &quot;2021-05-03 08:00:00&quot;
 }, {
   &quot;reviewID&quot; : 2,
   &quot;nickname&quot; : &quot;test nickname2&quot;,
@@ -650,7 +761,7 @@ Content-Type: application/json;charset=UTF-8
   &quot;imageURL&quot; : &quot;&quot;,
   &quot;menu&quot; : &quot;test menu2, test menu2-1, test menu2-2&quot;,
   &quot;comment&quot; : &quot;test comment2&quot;,
-  &quot;createdAt&quot; : &quot;2021-05-02 12:00:00&quot;
+  &quot;createdAt&quot; : &quot;2021-05-02 22:00:00&quot;
 }, {
   &quot;reviewID&quot; : 3,
   &quot;nickname&quot; : &quot;test nickname3&quot;,
@@ -659,7 +770,7 @@ Content-Type: application/json;charset=UTF-8
   &quot;imageURL&quot; : &quot;test url3&quot;,
   &quot;menu&quot; : &quot;test menu3, test menu3-1&quot;,
   &quot;comment&quot; : &quot;&quot;,
-  &quot;createdAt&quot; : &quot;2021-05-03 12:00:00&quot;
+  &quot;createdAt&quot; : &quot;2021-05-01 10:00:00&quot;
 } ]</code></pre>
 </div>
 </div>
@@ -707,7 +818,7 @@ Content-Type: application/json;charset=UTF-8
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].imageURL</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 URL (없으면 "" 빈 문자열)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 URL (빈문자열("")가능)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].menu</code></p></td>
@@ -717,7 +828,7 @@ Content-Type: application/json;charset=UTF-8
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].comment</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">사장님 댓글 (없을 수 있음)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">사장님 댓글 (빈문자열("")가능)</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[].createdAt</code></p></td>
@@ -730,18 +841,18 @@ Content-Type: application/json;charset=UTF-8
 </div>
 </div>
 <div class="sect1">
-<h2 id="_delete_리뷰_삭제">DELETE (리뷰 삭제)</h2>
+<h2 id="_delete_리뷰_삭제"><a class="link" href="#_delete_리뷰_삭제">DELETE (리뷰 삭제)</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_성공_200_2">성공 (200)</h3>
+<h3 id="_성공_200_2"><a class="link" href="#_성공_200_2">성공 (200)</a></h3>
 <div class="paragraph">
 <p><strong>Request</strong></p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="http">DELETE /review/{reviewID}
-accessToken: 123456 (required, user access token)
-Port : 8080</code></pre>
+<pre class="CodeRay highlight nowrap"><code data-lang="http">DELETE /review/1
+accessToken: user 액세스 토큰
+Port: 8080</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -769,7 +880,7 @@ Port : 8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight nowrap"><code data-lang="http">200 OK
-Content-Type: application/json;charset=UTF-8
+Content-Type: application/json
 
 1</code></pre>
 </div>
@@ -777,9 +888,126 @@ Content-Type: application/json;charset=UTF-8
 <div class="ulist">
 <ul>
 <li>
-<p>삭제된 리뷰 아이디</p>
+<p>response 형식</p>
 </li>
 </ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Long</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">생성된 review ID</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_실패_401_2"><a class="link" href="#_실패_401_2">실패 (401)</a></h3>
+<div class="sect3">
+<h4 id="_accesstoken_통해_유저_찾지_못함_2"><a class="link" href="#_accesstoken_통해_유저_찾지_못함_2">accessToken 통해 유저 찾지 못함</a></h4>
+<div class="paragraph">
+<p><strong>Request</strong></p>
+</div>
+<div class="paragraph">
+<p>위 형식과 동일</p>
+</div>
+<div class="paragraph">
+<p><strong>Response</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="http">401 Unauthorized
+Content-Type: text/plain
+
+User with provided unique ID doesn't present</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_실패_404_2"><a class="link" href="#_실패_404_2">실패 (404)</a></h3>
+<div class="sect3">
+<h4 id="_id에_해당하는_리뷰_찾지_못함"><a class="link" href="#_id에_해당하는_리뷰_찾지_못함">ID에 해당하는 리뷰 찾지 못함</a></h4>
+<div class="paragraph">
+<p><strong>Request</strong></p>
+</div>
+<div class="paragraph">
+<p>위 형식과 동일</p>
+</div>
+<div class="paragraph">
+<p><strong>Response</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="http">404 Not Found
+Content-Type: application/json
+
+{
+  &quot;message&quot; : &quot;해당 리뷰를 찾을 수 없습니다.&quot;
+}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>response 형식</p>
+</li>
+</ul>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>message</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">에러 메시지</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_실패_400_2"><a class="link" href="#_실패_400_2">실패 (400)</a></h3>
+<div class="sect3">
+<h4 id="_id에_해당하는_가게_찾지_못함"><a class="link" href="#_id에_해당하는_가게_찾지_못함">ID에 해당하는 가게 찾지 못함</a></h4>
+<div class="paragraph">
+<p><strong>Request</strong></p>
+</div>
+<div class="paragraph">
+<p>위 형식과 동일</p>
+</div>
+<div class="paragraph">
+<p><strong>Response</strong></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight nowrap"><code data-lang="http">400 Bad Request
+Content-Type: text/plain
+
+Store with provided unique ID doesn't present.</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -787,7 +1015,7 @@ Content-Type: application/json;charset=UTF-8
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-05-11 23:23:07 +0900
+Last updated 2024-06-12 16:51:01 +0900
 </div>
 </div>
 </body>

@@ -1,4 +1,4 @@
-= REVIEW API 1.0.0
+= CUSTOMER REVIEW API 1.0.0
 :toc: left
 :toclevels: 2
 :sectlinks:
@@ -81,3 +81,32 @@ include::{snippets}/success-delete-review/http-response.adoc[]
 |`+Long+`
 |생성된 review ID
 |===
+
+=== 실패 (401)
+==== accessToken 통해 유저 찾지 못함
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-delete-review-cannot-find-user/http-response.adoc[]
+
+=== 실패 (404)
+==== ID에 해당하는 리뷰 찾지 못함
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-delete-review-cannot-find-review/http-response.adoc[]
+- response 형식
+include::{snippets}/fail-delete-review-cannot-find-review/response-fields.adoc[]
+
+=== 실패 (400)
+==== ID에 해당하는 가게 찾지 못함
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-delete-review-cannot-find-store/http-response.adoc[]

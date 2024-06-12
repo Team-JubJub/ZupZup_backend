@@ -152,7 +152,7 @@ public class ReviewServiceImpl implements ReviewService {
         }
 
         Review review = reviewRepository.findById(reviewID)
-                .orElseThrow(() -> new NoSuchException("해당 주문을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NoSuchException("해당 리뷰를 찾을 수 없습니다."));
 
         // 주문 내역 통해서 StoreID, 가게 메뉴 가져오기
         Order order = review.getOrder();
