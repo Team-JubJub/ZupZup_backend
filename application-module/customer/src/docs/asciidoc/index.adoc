@@ -1,4 +1,7 @@
-= REVIEW API 1.0.0
+= CUSTOMER REVIEW API 1.0.0
+:toc: left
+:toclevels: 2
+:sectlinks:
 
 == SAVE (리뷰 저장)
 === 성공 (201)
@@ -13,7 +16,41 @@ include::{snippets}/success-save-review/request-part-review-fields.adoc[]
 **Response**
 include::{snippets}/success-save-review/http-response.adoc[]
 - response 형식
-include::{snippets}/success-save-review/response-fields.adoc[]
+|===
+|Type|Description
+
+|`+Long+`
+|생성된 review ID
+|===
+
+=== 실패 (401)
+==== accessToken 통해 유저 찾지 못함
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-save-review-cannot-find-user/http-response.adoc[]
+
+=== 실패 (404)
+==== ID에 해당하는 주문 존재하지 않음
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-save-review-cannot-find-order/http-response.adoc[]
+- response 형식
+include::{snippets}/fail-save-review-cannot-find-order/response-fields.adoc[]
+
+=== 실패 (400)
+==== ID에 해당하는 가게 존재하지 않음
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-save-review-cannot-find-store/http-response.adoc[]
 
 == GET (리뷰 조회)
 === 성공 (200)
@@ -37,4 +74,39 @@ include::{snippets}/success-delete-review/path-parameters.adoc[]
 
 **Response**
 include::{snippets}/success-delete-review/http-response.adoc[]
-- 삭제된 리뷰 아이디
+- response 형식
+|===
+|Type|Description
+
+|`+Long+`
+|생성된 review ID
+|===
+
+=== 실패 (401)
+==== accessToken 통해 유저 찾지 못함
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-delete-review-cannot-find-user/http-response.adoc[]
+
+=== 실패 (404)
+==== ID에 해당하는 리뷰 찾지 못함
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-delete-review-cannot-find-review/http-response.adoc[]
+- response 형식
+include::{snippets}/fail-delete-review-cannot-find-review/response-fields.adoc[]
+
+=== 실패 (400)
+==== ID에 해당하는 가게 찾지 못함
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-delete-review-cannot-find-store/http-response.adoc[]
