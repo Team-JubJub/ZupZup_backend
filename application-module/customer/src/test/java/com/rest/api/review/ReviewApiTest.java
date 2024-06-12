@@ -4,7 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rest.api.document.RestDocsConfig;
 import com.rest.api.review.model.dto.ReviewListResponse;
 import com.rest.api.review.model.dto.ReviewRequest;
-import com.rest.api.review.service.impl.ReviewServiceImpl;
+import com.rest.api.review.service.ReviewService;
+import com.zupzup.untact.exception.auth.customer.NoUserPresentsException;
+import com.zupzup.untact.exception.store.StoreException;
+import com.zupzup.untact.exception.store.order.NoSuchException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
+import static com.zupzup.untact.exception.store.StoreExceptionType.NO_MATCH_STORE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -55,7 +59,7 @@ public class ReviewApiTest {
     private ObjectMapper objectMapper;
 
     @MockBean
-    private ReviewServiceImpl reviewService;
+    private ReviewService reviewService;
 
     String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0Iiwicm9sZSI6W3sibmFtZSI6IlJPTEVfU0VMTEVSIn1dLCJpYXQiOjE2OTQzNDQ3MDAsImV4cCI6MTY5NDM0ODMwMH0.sLm_sw3uhWH1CbuC8MHyY1f1fAWKw6u22nynkOTzNTk";
 
@@ -120,34 +124,145 @@ public class ReviewApiTest {
                 );
     }
 
-//    @Test
-//    @DisplayName("리뷰 작성 - 실패 (유저 찾지 못함)")
-//    public void fail_review_save_cannot_find_user() throws Exception {
-//
-//        // given
-//        // NoUserPresentsException 발생
-//        when(reviewService.save(any(ReviewRequest.class), any(MultipartFile.class), anyString())).thenThrow(new NoUserPresentsException());
-//
-//        // Request 설정
-//        ReviewRequest rq = new ReviewRequest();
-//        rq.setContent("test content");
-//        rq.setStarRate(4.5F);
-//        rq.setOrderID(1L);
-//
-//        // 'review' 파트
-//        MockMultipartFile reviewPart = new MockMultipartFile("review", "", "application/json", objectMapper.writeValueAsString(rq).getBytes());
-//
-//        // when & then
-//        mockMvc.perform(
-//                        multipart("/review")
-//                                .file(reviewPart)
-//                                .header("accessToken", accessToken)
-//                                .contentType(MediaType.MULTIPART_FORM_DATA)
-//                )
-//                .andExpect(status().isBadRequest())
-//                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NoUserPresentsException))
-//                .andDo(print());
-//    }
+    @Test
+    @DisplayName("리뷰 작성 - 실패 (accessToken 에러)")
+    public void fail_review_save_cannot_find_user() throws Exception {
+
+        // given
+        // Request 설정
+        ReviewRequest rq = new ReviewRequest();
+        rq.setContent("test content");
+        rq.setStarRate(4.5F);
+        rq.setOrderID(1L);
+
+        String jsonRq = objectMapper.writeValueAsString(rq);
+
+        // 'image' 파트
+        MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image content".getBytes());
+
+        // 'review' 파트
+        MockMultipartFile reviewPart = new MockMultipartFile("review", "", "application/json", jsonRq.getBytes());
+
+        // NoSuchException 발생
+        when(reviewService.save(any(ReviewRequest.class), any(MultipartFile.class), anyString()))
+                .thenThrow(new NoUserPresentsException());
+
+        // when & then
+        mockMvc.perform(
+                        multipart("/review")
+                                .file(reviewPart)
+                                .file(imageFile)
+                                .header("accessToken", accessToken)
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                )
+                .andExpect(status().isUnauthorized())
+                .andDo(
+                        document(
+                                "fail-save-review-cannot-find-user",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestParts(
+                                        partWithName("review").description("리뷰 요청 데이터"),
+                                        partWithName("image").description("리뷰 이미지").optional()
+                                ),
+                                responseBody()
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("리뷰 작성 - 실패 (주문내역 찾지 못함)")
+    public void fail_review_save_cannot_find_order() throws Exception {
+
+        // given
+        // Request 설정
+        ReviewRequest rq = new ReviewRequest();
+        rq.setContent("test content");
+        rq.setStarRate(4.5F);
+        rq.setOrderID(1L);
+
+        String jsonRq = objectMapper.writeValueAsString(rq);
+
+        // 'image' 파트
+        MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image content".getBytes());
+
+        // 'review' 파트
+        MockMultipartFile reviewPart = new MockMultipartFile("review", "", "application/json", jsonRq.getBytes());
+
+        // NoSuchException 발생
+        when(reviewService.save(any(ReviewRequest.class), any(MultipartFile.class), anyString()))
+                .thenThrow(new NoSuchException("해당 주문을 찾을 수 없습니다."));
+
+        // when & then
+        mockMvc.perform(
+                        multipart("/review")
+                                .file(reviewPart)
+                                .file(imageFile)
+                                .header("accessToken", accessToken)
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                )
+                .andExpect(status().isNotFound())
+                .andDo(
+                        document(
+                                "fail-save-review-cannot-find-order",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestParts(
+                                        partWithName("review").description("리뷰 요청 데이터"),
+                                        partWithName("image").description("리뷰 이미지").optional()
+                                ),
+                                responseFields(
+                                        fieldWithPath("message").type(JsonFieldType.STRING).description("해당 주문을 찾을 수 없습니다.")
+                                )
+                        )
+                );
+    }
+
+    @Test
+    @DisplayName("리뷰 작성 - 실패 (accessToken 에러)")
+    public void fail_review_save_cannot_find_store() throws Exception {
+
+        // given
+        // Request 설정
+        ReviewRequest rq = new ReviewRequest();
+        rq.setContent("test content");
+        rq.setStarRate(4.5F);
+        rq.setOrderID(1L);
+
+        String jsonRq = objectMapper.writeValueAsString(rq);
+
+        // 'image' 파트
+        MockMultipartFile imageFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", "test image content".getBytes());
+
+        // 'review' 파트
+        MockMultipartFile reviewPart = new MockMultipartFile("review", "", "application/json", jsonRq.getBytes());
+
+        // NoSuchException 발생
+        when(reviewService.save(any(ReviewRequest.class), any(MultipartFile.class), anyString()))
+                .thenThrow(new StoreException(NO_MATCH_STORE));
+
+        // when & then
+        mockMvc.perform(
+                        multipart("/review")
+                                .file(reviewPart)
+                                .file(imageFile)
+                                .header("accessToken", accessToken)
+                                .contentType(MediaType.MULTIPART_FORM_DATA)
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(
+                        document(
+                                "fail-save-review-cannot-find-store",
+                                preprocessRequest(prettyPrint()),
+                                preprocessResponse(prettyPrint()),
+                                requestParts(
+                                        partWithName("review").description("리뷰 요청 데이터"),
+                                        partWithName("image").description("리뷰 이미지").optional()
+                                ),
+                                responseBody()
+                        )
+                );
+    }
 
     @Test
     @DisplayName("리뷰 읽어오기 - 성공")
@@ -223,7 +338,7 @@ public class ReviewApiTest {
 
         // given
         Long reviewID = 1L;
-        when(reviewService.delete(reviewID)).thenReturn(reviewID);
+        when(reviewService.delete(reviewID, accessToken)).thenReturn(reviewID);
 
         // when
         mockMvc.perform(

@@ -6,12 +6,11 @@ import com.rest.api.aws.S3Uploader;
 import com.rest.api.review.model.domain.Review;
 import com.rest.api.review.model.dto.ReviewListResponse;
 import com.rest.api.review.model.dto.ReviewRequest;
-import com.rest.api.review.model.dto.ReviewResponse;
 import com.rest.api.review.repository.ReviewRepository;
 import com.rest.api.review.service.ReviewService;
 import com.zupzup.untact.exception.auth.customer.NoUserPresentsException;
 import com.zupzup.untact.exception.store.StoreException;
-import com.zupzup.untact.exception.store.order.NoSuchOrderException;
+import com.zupzup.untact.exception.store.order.NoSuchException;
 import com.zupzup.untact.model.domain.auth.user.User;
 import com.zupzup.untact.model.domain.order.Order;
 import com.zupzup.untact.model.domain.store.Store;
@@ -19,8 +18,8 @@ import com.zupzup.untact.model.enums.OrderSpecific;
 import com.zupzup.untact.repository.OrderRepository;
 import com.zupzup.untact.repository.StoreRepository;
 import com.zupzup.untact.repository.UserRepository;
-import com.zupzup.untact.service.BaseServiceImpl;
 import com.zupzup.untact.social.utils.AuthUtils;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,19 +38,8 @@ import java.util.List;
 import static com.zupzup.untact.exception.store.StoreExceptionType.NO_MATCH_STORE;
 
 @Service
-public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, ReviewResponse, ReviewRepository> implements ReviewService {
-
-    public ReviewServiceImpl(ReviewRepository repository, ReviewRepository reviewRepository, UserRepository userRepository, StoreRepository storeRepository, OrderRepository orderRepository, S3Uploader s3Uploader, FCMService fcmService, AuthUtils authUtils, ModelMapper modelMapper) {
-        super(repository);
-        this.reviewRepository = reviewRepository;
-        this.userRepository = userRepository;
-        this.storeRepository = storeRepository;
-        this.orderRepository = orderRepository;
-        this.s3Uploader = s3Uploader;
-        this.fcmService = fcmService;
-        this.authUtils = authUtils;
-        this.modelMapper = modelMapper;
-    }
+@RequiredArgsConstructor
+public class ReviewServiceImpl implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
@@ -85,7 +73,7 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
 
         // 주문 내역 통해서 StoreID, 가게 메뉴 가져오기
         Order order = orderRepository.findById(reviewRequest.getOrderID())
-                .orElseThrow(NoSuchOrderException::new);
+                .orElseThrow(() -> new NoSuchException("해당 주문을 찾을 수 없습니다."));
 
         Long storeID = order.getStoreId();
         String menuList = menuList(order);
@@ -164,7 +152,7 @@ public class ReviewServiceImpl extends BaseServiceImpl<Review, ReviewRequest, Re
         }
 
         Review review = reviewRepository.findById(reviewID)
-                .orElseThrow(NoSuchOrderException::new);
+                .orElseThrow(() -> new NoSuchException("해당 주문을 찾을 수 없습니다."));
 
         // 주문 내역 통해서 StoreID, 가게 메뉴 가져오기
         Order order = review.getOrder();
