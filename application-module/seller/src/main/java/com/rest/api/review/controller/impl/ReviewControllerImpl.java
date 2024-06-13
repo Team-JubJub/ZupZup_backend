@@ -38,10 +38,11 @@ public class ReviewControllerImpl implements ReviewController {
      */
     @Override
     @GetMapping("/{storeID}")
-    public ResponseEntity<List<ReviewListResponse>> findAllReview(@PathVariable("storeID") Long storeID,
-                                                        @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
+    public ResponseEntity<List<ReviewListResponse>> findAllReview(@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+                                                                  @PathVariable("storeID") Long storeID,
+                                                                  @RequestHeader(SocialJwtTokenProvider.ACCESS_TOKEN_NAME) String accessToken) {
 
-        List<ReviewListResponse> result = reviewService.findAll(storeID, accessToken);
+        List<ReviewListResponse> result = reviewService.findAll(pageNo, storeID, accessToken);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -49,7 +50,7 @@ public class ReviewControllerImpl implements ReviewController {
      * 리뷰 comment 작성
      */
     @Override
-    @PatchMapping("/{reviewID}")
+    @PatchMapping("/comment/{reviewID}")
     public ResponseEntity<Long> writeReviewComment(@PathVariable Long reviewID,
                                                    @RequestHeader String accessToken,
                                                    @RequestBody ReviewCommentRequest reviewComment) {

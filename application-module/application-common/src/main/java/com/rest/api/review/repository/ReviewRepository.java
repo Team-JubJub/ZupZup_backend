@@ -14,6 +14,6 @@ public interface ReviewRepository extends BaseRepository<Review> {
 
     Page<Review> findAllByUserID(Long userID, Pageable pageable); //providerUserID로 작성된 리뷰 찾기
     @Query("SELECT r FROM Review r WHERE r.order.storeId = :storeId")
-    List<Review> findAllByOrder(Long storeId); //store 리뷰 찾기
+    Page<Review> findAllByOrder(Long storeId, Pageable pageable); //store 리뷰 찾기
 
 }

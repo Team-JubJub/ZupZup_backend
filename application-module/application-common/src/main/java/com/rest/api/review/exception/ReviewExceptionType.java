@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 public enum ReviewExceptionType implements BaseExceptionType {
 
-    NO_MATCH_REVIEW(HttpStatus.NOT_FOUND, "해당 리뷰가 존재하지 않습니다.");
+    NO_MATCH_REVIEW(HttpStatus.BAD_REQUEST, "해당 리뷰가 존재하지 않습니다.");
 
     //    private int errorCode;
     private HttpStatus httpStatus;

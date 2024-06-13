@@ -1,10 +1,116 @@
-= REVIEW API 1.0.0
+= SELLER REVIEW API 1.0.0
+:toc: left
+:toclevels: 2
+:sectlinks:
 
 == 리뷰 공지 작성
 === 성공 (200)
 **Request**
 include::{snippets}/success-save-reviewAnnouncement/http-request.adoc[]
+-> 리뷰 공지 작성 및 수정 시, 값을 넣어 보내주면 값이 생성됨
+include::{snippets}/success-delete-reviewAnnouncement/http-request.adoc[]
+-> 리뷰 공지 삭제 시, null 값을 보내면 삭제됨
+
+include::{snippets}/success-save-reviewAnnouncement/path-parameters.adoc[]
+- request 형식
 include::{snippets}/success-save-reviewAnnouncement/request-fields.adoc[]
+-> 작성 및 수정
+include::{snippets}/success-delete-reviewAnnouncement/request-fields.adoc[]
+-> 삭제
 
 **Response**
 include::{snippets}/success-save-reviewAnnouncement/http-response.adoc[]
+- response 형식
+|===
+|Type|Description
+
+|`+Long+`
+|가게 ID
+|===
+
+=== 실패 (404)
+==== ID에 해당하는 가게 없음
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-save-reviewAnnouncement-cannot-find-store/http-response.adoc[]
+- response 형식
+include::{snippets}/fail-save-reviewAnnouncement-cannot-find-store/response-fields.adoc[]
+
+=== 실패 (403)
+==== 가게 접근 권한 없음
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-save-reviewAnnouncement-wrong-accessToken/http-response.adoc[]
+- response 형식
+include::{snippets}/fail-save-reviewAnnouncement-wrong-accessToken/response-fields.adoc[]
+
+== 리뷰 전체 보기
+=== 성공 (200)
+**Request**
+include::{snippets}/success-findAll/http-request.adoc[]
+include::{snippets}/success-findAll/path-parameters.adoc[]
+include::{snippets}/success-findAll/query-parameters.adoc[]
+
+**Response**
+include::{snippets}/success-findAll/http-response.adoc[]
+-> 리뷰 있는 경우
+
+include::{snippets}/success-findAll-empty/http-response.adoc[]
+-> 리뷰 없는 경우
+
+- response 형식
+include::{snippets}/success-findAll/response-fields.adoc[]
+
+=== 실패 (403)
+==== 가게 접근 권한 없음
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-findAll-wrong-accessToken/http-response.adoc[]
+
+- response 형식
+include::{snippets}/fail-findAll-wrong-accessToken/response-fields.adoc[]
+
+== 리뷰 답글 달기
+=== 성공 (200)
+**Request**
+include::{snippets}/success-write_review_comment/http-request.adoc[]
+include::{snippets}/success-write_review_comment/path-parameters.adoc[]
+
+**Response**
+include::{snippets}/success-write_review_comment/http-response.adoc[]
+- response 형식
+|===
+|Type|Description
+
+|`+Long+`
+|리뷰 ID
+|===
+
+=== 실패 (400)
+==== ID에 해당하는 리뷰 찾지 못함
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-write-review-comment-cannot-find-review/http-response.adoc[]
+
+=== 실패 (403)
+==== 가게 접근 권한 없음
+**Request**
+
+위 형식과 동일
+
+**Response**
+include::{snippets}/fail-write_review_comment-wrong-accessToken/http-response.adoc[]
+- response 형식
+include::{snippets}/fail-write_review_comment-wrong-accessToken/response-fields.adoc[]
