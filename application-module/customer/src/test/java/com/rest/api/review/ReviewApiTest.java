@@ -29,7 +29,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.naming.NoInitialContextException;
 import java.util.List;
 
 import static com.zupzup.untact.exception.store.StoreExceptionType.NO_MATCH_STORE;

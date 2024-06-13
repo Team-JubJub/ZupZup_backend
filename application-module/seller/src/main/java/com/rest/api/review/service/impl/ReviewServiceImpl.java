@@ -15,6 +15,10 @@ import com.zupzup.untact.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +34,7 @@ public class ReviewServiceImpl implements ReviewService {
     private final StoreRepository storeRepository;
     private final ReviewRepository reviewRepository;
     private final CustomJwtTokenProvider customJwtTokenProvider;
+    private static final int PAGE_SIZE = 20;
 
     @Autowired
     ModelMapper modelMapper;
@@ -60,12 +65,13 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewListResponse> findAll(Long storeID, String accessToken) {
+    public List<ReviewListResponse> findAll(int pageNo, Long storeID, String accessToken) {
 
             // accessToken 유효성 검증
             if (customJwtTokenProvider.validateToken(accessToken)) {
                 // 가게 아이디로 리뷰 찾기 (Review --> Order --> Store)
-                List<Review> reviews = reviewRepository.findAllByOrder(storeID);
+                Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE, Sort.by(Sort.Direction.DESC, "createdAt"));
+                Page<Review> reviews = reviewRepository.findAllByOrder(storeID, pageable);
 
                 return reviews.stream()
                         .map(review -> modelMapper.map(review, ReviewListResponse.class))
